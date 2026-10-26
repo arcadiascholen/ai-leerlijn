@@ -83,6 +83,7 @@ export default function DenkEerst({ id, question, children }: Props) {
       className={styles.root}
       data-question="think-first"
       data-question-id={id}
+      data-question-text={question}
       data-shown={shown ? '' : undefined}
     >
       <label htmlFor={`${baseId}-antwoord`} className={styles.question}>

@@ -2,21 +2,20 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Stap from '../../components/stappen/Stap.astro';
+import Samenvatting from '../../components/stappen/Samenvatting.astro';
+import { checkModuleBody } from '../../components/stappen/checks';
 import StepPlayer from '../../components/stappen/StepPlayer.astro';
 import DenkEerst from '../../components/vragen/DenkEerst.astro';
 import Meerkeuze from '../../components/vragen/Meerkeuze.astro';
 import Optie from '../../components/vragen/Optie.astro';
+import Reflectie from '../../components/vragen/Reflectie.astro';
 
 // One page per module that is ready. Modules with `status: binnenkort` are
 // shown in the overview but get no page (BRIEFING § 5).
 export async function getStaticPaths() {
   const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
   return entries.map((entry) => {
-    // A module is a series of steps (BRIEFING § 6); without any the player
-    // has nothing to show.
-    if (!/<Stap[\s>]/.test(entry.body ?? '')) {
-      throw new Error(`Module "${entry.id}" has no <Stap> blocks.`);
-    }
+    checkModuleBody(entry.id, entry.body ?? '');
     return { params: { id: entry.id }, props: { entry } };
   });
 }
@@ -28,9 +27,13 @@ interface Props {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
+// For <Samenvatting />, which shows the module's name: components inside the
+// MDX get no props from here, but share Astro.locals with this page.
+(Astro.locals as { moduleTitle?: string }).moduleTitle = entry.data.title;
+
 // Components that authors may use in a module's MDX without an import line
 // (BRIEFING § 12). Question components are added here.
-const components = { Stap, Meerkeuze, Optie, DenkEerst };
+const components = { Stap, Meerkeuze, Optie, DenkEerst, Reflectie, Samenvatting };
 ---
 
 <Base title={entry.data.title} description={entry.data.kort} fill>
