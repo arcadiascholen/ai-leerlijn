@@ -1,0 +1,28 @@
+---
+// The summary at the end of a module (docs/BRIEFING.md § 6 and § 12):
+//
+//   <Stap titel="Klaar! Kopieer wat je schreef">
+//   <Samenvatting />
+//   </Stap>
+//
+// It shows what the student wrote in <DenkEerst> and <Reflectie>, with the
+// question next to each answer, and copies it all for the final form in
+// Smartschool. It belongs in the last step, once per module; the module
+// route checks that when it builds. Authors write no import, no props and no
+// client directive.
+import SamenvattingIsland from './Samenvatting.tsx';
+import { checkLink, eindformulier } from '../../config/smartschool';
+
+// Set by src/pages/modules/[id].astro: components inside a module's MDX get
+// no props from the route, but share Astro.locals with it.
+const moduleTitle = (Astro.locals as { moduleTitle?: string }).moduleTitle;
+if (moduleTitle === undefined) {
+  throw new Error('<Samenvatting /> only works inside a module (src/content/modules/).');
+}
+if (Astro.slots.has('default')) {
+  throw new Error('<Samenvatting /> takes no content between its tags: write <Samenvatting />.');
+}
+const formUrl = checkLink('eindformulier', eindformulier);
+---
+
+<SamenvattingIsland moduleTitle={moduleTitle} formUrl={formUrl} client:visible />

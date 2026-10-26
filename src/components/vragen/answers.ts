@@ -8,13 +8,17 @@
 //
 // In the static HTML every question's root element carries
 // `data-question="<kind>"` and `data-question-id="<id>"`, also in steps that
-// are hidden and not hydrated yet. A component that collects answers (the
-// summary at the end of a module) walks those elements in document order,
-// which is the order of the module, and reads each answer with `readAnswer`.
+// are hidden and not hydrated yet. The questions that the summary shows
+// (`think-first` and `reflection`) also carry `data-question-text`, the
+// question as it is on the page now. The summary at the end of a module
+// (../stappen/Samenvatting.tsx) walks those elements in document order, which
+// is the order of the module, and reads each answer with `readAnswer`. It
+// takes the question from the page, not from storage: the stored question
+// is the one the student saw, and goes stale when an author rewrites it.
 
 import { readStored, writeStored } from '../stappen/storage';
 
-export type QuestionKind = 'multiple-choice' | 'think-first';
+export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -34,7 +38,14 @@ export interface ThinkFirstAnswer {
   shown: boolean;
 }
 
-export type StoredAnswer = MultipleChoiceAnswer | ThinkFirstAnswer;
+// <Reflectie>: what the student wrote, with the question as they saw it.
+export interface ReflectionAnswer {
+  kind: 'reflection';
+  question: string;
+  answer: string;
+}
+
+export type StoredAnswer = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer;
 
 export function answerKey(questionId: string): string {
   return `vraag:${questionId}`;
@@ -51,6 +62,8 @@ function isStoredAnswer(value: unknown): value is StoredAnswer {
       return Array.isArray(value.chosen) && value.chosen.every((index) => Number.isInteger(index));
     case 'think-first':
       return typeof value.answer === 'string' && typeof value.shown === 'boolean';
+    case 'reflection':
+      return typeof value.answer === 'string';
     default:
       return false;
   }

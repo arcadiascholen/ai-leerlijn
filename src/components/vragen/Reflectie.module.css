@@ -1,0 +1,51 @@
+/* A short reflection. Only design-system tokens (docs/DESIGN.md). Single
+   classes, so they win over the zero-specificity step defaults in
+   Stap.astro. The field has the width of a line of running text (65ch),
+   so that what the student writes stays readable. */
+
+/* Space below the question only when the author wrote more after it; the
+   island element is the question's place in the step. */
+:global(astro-island:not(:last-child)) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.question {
+  display: block;
+  max-width: 65ch;
+  margin: 0 0 var(--space-3);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  max-width: 65ch;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+
+.field::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+.hint {
+  max-width: 65ch;
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}

@@ -1,0 +1,30 @@
+---
+// A short reflection (docs/BRIEFING.md § 12): a question and a text field.
+//
+//   <Reflectie id="wat-geleerd" vraag="Wat heb je geleerd over …?" />
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. The answer comes back in the summary at the end of the module
+// (<Samenvatting />), which the student copies into the final form.
+// Authors write no import and no client directive.
+import ReflectieIsland from './Reflectie.tsx';
+import { checkQuestionId, checkText } from './authoring';
+
+interface Props {
+  id: string;
+  vraag: string;
+}
+
+const id = checkQuestionId('Reflectie', Astro.props.id, Astro.locals);
+const vraag = checkText('Reflectie', 'vraag', Astro.props.vraag);
+// Text between the tags would silently disappear: the question goes in
+// `vraag`, and there is no example answer.
+if (Astro.slots.has('default')) {
+  throw new Error(
+    `<Reflectie id="${id}"> takes no content between its tags. ` +
+      'Put the question in `vraag` and close the tag: <Reflectie id="…" vraag="…" />.',
+  );
+}
+---
+
+<ReflectieIsland id={id} question={vraag} client:visible />

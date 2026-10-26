@@ -391,7 +391,10 @@ Tekst, een beeld of een vraagcomponent.
 - Een vergissing van de auteur laat de build falen met een duidelijke
   melding, in plaats van een kapotte vraag bij de leerling te zetten: een
   ontbrekende of dubbele `id`, een `<Meerkeuze>` zonder juiste optie, een
-  optie zonder feedback.
+  optie zonder feedback, tekst tussen de tags van `<Reflectie>` of
+  `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
+  dan één, een link in `src/config/smartschool.ts` die geen geldig
+  `https://`-adres is.
 
 ### Vraagtypes
 
@@ -447,6 +450,21 @@ lijsten.
   regels zeven. Wat langer is, scrolt binnen de kaart.
 - Zonder JavaScript staat het voorbeeldantwoord meteen naast het tekstveld.
 
+**Een korte reflectie**
+
+```mdx
+<Reflectie id="wat-geleerd" vraag="Wat weet je nu over chatbots dat je eerst nog niet wist?" />
+```
+
+- Een vraag en een tekstveld, met een echt `<label>`. Er is geen
+  voorbeeldantwoord en geen minimum: wat de leerling schrijft, wordt bij elke
+  wijziging bewaard en komt terug in de samenvatting.
+- `vraag` is gewone tekst. De tag sluit zichzelf (`/>`); tekst tussen de
+  tags laat de build falen, want die zou stil verdwijnen.
+- Het tekstveld is zes regels hoog en zo breed als een regel lopende tekst.
+  Een korte inleidende zin erboven past op 1366 × 640; wat de leerling
+  langer schrijft, scrolt binnen het veld.
+
 ### Antwoorden bewaren
 
 Dit is de afspraak waarop de samenvatting aan het einde van een module
@@ -464,9 +482,77 @@ steunt.
   `{ "kind": "think-first", "question": "…", "answer": "…", "shown": true }`:
   de vraag zoals de leerling ze zag, het eigen antwoord, en of het
   voorbeeldantwoord getoond werd.
+- `<Reflectie>` bewaart
+  `{ "kind": "reflection", "question": "…", "answer": "…" }`: de vraag zoals
+  de leerling ze zag en het antwoord.
+- Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `StoredAnswer`
+  in `answers.ts`, met een eigen controle in `isStoredAnswer`, zodat
+  `readAnswer` een onvolledige waarde weigert.
 - In de statische HTML draagt het buitenste element van elke vraag
-  `data-question="multiple-choice"` of `data-question="think-first"`, en
-  `data-question-id="<id>"`. Dat geldt ook voor vragen in verborgen stappen
-  die nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in
-  de volgorde van het document, dus van de module, en leest per `id` het
+  `data-question="<kind>"` (`multiple-choice`, `think-first` of
+  `reflection`) en `data-question-id="<id>"`. Een vraag die in de
+  samenvatting komt, draagt ook `data-question-text` met de vraag zoals ze
+  nu in de module staat. Dat geldt ook voor vragen in verborgen stappen die
+  nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in de
+  volgorde van het document, dus van de module, en leest per `id` het
   antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
+- De samenvatting neemt de vraag uit `data-question-text`, niet uit de
+  opslag. Past een auteur een vraag aan, dan ziet de leerling de nieuwe
+  tekst, ook bij een antwoord dat al bewaard was. De `id` blijft dezelfde.
+
+### De samenvatting
+
+```mdx
+<Stap titel="Klaar! Kopieer wat je schreef">
+<Samenvatting />
+</Stap>
+```
+
+- `<Samenvatting />` staat in de **laatste stap**, en hoogstens één keer per
+  module; de build controleert beide. Ze heeft geen attributen: de naam van
+  de module geeft de route mee via `Astro.locals`, de link naar het
+  eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
+  `src/components/stappen/`.
+- Ze toont de naam van de module en, in de volgorde van de module, elke
+  `<DenkEerst>` en `<Reflectie>` met de vraag en het antwoord. **Meerkeuze
+  komt er niet in**: alleen wat de leerling zelf schreef. Een vraag zonder
+  antwoord toont *(nog niet ingevuld)* met een link naar haar stap
+  (`#stap-n`). Staan er lege vragen in, dan zegt de inleiding hoeveel.
+- De samenvatting leest de antwoorden telkens opnieuw wanneer haar stap
+  zichtbaar wordt (een `IntersectionObserver`: de speler verbergt de andere
+  stappen met `hidden`), en terwijl de leerling typt in een vraag op dezelfde
+  stap. Een leerling die terugkeert en een antwoord aanpast, ziet dus altijd
+  de actuele tekst. Ze wacht niet op `hashchange`: de speler wisselt van stap
+  met `replaceState`, en dat stuurt geen `hashchange`.
+- *Kopieer alles* zet platte tekst op het klembord met
+  `navigator.clipboard.writeText`: bovenaan `Module: <naam>`, daarna per
+  vraag de vraag op één regel en het antwoord eronder, gescheiden door een
+  lege regel. Een lege vraag krijgt `(niet ingevuld)`. Lege regels binnen
+  een antwoord vallen weg, zodat een lege regel altijd een nieuwe vraag
+  betekent. Zo past de tekst netjes in een tekstveld van Smartschool.
+- Na het kopiëren verschijnt een bevestiging (`role="status"`, dus
+  voorgelezen) en de knop *Open het eindformulier*, die Smartschool in een
+  nieuw tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
+  bevestiging en de knop, en kopieert de leerling opnieuw.
+- **Als het kopiëren mislukt** (geen veilige context, of de browser
+  weigert), verschijnt zonder foutmelding de terugvaloptie: de tekst staat
+  geselecteerd in een tekstveld op de plaats van de lijst, met de vraag om
+  Ctrl+C te gebruiken. Kopieert de leerling uit dat veld, dan volgt dezelfde
+  bevestiging.
+- **Hoogte.** De lijst scrolt binnen haar eigen kader (hoogstens 13.5rem),
+  zodat de knoppen altijd zichtbaar blijven, ook bij veel of lange
+  antwoorden. Het terugvalveld heeft dezelfde hoogte.
+- Zonder JavaScript wordt niets bewaard; de samenvatting zegt dan dat ze
+  JavaScript nodig heeft.
+
+### Links naar Smartschool
+
+- De vier scholen werken op één Smartschool-platform, dus elke link is voor
+  iedereen dezelfde. De links staan op één plek, in
+  `src/config/smartschool.ts`: `nulmeting` (de vragenlijst vóór de module)
+  en `eindformulier` (één formulier voor alle modules).
+- `null` betekent dat de link nog niet bekend is. De samenvatting toont dan
+  een duidelijke, niet-klikbare melding: *De link naar het eindformulier
+  volgt nog.* Wie de link invult, vult het volledige `https://`-adres in;
+  daarna verschijnt de knop vanzelf. Een adres dat geen geldige
+  `https://`-URL is, laat de build falen.
