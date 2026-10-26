@@ -1,0 +1,36 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+// One page per module that is ready. Modules with `status: binnenkort` are
+// shown in the overview but get no page (BRIEFING § 5).
+export async function getStaticPaths() {
+  const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
+  return entries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'modules'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Base title={entry.data.title} description={entry.data.kort}>
+  <article class="module">
+    <h1>{entry.data.title}</h1>
+    <div class="module-body">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .module-body {
+    max-width: 40rem;
+  }
+</style>
