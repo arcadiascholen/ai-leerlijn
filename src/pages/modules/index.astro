@@ -1,0 +1,212 @@
+---
+// The module choice (docs/BRIEFING.md § 4 and § 5): one card per module in
+// the collection, sorted on `volgorde`, with a filter on grade. Modules with
+// `status: binnenkort` are listed too, dimmed and without a link.
+//
+// The filter keeps its choice in the URL (`?graad=1`), not in localStorage:
+// a link with the filter set can be shared (the first grade gets the same
+// page, filtered), the browser's back button returns to the filtered list,
+// and nobody finds a list that is filtered by a choice they forgot about.
+// Without JavaScript the filter is hidden and every module is shown.
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ModuleKaart from '../../components/modules/ModuleKaart.astro';
+
+const modules = (await getCollection('modules')).sort(
+  (a, b) => a.data.volgorde - b.data.volgorde || a.id.localeCompare(b.id),
+);
+
+const options = [
+  { value: '', label: 'Alle' },
+  { value: '1', label: '1e graad' },
+  { value: '2', label: '2e graad' },
+  { value: '3', label: '3e graad' },
+];
+---
+
+<Base title="Kies je module" description="Kies één module over artificiële intelligentie die bij jou past." compact>
+  <div class="head">
+    <h1>Kies je module</h1>
+    <fieldset class="filter" data-filter>
+      <legend class="filter-legend">Jouw graad</legend>
+      <div class="filter-options">
+        {options.map(({ value, label }) => (
+          <label class="filter-option">
+            <input type="radio" name="graad" value={value} checked={value === ''} autocomplete="off" />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </div>
+
+  <p class="sr-only" aria-live="polite" data-filter-status></p>
+
+  <ul class="grid" role="list">
+    {modules.map((entry) => (
+      <li data-grades={entry.data.graden.join(' ')}>
+        <ModuleKaart entry={entry} />
+      </li>
+    ))}
+  </ul>
+  <p class="empty" data-filter-empty hidden>Voor deze graad zijn er nog geen modules.</p>
+</Base>
+
+<style>
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    margin-bottom: var(--space-4);
+  }
+
+  .head h1 {
+    margin: 0;
+  }
+
+  /* The filter only works with JavaScript; without it, it stays hidden and
+     every module is shown. */
+  .filter {
+    display: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  :global(.js) .filter {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* Floated, so that the legend takes part in the flex row. */
+  .filter-legend {
+    float: left;
+    padding: 0;
+    color: var(--ink-muted);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  .filter-options {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .filter-option {
+    position: relative;
+  }
+
+  /* The radio itself is invisible but stays focusable and operable with the
+     arrow keys; the span next to it is what the student sees. */
+  .filter-option input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .filter-option span {
+    display: block;
+    padding: var(--space-1) var(--space-4);
+    border-radius: var(--radius-sm);
+    color: var(--forest);
+    font-weight: var(--text-label-weight);
+    white-space: nowrap;
+  }
+
+  .filter-option:hover span {
+    background: var(--surface-sunken);
+  }
+
+  .filter-option input:checked + span {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .filter-option input:focus-visible + span {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .grid > li[hidden] {
+    display: none;
+  }
+
+  .empty {
+    color: var(--ink-muted);
+  }
+</style>
+
+<script>
+  const PARAM = 'graad';
+  const GRADES = ['1', '2', '3'];
+
+  function initFilter(): void {
+    const filter = document.querySelector<HTMLFieldSetElement>('[data-filter]');
+    const status = document.querySelector<HTMLElement>('[data-filter-status]');
+    const empty = document.querySelector<HTMLElement>('[data-filter-empty]');
+    if (filter === null || status === null || empty === null) return;
+    const radios = Array.from(filter.querySelectorAll<HTMLInputElement>('input[name="graad"]'));
+    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-grades]'));
+
+    // '' shows every module; '1' to '3' only the modules for that grade.
+    const apply = (grade: string): number => {
+      let shown = 0;
+      for (const item of items) {
+        const match = grade === '' || (item.dataset.grades ?? '').split(' ').includes(grade);
+        item.hidden = !match;
+        if (match) shown++;
+      }
+      empty.hidden = shown > 0;
+      return shown;
+    };
+
+    // replaceState: changing the filter adds no step to the history, so the
+    // back button leaves the page, and coming back restores the filter.
+    const writeUrl = (grade: string): void => {
+      const url = new URL(window.location.href);
+      if (grade === '') url.searchParams.delete(PARAM);
+      else url.searchParams.set(PARAM, grade);
+      if (url.href !== window.location.href) window.history.replaceState(window.history.state, '', url);
+    };
+
+    const fromUrl = new URLSearchParams(window.location.search).get(PARAM);
+    const initial = fromUrl !== null && GRADES.includes(fromUrl) ? fromUrl : '';
+    for (const radio of radios) radio.checked = radio.value === initial;
+    apply(initial);
+    // An unknown value such as `?graad=5` is dropped from the URL.
+    writeUrl(initial);
+
+    filter.addEventListener('change', (event) => {
+      if (!(event.target instanceof HTMLInputElement)) return;
+      const grade = event.target.value;
+      const shown = apply(grade);
+      writeUrl(grade);
+      const what = shown === 1 ? '1 module' : `${shown} modules`;
+      status.textContent = grade === '' ? `Alle modules: ${what}.` : `${what} voor de ${grade}e graad.`;
+    });
+  }
+
+  initFilter();
+</script>

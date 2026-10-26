@@ -10,6 +10,10 @@
 // The layout with JavaScript fills the space under the header: the page must
 // fit on 1366 × 640 without scrolling. The module route renders Base with
 // `fill` for that.
+//
+// The named slot `meta` goes next to the title, on the same line, so it
+// costs the step no height: the module route puts the sentence about AI use
+// there (BRIEFING § 7).
 interface Props {
   moduleId: string;
   title: string;
@@ -22,6 +26,11 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
 <div class="player" data-player data-module={moduleId}>
   <div class="player-head">
     <h1 class="player-title">{title}</h1>
+    {Astro.slots.has('meta') && (
+      <div class="player-meta">
+        <slot name="meta" />
+      </div>
+    )}
     <p class="player-count" data-count aria-live="polite"></p>
   </div>
   <div class="player-bar" aria-hidden="true">
@@ -88,11 +97,22 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     min-height: 0;
   }
 
+  /* Without JavaScript the meta line sits under the title. */
+  .player-meta {
+    margin-bottom: var(--space-5);
+  }
+
   :global(.js) .player-head {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
     gap: var(--space-4);
+  }
+
+  :global(.js) .player-meta {
+    flex: none;
+    margin: 0;
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--line);
   }
 
   :global(.js) .player-title {
@@ -111,7 +131,7 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
   :global(.js) .player-count {
     display: block;
     flex: none;
-    margin: 0;
+    margin: 0 0 0 auto;
     color: var(--ink-muted);
     font-size: var(--text-small-size);
     line-height: var(--text-small-line);

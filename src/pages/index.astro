@@ -1,34 +1,268 @@
 ---
+// The start page (docs/BRIEFING.md § 4): a short welcome and the student's
+// route in three numbered steps. Steps 1 and 3 link to Smartschool; while a
+// link is not known yet (`null` in src/config/smartschool.ts) the step shows
+// a clear, non-clickable note instead of a button. The same goes for the
+// hour by which the final form is due. Fits on 1366 × 640 without scrolling.
 import Base from '../layouts/Base.astro';
+import { checkLink, eindformulier, eindformulierUur, nulmeting } from '../config/smartschool';
+
+const nulmetingUrl = checkLink('nulmeting', nulmeting);
+const eindformulierUrl = checkLink('eindformulier', eindformulier);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Base>
-  <h1>AI-leerpad</h1>
+  <h1>Welkom bij het AI-leerpad</h1>
   <p class="lead">
-    Op dinsdag 10 november doorloop je hier een module over artificiële
-    intelligentie. Je kiest zelf welke.
+    Op dinsdag 10 november werk je thuis aan een module over artificiële
+    intelligentie (AI). Het is geen toets: je krijgt er geen punten voor.
   </p>
-  <p class="status">Deze site is nog in opbouw.</p>
+
+  <h2 class="route-label">Zo ga je te werk</h2>
+  <ol class="route" role="list">
+    <li class="route-step">
+      <h3 class="route-title">
+        <span class="route-number" aria-hidden="true">1</span>
+        <span class="sr-only">Stap 1:</span>
+        Nulmeting invullen
+      </h3>
+      <p class="route-text">
+        Begin met een korte vragenlijst op Smartschool. Ze duurt ongeveer 10
+        minuten.
+      </p>
+      <div class="route-action">
+        {nulmetingUrl !== null ? (
+          <a class="button button-primary" href={nulmetingUrl} target="_blank" rel="noopener noreferrer">
+            Open de nulmeting
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+            </svg>
+            <span class="sr-only">(opent in een nieuw tabblad)</span>
+          </a>
+        ) : (
+          <p class="pending">De link naar de nulmeting volgt nog.</p>
+        )}
+      </div>
+    </li>
+
+    <li class="route-step">
+      <h3 class="route-title">
+        <span class="route-number" aria-hidden="true">2</span>
+        <span class="sr-only">Stap 2:</span>
+        Kies je module
+      </h3>
+      <p class="route-text">
+        Kies één module die bij jou past. Je werkt er ongeveer 70 minuten aan,
+        in korte stappen.
+      </p>
+      <div class="route-action">
+        <a class="button button-primary" href={`${base}/modules/`}>
+          Bekijk de modules
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+        </a>
+      </div>
+    </li>
+
+    <li class="route-step">
+      <h3 class="route-title">
+        <span class="route-number" aria-hidden="true">3</span>
+        <span class="sr-only">Stap 3:</span>
+        Eindformulier invullen
+      </h3>
+      <p class="route-text">
+        Op het einde van je module kopieer je wat je schreef. Dat plak je in
+        het eindformulier op Smartschool.
+      </p>
+      {eindformulierUur !== null ? (
+        <p class="route-deadline">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+          <span>Dien het in op dinsdag 10 november, uiterlijk om <strong>{eindformulierUur}</strong>.</span>
+        </p>
+      ) : (
+        <p class="route-deadline pending">Tegen welk uur je het indient, volgt nog.</p>
+      )}
+      <div class="route-action">
+        {eindformulierUrl !== null ? (
+          <a class="button button-secondary" href={eindformulierUrl} target="_blank" rel="noopener noreferrer">
+            Open het eindformulier
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+            </svg>
+            <span class="sr-only">(opent in een nieuw tabblad)</span>
+          </a>
+        ) : (
+          <p class="pending">De link naar het eindformulier volgt nog.</p>
+        )}
+      </div>
+    </li>
+  </ol>
 </Base>
 
 <style>
   .lead {
     max-width: 65ch;
+    margin-bottom: var(--space-6);
     font-size: var(--text-lead-size);
     line-height: var(--text-lead-line);
     font-weight: var(--text-lead-weight);
     letter-spacing: var(--text-lead-tracking);
   }
 
-  .status {
-    display: inline-block;
-    padding: var(--space-2) var(--space-4);
+  .route-label {
+    margin: 0 0 var(--space-3);
+    color: var(--ink-muted);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  .route {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .route-step {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .route-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    font-weight: var(--text-h3-weight);
+    letter-spacing: var(--text-h3-tracking);
+  }
+
+  /* A node on the route: Arcadia green as a fill, with on-brand text. */
+  .route-number {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--brand);
+    color: var(--on-brand);
+    font-weight: var(--text-h1-weight);
+  }
+
+  .route-text {
+    max-width: none;
+    margin: 0 0 var(--space-3);
+  }
+
+  .route-deadline {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    max-width: none;
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .route-deadline strong {
+    font-weight: var(--text-label-weight);
+  }
+
+  .route-deadline svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The action sits at the bottom of each card, so the three line up. */
+  .route-action {
+    display: flex;
+    margin-top: auto;
+  }
+
+  /* The note in place of a button while its link (or the hour) is not known.
+     Plain text, not a control. */
+  .pending {
+    max-width: none;
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--line-strong);
     border-radius: var(--radius-md);
-    background: var(--surface-sunken);
     color: var(--ink-muted);
     font-size: var(--text-small-size);
     line-height: var(--text-small-line);
     font-weight: var(--text-small-weight);
     letter-spacing: var(--text-small-tracking);
+  }
+
+  .route-deadline.pending {
+    margin-bottom: var(--space-3);
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--text-label-weight);
+    line-height: var(--text-body-line);
+    text-decoration: none;
+  }
+
+  .button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .button-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .button-primary:hover {
+    background: var(--primary-hover);
+    color: var(--on-primary);
+  }
+
+  .button-secondary {
+    border-color: var(--line-strong);
+    background: var(--surface);
+    color: var(--forest);
+  }
+
+  .button-secondary:hover {
+    background: var(--surface-sunken);
+    color: var(--forest);
   }
 </style>

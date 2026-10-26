@@ -1,0 +1,62 @@
+---
+// One sentence that says whether the student uses AI in a module
+// (docs/BRIEFING.md § 7), with an icon. On the module card in the overview
+// and at the top of the module page. Teal, because it is about AI
+// (docs/DESIGN.md: green is the student, teal is AI).
+import { aiUseSentence, type AiUse } from './labels';
+
+interface Props {
+  value: AiUse;
+}
+
+const { value } = Astro.props;
+---
+
+<p class="ai-use" data-ai-use={value}>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    {value === 'voorbeelden' ? (
+      <>
+        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ) : (
+      <path d="M12 3c.7 4.3 2.7 6.3 7 7-4.3.7-6.3 2.7-7 7-.7-4.3-2.7-6.3-7-7 4.3-.7 6.3-2.7 7-7z" />
+    )}
+    {value === 'geen' && <path d="M4 4l16 16" />}
+  </svg>
+  <span>{aiUseSentence[value]}</span>
+</p>
+
+<style>
+  /* `flex`, not `inline-flex`: inline, it would sit on the 26px line of the
+     surrounding body text and make the player's head 5px higher. */
+  .ai-use {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin: 0;
+    color: var(--ai);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  /* The text, not the icon, gives the sentence its baseline, so that it lines
+     up with the module title next to it without pushing the line down. */
+  span {
+    align-self: baseline;
+  }
+
+  svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

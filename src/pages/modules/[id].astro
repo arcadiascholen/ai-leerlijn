@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import AiGebruik from '../../components/modules/AiGebruik.astro';
 import Stap from '../../components/stappen/Stap.astro';
 import Samenvatting from '../../components/stappen/Samenvatting.astro';
 import { checkModuleBody } from '../../components/stappen/checks';
@@ -38,6 +39,9 @@ const components = { Stap, Meerkeuze, Optie, DenkEerst, Reflectie, Samenvatting 
 
 <Base title={entry.data.title} description={entry.data.kort} fill>
   <StepPlayer moduleId={entry.id} title={entry.data.title}>
+    {/* Whether the student uses AI, in one sentence at the top of the module
+        (BRIEFING § 7). */}
+    <AiGebruik slot="meta" value={entry.data.aiGebruik} />
     <Content components={components} />
   </StepPlayer>
 </Base>

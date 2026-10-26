@@ -2,6 +2,10 @@
 // component can check on its own. The module route runs them in
 // getStaticPaths, so a mistake fails the build with a clear message instead
 // of reaching a student (docs/BRIEFING.md § 12).
+//
+// Only modules with `status: beschikbaar` are checked, because only they get
+// a page. A placeholder with `status: binnenkort` has no steps yet; the
+// checks apply as soon as it is switched to `beschikbaar`.
 
 // Positions of every match of `pattern` (with the `g` flag) in `text`.
 function positions(text: string, pattern: RegExp): number[] {

@@ -71,20 +71,34 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
          Smartschool                   deze site            Smartschool
 ```
 
-1. **Start.** De leerling opent de site via een link in Smartschool.
+1. **Start.** De leerling opent de site via een link in Smartschool. De
+   startpagina (`/ai-leerlijn/`) toont een korte welkomsttekst en de weg in
+   drie genummerde stappen: *1. Nulmeting invullen*, *2. Kies je module*,
+   *3. Eindformulier invullen*. Ze past op 1366 × 640 zonder te scrollen.
 2. **Nulmeting.** Een korte Smartschool-bevraging (± 10 minuten, maximaal 15
    vragen, vertakt per graad). Die vult de leerling in vóór de module, zodat de
    beginsituatie zuiver gemeten wordt. De nulmeting wordt **niet** aan het LVS
    gekoppeld. Ze dient als basislijn om later de impact van het AI-onderwijs te
-   meten. Een ander team stelt ze op; de site linkt er alleen naar.
-3. **Modulekeuze.** De leerling kiest **één module** uit het aanbod, op basis
-   van interesse, graad en niveau. Zelf kiezen verhoogt de motivatie en
-   voorkomt frustratie bij gevorderde leerlingen.
+   meten. Een ander team stelt ze op; **de site linkt ernaar** vanuit stap 1
+   van de startpagina, zodat de volgorde nulmeting → module bewaakt blijft.
+3. **Modulekeuze.** De leerling kiest **één module** uit het aanbod
+   (`/ai-leerlijn/modules/`), op basis van interesse, graad en niveau. Zelf
+   kiezen verhoogt de motivatie en voorkomt frustratie bij gevorderde
+   leerlingen. De eerste graad gebruikt **dezelfde pagina** met het filter op
+   graad; een link met `?graad=1` opent ze meteen gefilterd.
 4. **Module.** Ongeveer 70 minuten, in korte stappen (§ 6).
 5. **Eindformulier.** **Eén Smartschool-formulier voor alle modules**, met de
    gekozen module als eerste vraag. Het bevat een korte reflectie en
    optioneel een bestand (screenshot, chatverslag, eigen werk). De resultaten
-   komen in het LVS, zodat klastitularissen zien wie heeft ingediend.
+   komen in het LVS, zodat klastitularissen zien wie heeft ingediend. De
+   startpagina (stap 3) en de samenvatting aan het einde van een module
+   linken ernaar.
+
+De vier scholen werken op **één Smartschool-platform**: er is geen
+schoolkeuze, en elke link is voor iedereen dezelfde. De links naar de
+nulmeting en het eindformulier, en het uur waarop het eindformulier
+ingediend moet zijn, staan op één plek: `src/config/smartschool.ts` (zie
+§ 12, *Links naar Smartschool*).
 
 De site zelf verwerkt **geen persoonsgegevens**. Alles wat ingediend wordt,
 gaat via Smartschool. De site heeft geen backend, geen login, geen analytics
@@ -94,13 +108,23 @@ en geen cookies.
 
 ### Aanbod (stand 26 oktober 2026)
 
-| Module | Graad | Status |
-|---|---|---|
-| Wat is AI? AI herkennen en begrijpen | 2e, met differentiatie | wordt aangeleverd |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | in opbouw in deze repo |
-| Vibecoding | 2e en 3e | wordt aangeleverd |
-| Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd |
-| AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd |
+| Module | Graad | Status | Bestand(en) |
+|---|---|---|---|
+| Wat is AI? AI herkennen en begrijpen | 2e, met differentiatie | wordt aangeleverd | `wat-is-ai` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
+| Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
+| AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
+
+Elke module staat al als **plaatshouder** in `src/content/modules/`, met
+`status: binnenkort`, een werktitel en een indicatieve `niveau`,
+`aiGebruik` en `doelen`. Zo is het overzicht van bij de start volledig. Het
+issue dat een module levert, vult de stappen in, past de metadata aan en zet
+de status op `beschikbaar`. De controles op de inhoud (minstens één
+`<Stap>`, de plaats van de samenvatting; § 12) gelden alleen voor
+beschikbare modules: een plaatshouder heeft nog geen stappen en geen pagina.
+De testmodule `voorbeeld` blijft beschikbaar tot de eerste echte module er
+is.
 
 ### Aanleveren zonder sjabloon
 
@@ -141,6 +165,27 @@ bijvoorbeeld voor verschillende graden of niveaus, dan is elke versie een
 eigen bestand met eigen `graden` en `niveau` (bijvoorbeeld
 `ai-als-coach-2e-graad.mdx` en `ai-als-coach-3e-graad.mdx`). De leerling ziet
 in het overzicht één kaart per versie.
+
+### Het overzicht
+
+- `/ai-leerlijn/modules/` toont één kaart per module, gesorteerd op
+  `volgorde`. Een kaart toont de titel, `kort`, de graden, het niveau als
+  sterren (met een tekstalternatief: *Niveau 2 van 4*), de duur en de zin
+  over AI-gebruik (§ 7).
+- Een beschikbare module is een link naar haar pagina. Een module met
+  `status: binnenkort` staat erbij, gedimd, zonder link en met het label
+  *Binnenkort*.
+- Een **filter op graad** (alle, 1e, 2e, 3e) werkt met muis en toetsenbord
+  (keuzerondjes: Tab en de pijltjestoetsen). De keuze staat in de URL
+  (`?graad=1`), niet in `localStorage`: een link met het filter kan gedeeld
+  worden, de terugknop van de browser brengt de leerling terug naar de
+  gefilterde lijst, en niemand vindt een lijst die gefilterd is door een
+  keuze die hij vergeten is. Zonder JavaScript is het filter verborgen en
+  staan alle modules er.
+- Met de zeven kaarten van nu past het overzicht op 1366 × 640. Houd `kort`
+  op ongeveer 60 tekens (twee regels op een kaart) en de titel op hoogstens
+  twee regels; wat langer is of meer kaarten vraagt, laat deze pagina
+  scrollen. Dat mag hier: het is geen stap.
 
 ## 6. Vorm: korte stappen, vragen centraal
 
@@ -191,6 +236,16 @@ AI gebruiken.* Een leerling die die regel kent, mag niet twijfelen of AI hier
 toegelaten is. Daarom toont **elke module bij de start in één duidelijke zin
 of de leerling zelf AI gebruikt** (het veld `aiGebruik`). Of daar een
 barometericoon bij hoort, beslist het team later.
+
+| `aiGebruik` | Zin |
+|---|---|
+| `zelf` | *Je gebruikt zelf AI.* |
+| `voorbeelden` | *Je gebruikt zelf geen AI.* (met een oog als icoon: de leerling bekijkt voorbeelden) |
+| `geen` | *Je gebruikt geen AI.* |
+
+De zin staat op de kaart in het overzicht en op de modulepagina naast de
+titel, boven de stappen, op elke stap. Hij kost de stap geen hoogte. De
+zinnen staan op één plek, in `src/components/modules/labels.ts`.
 
 De barometer zelf is **leerinhoud**: in de module over verantwoord gebruik, en
 als aanknopingspunt in *AI als coach* (AI als coach past bij niveau 1 en 2).
@@ -286,15 +341,11 @@ bediening met het toetsenbord, en tekst die met voorleessoftware werkt.
   bekend waren, vraagt Claude 18 jaar en ChatGPT 13 jaar met toestemming van
   de ouders onder 18. Dit moet nog nagekeken worden en is een beslissing van
   het team.
-- **Smartschool-platformen.** Werken de vier scholen op één
-  Smartschool-platform of op vier? Bij vier heeft de site een schoolkeuze
-  nodig, met per school een eigen link naar de nulmeting en het
-  eindformulier.
 - **Deadline.** Tegen welk uur dient de leerling het eindformulier in?
+  Zodra het bekend is, komt het in `src/config/smartschool.ts`
+  (`eindformulierUur`); tot dan zegt de startpagina dat het uur nog volgt.
 - **Referentiekader.** De vier doelen of de zes doelstellingen van
   Kenniscentrum Digisprong?
-- **Eerste graad.** Krijgt de eerste graad een eigen startpagina, of dezelfde
-  met een gefilterd aanbod?
 
 ## 12. Componenten
 
@@ -549,10 +600,14 @@ steunt.
 
 - De vier scholen werken op één Smartschool-platform, dus elke link is voor
   iedereen dezelfde. De links staan op één plek, in
-  `src/config/smartschool.ts`: `nulmeting` (de vragenlijst vóór de module)
-  en `eindformulier` (één formulier voor alle modules).
-- `null` betekent dat de link nog niet bekend is. De samenvatting toont dan
-  een duidelijke, niet-klikbare melding: *De link naar het eindformulier
-  volgt nog.* Wie de link invult, vult het volledige `https://`-adres in;
-  daarna verschijnt de knop vanzelf. Een adres dat geen geldige
-  `https://`-URL is, laat de build falen.
+  `src/config/smartschool.ts`: `nulmeting` (de vragenlijst vóór de module,
+  stap 1 op de startpagina) en `eindformulier` (één formulier voor alle
+  modules, stap 3 op de startpagina en de samenvatting). Daar staat ook
+  `eindformulierUur`, het uur waarop het eindformulier binnen moet zijn,
+  geschreven zoals de leerling het leest (`'16 uur'`).
+- `null` betekent dat de waarde nog niet bekend is. De startpagina en de
+  samenvatting tonen dan een duidelijke, niet-klikbare melding, zoals *De
+  link naar het eindformulier volgt nog.* Wie de link invult, vult het
+  volledige `https://`-adres in; daarna verschijnt de knop vanzelf. Een
+  adres dat geen geldige `https://`-URL is, laat de build falen: de
+  startpagina controleert beide links, de samenvatting het eindformulier.
