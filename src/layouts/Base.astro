@@ -12,6 +12,9 @@ interface Props {
   // under the header to its content. For the step player of a module page,
   // which must fit on 1366 × 640 without scrolling (docs/BRIEFING.md § 12).
   fill?: boolean;
+  // Less room above and below the content, for an overview that has to fit
+  // on 1366 × 640 (the module choice).
+  compact?: boolean;
 }
 
 const siteName = 'AI-leerpad · Arcadia Scholen';
@@ -19,6 +22,7 @@ const {
   title,
   description = 'Een digitaal leerpad over artificiële intelligentie voor de leerlingen van Arcadia Scholen.',
   fill = false,
+  compact = false,
 } = Astro.props;
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
 
@@ -47,7 +51,7 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
         </a>
       </div>
     </header>
-    <main class:list={['site-main', { 'site-main--fill': fill }]}>
+    <main class:list={['site-main', { 'site-main--fill': fill, 'site-main--compact': compact }]}>
       <slot />
     </main>
   </body>
@@ -95,6 +99,11 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
     max-width: var(--content-max);
     margin: 0 auto;
     padding: var(--space-7) var(--space-5);
+  }
+
+  .site-main--compact {
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-5);
   }
 
   /* `fill`, only with JavaScript; without it the page scrolls as usual. */

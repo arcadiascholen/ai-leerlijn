@@ -1,19 +1,25 @@
-// Links to Smartschool (docs/BRIEFING.md § 4). The four schools work on one
-// Smartschool platform, so every link is the same for every student.
-// Keep them here, in one place, so they are quick to check before
-// 10 November.
+// Links to Smartschool (docs/BRIEFING.md § 4), and the hour by which the
+// final form is due. The four schools work on one Smartschool platform, so
+// every link is the same for every student. Keep them here, in one place, so
+// they are quick to check before 10 November.
 //
-// `null` means the link is not known yet. The site then shows a clear,
+// `null` means the value is not known yet. The site then shows a clear,
 // non-clickable note instead of a button ("De link … volgt nog"). Fill in
 // the full https:// address as soon as it is known; the build fails on an
 // address that is not a valid https URL.
 
-// The questionnaire before the module (the baseline), for the start page.
+// The questionnaire before the module (the baseline). Step 1 on the start
+// page (src/pages/index.astro).
 export const nulmeting: string | null = null;
 
-// The final form, one for all modules. Used by the summary at the end of a
-// module (src/components/stappen/Samenvatting.astro), and for the start page.
+// The final form, one for all modules. Step 3 on the start page, and the
+// summary at the end of a module (src/components/stappen/Samenvatting.astro).
 export const eindformulier: string | null = null;
+
+// The hour on Tuesday 10 November by which the final form is due, written as
+// the student reads it, e.g. '16 uur' or '16.30 uur'. Shown on the start
+// page. Still an open decision (docs/BRIEFING.md § 11).
+export const eindformulierUur: string | null = null;
 
 // Throws if a link that is filled in is not a valid https URL, so that a typo
 // fails the build instead of sending students nowhere.
