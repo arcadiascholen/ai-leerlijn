@@ -12,7 +12,7 @@ Closes #
 
 - [ ] `npx astro check` — 0 errors
 - [ ] `npm run build` — groen
-- [ ] pagina gecontroleerd in `npm run dev` op 1366 × 768 <!-- of: niet van toepassing, want ... -->
+- [ ] pagina gecontroleerd in `npm run dev` op 1366 × 640 <!-- of: niet van toepassing, want ... -->
 
 ## Checkpoints
 

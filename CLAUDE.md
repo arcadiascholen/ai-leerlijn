@@ -56,7 +56,8 @@ Project-specific skills live in `.claude/skills/`:
   `redactie`. The status label `wacht` marks issues waiting on content or a
   decision from outside the repo; `work-issues` skips them.
 - Gates: `npx astro check`, `npm run build`, and a render check in
-  `npm run dev` at a **1366 × 768** viewport. There is no test suite.
+  `npm run dev` at a **1366 × 640** viewport (a 1366 × 768 laptop minus the
+  browser bars). There is no test suite.
 - A merge to `main` deploys to GitHub Pages. **Freeze: no merges to `main`
   from 9 November 2026 18:00 until the end of 10 November.**
 
@@ -64,7 +65,8 @@ Project-specific skills live in `.claude/skills/`:
 
 - **Language:** Dutch for content, URLs, docs and user-facing strings;
   English for code identifiers, variable names and code comments.
-- **Laptop first.** Every step fits on 1366 × 768 without scrolling. Not
+- **Laptop first.** Every step fits on a 1366 × 640 viewport (a 1366 × 768
+  laptop minus the browser bars) without scrolling. Not
   designed for phones.
 - **No CSS framework.** Pure CSS. Never hardcode hex values or font strings
   in components; always use the design-system tokens in
