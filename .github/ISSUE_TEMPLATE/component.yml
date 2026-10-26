@@ -1,0 +1,21 @@
+name: Component
+description: Een interactieve component bouwen of aanpassen — stappenspeler, vraagtype, samenvatting
+labels: ["component"]
+body:
+  - type: textarea
+    id: doel
+    attributes:
+      label: Wat moet de leerling doen, en wat leert die eruit
+      description: Het didactische doel, niet de implementatie. Waarom volstaat statische tekst hier niet.
+    validations:
+      required: true
+  - type: textarea
+    id: interactie
+    attributes:
+      label: Interactie zoals je die voor je ziet
+      description: Optioneel. Een schets of een voorbeeld van elders mag ook.
+  - type: textarea
+    id: gebruik
+    attributes:
+      label: Waar wordt ze gebruikt
+      description: In welke module(s), en hoe een auteur ze in MDX schrijft.

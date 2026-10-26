@@ -1,0 +1,22 @@
+name: Site
+description: Techniek, navigatie, pagina's, build of deploy van de site zelf
+labels: ["site"]
+body:
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat er moet gebeuren
+      description: Bij een probleem — wat je ziet, waar, en wat je verwachtte.
+    validations:
+      required: true
+  - type: textarea
+    id: waar
+    attributes:
+      label: Waar in de code
+      description: Optioneel. Pad, component of pagina als je het weet.
+  - type: checkboxes
+    id: zichtbaar
+    attributes:
+      label: Zichtbaarheid
+      options:
+        - label: Dit verandert iets wat de leerling ziet (dan komt er een ontwerp-checkpoint)

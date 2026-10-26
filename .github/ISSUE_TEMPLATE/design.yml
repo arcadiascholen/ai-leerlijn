@@ -1,0 +1,16 @@
+name: Design
+description: Huisstijl, tokens, typografie of het ontwerp van basiscomponenten
+labels: ["design"]
+body:
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat er moet veranderen
+      description: Welke tokens of componenten, en waarom.
+    validations:
+      required: true
+  - type: textarea
+    id: bron
+    attributes:
+      label: Bron
+      description: Huisstijlmateriaal, een design system uit Claude Design, een screenshot.

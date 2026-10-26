@@ -1,0 +1,23 @@
+name: Redactie
+description: Tekstcorrectie, taalniveau, herformulering of feitencheck in bestaande tekst
+labels: ["redactie"]
+body:
+  - type: textarea
+    id: waar
+    attributes:
+      label: Waar
+      description: Module en stap, of citeer de passage.
+    validations:
+      required: true
+  - type: textarea
+    id: wat
+    attributes:
+      label: Wat er mis is
+      description: Fout, te moeilijk voor de graad, onduidelijk, feitelijk verkeerd, te lang. Zo concreet mogelijk.
+    validations:
+      required: true
+  - type: textarea
+    id: richting
+    attributes:
+      label: Gewenste richting
+      description: Optioneel. Laat leeg als de oplossing openligt.
