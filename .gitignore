@@ -1,0 +1,24 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environment variables
+.env
+.env.production
+
+# OS and editor files
+.DS_Store
+.idea/
+
+# Claude Code: projectskills en de previewconfiguratie horen in git,
+# lokale settings niet.
+.claude/*
+!.claude/skills/
+!.claude/launch.json

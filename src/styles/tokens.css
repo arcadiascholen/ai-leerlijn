@@ -1,0 +1,52 @@
+/* Voorlopige tokens (#2), op het oog overgenomen van de huisstijl van
+   Arcadia Scholen (affiche AI-barometer). De definitieve waarden komen uit
+   het design system (#8). Componenten gebruiken uitsluitend deze variabelen.
+
+   De kleuren van de AI-barometer (rood, oranje, geel, groen) horen hier
+   niet bij: ze zijn gereserveerd voor de betekenis van de barometer. */
+:root {
+  /* Achtergrond */
+  --color-bg:           #fafaf4;
+  --color-surface:      #ffffff;
+  --color-surface-tint: #eef3e6;
+  --color-border:       #d7dccd;
+
+  /* Tekst */
+  --color-text:         #143d1e;
+  --color-text-muted:   #4a5d4e;
+
+  /* Merk. `--color-accent` is voor vlakken en lijnen; tekst en links in
+     het accent gebruiken `--color-accent-strong`, dat genoeg contrast heeft
+     op de achtergrond. */
+  --color-brand:         #143d1e;
+  --color-on-brand:      #fafaf4;
+  --color-accent:        #7ab648;
+  --color-accent-strong: #3d6b1f;
+
+  /* Typografie */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+
+  /* Type-schaal */
+  --step--1: 0.875rem;
+  --step-0:  1.0625rem;
+  --step-1:  1.25rem;
+  --step-2:  1.5rem;
+  --step-3:  2rem;
+  --step-4:  2.75rem;
+
+  /* Ruimte-schaal */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2.5rem;
+  --space-xl:  4rem;
+
+  /* Maten */
+  --content-width: 64rem;
+  --header-height: 3.5rem;
+
+  /* Overig */
+  --radius:           8px;
+  --focus-ring:       3px solid var(--color-accent-strong);
+  --transition-color: 150ms ease;
+}
