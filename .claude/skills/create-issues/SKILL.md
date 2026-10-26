@@ -51,7 +51,7 @@ gh issue list --state open --limit 100 --json number,title,labels
 **Verifieer de observatie.** De gebruiker beschrijft wat hij ziet; dat is
 zelden de oorzaak. Kijk zelf voor je schrijft:
 
-- Wat rendert: `npm run dev` en de pagina openen op 1366 × 768, of de live
+- Wat rendert: `npm run dev` en de pagina openen op 1366 × 640, of de live
   site met `curl`.
 - Wat "verdwenen" is: `git log -S"<term>" -- <pad>` en `git log -p`.
   "Verdwenen" betekent zelden verwijderd; vaak is iets onzichtbaar door een
@@ -130,7 +130,7 @@ blokken:
   leerling ziet. Geen "mag ik beginnen".
 - **Waar in de code.** Paden, ook van bestanden die nog niet bestaan.
 - **Bewijs.** Wat de PR moet laten zien, als waarneming: een screenshot op
-  1366 × 768 van benoemde toestanden, de uitvoer van een commando, een tabel
+  1366 × 640 van benoemde toestanden, de uitvoer van een commando, een tabel
   met waarden. Benoem de faalmodus die geen foutmelding geeft en vraag het
   bewijs dat hij zich niet voordoet (zie `work-issues` § Bewijslast). Sluit
   af met de gates: `npx astro check` en `npm run build`.

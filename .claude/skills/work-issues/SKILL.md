@@ -116,10 +116,10 @@ issuetekst en zet het label alsnog (`gh issue edit N --add-label ...`).
 
 | label | harde stops | extra verificatie |
 |---|---|---|
-| `module` | **2**: stappenplan (lijst van stappen met per stap het idee en het vraagtype) → concept in het MDX-bestand | frontmatter valt binnen het schema; elke stap past op 1366 × 768 zonder scroll; taalniveau past bij de graad; `aiGebruik` klopt met wat de module vraagt; geen vraag of oefening van de auteur stilzwijgend weggelaten |
+| `module` | **2**: stappenplan (lijst van stappen met per stap het idee en het vraagtype) → concept in het MDX-bestand | frontmatter valt binnen het schema; elke stap past op een viewport van 1366 × 640 zonder scroll; taalniveau past bij de graad; `aiGebruik` klopt met wat de module vraagt; geen vraag of oefening van de auteur stilzwijgend weggelaten |
 | `component` | **1**: interactie-ontwerp vóór de bouw | werkt met muis en toetsenbord; toestand overleeft herladen waar dat de bedoeling is; geen hardcoded kleuren of fonts |
 | `design` | **1**: tokens of ontwerp vóór het doorvoeren | contrast tekst minstens 4.5:1; barometerkleuren alleen voor de barometer; screenshots voor en na |
-| `site` | geen, tenzij het zichtbare vormgeving verandert — dan 1 | build + pagina bekeken op 1366 × 768 |
+| `site` | geen, tenzij het zichtbare vormgeving verandert — dan 1 | build + pagina bekeken op 1366 × 640 |
 | `redactie` | geen | build + toon de diff in het rapport |
 
 De eerste issue van een nieuw soort (de eerste component, de eerste module) is
@@ -163,7 +163,8 @@ Draai ze in deze volgorde en ga niet naar de PR tot ze groen zijn.
 2. **`npm run build`** — de volledige statische site.
 3. **Render-check** — voor alles wat de leerling ziet. Start `npm run dev`
    en open de gewijzigde pagina onder `http://localhost:4321/ai-leerlijn/`
-   in een viewport van **1366 × 768**. Kijk of elke stap past zonder te
+   in een viewport van **1366 × 640** (een laptop van 1366 × 768 min de
+   browserbalken). Kijk of elke stap past zonder te
    scrollen, of de interactie reageert, of beelden laden, en of er geen ruwe
    MDX-syntaxis in de tekst staat. `astro check` bewijst dat het bouwt, niet
    dat het klopt. Sla dit alleen over als de wijziging niets rendert, en zeg

@@ -8,10 +8,18 @@ import logo from '../assets/logo/arcadia-logo.svg';
 interface Props {
   title?: string;
   description?: string;
+  // Fill exactly one screen when JavaScript runs: <main> hands the space
+  // under the header to its content. For the step player of a module page,
+  // which must fit on 1366 × 640 without scrolling (docs/BRIEFING.md § 12).
+  fill?: boolean;
 }
 
 const siteName = 'AI-leerpad · Arcadia Scholen';
-const { title, description = 'Een digitaal leerpad over artificiële intelligentie voor de leerlingen van Arcadia Scholen.' } = Astro.props;
+const {
+  title,
+  description = 'Een digitaal leerpad over artificiële intelligentie voor de leerlingen van Arcadia Scholen.',
+  fill = false,
+} = Astro.props;
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
 
 // Logo in the header bar: 24–30px high (docs/DESIGN.md).
@@ -26,8 +34,11 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{fullTitle}</title>
+    {/* Marks that JavaScript runs, before the first paint, so styles for the
+        scripted state apply at once instead of after a flash. */}
+    <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
-  <body>
+  <body class:list={[{ fill }]}>
     <header class="site-header">
       <div class="site-header-inner">
         <a class="brand" href={import.meta.env.BASE_URL}>
@@ -36,7 +47,7 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
         </a>
       </div>
     </header>
-    <main class="site-main">
+    <main class:list={['site-main', { 'site-main--fill': fill }]}>
       <slot />
     </main>
   </body>
@@ -84,5 +95,18 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
     max-width: var(--content-max);
     margin: 0 auto;
     padding: var(--space-7) var(--space-5);
+  }
+
+  /* `fill`, only with JavaScript; without it the page scrolls as usual. */
+  :global(.js) .fill {
+    height: 100dvh;
+  }
+
+  :global(.js) .site-main--fill {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
   }
 </style>
