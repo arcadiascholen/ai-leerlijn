@@ -1,0 +1,28 @@
+---
+// One answer option of a <Meerkeuze> (docs/BRIEFING.md § 12):
+//
+//   <Optie juist feedback="Klopt: …">Aanbevelingen in Spotify</Optie>
+//
+// The text between the tags is the option; inline Markdown (bold, italics)
+// works. `juist` marks a right answer; `feedback` is required, so that every
+// option, also a wrong one, explains itself.
+//
+// <Meerkeuze> renders its children to HTML and reads the options back from
+// the JSON below; nothing of this reaches the page itself.
+import { checkText, encodeOption, unwrapParagraph } from './authoring';
+
+interface Props {
+  juist?: boolean;
+  feedback: string;
+}
+
+const { juist = false } = Astro.props;
+const feedback = checkText('Optie', 'feedback', Astro.props.feedback);
+const html = unwrapParagraph(await Astro.slots.render('default'));
+if (html === '') {
+  throw new Error(`<Optie feedback="${feedback}"> has no text between its tags.`);
+}
+const data = encodeOption({ html, correct: juist === true, feedback });
+---
+
+<script type="application/json" data-optie is:inline set:html={data} />

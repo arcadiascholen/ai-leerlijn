@@ -1,0 +1,170 @@
+/* Think first, then show. Only design-system tokens (docs/DESIGN.md). Single
+   classes, so they win over the zero-specificity step defaults in
+   Stap.astro. The student's answer and the example sit side by side: that
+   invites comparing, and keeps the step within 1366 × 640 once the example
+   is shown (docs/BRIEFING.md § 12).
+
+   Without JavaScript (no `.js` on <html>) the button and the hint are
+   hidden and the example answer is simply visible next to the field. */
+
+/* Space below the question only when the author wrote more after it; the
+   island element is the question's place in the step. */
+:global(astro-island:not(:last-child)) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.question {
+  display: block;
+  max-width: none;
+  margin: 0 0 var(--space-3);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.field {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+
+.field::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+.actions {
+  display: none;
+}
+
+:global(.js) .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.show {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--on-primary);
+  font: inherit;
+  font-weight: var(--text-label-weight);
+  line-height: var(--text-body-line);
+  cursor: pointer;
+}
+
+.show:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.show:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.hint {
+  flex: 1 1 14rem;
+  max-width: none;
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.placeholder {
+  display: none;
+}
+
+:global(.js) .root:not([data-shown]) .placeholder {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+  text-align: center;
+}
+
+.example {
+  flex: 1 1 auto;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+:global(.js) .root:not([data-shown]) .example {
+  display: none;
+}
+
+/* A focus target after "Toon", so that a screen reader reads the example;
+   not a control, so no ring. */
+.example:focus {
+  outline: none;
+}
+
+.label {
+  margin: 0 0 var(--space-2);
+  color: var(--ink-muted);
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+.exampleText :global(:is(p, ul, ol)) {
+  max-width: none;
+  margin: 0 0 var(--space-3);
+}
+
+.exampleText :global(:is(ul, ol)) {
+  padding-left: var(--space-5);
+}
+
+.exampleText :global(li + li) {
+  margin-top: var(--space-1);
+}
+
+.exampleText :global(:last-child) {
+  margin-bottom: 0;
+}

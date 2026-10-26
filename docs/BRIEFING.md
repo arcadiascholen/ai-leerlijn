@@ -356,8 +356,8 @@ Tekst, een beeld of een vraagcomponent.
 
 - Elke sleutel in `localStorage` heeft de vorm
   `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
-  `stap`. Een vraag bewaart haar antwoord onder een eigen sleutel die uniek
-  is binnen de module.
+  `stap`. Een vraag bewaart haar antwoord onder `vraag:<id>`, met de `id`
+  die de auteur schrijft (zie *Antwoorden bewaren* hieronder).
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -382,3 +382,91 @@ Tekst, een beeld of een vraagcomponent.
   `event.preventDefault()` aan; dan wisselt de speler niet van stap.
 - Een component past, samen met de rest van de stap, in de kaart op
   1366 × 640.
+- Een React-island krijgt zijn MDX-kinderen als afgewerkte HTML, niet als
+  elementen. Gewone opgemaakte tekst, zoals het voorbeeldantwoord van
+  `<DenkEerst>`, gaat zo als kinderen naar de island. Moet een component zijn
+  kinderen als gegevens lezen, zoals de opties van `<Meerkeuze>`, dan rendert
+  het Astro-omhulsel ze met `Astro.slots.render` en leest het ze terug
+  (`src/components/vragen/authoring.ts`).
+- Een vergissing van de auteur laat de build falen met een duidelijke
+  melding, in plaats van een kapotte vraag bij de leerling te zetten: een
+  ontbrekende of dubbele `id`, een `<Meerkeuze>` zonder juiste optie, een
+  optie zonder feedback.
+
+### Vraagtypes
+
+De vraagtypes staan in `src/components/vragen/`. Elke vraag heeft een
+verplichte `id`: kleine letters, cijfers en koppeltekens, uniek binnen de
+module, bijvoorbeeld `id="prompt-leren"`. Onder die `id` wordt het antwoord
+bewaard. Een volgnummer zou verschuiven als er een vraag bijkomt; een `id`
+niet. Wijzig de `id` van een gepubliceerde vraag dus niet: wie al antwoordde,
+verliest dan dat antwoord.
+
+**Meerkeuze met directe feedback**
+
+```mdx
+<Meerkeuze id="ai-herkennen" vraag="Welke van deze toepassingen gebruiken AI?">
+  <Optie juist feedback="Spotify leert uit wat jij beluistert.">De aanbevelingen in Spotify</Optie>
+  <Optie feedback="Een rekenmachine volgt vaste regels.">Een rekenmachine</Optie>
+</Meerkeuze>
+```
+
+- `vraag` is gewone tekst. Elke `<Optie>` heeft haar tekst tussen de tags
+  (kort, op één regel; **vet** en *cursief* mogen) en een verplichte
+  `feedback`: ook een fout antwoord legt uit waarom. `juist` markeert een
+  juist antwoord. Minstens twee opties en minstens één juiste; meer juiste
+  opties mag.
+- Een optie aanklikken toont meteen ✓ *Juist* of ✕ *Niet juist*, met de
+  feedback van die optie erbij. Die feedback blijft staan. Na een fout
+  antwoord kiest de leerling opnieuw. Zijn er meer juiste opties, dan zegt de
+  vraag hoeveel, en telt ze mee tot de leerling ze allemaal vond.
+- Een schermlezer leest het oordeel en de feedback voor (`role="status"`).
+- De opties staan in twee kolommen. Zo passen vier opties met hun feedback,
+  ook als de leerling ze alle vier aanklikte, samen met de kop van de stap op
+  1366 × 640. Houd een optie op één regel en de feedback op één of twee
+  zinnen.
+- Zonder JavaScript staan de vraag en de opties er, zonder feedback.
+
+**Eerst denken, dan tonen**
+
+```mdx
+<DenkEerst id="prompt-leren" vraag="Schrijf een prompt waarmee een chatbot je helpt leren voor een toets.">
+Het voorbeeldantwoord, in gewone Markdown: **vet**, *cursief*, alinea's en
+lijsten.
+</DenkEerst>
+```
+
+- Links schrijft de leerling in een tekstveld, rechts verschijnt het
+  voorbeeldantwoord. De knop *Toon voorbeeldantwoord* werkt pas na
+  **3 woorden**; de tekst naast de knop zegt hoeveel woorden er nog nodig
+  zijn. Een woord telt als het minstens één letter of cijfer bevat.
+- Na *Toon* gaat de focus naar het voorbeeldantwoord, zodat een schermlezer
+  het voorleest. De leerling kan het eigen antwoord daarna nog aanpassen.
+- Het voorbeeldantwoord staat op de halve breedte van de stap. Bij een vraag
+  van één regel passen er ongeveer acht regels tekst; bij een vraag van twee
+  regels zeven. Wat langer is, scrolt binnen de kaart.
+- Zonder JavaScript staat het voorbeeldantwoord meteen naast het tekstveld.
+
+### Antwoorden bewaren
+
+Dit is de afspraak waarop de samenvatting aan het einde van een module
+steunt.
+
+- Elk antwoord staat als JSON onder `ai-leerlijn:<module-id>:vraag:<id>`.
+  Lees en schrijf het alleen met `readAnswer` en `writeAnswer` uit
+  `src/components/vragen/answers.ts`. `readAnswer` geeft `null` als er
+  niets bewaard is, of als de waarde geen geldig antwoord is.
+- `<Meerkeuze>` bewaart
+  `{ "kind": "multiple-choice", "question": "…", "chosen": [2, 0] }`: de
+  gekozen opties als volgnummer in de volgorde van de auteur, in de volgorde
+  waarin de leerling ze koos.
+- `<DenkEerst>` bewaart
+  `{ "kind": "think-first", "question": "…", "answer": "…", "shown": true }`:
+  de vraag zoals de leerling ze zag, het eigen antwoord, en of het
+  voorbeeldantwoord getoond werd.
+- In de statische HTML draagt het buitenste element van elke vraag
+  `data-question="multiple-choice"` of `data-question="think-first"`, en
+  `data-question-id="<id>"`. Dat geldt ook voor vragen in verborgen stappen
+  die nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in
+  de volgorde van het document, dus van de module, en leest per `id` het
+  antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
