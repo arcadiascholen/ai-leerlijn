@@ -1,0 +1,35 @@
+name: Module
+description: Een module uitwerken, of aangeleverde inhoud van een collega integreren
+labels: ["module"]
+body:
+  - type: input
+    id: module-id
+    attributes:
+      label: Module-id
+      description: Bestandsnaam onder `src/content/modules/`, zonder `.mdx`
+      placeholder: ai-als-coach-2e-graad
+    validations:
+      required: true
+  - type: textarea
+    id: doel
+    attributes:
+      label: Wat moet de leerling na deze module kunnen
+      description: De rode draad, en welke van de vier doelen de module dekt.
+    validations:
+      required: true
+  - type: input
+    id: doelgroep
+    attributes:
+      label: Graad, niveau en AI-gebruik
+      description: Bv. "2e graad, 2 sterren, leerling gebruikt zelf AI"
+      placeholder: 2e graad, 2 sterren, zelf
+  - type: textarea
+    id: materiaal
+    attributes:
+      label: Aangeleverd materiaal
+      description: Waar het staat (pad, link, Teams) en in welke vorm. Of "geen, nieuw uit te werken". Ontbreekt het nog, zet dan het label `wacht`.
+  - type: textarea
+    id: vaste-keuzes
+    attributes:
+      label: Vaste keuzes
+      description: Vragen, voorbeelden of tools die er zeker in of zeker uit moeten.
