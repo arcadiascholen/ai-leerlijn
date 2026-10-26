@@ -1,0 +1,30 @@
+---
+// "Think first, then show" (docs/BRIEFING.md § 12): the student writes an
+// answer of their own, and only then can show an example answer.
+//
+//   <DenkEerst id="prompt-schrijven" vraag="Schrijf een prompt die …">
+//   Het voorbeeldantwoord, in gewone Markdown: **vet**, *cursief*, alinea's,
+//   lijsten.
+//   </DenkEerst>
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. The children are the example answer; the React island gets them as
+// static HTML. Authors write no import and no client directive.
+import DenkEerstIsland from './DenkEerst.tsx';
+import { checkQuestionId, checkText } from './authoring';
+
+interface Props {
+  id: string;
+  vraag: string;
+}
+
+const id = checkQuestionId('DenkEerst', Astro.props.id, Astro.locals);
+const vraag = checkText('DenkEerst', 'vraag', Astro.props.vraag);
+if (!Astro.slots.has('default')) {
+  throw new Error(`<DenkEerst id="${id}"> needs an example answer between its tags.`);
+}
+---
+
+<DenkEerstIsland id={id} question={vraag} client:visible>
+  <slot />
+</DenkEerstIsland>

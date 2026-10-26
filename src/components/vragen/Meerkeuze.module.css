@@ -1,0 +1,141 @@
+/* Multiple choice. Only design-system tokens (docs/DESIGN.md). Single
+   classes, so they win over the zero-specificity step defaults in
+   Stap.astro. Height budget: four options with their feedback fit in a step
+   on 1366 × 640 (docs/BRIEFING.md § 12), hence two columns. */
+
+/* Space below the question only when the author wrote more after it; the
+   island element is the question's place in the step. */
+:global(astro-island:not(:last-child)) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.question {
+  max-width: none;
+  margin: 0 0 var(--space-1);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+.hint {
+  margin: 0 0 var(--space-4);
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.option:not([data-state]):hover {
+  background: var(--surface-sunken);
+}
+
+.option[data-state='right'] {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
+.option[data-state='wrong'] {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* The focus ring goes around the whole option, feedback included. */
+.option:has(.choice:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.choice {
+  display: block;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice:focus-visible {
+  outline: none;
+}
+
+.option[data-state] .choice {
+  cursor: default;
+}
+
+.feedback {
+  max-width: none;
+  margin: calc(-1 * var(--space-2)) 0 0;
+  padding: 0 var(--space-4) var(--space-3);
+  color: var(--ink);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-right: var(--space-1);
+  font-weight: var(--text-label-weight);
+  vertical-align: top;
+}
+
+.option[data-state='right'] .verdict {
+  color: var(--success);
+}
+
+.option[data-state='wrong'] .verdict {
+  color: var(--danger);
+}
+
+.icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

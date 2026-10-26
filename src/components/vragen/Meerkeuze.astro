@@ -1,0 +1,26 @@
+---
+// A multiple-choice question with direct feedback (docs/BRIEFING.md § 12):
+//
+//   <Meerkeuze id="ai-herkennen" vraag="Welke van deze apps gebruikt AI?">
+//     <Optie juist feedback="Klopt: …">Aanbevelingen in Spotify</Optie>
+//     <Optie feedback="Niet echt: …">Een rekenmachine</Optie>
+//   </Meerkeuze>
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. One or more options can be right. The authors' form with <Optie>
+// children is read back into data here and handed to the React island as
+// props, with the client directive, so authors write neither.
+import MeerkeuzeIsland from './Meerkeuze.tsx';
+import { checkQuestionId, checkText, decodeOptions } from './authoring';
+
+interface Props {
+  id: string;
+  vraag: string;
+}
+
+const id = checkQuestionId('Meerkeuze', Astro.props.id, Astro.locals);
+const vraag = checkText('Meerkeuze', 'vraag', Astro.props.vraag);
+const options = decodeOptions(await Astro.slots.render('default'));
+---
+
+<MeerkeuzeIsland id={id} question={vraag} options={options} client:visible />
