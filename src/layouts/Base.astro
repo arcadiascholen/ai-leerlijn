@@ -1,7 +1,9 @@
 ---
-import '@fontsource-variable/inter';
+import '@fontsource-variable/figtree';
+import '@fontsource-variable/jetbrains-mono';
 import '../styles/tokens.css';
 import '../styles/global.css';
+import logo from '../assets/logo/arcadia-logo.svg';
 
 interface Props {
   title?: string;
@@ -11,6 +13,10 @@ interface Props {
 const siteName = 'AI-leerpad · Arcadia Scholen';
 const { title, description = 'Een digitaal leerpad over artificiële intelligentie voor de leerlingen van Arcadia Scholen.' } = Astro.props;
 const fullTitle = title ? `${title} · ${siteName}` : siteName;
+
+// Logo in the header bar: 24–30px high (docs/DESIGN.md).
+const logoHeight = 28;
+const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
 ---
 
 <!doctype html>
@@ -23,11 +29,12 @@ const fullTitle = title ? `${title} · ${siteName}` : siteName;
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href={import.meta.env.BASE_URL}>
-        <span class="brand-org">Arcadia Scholen</span>
-        <span class="brand-sep" aria-hidden="true">·</span>
-        <span class="brand-site">AI-leerpad</span>
-      </a>
+      <div class="site-header-inner">
+        <a class="brand" href={import.meta.env.BASE_URL}>
+          <img src={logo.src} width={logoWidth} height={logoHeight} alt="Arcadia scholen" />
+          <span class="brand-site">AI-leerpad</span>
+        </a>
+      </div>
     </header>
     <main class="site-main">
       <slot />
@@ -37,38 +44,45 @@ const fullTitle = title ? `${title} · ${siteName}` : siteName;
 
 <style>
   .site-header {
-    height: var(--header-height);
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header-inner {
     display: flex;
     align-items: center;
-    padding: 0 var(--space-md);
-    background: var(--color-brand);
-    color: var(--color-on-brand);
+    min-height: var(--shell-bar);
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--space-5);
   }
 
   .brand {
-    display: flex;
-    gap: var(--space-xs);
-    align-items: baseline;
-    color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--forest);
     text-decoration: none;
-    font-size: var(--step-1);
   }
 
-  .brand-org {
-    font-weight: 800;
-    letter-spacing: 0.02em;
+  .brand img {
+    display: block;
   }
 
-  .brand-sep,
   .brand-site {
-    font-weight: 400;
+    padding-left: var(--space-3);
+    border-left: 1px solid var(--line);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    font-weight: var(--text-h3-weight);
+    letter-spacing: var(--text-h3-tracking);
   }
 
   .site-main {
     flex: 1;
     width: 100%;
-    max-width: var(--content-width);
+    max-width: var(--content-max);
     margin: 0 auto;
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-7) var(--space-5);
   }
 </style>

@@ -242,12 +242,22 @@ en **1 GB** sitegrootte.
 ## 9. Vormgeving
 
 De huisstijl is die van **Arcadia Scholen**, zoals op de affiche van de
-AI-barometer: logo *ARCADIA SCHOLEN*, donkergroen op gebroken wit, een
-lichtgroen accent, een stevige schreefloze letter. Een design system uit
-Claude Design levert later de definitieve tokens en componenten; tot dan
-gebruikt de site voorlopige tokens. Omdat componenten uitsluitend
-`var(--…)` gebruiken, is het inbouwen van het definitieve ontwerp één
-wijziging in `tokens.css` en de basiscomponenten.
+AI-barometer: het Arcadia-logo, donkergroen op gebroken wit, het
+Arcadia-groen als accent. De tokens, de lettertypes, het logo en de visuele
+regels komen uit het design system *Arcadia AI-modules*
+(<https://claude.ai/artifact/5FkFKzAp7bfBCU1wXJ8kFv>). De site neemt daaruit
+alleen de looks over; de werking van de site en de beslissingen in deze
+briefing blijven gelden.
+
+- **Tokens** in `src/styles/tokens.css`, met de namen van het design system.
+  Componenten gebruiken uitsluitend `var(--…)`.
+- **Lettertypes:** Figtree voor alles, JetBrains Mono voor prompts en
+  AI-uitvoer. Beide zelf gehost via fontsource, zodat er bij het laden geen
+  verzoek naar Google gaat.
+- **Alleen het lichte thema.** Het design system heeft ook een donker thema;
+  dat is iets voor later.
+- De visuele regels, de tokens met hun gebruik en hoe je een nieuwe versie
+  van het design system overneemt, staan in `docs/DESIGN.md`.
 
 Ontwerp voor een laptop (1366 × 768 als kleinste doel), niet voor een gsm.
 Toegankelijkheid telt wel: voldoende contrast (minstens 4.5:1 voor tekst),

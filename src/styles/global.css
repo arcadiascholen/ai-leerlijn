@@ -7,8 +7,8 @@
 html {
   font-family: var(--font-sans);
   font-size: 100%;
-  color: var(--color-text);
-  background: var(--color-bg);
+  color: var(--ink);
+  background: var(--bg);
 }
 
 body {
@@ -16,35 +16,54 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-size: var(--step-0);
-  line-height: 1.55;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  font-weight: var(--text-body-weight);
+  letter-spacing: var(--text-body-tracking);
 }
 
 h1,
 h2,
 h3 {
-  line-height: 1.2;
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-4);
+  color: var(--forest);
+  text-wrap: balance;
 }
 
-h1 { font-size: var(--step-4); font-weight: 800; }
-h2 { font-size: var(--step-3); font-weight: 700; }
-h3 { font-size: var(--step-2); font-weight: 700; }
+h1 {
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  font-weight: var(--text-h1-weight);
+  letter-spacing: var(--text-h1-tracking);
+}
+
+h2 {
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  font-weight: var(--text-h2-weight);
+  letter-spacing: var(--text-h2-tracking);
+}
+
+h3 {
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+}
 
 p {
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-4);
 }
 
 a {
-  color: var(--color-accent-strong);
-  transition: color var(--transition-color);
+  color: var(--brand-text);
 }
 
 a:hover {
-  color: var(--color-text);
+  color: var(--forest);
 }
 
 :focus-visible {
-  outline: var(--focus-ring);
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
