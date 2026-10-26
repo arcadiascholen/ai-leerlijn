@@ -112,24 +112,35 @@ componenten van de site. Bij dat omzetten blijft de didactische bedoeling van
 de auteur leidend; vragen en oefeningen die de auteur voorzag, vallen niet
 stilzwijgend weg.
 
-### Metadata per module (*indicatief*)
+### Metadata per module
 
-Elke module is een bestand in de contentcollectie `modules`, met een strikt
-schema. Het overzicht en de filters op de site worden daaruit opgebouwd.
+Elke module is een MDX-bestand in de contentcollectie `modules`
+(`src/content/modules/<id>.mdx`). Het overzicht en de filters op de site
+worden uit de frontmatter opgebouwd.
 
-| Veld | Betekenis |
-|---|---|
-| `title` | Titel zoals de leerling hem ziet |
-| `kort` | Eén zin over wat je in de module doet |
-| `graden` | Lijst uit `1`, `2`, `3` |
-| `niveau` | 1 tot 4 sterren |
-| `duur` | Minuten, standaard 70 |
-| `aiGebruik` | `zelf` (de leerling gebruikt zelf AI), `voorbeelden` (bekijkt vooraf gemaakte gesprekken) of `geen` |
-| `doelen` | Welke van de vier doelen (§ 1) de module dekt |
-| `status` | `binnenkort` of `beschikbaar`; een module die nog niet klaar is, staat zichtbaar maar niet klikbaar in het overzicht |
+| Veld | Waarde | Betekenis |
+|---|---|---|
+| `title` | tekst | Titel zoals de leerling hem ziet |
+| `kort` | tekst | Eén zin over wat je in de module doet |
+| `graden` | lijst uit `1`, `2`, `3`, minstens één | Voor welke graden de module bedoeld is |
+| `niveau` | geheel getal van `1` tot `4` | Moeilijkheid in sterren |
+| `duur` | geheel getal in minuten, standaard `70` | Hoe lang de module ongeveer duurt |
+| `aiGebruik` | `zelf`, `voorbeelden` of `geen` | `zelf`: de leerling gebruikt zelf AI; `voorbeelden`: de leerling bekijkt vooraf gemaakte gesprekken; `geen`: geen AI |
+| `doelen` | lijst uit `1` tot `4`, minstens één | Welke van de vier doelen (§ 1) de module dekt |
+| `status` | `binnenkort` of `beschikbaar` | Een module die nog niet klaar is, staat zichtbaar maar niet klikbaar in het overzicht en krijgt geen eigen pagina |
+| `volgorde` | geheel getal | Plaats in het overzicht, oplopend |
 
-Open: is een basis- en een gevorderde versie van dezelfde module één bestand
-of twee? Dat wordt beslist in het schema-issue.
+Alle velden behalve `duur` zijn verplicht. Het schema staat in
+`src/content.config.ts` en is strikt (`.strict()`): een onbekend veld, zoals
+de tikfout `nivau`, laat de build falen in plaats van stil te verdwijnen.
+Elke module met `status: beschikbaar` krijgt een pagina op
+`/ai-leerlijn/modules/<id>/`, waarbij `<id>` de bestandsnaam zonder `.mdx` is.
+
+**Eén bestand per versie.** Bestaat een module in meer dan één versie,
+bijvoorbeeld voor verschillende graden of niveaus, dan is elke versie een
+eigen bestand met eigen `graden` en `niveau` (bijvoorbeeld
+`ai-als-coach-2e-graad.mdx` en `ai-als-coach-3e-graad.mdx`). De leerling ziet
+in het overzicht één kaart per versie.
 
 ## 6. Vorm: korte stappen, vragen centraal
 
@@ -264,8 +275,6 @@ bediening met het toetsenbord, en tekst die met voorleessoftware werkt.
   nodig, met per school een eigen link naar de nulmeting en het
   eindformulier.
 - **Deadline.** Tegen welk uur dient de leerling het eindformulier in?
-- **Varianten van een module.** Eén bestand per niveau of één bestand met
-  varianten (§ 5)?
 - **Referentiekader.** De vier doelen of de zes doelstellingen van
   Kenniscentrum Digisprong?
 - **Eerste graad.** Krijgt de eerste graad een eigen startpagina, of dezelfde
