@@ -1,0 +1,382 @@
+---
+// The step player of a module page (docs/BRIEFING.md § 6 and § 12).
+//
+// The steps (<Stap>) render statically as <section>s in the default slot.
+// The client script below shows one step at a time and handles navigation
+// (buttons, arrow keys, `#stap-n` in the URL), the progress bar, saving the
+// step in localStorage and "Opnieuw beginnen". Without JavaScript the steps
+// stay one below the other and the controls stay hidden.
+//
+// The layout with JavaScript fills the space under the header: the page must
+// fit on 1366 × 640 without scrolling. The module route renders Base with
+// `fill` for that.
+interface Props {
+  moduleId: string;
+  title: string;
+}
+
+const { moduleId, title } = Astro.props;
+const dialogTitleId = `${moduleId}-opnieuw-titel`;
+---
+
+<div class="player" data-player data-module={moduleId}>
+  <div class="player-head">
+    <h1 class="player-title">{title}</h1>
+    <p class="player-count" data-count aria-live="polite"></p>
+  </div>
+  <div class="player-bar" aria-hidden="true">
+    <div class="player-fill" data-fill></div>
+  </div>
+
+  <div class="player-card">
+    <div class="player-steps" data-steps>
+      <slot />
+    </div>
+
+    <nav class="player-nav" aria-label="Stappen">
+      <button type="button" class="button button-ghost" data-restart>Opnieuw beginnen</button>
+      <div class="player-moves">
+        <button type="button" class="button button-secondary" data-prev>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+          Vorige
+        </button>
+        <button type="button" class="button button-primary" data-next>
+          Volgende
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <dialog class="player-dialog" data-restart-dialog aria-labelledby={dialogTitleId}>
+    <form method="dialog">
+      <h2 id={dialogTitleId}>Opnieuw beginnen?</h2>
+      <p>
+        Je gaat terug naar de eerste stap. Alles wat je in deze module invulde,
+        wordt gewist.
+      </p>
+      <div class="player-dialog-actions">
+        <button type="submit" value="cancel" class="button button-secondary" autofocus>Annuleren</button>
+        <button type="submit" value="confirm" class="button button-primary">Ja, begin opnieuw</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+
+<style>
+  /* Without JavaScript: a normal page, every step one below the other. */
+  .player-count,
+  .player-bar,
+  .player-nav {
+    display: none;
+  }
+
+  .player-steps {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  /* With JavaScript: one step per screen. The player takes the height that
+     <main> has left under the header; the card is at most --step-max-h high
+     and shrinks on a lower screen, so the navigation always stays in view.
+     A step that is too long scrolls inside the card instead of the page. */
+  :global(.js) .player {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  :global(.js) .player-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  :global(.js) .player-title {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: var(--forest);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-small-tracking);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :global(.js) .player-count {
+    display: block;
+    flex: none;
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  :global(.js) .player-bar {
+    display: block;
+    flex: none;
+    height: var(--space-2);
+    margin-top: var(--space-2);
+    overflow: hidden;
+    border-radius: var(--radius-full);
+    background: var(--line);
+  }
+
+  .player-fill {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--brand);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .player-fill {
+      transition: width 0.2s ease-out;
+    }
+  }
+
+  :global(.js) .player-card {
+    display: flex;
+    flex: 0 1 var(--step-max-h);
+    flex-direction: column;
+    min-height: 0;
+    margin-top: var(--space-3);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  :global(.js) .player-steps {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: var(--space-5);
+    overflow-y: auto;
+  }
+
+  :global(.js) .player-nav {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+
+  .player-moves {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  /* Buttons */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-weight: var(--text-label-weight);
+    line-height: var(--text-body-line);
+    cursor: pointer;
+  }
+
+  .button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .button-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .button-primary:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+
+  .button-secondary {
+    border-color: var(--line-strong);
+    background: var(--surface);
+    color: var(--forest);
+  }
+
+  .button-secondary:hover:not(:disabled) {
+    background: var(--surface-sunken);
+  }
+
+  .button-ghost {
+    background: transparent;
+    color: var(--ink-muted);
+  }
+
+  .button-ghost:hover {
+    background: var(--surface-sunken);
+    color: var(--ink);
+  }
+
+  .button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  /* Confirmation for "Opnieuw beginnen" */
+  .player-dialog {
+    width: min(30rem, calc(100vw - 2 * var(--space-5)));
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow-card);
+  }
+
+  .player-dialog::backdrop {
+    background: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+
+  .player-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+</style>
+
+<script>
+  import { clearModule, readStored, writeStored } from './storage';
+
+  // localStorage key of the current step: `ai-leerlijn:<module-id>:stap`.
+  const STEP_KEY = 'stap';
+  const HASH_PATTERN = /^#stap-(\d+)$/;
+
+  function part<T extends Element>(root: Element, selector: string): T {
+    const element = root.querySelector<T>(selector);
+    if (element === null) throw new Error(`StepPlayer: missing ${selector}`);
+    return element;
+  }
+
+  // Arrow keys belong to the field while the student types or chooses.
+  function isTextEntry(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+    return target.isContentEditable || target.closest('input, textarea, select') !== null;
+  }
+
+  // A step number from the URL or from storage, clamped to 1..count; null if
+  // the value is not a number at all.
+  function parseStep(value: string | null | undefined, count: number): number | null {
+    if (value == null || !/^\d+$/.test(value)) return null;
+    return Math.min(Math.max(Number.parseInt(value, 10), 1), count);
+  }
+
+  function initPlayer(root: HTMLElement): void {
+    const moduleId = root.dataset.module ?? '';
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
+    if (moduleId === '' || steps.length === 0) return;
+
+    const count = steps.length;
+    const headings = steps.map((step, index) => {
+      const heading = part<HTMLElement>(step, '[data-step-title]');
+      // Not `stap-n`: an element with the id of the hash would make the
+      // browser scroll to it.
+      heading.id = `${moduleId}-stap-${index + 1}-titel`;
+      step.setAttribute('aria-labelledby', heading.id);
+      return heading;
+    });
+
+    const stepsBox = part<HTMLElement>(root, '[data-steps]');
+    const countText = part<HTMLElement>(root, '[data-count]');
+    const fill = part<HTMLElement>(root, '[data-fill]');
+    const prevButton = part<HTMLButtonElement>(root, '[data-prev]');
+    const nextButton = part<HTMLButtonElement>(root, '[data-next]');
+    const restartButton = part<HTMLButtonElement>(root, '[data-restart]');
+    const dialog = part<HTMLDialogElement>(root, '[data-restart-dialog]');
+
+    let current = 1;
+
+    function show(step: number, moveFocus: boolean): void {
+      current = step;
+      steps.forEach((section, index) => {
+        section.hidden = index !== step - 1;
+      });
+      countText.textContent = `Stap ${step} van ${count}`;
+      fill.style.width = `${(step / count) * 100}%`;
+      prevButton.disabled = step === 1;
+      nextButton.disabled = step === count;
+      stepsBox.scrollTop = 0;
+
+      // replaceState, not pushState: the browser's back button leaves the
+      // module instead of walking back through every step; "Vorige" does that.
+      const hash = `#stap-${step}`;
+      if (window.location.hash !== hash) window.history.replaceState(window.history.state, '', hash);
+      writeStored(moduleId, STEP_KEY, String(step));
+
+      if (moveFocus) headings[step - 1]?.focus({ preventScroll: true });
+    }
+
+    function go(step: number): void {
+      if (step >= 1 && step <= count && step !== current) show(step, true);
+    }
+
+    function stepFromHash(): number | null {
+      return parseStep(HASH_PATTERN.exec(window.location.hash)?.[1], count);
+    }
+
+    // Order at load: a `#stap-n` in the URL, then localStorage, then step 1.
+    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY), count) ?? 1, false);
+
+    prevButton.addEventListener('click', () => go(current - 1));
+    nextButton.addEventListener('click', () => go(current + 1));
+
+    // A link or a typed URL with `#stap-n`. Other hashes (footnotes) are not
+    // ours.
+    window.addEventListener('hashchange', () => {
+      const step = stepFromHash();
+      if (step !== null) show(step, step !== current);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      // A component that uses the arrow keys itself calls preventDefault().
+      if (event.defaultPrevented || event.repeat) return;
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (dialog.open || isTextEntry(event.target)) return;
+      const step = current + (event.key === 'ArrowRight' ? 1 : -1);
+      if (step < 1 || step > count) return;
+      event.preventDefault();
+      go(step);
+    });
+
+    restartButton.addEventListener('click', () => {
+      dialog.returnValue = '';
+      dialog.showModal();
+    });
+
+    // Clears the step and every answer of this module, then reloads, so that
+    // every component starts again from empty storage.
+    dialog.addEventListener('close', () => {
+      if (dialog.returnValue !== 'confirm') return;
+      clearModule(moduleId);
+      window.history.replaceState(window.history.state, '', '#stap-1');
+      window.location.reload();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-player]').forEach(initPlayer);
+</script>

@@ -150,13 +150,17 @@ voortdurend zelf iets moet doen. Vragen staan centraal: ze activeren, en ze
 houden een leerling die alleen thuis zit bij de les.
 
 - **Eén stap per scherm.** Een stap past volledig op een laptopscherm van
-  **1366 × 768** zonder te scrollen. Er staat één idee of één vraag op.
+  1366 × 768 zonder te scrollen. Na de browserbalken blijft daarvan ongeveer
+  **1366 × 640** zichtbaar; daarop wordt ontworpen en getest. Er staat één
+  idee of één vraag op.
 - **Navigatie.** Vorige en volgende, de pijltjestoetsen, en een
-  voortgangsbalk die toont hoe ver de leerling is.
+  voortgangsbalk die toont hoe ver de leerling is. De leerling klikt vrij
+  vooruit; een vraag die verplicht beantwoord moet worden, regelt dat zelf.
 - **Voortgang bewaren.** De huidige stap en de antwoorden worden lokaal in de
   browser bewaard (`localStorage`, plus de stap in de URL). Wie herlaadt of
   de laptop dichtklapt, gaat verder waar die gebleven was. Er gaat niets naar een
-  server.
+  server. Een knop *Opnieuw beginnen* wist de stap en alle antwoorden van die
+  module.
 - **Vraagtypes** (*indicatief*, groeit met de modules):
   - meerkeuze met directe feedback;
   - eerst zelf denken, dan het antwoord tonen;
@@ -171,6 +175,8 @@ houden een leerling die alleen thuis zit bij de les.
 Auteurs schrijven een module als **één MDX-bestand** waarin de stappen
 `<Stap>`-blokken zijn. Eén bestand per module houdt het integreren
 overzichtelijk; een presentatie van een collega wordt zo een reeks stappen.
+Hoe dat precies gaat, en hoe componenten binnen een stap werken, staat in
+§ 12.
 
 ## 7. AI-gebruik en de AI-barometer
 
@@ -202,7 +208,7 @@ heeft, is er een alternatief zonder persoonlijk account.
 |---|---|
 | Framework | Astro 6, statische output |
 | Inhoud | MDX in de contentcollectie `modules`, schema met zod en `.strict()` |
-| Interactie | React-islands voor de stappenspeler en de vraagtypes |
+| Interactie | Een Astro-clientscript voor de stappenspeler, React-islands voor de vraagtypes (§ 12) |
 | Opmaak | Pure CSS met custom properties in `src/styles/tokens.css`, geen CSS-framework |
 | Hosting | GitHub Pages via GitHub Actions |
 | Adres | `https://arcadiascholen.github.io/ai-leerlijn/` (Astro `base: '/ai-leerlijn'`) |
@@ -289,3 +295,90 @@ bediening met het toetsenbord, en tekst die met voorleessoftware werkt.
   Kenniscentrum Digisprong?
 - **Eerste graad.** Krijgt de eerste graad een eigen startpagina, of dezelfde
   met een gefilterd aanbod?
+
+## 12. Componenten
+
+Dit patroon ontstond met de stappenspeler. De vraagtypes en de samenvatting
+volgen het.
+
+### Stappen schrijven
+
+```mdx
+<Stap titel="Wat is een prompt?">
+Tekst, een beeld of een vraagcomponent.
+</Stap>
+```
+
+- Een module bestaat volledig uit `<Stap>`-blokken; tekst buiten een stap
+  hoort er niet. Een beschikbare module zonder `<Stap>` laat de build falen.
+- De auteur schrijft **geen import-regel**. De route
+  `src/pages/modules/[id].astro` geeft de componenten mee via
+  `<Content components={…} />`; een nieuw component komt in die lijst.
+- `titel` is verplicht en wordt de kop van de stap. Binnen een stap werkt
+  Markdown zoals overal: alinea's, lijsten, vet. Een gewoon `<textarea>`
+  krijgt een eenvoudige standaardopmaak.
+
+### De speler
+
+- De stappen staan statisch in de HTML als `<section>`. Een klein clientscript
+  in `src/components/stappen/StepPlayer.astro` toont er één tegelijk en regelt
+  de navigatie, de voortgang en het bewaren.
+- Navigatie met *Vorige* en *Volgende*, of met de pijltjestoetsen links en
+  rechts. De pijltjestoetsen doen niets terwijl de focus in een `input`,
+  `textarea`, `select` of bewerkbaar veld staat, als er een modifiertoets
+  ingedrukt is, of als een component de toets zelf afhandelt.
+- De stap staat in de URL als `#stap-n` en in `localStorage`. Bij het laden
+  geldt eerst een geldige `#stap-n` in de URL, dan `localStorage`, anders
+  stap 1. Een te hoge of te lage stap valt terug op de dichtstbijzijnde
+  geldige. De URL wordt bijgewerkt zonder nieuwe stap in de geschiedenis: de
+  terugknop van de browser verlaat de module, *Vorige* gaat een stap terug.
+- Bij het wisselen gaat de focus naar de kop van de nieuwe stap. "Stap n van
+  m" staat als tekst in een `aria-live`-gebied, zodat een schermlezer de
+  voortgang voorleest.
+- *Opnieuw beginnen* vraagt eerst een bevestiging. Daarna wist het alle
+  sleutels van de module en herlaadt het de pagina op stap 1.
+- Zonder JavaScript staan alle stappen als kaarten onder elkaar.
+
+### Hoogte: 1366 × 640
+
+- Het kleinste doel is een laptop van 1366 × 768. Na de browserbalken blijft
+  ongeveer **1366 × 640** zichtbaar; daarop wordt ontworpen en getest.
+- Met JavaScript vult de speler de ruimte onder de header: de voortgang, en
+  daaronder de stapkaart met de navigatie onderaan. De kaart is hoogstens
+  `--step-max-h` (520 px) hoog. Op 1366 × 640 is ze 509 px hoog, en heeft de
+  inhoud van een stap, kop inbegrepen, **390 px** hoogte op ruim 1000 px
+  breedte.
+- Op een lager scherm krimpt de kaart en blijft de navigatie zichtbaar; wat
+  dan niet past, scrolt binnen de kaart. Dat is een vangnet: wat op
+  1366 × 640 niet in de kaart past, wordt een extra stap.
+
+### Lokaal bewaren
+
+- Elke sleutel in `localStorage` heeft de vorm
+  `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
+  `stap`. Een vraag bewaart haar antwoord onder een eigen sleutel die uniek
+  is binnen de module.
+- Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
+  `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
+  try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
+  privévenster. De voortgang wordt dan gewoon niet bewaard.
+- *Opnieuw beginnen* wist alle sleutels met het prefix van die module, en
+  alleen die.
+- Waarden zijn tekst. Een component dat meer bewaart, gebruikt
+  `JSON.stringify`.
+
+### Een component binnen een stap
+
+- Een vraagtype is een React-island binnen een `<Stap>`, volgens het patroon
+  van `cursus-esthetica` (`src/components/interactive/`): een
+  React-component met een CSS-module die alleen tokens gebruikt, en een
+  Astro-omhulsel dat de `client:`-directive zet. Het omhulsel komt in de
+  componentenlijst van de route; de auteur schrijft dus geen import en geen
+  directive.
+- Gebruik `client:visible`: een island in een verborgen stap hydrateert pas
+  als die stap getoond wordt, en leest dan zijn antwoord uit `localStorage`.
+- Een component vindt de id van zijn module met `moduleIdOf(element)`.
+- Een component dat zelf de pijltjestoetsen gebruikt, roept
+  `event.preventDefault()` aan; dan wisselt de speler niet van stap.
+- Een component past, samen met de rest van de stap, in de kaart op
+  1366 × 640.

@@ -1,0 +1,92 @@
+---
+// One step of a module: one idea or one question per screen
+// (docs/BRIEFING.md § 6 and § 12). Authors write <Stap titel="…"> in the
+// module's MDX without an import; the module route passes this component to
+// <Content components={…}>. StepPlayer numbers the steps and shows one at a
+// time; without JavaScript every step is a card, one below the other.
+interface Props {
+  titel: string;
+}
+
+const { titel } = Astro.props;
+
+// MDX props are not type-checked, so a missing title would otherwise only
+// show up as an empty heading.
+if (typeof titel !== 'string' || titel.trim() === '') {
+  throw new Error('<Stap> needs a non-empty `titel` attribute.');
+}
+---
+
+<section class="step" data-step>
+  <h2 class="step-title" data-step-title tabindex="-1">{titel}</h2>
+  <slot />
+</section>
+
+<style>
+  /* Without JavaScript: every step is its own card. */
+  .step {
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  /* With JavaScript: the player's card is the card. */
+  :global(.js) .step {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .step[hidden] {
+    display: none;
+  }
+
+  .step > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* The heading receives focus when the step changes, so that a screen reader
+     reads it. It is a focus target, not a control: no ring. */
+  .step-title:focus {
+    outline: none;
+  }
+</style>
+
+<style is:global>
+  /* Defaults for what authors write inside a step: plain Markdown and a plain
+     text field. Zero specificity (:where), so a question component overrides
+     them with a single class. */
+  :where([data-step]) :where(p, ul, ol, blockquote) {
+    max-width: 65ch;
+  }
+
+  :where([data-step]) :where(ul, ol) {
+    margin: 0 0 var(--space-4);
+    padding-left: var(--space-5);
+  }
+
+  :where([data-step]) :where(li + li) {
+    margin-top: var(--space-1);
+  }
+
+  :where([data-step]) :where(textarea) {
+    display: block;
+    width: 100%;
+    max-width: 65ch;
+    margin-top: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    color: var(--ink);
+    font: inherit;
+    resize: vertical;
+  }
+
+  :where([data-step]) :where(textarea)::placeholder {
+    color: var(--ink-muted);
+    opacity: 1;
+  }
+</style>
