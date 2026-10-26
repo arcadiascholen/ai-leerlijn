@@ -1,52 +1,139 @@
-/* Voorlopige tokens (#2), op het oog overgenomen van de huisstijl van
-   Arcadia Scholen (affiche AI-barometer). De definitieve waarden komen uit
-   het design system (#8). Componenten gebruiken uitsluitend deze variabelen.
+/* Design tokens — design system "Arcadia AI-modules"
+   Source:  https://claude.ai/artifact/5FkFKzAp7bfBCU1wXJ8kFv (project/tokens.json)
+   Version: 1793042465-7f89, 26 October 2026
+   Light theme only. The design system also defines a dark theme; it is not
+   used here (see docs/DESIGN.md).
 
-   De kleuren van de AI-barometer (rood, oranje, geel, groen) horen hier
-   niet bij: ze zijn gereserveerd voor de betekenis van de barometer. */
+   Names match the design system one to one. What each token is for, and the
+   visual rules that go with them: docs/DESIGN.md. Components use only these
+   variables, never raw colour values or font names. */
 :root {
-  /* Achtergrond */
-  --color-bg:           #fafaf4;
-  --color-surface:      #ffffff;
-  --color-surface-tint: #eef3e6;
-  --color-border:       #d7dccd;
+  /* Surfaces */
+  --bg:             #fcfcf8;
+  --surface:        #ffffff;
+  --surface-sunken: #f0f6e8;
+  --line:           #d6dfcc;
+  --line-strong:    #7a8c70;
 
-  /* Tekst */
-  --color-text:         #143d1e;
-  --color-text-muted:   #4a5d4e;
+  /* Text */
+  --ink:       #19271c;
+  --ink-muted: #55625a;
+  --forest:    #103e18;
 
-  /* Merk. `--color-accent` is voor vlakken en lijnen; tekst en links in
-     het accent gebruiken `--color-accent-strong`, dat genoeg contrast heeft
-     op de achtergrond. */
-  --color-brand:         #143d1e;
-  --color-on-brand:      #fafaf4;
-  --color-accent:        #7ab648;
-  --color-accent-strong: #3d6b1f;
+  /* Brand. `--brand` is never text on a light ground; green text is
+     `--brand-text`. */
+  --brand:      #76b82a;
+  --on-brand:   #103e18;
+  --brand-text: #3d7a14;
 
-  /* Typografie */
-  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  /* Primary button */
+  --primary:       #103e18;
+  --primary-hover: #1e5a28;
+  --on-primary:    #ffffff;
 
-  /* Type-schaal */
-  --step--1: 0.875rem;
-  --step-0:  1.0625rem;
-  --step-1:  1.25rem;
-  --step-2:  1.5rem;
-  --step-3:  2rem;
-  --step-4:  2.75rem;
+  /* The AI voice: everything that comes from or is about AI */
+  --ai:      #0e6f78;
+  --ai-soft: #e2f3f3;
+  --ai-text: #0b5c63;
+  --on-ai:   #ffffff;
 
-  /* Ruimte-schaal */
-  --space-xs:  0.5rem;
-  --space-sm:  1rem;
-  --space-md:  1.5rem;
-  --space-lg:  2.5rem;
-  --space-xl:  4rem;
+  /* Focus ring: 2px solid, 2px offset */
+  --focus: #0e6f78;
 
-  /* Maten */
-  --content-width: 64rem;
-  --header-height: 3.5rem;
+  /* Feedback */
+  --success:      #2f6a12;
+  --success-soft: #e6f2d9;
+  --danger:       #a8241b;
+  --danger-soft:  #fce6e3;
+  --warning:      #7a4a06;
+  --warning-soft: #fdf1dc;
 
-  /* Overig */
-  --radius:           8px;
-  --focus-ring:       3px solid var(--color-accent-strong);
-  --transition-color: 150ms ease;
+  /* AI-barometer levels. Only for the barometer and its meaning (AI-niveau
+     0 to 3); never used anywhere else in the design. */
+  --level-0:    #f03a32;
+  --level-1:    #f47c1b;
+  --level-2:    #f8b21a;
+  --level-3:    #6b9136;
+  --on-level-0: #071209;
+  --on-level-1: #071209;
+  --on-level-2: #071209;
+  --on-level-3: #071209;
+
+  /* Depth */
+  --shadow-card: 0 1px 2px rgba(16,62,24,0.06), 0 4px 16px rgba(16,62,24,0.06);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+
+  /* Radius */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-full: 999px;
+
+  /* Layout */
+  --content-max: 1120px;
+  --shell-bar:   56px;
+  --step-max-h:  520px;
+
+  /* Font families. The first name is the family that fontsource registers
+     (self-hosted, imported in src/layouts/Base.astro); the rest are the
+     design system's fallbacks. */
+  --font-sans: "Figtree Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Code", Consolas, monospace;
+
+  /* Text styles: --text-<style>-size | -line | -weight | -tracking.
+     All styles use --font-sans, except `prompt`, which uses --font-mono. */
+  --text-display-size:     56px;
+  --text-display-line:     58px;
+  --text-display-weight:   800;
+  --text-display-tracking: -0.02em;
+
+  --text-h1-size:     40px;
+  --text-h1-line:     44px;
+  --text-h1-weight:   800;
+  --text-h1-tracking: -0.015em;
+
+  --text-h2-size:     28px;
+  --text-h2-line:     34px;
+  --text-h2-weight:   800;
+  --text-h2-tracking: -0.01em;
+
+  --text-h3-size:     21px;
+  --text-h3-line:     28px;
+  --text-h3-weight:   700;
+  --text-h3-tracking: normal;
+
+  --text-lead-size:     19px;
+  --text-lead-line:     28px;
+  --text-lead-weight:   500;
+  --text-lead-tracking: normal;
+
+  --text-body-size:     17px;
+  --text-body-line:     26px;
+  --text-body-weight:   400;
+  --text-body-tracking: normal;
+
+  --text-small-size:     15px;
+  --text-small-line:     22px;
+  --text-small-weight:   400;
+  --text-small-tracking: normal;
+
+  /* `label` is always uppercase (text-transform: uppercase). */
+  --text-label-size:     13px;
+  --text-label-line:     16px;
+  --text-label-weight:   700;
+  --text-label-tracking: 0.08em;
+
+  --text-prompt-size:     15px;
+  --text-prompt-line:     24px;
+  --text-prompt-weight:   400;
+  --text-prompt-tracking: normal;
 }

@@ -12,6 +12,8 @@ through a single Smartschool form, not through this site.
 - `docs/BRIEFING.md` — the specification: goals, the student's route,
   modules and their metadata, the step format, AI use and the AI-barometer,
   tech stack, performance budget, styling, planning and open decisions.
+- `docs/DESIGN.md` — for anything visible: the design-system tokens and
+  what each is for, the visual rules, fonts and logo.
 
 ## Sources and precedence
 
@@ -64,9 +66,10 @@ Project-specific skills live in `.claude/skills/`:
   English for code identifiers, variable names and code comments.
 - **Laptop first.** Every step fits on 1366 × 768 without scrolling. Not
   designed for phones.
-- **No CSS framework.** Pure CSS with custom properties in
-  `src/styles/tokens.css`. Never hardcode hex values or font strings in
-  components; always use `var(--color-*)`, `var(--font-*)`, `var(--space-*)`.
+- **No CSS framework.** Pure CSS. Never hardcode hex values or font strings
+  in components; always use the design-system tokens in
+  `src/styles/tokens.css` (`var(--ink)`, `var(--surface)`, `var(--space-4)`,
+  …). See `docs/DESIGN.md`.
 - **Modules** are one MDX file each in `src/content/modules/`, with steps as
   `<Stap>` blocks. Schema in `src/content.config.ts`, strict (`.strict()`),
   so a typo in frontmatter is an error, not a silently dropped field.
