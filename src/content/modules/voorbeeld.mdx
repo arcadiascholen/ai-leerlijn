@@ -139,6 +139,33 @@ Open je tool en start een nieuw gesprek.
 <Tool naam="copilot">Ga naar [m365.cloud.microsoft/chat](https://m365.cloud.microsoft/chat) en meld je aan met je **schoolaccount**.</Tool>
 </Stap>
 
+<Stap titel="Kopieer je eerste prompt">
+Klik op **Kopieer** en plak de prompt in je tool. Vervang daar wat tussen
+haken staat door je eigen gegevens, en verstuur dan.
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets
+[vak] over [onderwerp].
+
+Stel me vijf vragen, één per keer. Wacht telkens op mijn antwoord en zeg dan
+wat juist was en wat beter kan.
+</Prompt>
+</Stap>
+
+<Stap titel="Wat ging hier mis?">
+<Chat naast>
+<Jij>Leg fotosynthese uit.</Jij>
+<AI>Fotosynthese is het proces waarbij planten met zonlicht water en koolstofdioxide omzetten in suiker en zuurstof.</AI>
+</Chat>
+
+<Meerkeuze id="chat-context" vraag="Wat had de leerling beter gedaan?">
+  <Optie juist feedback="De AI weet niet in welk jaar je zit of waarvoor je het nodig hebt.">Meer context geven</Optie>
+  <Optie feedback="Beleefd mag, maar het antwoord wordt er niet beter van.">Beleefder vragen</Optie>
+  <Optie feedback="De vraag is al kort; er ontbreekt juist informatie.">Korter vragen</Optie>
+  <Optie feedback="Het antwoord klopt, maar past het bij jouw toets?">Niets, het is goed</Optie>
+</Meerkeuze>
+</Stap>
+
 <Stap titel="Klaar! Kopieer wat je schreef">
 <Samenvatting />
 </Stap>

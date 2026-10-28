@@ -53,6 +53,9 @@ type Attribute =
 
 interface Tag {
   readonly index: number;
+  // Just after the `>` or `/>` that closes the opening tag.
+  readonly end: number;
+  readonly selfClosing: boolean;
   readonly attributes: ReadonlyMap<string, Attribute>;
 }
 
@@ -149,10 +152,24 @@ function readAttributes(id: string, component: string, cursor: Cursor): Map<stri
 
 // Every opening tag of `component` in the source, in order.
 function tagsOf(id: string, body: string, component: string): Tag[] {
-  return Array.from(body.matchAll(new RegExp(`<${component}(?=[\\s/>])`, 'g')), (match) => ({
-    index: match.index,
-    attributes: readAttributes(id, component, { text: body, at: match.index + match[0].length }),
-  }));
+  return Array.from(body.matchAll(new RegExp(`<${component}(?=[\\s/>])`, 'g')), (match) => {
+    const cursor: Cursor = { text: body, at: match.index + match[0].length };
+    const attributes = readAttributes(id, component, cursor);
+    const selfClosing = body.startsWith('/>', cursor.at);
+    return { index: match.index, end: cursor.at + (selfClosing ? 2 : 1), selfClosing, attributes };
+  });
+}
+
+// Where every element of `component` sits in the source: from its opening
+// tag to the end of its closing tag. No nesting of the same component.
+function spansOf(id: string, body: string, component: string): (readonly [start: number, end: number])[] {
+  return tagsOf(id, body, component).map((tag) => {
+    if (tag.selfClosing) return [tag.index, tag.end] as const;
+    const closing = new RegExp(`</${component}\\s*>`, 'g');
+    closing.lastIndex = tag.end;
+    const match = closing.exec(body);
+    return [tag.index, match === null ? body.length : match.index + match[0].length] as const;
+  });
 }
 
 function textOf(tag: Tag, name: string): string | undefined {
@@ -391,6 +408,23 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
       throw new Error(
         `Module "${id}": <Tool naam="${name}">: "${name}" is not an option of <Keuze naam="${TOOL_CHOICE}">. ` +
           `Its options are: ${Object.keys(tool.options).join(', ')}.`,
+      );
+    }
+  }
+
+  // Conversations (BRIEFING § 12, "Prompts en gesprekken"): a turn only
+  // means something inside a <Chat>. <Chat> checks what is inside it from
+  // its rendered children; a turn outside every <Chat> it cannot see, and
+  // that turn would silently disappear from the page.
+  const chats = spansOf(id, body, 'Chat');
+  for (const component of ['Jij', 'AI']) {
+    for (const tag of tagsOf(id, body, component)) {
+      if (chats.some(([start, end]) => tag.index > start && tag.index < end)) continue;
+      const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
+      const where = step === undefined ? '' : ` in <Stap titel="${textOf(step, 'titel') ?? '…'}">`;
+      throw new Error(
+        `Module "${id}": <${component}>${where} is a turn of a conversation and only works inside a <Chat>, ` +
+          'such as <Chat><Jij>Leg fotosynthese uit.</Jij><AI>Fotosynthese is …</AI></Chat>.',
       );
     }
   }

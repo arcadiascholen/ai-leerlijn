@@ -2,6 +2,10 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import AiGebruik from '../../components/modules/AiGebruik.astro';
+import AI from '../../components/inhoud/AI.astro';
+import Chat from '../../components/inhoud/Chat.astro';
+import Jij from '../../components/inhoud/Jij.astro';
+import Prompt from '../../components/inhoud/Prompt.astro';
 import ChosenTool from '../../components/stappen/ChosenTool.astro';
 import Keuze from '../../components/stappen/Keuze.astro';
 import Stap from '../../components/stappen/Stap.astro';
@@ -47,8 +51,21 @@ locals.branching = branching;
 locals.tool = tool;
 
 // Components that authors may use in a module's MDX without an import line
-// (BRIEFING § 12). Question components are added here.
-const components = { Stap, Keuze, Tool, Meerkeuze, Optie, DenkEerst, Reflectie, Samenvatting };
+// (BRIEFING § 12). Question and content components are added here.
+const components = {
+  Stap,
+  Keuze,
+  Tool,
+  Prompt,
+  Chat,
+  Jij,
+  AI,
+  Meerkeuze,
+  Optie,
+  DenkEerst,
+  Reflectie,
+  Samenvatting,
+};
 ---
 
 <Base title={entry.data.title} description={entry.data.kort} fill>

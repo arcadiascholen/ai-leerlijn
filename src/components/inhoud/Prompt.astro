@@ -1,0 +1,308 @@
+---
+// A prompt for the student to copy into their AI tool (docs/BRIEFING.md
+// § 12, "Prompts en gesprekken"):
+//
+//   <Prompt>
+//   Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke
+//   toets [vak] over [onderwerp]. Stel me vijf vragen, één per keer.
+//   </Prompt>
+//
+// Between the tags go plain paragraphs; a blank line starts a new one. A
+// placeholder between [ and ] gets a quiet mark of its own, so the student
+// sees what to fill in; the brackets stay, also on the clipboard.
+//
+// "Kopieer" copies the prompt as plain text. The build derives that text
+// from the paragraphs (readPrompt in authoring.ts) and puts it in
+// `data-prompt-text`; the script copies that attribute and never the text of
+// the block, so the label, the button and the confirmation cannot end up on
+// the clipboard. Without JavaScript the block stands there without the
+// button. Authors write no import.
+import { readPrompt } from './authoring';
+
+const rendered = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const { html, text } = readPrompt(rendered);
+---
+
+<div class="prompt" data-prompt data-prompt-text={text}>
+  <p class="prompt-label">Prompt</p>
+  <div class="prompt-text" data-prompt-body><Fragment set:html={html} /></div>
+  <div class="prompt-actions">
+    {/* Always in the page, also when empty, so that a screen reader reads
+        the confirmation when it appears. */}
+    <p class="prompt-status" role="status">
+      <svg class="prompt-icon prompt-check" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 12.5l4.5 4.5L19 7.5"></path>
+      </svg>
+      <span data-prompt-message></span>
+    </p>
+    <button type="button" class="prompt-copy" data-prompt-copy>
+      <svg class="prompt-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+        <path d="M5 15V6a2 2 0 0 1 2-2h9"></path>
+      </svg>
+      Kopieer<span class="sr-only"> de prompt</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* Something the student copies into the AI tool: the prompt style on the
+     AI colours (docs/DESIGN.md). Only design-system tokens. Single classes,
+     so they win over the zero-specificity step defaults in Stap.astro.
+
+     Height budget on 1366 × 640 (docs/BRIEFING.md § 12): the row with the
+     label and the button, then 24px per line of text. As wide as a line of
+     running text (65ch of the body font), like the paragraphs around it. */
+  .prompt {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'label actions'
+      'text text';
+    align-items: center;
+    gap: var(--space-1) var(--space-3);
+    max-width: 65ch;
+    margin: 0 0 var(--space-4);
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--ai-soft);
+    color: var(--ai-text);
+  }
+
+  /* The last thing in a step, also when the script of this component follows
+     it in the page: no space below it (as Stap.astro does for :last-child). */
+  .prompt:not(:has(~ :not(script, style))) {
+    margin-bottom: 0;
+  }
+
+  .prompt-label {
+    grid-area: label;
+    max-width: none;
+    margin: 0;
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  .prompt-text {
+    grid-area: text;
+    font-family: var(--font-mono);
+    font-size: var(--text-prompt-size);
+    line-height: var(--text-prompt-line);
+    font-weight: var(--text-prompt-weight);
+    letter-spacing: var(--text-prompt-tracking);
+    overflow-wrap: anywhere;
+  }
+
+  .prompt-text > :global(p) {
+    max-width: none;
+    margin: 0 0 var(--space-3);
+  }
+
+  .prompt-text > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .prompt-text :global(code) {
+    font: inherit;
+  }
+
+  /* What the student fills in: a quiet white mark, brackets included, so the
+     student finds it again in the tool after pasting. */
+  .prompt-text :global(.prompt-slot) {
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* The button only works with JavaScript. It never moves: a long status
+     wraps within its own box, to the left of the button. */
+  .prompt-actions {
+    display: none;
+  }
+
+  :global(.js) .prompt-actions {
+    display: flex;
+    grid-area: actions;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: var(--space-2);
+  }
+
+  .prompt-copy {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--ai);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ai-text);
+    font: inherit;
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-small-tracking);
+    cursor: pointer;
+  }
+
+  .prompt-copy:hover {
+    background: var(--ai);
+    color: var(--on-ai);
+  }
+
+  /* Empty and without room until the student copies; set by the script. */
+  .prompt-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .prompt[data-state] .prompt-status {
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .prompt[data-state='copied'] .prompt-status {
+    background: var(--success-soft);
+    color: var(--success);
+  }
+
+  /* A sentence, not a word: regular weight, so it stays short. */
+  .prompt[data-state='fallback'] .prompt-status {
+    background: var(--warning-soft);
+    color: var(--warning);
+    font-weight: var(--text-small-weight);
+  }
+
+  .prompt-check {
+    display: none;
+  }
+
+  .prompt[data-state='copied'] .prompt-check {
+    display: block;
+  }
+
+  .prompt-icon {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>
+
+<script>
+  // Copying a <Prompt>: one script for every prompt on the page, listening on
+  // the document. It stores nothing.
+
+  const MESSAGES = {
+    copied: 'Gekopieerd',
+    fallback: 'Kopiëren lukte niet vanzelf. De prompt is geselecteerd: druk op Ctrl+C.',
+  } as const;
+  type State = keyof typeof MESSAGES;
+
+  // How long "Gekopieerd" stays.
+  const CONFIRMATION_MS = 4000;
+
+  // The one prompt that shows a status, and the timer that ends it: copying
+  // another prompt ends it at once.
+  let current: HTMLElement | null = null;
+  let timer: number | undefined;
+
+  function render(block: HTMLElement, state: State | null): void {
+    if (state === null) block.removeAttribute('data-state');
+    else block.dataset.state = state;
+    const message = block.querySelector('[data-prompt-message]');
+    if (message !== null) message.textContent = state === null ? '' : MESSAGES[state];
+  }
+
+  function show(block: HTMLElement, state: State | null): void {
+    window.clearTimeout(timer);
+    if (current !== null && current !== block) render(current, null);
+    current = state === null ? null : block;
+    render(block, state);
+    // The request to press Ctrl+C stays until the student copies.
+    if (state === 'copied') timer = window.setTimeout(() => show(block, null), CONFIRMATION_MS);
+  }
+
+  // The text that "Kopieer" puts on the clipboard: the build's plain text,
+  // never the text of the block with its label and button.
+  function textOf(block: HTMLElement): string {
+    return block.dataset.promptText ?? '';
+  }
+
+  function select(block: HTMLElement): void {
+    const body = block.querySelector('[data-prompt-body]');
+    const selection = window.getSelection();
+    if (body === null || selection === null) return;
+    const range = document.createRange();
+    range.selectNodeContents(body);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  // The prompt whose text is selected as a whole, if any. The browser puts
+  // line breaks of its own between the paragraphs of a selection, so the
+  // comparison ignores white space.
+  function selectedPrompt(): HTMLElement | null {
+    const selection = window.getSelection();
+    if (selection === null || selection.rangeCount !== 1) return null;
+    const node = selection.getRangeAt(0).commonAncestorContainer;
+    const element = node instanceof Element ? node : node.parentElement;
+    const block = element?.closest('[data-prompt-body]')?.closest<HTMLElement>('[data-prompt]') ?? null;
+    if (block === null) return null;
+    const squash = (text: string): string => text.replace(/\s+/g, '');
+    return squash(selection.toString()) === squash(textOf(block)) ? block : null;
+  }
+
+  async function copy(block: HTMLElement): Promise<void> {
+    try {
+      // Throws when there is no Clipboard API (not a secure context) and
+      // rejects when the browser refuses.
+      await navigator.clipboard.writeText(textOf(block));
+      show(block, 'copied');
+    } catch {
+      select(block);
+      show(block, 'fallback');
+    }
+  }
+
+  document.addEventListener('click', (event) => {
+    const button = event.target instanceof Element ? event.target.closest('[data-prompt-copy]') : null;
+    const block = button?.closest<HTMLElement>('[data-prompt]');
+    if (block != null) void copy(block);
+  });
+
+  // Ctrl+C on a prompt that is selected as a whole, after the fallback or
+  // because the student selected it: the same plain text as the button, and
+  // the same confirmation. A partial selection copies as the browser would.
+  document.addEventListener('copy', (event) => {
+    const block = selectedPrompt();
+    if (block === null || event.clipboardData === null) return;
+    event.clipboardData.setData('text/plain', textOf(block));
+    event.preventDefault();
+    show(block, 'copied');
+  });
+
+  // The student selected something else: the prompt is no longer selected,
+  // so the request to press Ctrl+C goes.
+  document.addEventListener('selectionchange', () => {
+    if (current?.dataset.state === 'fallback' && selectedPrompt() !== current) show(current, null);
+  });
+</script>
