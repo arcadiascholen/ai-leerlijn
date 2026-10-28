@@ -93,7 +93,7 @@ a:hover {
 
 /* Motion (docs/DESIGN.md, "Beweging"). Only when the student did not ask
    for reduced motion, and only for what changes because of something the
-   student did: nothing moves at page load. */
+   student did; at page load only the first step builds itself up. */
 @media (prefers-reduced-motion: no-preference) {
   a {
     transition: color var(--motion-fast) var(--ease-out);
@@ -107,6 +107,149 @@ a:hover {
 
   @keyframes appear {
     from {
+      opacity: 0;
+    }
+  }
+}
+
+/* The build-up of a step (`buildUp` in src/lib/motion.ts). A layer over the
+   step holds one mask per part, with a panel in the colour of the card that
+   covers the part until its turn. Part n starts at
+   start + n × gap: start is 0 at page load and half the flip after a flip;
+   gap is --motion-stagger, or less when that is needed for the last part to
+   stand within --motion-build. Without an animation every panel and cursor
+   is transparent, so a part never stays covered: not with reduced motion,
+   and not when an animation is cut short. */
+.build-layer {
+  --build-start: 0ms;
+  --build-gap: min(
+    var(--motion-stagger),
+    (var(--motion-build) - var(--build-start) - var(--motion-part)) / max(var(--build-count) - 1, 1)
+  );
+  position: absolute;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.build-layer[data-build='flip'] {
+  --build-start: calc(var(--motion-flip) / 2);
+}
+
+.build-mask {
+  --build-delay: calc(var(--build-start) + var(--build-index) * var(--build-gap));
+  position: absolute;
+  overflow: hidden;
+}
+
+.build-panel {
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  opacity: 0;
+}
+
+/* The heading: the panel covers as far as the text reaches, or the whole
+   heading if that could not be measured. */
+.build-type {
+  right: auto;
+  width: var(--build-width, 100%);
+}
+
+/* A block: the line along the top edge of the panel, where it scans. */
+.build-scan::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--brand);
+  opacity: 0;
+}
+
+/* A block cursor, one em of the heading high and half as wide, on the
+   first line, at the edge of the panel. The mask starts one px above the
+   heading. */
+.build-cursor {
+  position: absolute;
+  top: calc(1px + (var(--text-h2-line) - var(--text-h2-size)) / 2);
+  left: 0;
+  width: calc(var(--text-h2-size) / 2);
+  height: var(--text-h2-size);
+  background: var(--brand);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Six steps from top to bottom; the panel covers the part while it waits
+     (`backwards`), and the line only shows while it scans. */
+  .build-scan {
+    animation: build-scan var(--motion-part) steps(6, jump-end) var(--build-delay) backwards;
+  }
+
+  .build-scan::before {
+    animation: build-on var(--motion-part) linear var(--build-delay);
+  }
+
+  /* One step per character. The cursor stays at the end of the text, blinks
+     once, and goes. */
+  .build-type {
+    animation: build-type var(--motion-part) var(--build-delay) backwards;
+    animation-timing-function: steps(var(--build-chars), jump-start);
+  }
+
+  .build-cursor {
+    animation:
+      build-cursor-move var(--motion-part) var(--build-delay) forwards,
+      build-cursor-blink calc(var(--motion-part) * 2.5) var(--build-delay);
+    animation-timing-function: steps(var(--build-chars), jump-start), step-end;
+  }
+
+  @keyframes build-scan {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes build-type {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 1;
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes build-on {
+    from,
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes build-cursor-move {
+    to {
+      transform: translateX(var(--build-width, 0px));
+    }
+  }
+
+  /* With `step-end`: on while it types and a moment after, off, on, gone. */
+  @keyframes build-cursor-blink {
+    0% {
+      opacity: 1;
+    }
+    60% {
+      opacity: 0;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
       opacity: 0;
     }
   }

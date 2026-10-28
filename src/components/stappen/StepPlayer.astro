@@ -192,22 +192,29 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     box-shadow: var(--shadow-card);
   }
 
+  /* Positioned: the build-up layer of a step lies over it (buildUp in
+     src/lib/motion.ts), and during a flip the old step does too. */
   :global(.js) .player-steps {
     display: block;
+    position: relative;
     flex: 1 1 auto;
     min-height: 0;
     padding: var(--space-5);
     overflow-y: auto;
   }
 
+  /* Over the steps, with the card's colour: while the steps turn, their
+     near edge grows past the bottom of their box and goes behind it. */
   :global(.js) .player-nav {
     display: flex;
+    position: relative;
     flex: none;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-5);
     border-top: 1px solid var(--line);
+    background: var(--surface);
   }
 
   .player-hint {
@@ -293,10 +300,17 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 
   /* Motion (docs/DESIGN.md, "Beweging"). The bar only moves once the step
      player shows its first step (`data-motion`, set by `settle`): at load it
-     is already where it belongs. The new step fades in, 8px from the side
-     the student moves to; after a jump (`#stap-n`, a choice) it only fades.
-     The old step is hidden at once. The script sets `data-enter` only after
-     an action of the student, and removes it when the animation ends. */
+     is already where it belongs.
+
+     The step change is a flip of the steps box around its vertical axis;
+     the head, the bar and the navigation stand still. The script sets
+     `data-flip` on the box: the first half turns it away to edge-on, the
+     second half turns it in from the other side. With "Volgende" it turns
+     to the left, like a page; with "Vorige" to the right. The old step
+     stays in place over the new one (`data-flip-leave`) and goes at the
+     middle; the new one (`data-flip-arrive`), and the layer that builds it
+     up, come at the middle. Both halves are one animation each, so both
+     start at the click and the script only cleans up when they end. */
   @media (prefers-reduced-motion: no-preference) {
     .player[data-motion] .player-fill {
       transition: transform var(--motion-base) var(--ease-out);
@@ -309,29 +323,80 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
         color var(--motion-fast) var(--ease-out);
     }
 
-    .player-steps :global([data-step][data-enter]) {
-      animation: appear var(--motion-base) var(--ease-out);
+    :global(.js) .player-card {
+      perspective: var(--motion-perspective);
     }
 
-    .player-steps :global([data-step][data-enter='next']) {
-      animation-name: step-from-right;
+    /* Later in the list wins: the turn away covers the first half, the turn
+       in waits for it. */
+    .player-steps[data-flip='next'] {
+      animation:
+        flip-in-from-right calc(var(--motion-flip) / 2) var(--ease-out) calc(var(--motion-flip) / 2),
+        flip-out-to-left calc(var(--motion-flip) / 2) var(--ease-in);
     }
 
-    .player-steps :global([data-step][data-enter='prev']) {
-      animation-name: step-from-left;
+    .player-steps[data-flip='prev'] {
+      animation:
+        flip-in-from-left calc(var(--motion-flip) / 2) var(--ease-out) calc(var(--motion-flip) / 2),
+        flip-out-to-right calc(var(--motion-flip) / 2) var(--ease-in);
     }
 
-    @keyframes step-from-right {
-      from {
-        opacity: 0;
-        transform: translateX(var(--space-2));
+    /* Where it stood, out of the flow, so that the new step takes its place
+       underneath. It takes no clicks: those go to the new step. */
+    .player-steps :global([data-step][data-flip-leave]) {
+      position: absolute;
+      top: var(--space-5);
+      right: var(--space-5);
+      left: var(--space-5);
+      pointer-events: none;
+      animation: flip-leave var(--motion-flip) step-end forwards;
+    }
+
+    .player-steps :global([data-step][data-flip-arrive]),
+    .player-steps[data-flip] > :global(.build-layer) {
+      animation: flip-arrive var(--motion-flip) step-end;
+    }
+
+    /* Seen from the front, a positive turn moves the right edge away. */
+    @keyframes flip-out-to-left {
+      to {
+        transform: rotateY(-90deg);
       }
     }
 
-    @keyframes step-from-left {
+    @keyframes flip-in-from-right {
+      from {
+        transform: rotateY(90deg);
+      }
+    }
+
+    @keyframes flip-out-to-right {
+      to {
+        transform: rotateY(90deg);
+      }
+    }
+
+    @keyframes flip-in-from-left {
+      from {
+        transform: rotateY(-90deg);
+      }
+    }
+
+    /* With `step-end`: all there until the middle, then gone. */
+    @keyframes flip-leave {
+      50%,
+      to {
+        opacity: 0;
+      }
+    }
+
+    /* With `step-end`: not there until the middle. */
+    @keyframes flip-arrive {
       from {
         opacity: 0;
-        transform: translateX(calc(-1 * var(--space-2)));
+      }
+      50% {
+        opacity: 1;
       }
     }
   }
@@ -360,7 +425,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 </style>
 
 <script>
-  import { playOnce, settle } from '../../lib/motion';
+  import { buildUp, mayMove, settle, stopBuild } from '../../lib/motion';
   import { hasOpenChoice, onChoice, routeOf, type Route } from './choices';
   import { clearModule, readStored, writeStored } from './storage';
 
@@ -369,9 +434,10 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
   const HASH_PATTERN = /^#stap-(\d+)$/;
   const OPEN_CHOICE_HINT = 'Kies eerst een antwoord om verder te gaan.';
 
-  // How the student reached a step, for the way it comes in (`data-enter`):
-  // one step forward, one back, or a jump (a link to `#stap-n`, or a choice
-  // that moved the step). Null at load: nothing moves then.
+  // How the student reached a step, for the way the card turns: one step
+  // forward, one back, or a jump (a link to `#stap-n`, or a choice that
+  // moved the step), which turns the way it goes. Null at load: then the
+  // step only builds itself up.
   type Entry = 'next' | 'prev' | 'jump';
 
   function part<T extends Element>(root: Element, selector: string): T {
@@ -453,20 +519,59 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       if (hint.textContent !== text) hint.textContent = text;
     }
 
+    // Counts the flips, so that the end of one that was cut short does not
+    // end the next.
+    let flips = 0;
+
+    // Ends a flip at once: the old step goes, the new one stands straight.
+    function endFlip(): void {
+      stepsBox.removeAttribute('data-flip');
+      sections.forEach((section) => {
+        if (section.hasAttribute('data-flip-leave')) {
+          section.hidden = true;
+          section.inert = false;
+          section.removeAttribute('data-flip-leave');
+        }
+        section.removeAttribute('data-flip-arrive');
+      });
+    }
+
+    // Turns the card from `leaving` to `arriving` (see the styles), and builds
+    // `arriving` up from the middle of the flip. Both sections are shown; the
+    // focus and the counter are already on `arriving`.
+    function flip(leaving: HTMLElement, arriving: HTMLElement, turn: 'next' | 'prev'): void {
+      const id = ++flips;
+      // Out of the flow first, so that the new step is measured in its place.
+      leaving.inert = true;
+      leaving.setAttribute('data-flip-leave', '');
+      arriving.setAttribute('data-flip-arrive', '');
+      buildUp(arriving, true);
+      stepsBox.dataset.flip = turn;
+      const animations = [stepsBox, leaving, arriving].flatMap((element) => element.getAnimations());
+      const done = (): void => {
+        if (id === flips) endFlip();
+      };
+      if (animations.length === 0) done();
+      else Promise.all(animations.map((animation) => animation.finished)).then(done, done);
+    }
+
     function show(step: number, moveFocus: boolean, entry: Entry | null): void {
+      const before = current;
       current = clamp(step);
       const shown = route.steps[current - 1];
       const previous = shownSection;
       shownSection = shown;
+      // No queue: a flip that is still going on ends at once, and its step
+      // stands complete before the next flip turns it away.
+      flips += 1;
+      endFlip();
+      sections.forEach(stopBuild);
+      const turn = entry === 'jump' ? (current < before ? 'prev' : 'next') : entry;
+      const flipping =
+        turn !== null && shown !== undefined && previous !== undefined && shown !== previous && mayMove();
       sections.forEach((section) => {
-        section.hidden = section !== shown;
-        // A step left while it was still coming in does not finish that
-        // when it is shown again.
-        if (section !== shown) section.removeAttribute('data-enter');
+        section.hidden = section !== shown && !(flipping && section === previous);
       });
-      // Only the step that comes in moves, and focus, the counter and
-      // clicks do not wait for it.
-      if (entry !== null && shown !== undefined && shown !== previous) playOnce(shown, 'enter', entry);
       update();
       stepsBox.scrollTop = 0;
 
@@ -476,7 +581,11 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       if (window.location.hash !== hash) window.history.replaceState(window.history.state, '', hash);
       writeStored(moduleId, STEP_KEY, String(current));
 
+      // Focus, the counter and clicks do not wait for the flip.
       if (moveFocus) shown?.querySelector<HTMLElement>('[data-step-title]')?.focus({ preventScroll: true });
+
+      if (flipping) flip(previous, shown, turn);
+      else if (entry === null && shown !== undefined) buildUp(shown, false);
     }
 
     // One step back or forward, as far as the buttons allow. False if not.
