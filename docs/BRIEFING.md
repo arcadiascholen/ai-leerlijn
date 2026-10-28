@@ -583,6 +583,11 @@ Tekst, een beeld of een vraagcomponent.
   directive.
 - Gebruik `client:visible`: een island in een verborgen stap hydrateert pas
   als die stap getoond wordt, en leest dan zijn antwoord uit `localStorage`.
+- Invoer van vóór de hydratatie gaat niet verloren. Is er nog niets bewaard,
+  dan neemt een component na de hydratatie over wat al in het veld staat: een
+  aangevinkt keuzerondje of getypte tekst, en bewaart het meteen. Die velden
+  hebben `autocomplete="off"`, zodat de browser bij *Terug* of herladen geen
+  oude waarde terugzet die het component dan als nieuwe invoer zou bewaren.
 - Een component vindt de id van zijn module met `moduleIdOf(element)`.
 - Een component dat zelf de pijltjestoetsen gebruikt, roept
   `event.preventDefault()` aan; dan wisselt de speler niet van stap.
