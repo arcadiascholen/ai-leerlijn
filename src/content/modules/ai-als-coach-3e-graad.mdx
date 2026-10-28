@@ -245,24 +245,28 @@ Noteer je score. Op het einde doe je dezelfde test opnieuw.
 <Reflectie id="quiz-start" vraag="Hoeveel van de vijf had je juist? Wat wist je nog niet?" />
 </Stap>
 
+<Stap titel="Ronde 1 · Begrijpen" tak="toets">
+In ronde 1 zorg je dat je de leerstof **begrijpt**. Je legt eerst zelf het
+moeilijkste begrip uit, en de AI kijkt je uitleg na. Daarna schrijf je op wat
+je over een deel van de leerstof weet.
+
+Begrijp je alles al? Klik dan door naar ronde 2.
+</Stap>
+
 <Stap titel="Ronde 1 · Uitleg op twee niveaus" tak="toets">
-In ronde 1 zorg je dat je de leerstof **begrijpt**. Begrijp je alles al?
-Klik dan door naar ronde 2.
-
-Kies het moeilijkste begrip. Leg het eerst **zelf** uit in één zin in de chat,
-en vraag dan:
-
-<Prompt>
-Klopt mijn uitleg? Leg [begrip] daarna uit op twee niveaus: eerst heel eenvoudig, met een voorbeeld uit het dagelijks leven, en dan zoals het op mijn toets moet. Gebruik mijn cursus.
+<Prompt id="uitleg-twee-niveaus" velden={{ begrip: 'Het moeilijkste begrip', 'mijn uitleg': 'Mijn uitleg in één zin' }}>
+Mijn uitleg van [begrip]: [mijn uitleg] Klopt mijn uitleg? Leg [begrip] daarna uit op twee niveaus: eerst heel eenvoudig, met een voorbeeld uit het dagelijks leven, en dan zoals het op mijn toets moet. Gebruik mijn cursus.
 </Prompt>
 </Stap>
 
 <Stap titel="Ronde 1 · Schrijf op wat je weet" tak="toets">
-Kies één deel van de leerstof. Schrijf **zonder in je cursus te kijken** alles
-op wat je erover weet. Plak het in de chat en vraag:
+1. Kies één deel van de leerstof.
+2. Kopieer de prompt en plak hem in de chat.
+3. Vervang **[schrijf hier alles wat je weet]** door je eigen tekst, **zonder in
+   je cursus te kijken**. Verstuur pas dan.
 
 <Prompt>
-Vergelijk mijn tekst met mijn cursus. Wat ontbreekt er, en wat klopt niet? Geef me geen verbeterde versie: zeg alleen waar ik nog eens moet kijken.
+Dit weet ik over [deel van de leerstof]: [schrijf hier alles wat je weet] Vergelijk mijn tekst met mijn cursus. Wat ontbreekt er, en wat klopt niet? Geef me geen verbeterde versie: zeg alleen waar ik nog eens moet kijken.
 </Prompt>
 
 Zoek het daarna op in je cursus, en vul je tekst zelf aan.
@@ -296,19 +300,24 @@ Let op: soms maakt de AI ongewild nog een fout. Daarom kijk je na in je
 cursus, en niet bij de AI.
 </Stap>
 
+<Stap titel="Ronde 3 · Toepassen" tak="toets">
+In ronde 3 ga je de leerstof **toepassen**, zoals op de toets. Eerst jij: je
+voorspelt welke vragen je krijgt. Daarna maak je nieuwe oefeningen, en krijg je
+feedback op je eigen antwoord.
+</Stap>
+
 <Stap titel="Ronde 3 · Voorspel je toets" tak="toets">
-In ronde 3 ga je de leerstof **toepassen**, zoals op de toets. Eerst jij:
-
-<Reflectie id="toetsvragen" vraag="Welke drie vragen verwacht jij op je toets?" />
-
-Plak ze in de chat: welke vragen verwacht de AI?
+<Prompt id="toetsvragen-voorspeld" velden={{ 'mijn drie vragen': 'Drie vragen die ik verwacht' }}>
+Op mijn toets verwacht ik deze drie vragen: [mijn drie vragen] Beantwoord ze niet. Welke vragen verwacht jij, op basis van mijn cursus? Vergelijk daarna jouw vragen met de mijne: welk deel van de leerstof liet ik weg?
+</Prompt>
 </Stap>
 
 <Stap titel="Ronde 3 · Oefeningen bijmaken" tak="toets">
-Laad een screenshot op van een oefening uit je cursus, en vraag:
+1. Maak een screenshot van een oefening uit je cursus.
+2. Laad hem op in de chat, en plak de prompt erbij.
 
 <Prompt>
-Maak drie nieuwe oefeningen zoals deze, van makkelijk naar moeilijk. Geef de oplossingen pas als ik erom vraag.
+In de bijlage zit een oefening uit mijn cursus. Maak drie nieuwe oefeningen zoals deze, van makkelijk naar moeilijk. Geef de oplossingen pas als ik erom vraag.
 </Prompt>
 
 Los ze zelf op. **Bij wiskunde en andere rekenvakken:** reken de oplossingen
@@ -316,11 +325,13 @@ van de AI na. Een AI rekent soms fout, ook als hij heel zeker klinkt.
 </Stap>
 
 <Stap titel="Ronde 3 · Feedback op je antwoord" tak="toets">
-Kies een vraag die op je toets kan komen. Schrijf je antwoord zoals op de
-toets, plak het in de chat en vraag:
+1. Kies een vraag die op je toets kan komen.
+2. Kopieer de prompt en plak hem in de chat.
+3. Vul de vraag in, en schrijf je antwoord op de plaats van **[schrijf hier je
+   antwoord]**, zoals op de toets.
 
 <Prompt>
-Geef feedback op mijn antwoord: wat is goed, wat ontbreekt, wat klopt niet? Gebruik mijn cursus. Schrijf geen verbeterde versie.
+Mijn antwoord op de vraag [vraag]: [schrijf hier je antwoord] Geef feedback op mijn antwoord: wat is goed, wat ontbreekt, wat klopt niet? Gebruik mijn cursus. Schrijf geen verbeterde versie.
 </Prompt>
 
 Waarom geen verbeterde versie? Die lees je, je vindt hem goed, en je leerde

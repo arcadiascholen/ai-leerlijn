@@ -259,9 +259,17 @@ het, tenzij de auteur een andere opbouw voorziet.
 - **Per werkvorm één prompt.** De leerling kopieert een `<Prompt>` met
   invulplaatsen (`[vak]`, `[datum]`) en vult die aan in de tool. Een prompt
   geeft context (wie ben je, wat is je bron, wat wil je), geen rolprompt.
+- **De eigen inbreng staat in de prompt.** Moet de leerling naast de prompt
+  iets in de chat zetten (een eigen tekst, een antwoord, verwachte vragen),
+  dan staat dat als invulplaats in de prompt zelf, bijvoorbeeld
+  `[schrijf hier je antwoord]`: zo gaat het mee op het klembord en ziet de
+  leerling in de chat wat nog ontbreekt. De tekst boven de prompt zegt het
+  als handelingen in volgorde. Moet het in de samenvatting komen, dan wordt
+  het een veld van de prompt (`velden`, § 12), zoals in *Uitleg op twee
+  niveaus* en *Voorspel je toets* in `ai-als-coach-3e-graad`.
 - **Wat de leerling schrijft, staat in de module.** Een score, een
   voorspelling of een reflectie gaat in een `<Reflectie>` of `<DenkEerst>`,
-  zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
+  of in een veld van een prompt, zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
   niet in; daarvoor is er het bewijsstuk (een link of een stuk van het
   gesprek, per tool).
 - **Hoogte per combinatie** (gemeten op 1366 × 640): een `<Reflectie>` met
