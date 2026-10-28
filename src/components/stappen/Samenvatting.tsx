@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { readAnswer, type StoredAnswer } from '../vragen/answers';
+import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import { moduleIdOf } from './storage';
 import styles from './Samenvatting.module.css';
 
@@ -13,6 +14,11 @@ import styles from './Samenvatting.module.css';
 // that are hidden and not hydrated yet. The answers come from localStorage
 // through `readAnswer`. The question text comes from the page, not from
 // storage, because the stored one goes stale when an author rewrites it.
+//
+// The choices (<Keuze>) come first, one line each. In a module with
+// branches only the steps of the student's route count (routeOf in
+// choices.ts): the questions of a branch the student did not choose are left
+// out, and the step numbers are positions in the route.
 
 // Only what the student wrote: multiple-choice answers are left out.
 const KINDS = ['think-first', 'reflection'];
@@ -22,6 +28,14 @@ interface Props {
   readonly moduleTitle: string;
   // The final form in Smartschool, or null while the link is not known.
   readonly formUrl: string | null;
+}
+
+interface Choice {
+  readonly name: string;
+  // The text of the chosen option; '' while nothing is chosen.
+  readonly label: string;
+  // The 1-based step the choice is in, for a link back to it.
+  readonly step: number | null;
 }
 
 interface Item {
@@ -53,30 +67,66 @@ function answerOf(stored: StoredAnswer | null, kind: string | undefined): string
   return stored.kind === 'multiple-choice' ? '' : normalise(stored.answer);
 }
 
-// Every question with something to write, in document order, which is the
-// order of the module, with its current answer.
-function collect(root: HTMLElement, moduleId: string): Item[] {
+interface Collected {
+  readonly choices: readonly Choice[];
+  readonly items: readonly Item[];
+}
+
+// The elements matching `selector` on the student's route, in document
+// order, which is the order of the module, each with its step in the route.
+// An element outside any step is kept, without a step.
+type Placed = readonly [element: HTMLElement, step: number | null];
+
+function onRoute(scope: HTMLElement, moduleId: string, selector: string): Placed[] {
+  const { steps } = routeOf(scope, moduleId);
+  return Array.from(scope.querySelectorAll<HTMLElement>(selector)).flatMap((element): Placed[] => {
+    const section = element.closest<HTMLElement>('[data-step]');
+    if (section === null) return [[element, null]];
+    const index = steps.indexOf(section);
+    return index < 0 ? [] : [[element, index + 1]];
+  });
+}
+
+// Every choice and every question with something to write, with what the
+// student chose or wrote by now.
+function collect(root: HTMLElement, moduleId: string): Collected {
   const scope = root.closest<HTMLElement>('[data-module]') ?? document.body;
-  const steps = Array.from(scope.querySelectorAll('[data-step]'));
-  return Array.from(scope.querySelectorAll<HTMLElement>(SELECTOR), (element) => {
+  const choices = onRoute(scope, moduleId, '[data-choice]').map(([element, step]) => {
+    const chosen = chosenOption(element, moduleId);
+    return {
+      name: element.dataset.choice ?? '',
+      label: chosen === null ? '' : (optionsOf(element)[chosen] ?? ''),
+      step,
+    };
+  });
+  const items = onRoute(scope, moduleId, SELECTOR).map(([element, step]) => {
     const id = element.dataset.questionId ?? '';
     const stored = id === '' ? null : readAnswer(moduleId, id);
-    const section = element.closest('[data-step]');
-    const index = section === null ? -1 : steps.indexOf(section);
     return {
       id,
       question: element.dataset.questionText ?? stored?.question ?? '',
       answer: answerOf(stored, element.dataset.question),
-      step: index >= 0 ? index + 1 : null,
+      step,
     };
   });
+  return { choices, items };
 }
 
-// Plain text for a text field in Smartschool: the module on top, then every
-// question with its answer, separated by a blank line.
-function plainText(moduleTitle: string, items: readonly Item[]): string {
+// "doel" becomes "Doel", for the line "Doel: Een schriftelijke toets".
+function choiceTitle(name: string): string {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+// Plain text for a text field in Smartschool: the module and the choices on
+// top, one per line, then every question with its answer, separated by a
+// blank line.
+function plainText(moduleTitle: string, { choices, items }: Collected): string {
+  const head = [
+    `Module: ${moduleTitle}`,
+    ...choices.map((choice) => `${choiceTitle(choice.name)}: ${choice.label === '' ? '(niet gekozen)' : choice.label}`),
+  ].join('\n');
   const blocks = items.map((item) => `${item.question}\n${item.answer === '' ? '(niet ingevuld)' : item.answer}`);
-  return [`Module: ${moduleTitle}`, ...blocks].join('\n\n');
+  return [head, ...blocks].join('\n\n');
 }
 
 function CheckIcon() {
@@ -104,6 +154,17 @@ function ExternalIcon() {
   );
 }
 
+// " · Ga naar stap n", after an empty answer or an open choice.
+function StepLink({ step }: { readonly step: number | null }) {
+  if (step === null) return null;
+  return (
+    <>
+      {' · '}
+      <a href={`#stap-${step}`}>Ga naar stap {step}</a>
+    </>
+  );
+}
+
 function missingNote(items: readonly Item[]): string {
   const missing = items.filter((item) => item.answer === '').length;
   if (missing === 0) return '';
@@ -117,17 +178,17 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
   const copiedTextRef = useRef('');
   // null until hydrated: the server cannot read localStorage, and the first
   // client render has to match what the server rendered.
-  const [items, setItems] = useState<readonly Item[] | null>(null);
+  const [collected, setCollected] = useState<Collected | null>(null);
   const [mode, setMode] = useState<Mode>('idle');
   // Bumped on every failed attempt, so that the fallback text is selected
   // again, also when the fallback is already showing.
   const [attempt, setAttempt] = useState(0);
 
-  const read = useCallback((): readonly Item[] => {
+  const read = useCallback((): Collected => {
     const root = rootRef.current;
     const moduleId = root === null ? null : moduleIdOf(root);
-    const next = root === null || moduleId === null ? [] : collect(root, moduleId);
-    setItems(next);
+    const next = root === null || moduleId === null ? { choices: [], items: [] } : collect(root, moduleId);
+    setCollected(next);
     // An answer changed after copying: the copied text is out of date, so
     // the confirmation goes and the student copies again.
     if (plainText(moduleTitle, next) !== copiedTextRef.current) setMode('idle');
@@ -138,7 +199,7 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
   // may have gone back and changed an answer. The player hides the other
   // steps with `hidden`, so the summary enters the viewport exactly when its
   // step is shown. Also read while the student types in a question on the
-  // same step, if an author puts one there.
+  // same step, if an author puts one there, and after every choice.
   useEffect(() => {
     const root = rootRef.current;
     if (root === null) return;
@@ -151,9 +212,11 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
       if (event.target instanceof Element && event.target.closest('[data-question]') !== null) read();
     }
     document.addEventListener('input', onInput);
+    const stopChoices = onChoice(() => read());
     return () => {
       observer.disconnect();
       document.removeEventListener('input', onInput);
+      stopChoices();
     };
   }, [read]);
 
@@ -179,7 +242,9 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
 
   const fallback = mode === 'fallback' || mode === 'fallback-copied';
   const copied = mode === 'copied' || mode === 'fallback-copied';
-  const text = items === null ? '' : plainText(moduleTitle, items);
+  const text = collected === null ? '' : plainText(moduleTitle, collected);
+  const items = collected?.items ?? null;
+  const choices = collected?.choices ?? [];
 
   return (
     <div ref={rootRef} className={styles.root} data-summary>
@@ -203,6 +268,23 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
           <p className={styles.noScript}>
             Je samenvatting verschijnt hier alleen als JavaScript aanstaat in je browser.
           </p>
+          {choices.length > 0 && (
+            <ul className={styles.choices}>
+              {choices.map((choice) => (
+                <li key={choice.name} className={styles.choice}>
+                  <span className={styles.question}>{choiceTitle(choice.name)}:</span>{' '}
+                  {choice.label !== '' ? (
+                    <span className={styles.chosen}>{choice.label}</span>
+                  ) : (
+                    <span className={styles.empty}>
+                      (nog niet gekozen)
+                      <StepLink step={choice.step} />
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
           {items !== null && items.length === 0 && (
             <p className={styles.empty}>In deze module zijn er geen vragen waarop je zelf iets schrijft.</p>
           )}
@@ -216,12 +298,7 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
                   ) : (
                     <dd className={styles.empty}>
                       (nog niet ingevuld)
-                      {item.step !== null && (
-                        <>
-                          {' · '}
-                          <a href={`#stap-${item.step}`}>Ga naar stap {item.step}</a>
-                        </>
-                      )}
+                      <StepLink step={item.step} />
                     </dd>
                   )}
                 </div>

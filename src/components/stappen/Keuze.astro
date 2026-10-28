@@ -1,0 +1,58 @@
+---
+// A choice for the student (docs/BRIEFING.md § 12, "Keuzes en takken"):
+//
+//   <Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?"
+//     opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }} />
+//
+// `naam` is the stable key of the choice in localStorage, unique within the
+// module; the key of the chosen option is what is stored. With `vertakt` the
+// choice decides which steps follow: a <Stap tak="toets"> is only for a
+// student who chose `toets`. A module has at most one branching choice; the
+// module route checks the branches when it builds. On a step with a <Keuze>,
+// "Volgende" waits until the student has chosen. Authors write no import and
+// no client directive.
+import KeuzeIsland from './Keuze.tsx';
+import type { BranchingChoice } from './checks';
+import { checkChoiceName, checkChoiceOptions, checkText } from '../vragen/authoring';
+
+interface Props {
+  naam: string;
+  vraag: string;
+  opties: Record<string, string>;
+  vertakt?: boolean;
+}
+
+const name = checkChoiceName(Astro.props.naam, Astro.locals);
+const vraag = checkText('Keuze', 'vraag', Astro.props.vraag);
+const options = checkChoiceOptions(name, Astro.props.opties);
+const { vertakt } = Astro.props;
+if (vertakt !== undefined && vertakt !== true) {
+  throw new Error(`<Keuze naam="${name}">: write \`vertakt\` without a value, or leave it out.`);
+}
+if (Astro.slots.has('default')) {
+  throw new Error(`<Keuze naam="${name}"> takes no content between its tags: write <Keuze … />.`);
+}
+
+// The module route read the branching choice from the MDX source, for the
+// labels of the branch steps (Stap.astro). It has to be exactly what renders
+// here, or a label could name an option that the student never sees.
+if (vertakt === true) {
+  const source = (Astro.locals as { branching?: BranchingChoice | null }).branching;
+  if (source === undefined) {
+    throw new Error(`<Keuze naam="${name}" vertakt> only works inside a module (src/content/modules/).`);
+  }
+  const same =
+    source !== null &&
+    source.name === name &&
+    Object.keys(source.options).length === options.length &&
+    options.every((option) => Object.hasOwn(source.options, option.key) && source.options[option.key] === option.label);
+  if (!same) {
+    throw new Error(
+      `<Keuze naam="${name}" vertakt>: the options the build read from the module source differ from the ones ` +
+        "this component got. Write `opties` as an object of plain texts, such as opties={{ toets: 'Een schriftelijke toets' }}.",
+    );
+  }
+}
+---
+
+<KeuzeIsland name={name} question={vraag} options={options} branching={vertakt === true} client:visible />

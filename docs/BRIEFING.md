@@ -201,6 +201,12 @@ houden een leerling die alleen thuis zit bij de les.
 - **Navigatie.** Vorige en volgende, de pijltjestoetsen, en een
   voortgangsbalk die toont hoe ver de leerling is. De leerling klikt vrij
   vooruit; een vraag die verplicht beantwoord moet worden, regelt dat zelf.
+  Op een stap met een keuze gaat *Volgende* pas als de leerling gekozen
+  heeft. Een module kan zich één keer vertakken: de leerling kiest
+  bijvoorbeeld een doel en ziet daarna alleen de stappen van dat doel, met
+  daarna een gedeeld slot. De voortgang telt de stappen van die route. Wie
+  wil wisselen, gaat terug naar de keuzestap; wat de leerling in de andere
+  tak schreef, blijft bewaard.
 - **Voortgang bewaren.** De huidige stap en de antwoorden worden lokaal in de
   browser bewaard (`localStorage`, plus de stap in de URL). Wie herlaadt of
   de laptop dichtklapt, gaat verder waar die gebleven was. Er gaat niets naar een
@@ -450,11 +456,17 @@ Tekst, een beeld of een vraagcomponent.
   rechts. De pijltjestoetsen doen niets terwijl de focus in een `input`,
   `textarea`, `select` of bewerkbaar veld staat, als er een modifiertoets
   ingedrukt is, of als een component de toets zelf afhandelt.
-- De stap staat in de URL als `#stap-n` en in `localStorage`. Bij het laden
-  geldt eerst een geldige `#stap-n` in de URL, dan `localStorage`, anders
-  stap 1. Een te hoge of te lage stap valt terug op de dichtstbijzijnde
-  geldige. De URL wordt bijgewerkt zonder nieuwe stap in de geschiedenis: de
-  terugknop van de browser verlaat de module, *Vorige* gaat een stap terug.
+- De stap staat in de URL als `#stap-n` en in `localStorage`. In een module
+  met takken is `n` de positie in de route van de leerling (zie *Keuzes en
+  takken* hieronder). Bij het laden geldt eerst een geldige `#stap-n` in de
+  URL, dan `localStorage`, anders stap 1. Een te hoge of te lage stap valt
+  terug op de dichtstbijzijnde geldige. De URL wordt bijgewerkt zonder
+  nieuwe stap in de geschiedenis: de terugknop van de browser verlaat de
+  module, *Vorige* gaat een stap terug.
+- Op een stap met een `<Keuze>` die nog open is, zijn *Volgende* en de
+  pijltjestoets naar rechts uitgeschakeld. Een korte zin naast de knop zegt
+  waarom (*Kies eerst een antwoord om verder te gaan.*), in een
+  `aria-live`-gebied.
 - Bij het wisselen gaat de focus naar de kop van de nieuwe stap. "Stap n van
   m" staat als tekst in een `aria-live`-gebied, zodat een schermlezer de
   voortgang voorleest.
@@ -480,7 +492,9 @@ Tekst, een beeld of een vraagcomponent.
 - Elke sleutel in `localStorage` heeft de vorm
   `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
   `stap`. Een vraag bewaart haar antwoord onder `vraag:<id>`, met de `id`
-  die de auteur schrijft (zie *Antwoorden bewaren* hieronder).
+  die de auteur schrijft (zie *Antwoorden bewaren* hieronder). Een
+  `<Keuze>` bewaart de gekozen optie onder `keuze:<naam>` (zie *Keuzes en
+  takken*).
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -517,7 +531,8 @@ Tekst, een beeld of een vraagcomponent.
   optie zonder feedback, tekst tussen de tags van `<Reflectie>` of
   `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
   dan één, een link in `src/config/smartschool.ts` die geen geldig
-  `https://`-adres is.
+  `https://`-adres is, een fout in een `<Keuze>` of in de takken (zie
+  *Keuzes en takken*).
 
 ### Vraagtypes
 
@@ -623,6 +638,95 @@ steunt.
   opslag. Past een auteur een vraag aan, dan ziet de leerling de nieuwe
   tekst, ook bij een antwoord dat al bewaard was. De `id` blijft dezelfde.
 
+### Keuzes en takken
+
+```mdx
+<Stap titel="Kies je doel">
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?"
+  opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }} />
+</Stap>
+
+<Stap titel="Een toets voorbereiden" tak="toets">
+…
+</Stap>
+
+<Stap titel="Een mondeling examen voorbereiden" tak="mondeling">
+…
+</Stap>
+
+<Stap titel="Klaar! Kopieer wat je schreef">
+<Samenvatting />
+</Stap>
+```
+
+- `<Keuze>` is een vraag met één kaart per optie: een radiogroep, dus Tab
+  gaat naar de groep en de pijltjestoetsen kiezen. `naam` volgt de regels
+  van een `id`: kleine letters, cijfers en koppeltekens, uniek onder de
+  keuzes van de module, en niet meer te wijzigen na publicatie. `vraag` is
+  gewone tekst. `opties` koppelt een sleutel, in dezelfde vorm als een `id`,
+  aan de tekst die de leerling ziet. Eén optie mag: een module kan met één
+  tak beginnen en er later takken bij krijgen. De tag sluit zichzelf (`/>`).
+- Op **elke** stap met een `<Keuze>`, vertakkend of niet, wacht *Volgende*
+  tot de leerling gekozen heeft (zie *De speler*).
+- **Takken.** Met `vertakt` bepaalt de keuze welke stappen volgen. Een module
+  heeft hoogstens één vertakkende keuze. Een stap met `tak="toets"` hoort bij
+  de tak `toets`; een stap zonder `tak` is gedeeld. De stap met de
+  vertakkende keuze is zelf gedeeld en staat vóór elke takstap. Gedeelde
+  stappen mogen tussen de takstappen staan. De laatste stap, met de
+  samenvatting, is gedeeld.
+- **De route.** De speler toont de gedeelde stappen plus de stappen van de
+  gekozen tak. Zolang er niet gekozen is, zijn alle takstappen verborgen en
+  komt de leerling niet voorbij de keuzestap, ook niet met `#stap-n` of een
+  bewaarde stap: die vallen terug op de keuzestap. Anders kon een leerling de
+  keuze overslaan via het gedeelde slot, en verschoof de nummering zodra die
+  alsnog koos. "Stap n van m", de voortgangsbalk, de pijltjestoetsen,
+  `#stap-n` en de bewaarde stap gebruiken de positie in de route. Een te
+  hoge `#stap-n` valt terug op de laatste stap van de route.
+- **Wisselen.** Terug naar de keuzestap en een andere optie kiezen. De
+  antwoorden uit de vorige tak blijven bewaard en staan er weer wie
+  terugwisselt; in de samenvatting staan alleen die van de gekozen tak.
+- Welke stappen bij de route horen, beslist één functie: `routeOf` in
+  `src/components/stappen/choices.ts`. De speler en de samenvatting
+  gebruiken ze allebei. Leid het nooit af uit `hidden`: de speler verbergt
+  elke stap behalve de huidige.
+- **Bewaren.** De sleutel van de gekozen optie staat als tekst onder
+  `ai-leerlijn:<module-id>:keuze:<naam>`. Lees en schrijf ze alleen met
+  `readChoice` en `writeChoice` uit `choices.ts`; `chosenOption` geeft `null`
+  voor een bewaarde sleutel die geen optie meer is. *Opnieuw beginnen* wist
+  de keuzes met de rest van de module. Is `localStorage` geblokkeerd, dan
+  geldt een keuze tot de leerling de pagina verlaat, zodat die niet vastzit
+  op de keuzestap.
+- **Het event.** `writeChoice` stuurt een `CustomEvent` met de naam
+  `ai-leerlijn:keuze` (`CHOICE_EVENT`) op `document`, met als `detail`
+  `{ moduleId, name, value }`: de module, de `naam` van de keuze en de
+  sleutel van de optie. `onChoice(listener)` luistert ernaar. Zo reageren de
+  speler, de samenvatting en latere componenten meteen. Alles in
+  `choices.ts` werkt synchroon, zodat een script een bewaarde keuze kan lezen
+  voor de stap getoond wordt.
+- **In de statische HTML**, ook in verborgen stappen die nog niet
+  gehydrateerd zijn, draagt het buitenste element van elke `<Keuze>`
+  `data-choice="<naam>"` en `data-choice-options` (JSON:
+  `{"<sleutel>": "<tekst>", …}`); de vertakkende keuze draagt ook
+  `data-branching`. De `<section>` van een takstap draagt
+  `data-tak="<sleutel>"`.
+- **Zonder JavaScript** staan alle stappen onder elkaar, en een takstap
+  krijgt boven haar titel een klein label: *Voor: Een schriftelijke toets*.
+  Met JavaScript is dat label verborgen. De tekst ervan komt uit de MDX-bron,
+  niet uit de gerenderde `<Keuze>`, want een stap kan er niet op rekenen dat
+  die eerder rendert: `checks.ts` leest de vertakkende keuze uit de bron, en
+  de route geeft ze via `Astro.locals` aan `<Stap>`. `<Keuze>` controleert dat
+  wat de build las, exact zijn props zijn. Schrijf `opties` van de
+  vertakkende keuze dus als een object van gewone teksten, tussen `'…'` of
+  `"…"`, zonder variabelen of berekende tekst.
+- **Buildchecks**, elk met een duidelijke melding: een `tak` zonder
+  vertakkende `<Keuze>` ervoor, een `tak` op de keuzestap zelf, een onbekende
+  takwaarde, een optie van de vertakkende keuze zonder stappen, meer dan één
+  vertakkende keuze, `opties` die de build niet uit de bron kan lezen, en een
+  `tak` op de laatste stap met de samenvatting. `<Keuze>` zelf laat de build
+  falen bij een ontbrekende, ongeldige of dubbele `naam`, een lege `vraag`,
+  lege of ongeldige `opties`, `vertakt` met een waarde, of tekst tussen de
+  tags.
+
 ### De samenvatting
 
 ```mdx
@@ -641,16 +745,26 @@ steunt.
   komt er niet in**: alleen wat de leerling zelf schreef. Een vraag zonder
   antwoord toont *(nog niet ingevuld)* met een link naar haar stap
   (`#stap-n`). Staan er lege vragen in, dan zegt de inleiding hoeveel.
+- Bovenaan staan de keuzes, één per regel en in de volgorde van de module:
+  *Doel: Een schriftelijke toets*, met de `naam` van de keuze met een
+  hoofdletter vooraan. Een keuze die nog open is, toont *(nog niet gekozen)*
+  met een link naar haar stap.
+- In een module met takken neemt de samenvatting alleen vragen en keuzes mee
+  uit de route van de leerling (`routeOf`), en de links gebruiken de
+  stapnummers van die route. Een vraag uit een tak die de leerling niet
+  koos, staat er dus niet in, ook niet als *(nog niet ingevuld)*.
 - De samenvatting leest de antwoorden telkens opnieuw wanneer haar stap
   zichtbaar wordt (een `IntersectionObserver`: de speler verbergt de andere
-  stappen met `hidden`), en terwijl de leerling typt in een vraag op dezelfde
-  stap. Een leerling die terugkeert en een antwoord aanpast, ziet dus altijd
-  de actuele tekst. Ze wacht niet op `hashchange`: de speler wisselt van stap
-  met `replaceState`, en dat stuurt geen `hashchange`.
+  stappen met `hidden`), terwijl de leerling typt in een vraag op dezelfde
+  stap, en na elke keuze. Een leerling die terugkeert en een antwoord
+  aanpast, ziet dus altijd de actuele tekst. Ze wacht niet op `hashchange`:
+  de speler wisselt van stap met `replaceState`, en dat stuurt geen
+  `hashchange`.
 - *Kopieer alles* zet platte tekst op het klembord met
-  `navigator.clipboard.writeText`: bovenaan `Module: <naam>`, daarna per
-  vraag de vraag op één regel en het antwoord eronder, gescheiden door een
-  lege regel. Een lege vraag krijgt `(niet ingevuld)`. Lege regels binnen
+  `navigator.clipboard.writeText`: bovenaan `Module: <naam>`, meteen
+  daaronder per keuze een regel (`Doel: Een schriftelijke toets`, of
+  `Doel: (niet gekozen)`), daarna per vraag de vraag op één regel en het
+  antwoord eronder, gescheiden door een lege regel. Een lege vraag krijgt `(niet ingevuld)`. Lege regels binnen
   een antwoord vallen weg, zodat een lege regel altijd een nieuwe vraag
   betekent. Zo past de tekst netjes in een tekstveld van Smartschool.
 - Na het kopiëren verschijnt een bevestiging (`role="status"`, dus
