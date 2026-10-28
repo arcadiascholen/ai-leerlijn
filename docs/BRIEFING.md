@@ -90,11 +90,12 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    graad; een link met `?graad=1` opent ze meteen gefilterd.
 4. **Module.** Ongeveer 70 minuten, in korte stappen (§ 6).
 5. **Eindformulier.** **Eén Smartschool-formulier voor alle modules**, met de
-   gekozen module als eerste vraag. Het bevat een korte reflectie en
-   optioneel een bestand (screenshot, chatverslag, eigen werk). De resultaten
-   komen in het LVS, zodat klastitularissen zien wie heeft ingediend. De
-   startpagina (stap 3) en de samenvatting aan het einde van een module
-   linken ernaar.
+   gekozen module als eerste vraag. Het bevat een korte reflectie en een
+   bestand: de pdf met de samenvatting die de leerling aan het einde van de
+   module downloadt (§ 6). Dat het formulier een bestand aanvaardt, wordt in
+   Smartschool geregeld, buiten deze repo. De resultaten komen in het LVS,
+   zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
+   en de samenvatting aan het einde van een module linken ernaar.
 
 De vier scholen werken op **één Smartschool-platform**: er is geen
 schoolkeuze, en elke link is voor iedereen dezelfde. De links naar de
@@ -221,10 +222,11 @@ houden een leerling die alleen thuis zit bij de les.
   - twee prompts of twee AI-antwoorden vergelijken;
   - sorteren of indelen (bijvoorbeeld: is dit AI of niet?);
   - een korte reflectie typen.
-- **Samenvatting aan het einde.** De laatste stap toont wat de leerling
-  onderweg schreef, met een knop *kopieer*. Die tekst plakt de leerling in
+- **Samenvatting aan het einde.** De laatste stap zegt hoeveel vragen de
+  leerling invulde en welke nog leeg zijn, en maakt van alles wat de leerling
+  onderweg schreef een pdf om te downloaden. Die pdf laadt de leerling op in
   het eindformulier. Zo levert de site het bewijsstuk aan zonder zelf
-  gegevens te verwerken.
+  gegevens te verwerken: de pdf ontstaat in de browser van de leerling.
 
 Auteurs schrijven een module als **één MDX-bestand** waarin de stappen
 `<Stap>`-blokken zijn. Eén bestand per module houdt het integreren
@@ -722,7 +724,7 @@ steunt.
 …
 </Stap>
 
-<Stap titel="Klaar! Kopieer wat je schreef">
+<Stap titel="Klaar! Download je samenvatting">
 <Samenvatting />
 </Stap>
 ```
@@ -988,7 +990,7 @@ iets.
 ### De samenvatting
 
 ```mdx
-<Stap titel="Klaar! Kopieer wat je schreef">
+<Stap titel="Klaar! Download je samenvatting">
 <Samenvatting />
 </Stap>
 ```
@@ -997,46 +999,83 @@ iets.
   module; de build controleert beide. Ze heeft geen attributen: de naam van
   de module geeft de route mee via `Astro.locals`, de link naar het
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
-  `src/components/stappen/`.
-- Ze toont de naam van de module en, in de volgorde van de module, elke
-  `<DenkEerst>` en `<Reflectie>` met de vraag en het antwoord. **Meerkeuze
-  komt er niet in**: alleen wat de leerling zelf schreef. Een vraag zonder
-  antwoord toont *(nog niet ingevuld)* met een link naar haar stap
-  (`#stap-n`). Staan er lege vragen in, dan zegt de inleiding hoeveel.
-- Bovenaan staan de keuzes, één per regel en in de volgorde van de module:
-  *Doel: Een schriftelijke toets*, met de `naam` van de keuze met een
-  hoofdletter vooraan. Een keuze die nog open is, toont *(nog niet gekozen)*
-  met een link naar haar stap.
+  `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
+- Ze neemt, in de volgorde van de module, elke `<DenkEerst>` en
+  `<Reflectie>` mee. **Meerkeuze komt er niet in**: alleen wat de leerling
+  zelf schreef. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
+  *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
+  als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
+  niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
+  twee *beide vragen*, zonder antwoord *nog geen van de 14 vragen*, en
+  zonder vragen *zijn er geen vragen waarop je zelf iets schrijft*.
+- Is er iets leeg, dan staat eronder *Nog leeg:* met elke lege vraag en
+  elke keuze die nog open is (*Tool: (nog niet gekozen)*), elk met *Ga naar
+  stap n* (`#stap-n`). Is alles ingevuld, dan staat er geen lijst. De
+  antwoorden zelf staan niet op de stap, wel in de pdf.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
-  koos, staat er dus niet in, ook niet als *(nog niet ingevuld)*.
+  koos, telt dus niet mee en staat niet in de pdf.
 - De samenvatting leest de antwoorden telkens opnieuw wanneer haar stap
   zichtbaar wordt (een `IntersectionObserver`: de speler verbergt de andere
   stappen met `hidden`), terwijl de leerling typt in een vraag op dezelfde
   stap, en na elke keuze. Een leerling die terugkeert en een antwoord
-  aanpast, ziet dus altijd de actuele tekst. Ze wacht niet op `hashchange`:
+  aanpast, ziet dus altijd de actuele stand. Ze wacht niet op `hashchange`:
   de speler wisselt van stap met `replaceState`, en dat stuurt geen
   `hashchange`.
-- *Kopieer alles* zet platte tekst op het klembord met
-  `navigator.clipboard.writeText`: bovenaan `Module: <naam>`, meteen
-  daaronder per keuze een regel (`Doel: Een schriftelijke toets`, of
-  `Doel: (niet gekozen)`), daarna per vraag de vraag op één regel en het
-  antwoord eronder, gescheiden door een lege regel. Een lege vraag krijgt `(niet ingevuld)`. Lege regels binnen
-  een antwoord vallen weg, zodat een lege regel altijd een nieuwe vraag
-  betekent. Zo past de tekst netjes in een tekstveld van Smartschool.
-- Na het kopiëren verschijnt een bevestiging (`role="status"`, dus
-  voorgelezen) en de knop *Open het eindformulier*, die Smartschool in een
-  nieuw tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
-  bevestiging en de knop, en kopieert de leerling opnieuw.
-- **Als het kopiëren mislukt** (geen veilige context, of de browser
-  weigert), verschijnt zonder foutmelding de terugvaloptie: de tekst staat
-  geselecteerd in een tekstveld op de plaats van de lijst, met de vraag om
-  Ctrl+C te gebruiken. Kopieert de leerling uit dat veld, dan volgt dezelfde
-  bevestiging.
-- **Hoogte.** De lijst scrolt binnen haar eigen kader (hoogstens 13.5rem),
-  zodat de knoppen altijd zichtbaar blijven, ook bij veel of lange
-  antwoorden. Het terugvalveld heeft dezelfde hoogte.
+- **De pdf.** *Download als pdf* (de primaire knop) maakt in de browser een
+  pdf met jsPDF (MIT), A4 staand, en biedt die aan als download:
+  `ai-leerpad-<module-id>.pdf`. jsPDF (± 125 kB gzip) wordt pas bij de klik
+  geladen, met een dynamische `import('jspdf')`: de modulepagina betaalt er
+  niets voor tot dan. Alleen de tekst-API (`text`, `splitTextToSize`,
+  `addPage`), nooit `.html()`: dat sleept html2canvas en DOMPurify mee.
+- In de pdf staat, in deze volgorde: *AI-leerpad Arcadia Scholen*, de naam
+  van de module, *gedownload op 10 november 2026*, de keuzes, één per regel
+  (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met de `naam`
+  van de keuze met een hoofdletter vooraan), en dan per vraag de vraag in
+  het vet met het antwoord eronder, of *(niet ingevuld)*. Onderaan elke
+  pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
+  volgende pagina; een vraag staat nooit alleen onderaan een pagina. Lege
+  regels binnen een antwoord vallen weg. Er staat geen naam of ander
+  persoonsgegeven in: de site kent de leerling niet, Smartschool koppelt het
+  bestand aan de leerling.
+- `pdf.ts` krijgt gewone gegevens: de module, de keuzes en per vraag een
+  blok met een `kind` (nu alleen `answer`). Een nieuw soort blok komt daar
+  bij.
+- **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
+  er gaat geen lettertypebestand mee, maar het kent alleen de tekens van
+  WinAnsi (Windows-1252). Voor een teken daarbuiten schrijft jsPDF zonder
+  foutmelding verkeerde tekens (→ wordt `!’`). Daarom gaat alle tekst eerst
+  door `forPdf`: → wordt `->`, − wordt `-`, ≤ wordt `<=`, een letter
+  buiten WinAnsi verliest haar accent (ş wordt s), emoji vallen weg, en wat
+  dan nog overblijft wordt `?`. De accenten van het Nederlands en het Frans,
+  ’ “ ” – — € en ½ staan er gewoon. Figtree insluiten lost dat niet op: het
+  heeft geen pijlen en geen emoji, en het weegt meer. Een woord dat langer
+  is dan een regel, wordt afgebroken.
+- Na de download verschijnt een bevestiging (`role="status"`, dus
+  voorgelezen): ✓ *Gedownload. Laad de pdf op in het eindformulier.* Daarna
+  staat de knop *Open het eindformulier* er, die Smartschool in een nieuw
+  tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
+  bevestiging en de knop, en downloadt de leerling opnieuw.
+- **Als de pdf mislukt** (jsPDF laadt niet, bijvoorbeeld op een haperende
+  verbinding, of het maken gooit een fout), verschijnt zonder foutmelding:
+  *Downloaden lukte niet. Klik op **Afdrukken** en kies bij Bestemming
+  **Opslaan als PDF**.*, met de knop *Afdrukken* (`window.print()`). Na het
+  afdrukvenster (`afterprint`) verschijnt *Open het eindformulier*. Of de
+  leerling opsloeg of annuleerde, zegt de browser niet.
+- **Op papier.** De volledige samenvatting, met dezelfde inhoud als de pdf
+  (*afgedrukt op* in plaats van *gedownload op*), staat ook in de pagina,
+  op het scherm verborgen. De printstijl (`@media print`) toont op papier
+  alleen die: de header, de voortgang, de navigatie, de andere stappen, de
+  titel van de stap en de knoppen zijn verborgen. Dat geldt zolang de stap
+  met de samenvatting getoond wordt; een andere stap wordt afgedrukt zoals
+  de browser hem toont. De regels hangen niet af van de klassen van de
+  speler of de layout: met `:has()` verliest elke voorouder van de
+  samenvatting zijn vaste hoogte en scrollvak, en verdwijnt alles wat ernaast
+  staat.
+- **Hoogte.** De lijst *Nog leeg* scrolt binnen haar eigen kader (hoogstens
+  13.5rem), zodat de knoppen altijd zichtbaar blijven, ook bij veel of lange
+  vragen.
 - Zonder JavaScript wordt niets bewaard; de samenvatting zegt dan dat ze
   JavaScript nodig heeft.
 

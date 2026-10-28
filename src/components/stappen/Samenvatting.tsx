@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { readAnswer, type StoredAnswer } from '../vragen/answers';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
+import { choiceLine, downloadPdf, formatDate, NOT_ANSWERED, SITE_NAME, type PdfSummary } from './pdf';
 import { moduleIdOf } from './storage';
 import styles from './Samenvatting.module.css';
 
 // The summary in the last step of a module (docs/BRIEFING.md § 6 and § 12).
-// It shows what the student wrote along the way, with the question next to
-// each answer, and copies it all as plain text for the final form in
-// Smartschool. The site itself sends nothing anywhere.
+// It says how many questions the student filled in, lists what is still
+// empty with a link back to its step, and turns everything the student wrote
+// into a PDF (pdf.ts) to upload to the final form in Smartschool. The site
+// itself sends nothing anywhere.
 //
 // It does not need the question islands: every question carries its kind,
 // its id and its text as data attributes in the static HTML, also in steps
@@ -19,6 +21,11 @@ import styles from './Samenvatting.module.css';
 // branches only the steps of the student's route count (routeOf in
 // choices.ts): the questions of a branch the student did not choose are left
 // out, and the step numbers are positions in the route.
+//
+// If the PDF cannot be made (jsPDF does not load on a flaky connection, or
+// building it throws), the student prints to PDF instead. For that, the full
+// summary is in the page too, hidden on screen; the print styles in
+// Samenvatting.module.css show only that on paper.
 
 // Only what the student wrote: multiple-choice answers are left out.
 const KINDS = ['think-first', 'reflection'];
@@ -47,13 +54,14 @@ interface Item {
   readonly step: number | null;
 }
 
-// idle: nothing copied yet. copied: the Clipboard API worked. fallback: it
-// failed, so the text stands selected in a field for Ctrl+C. fallback-copied:
-// the student copied it from that field.
-type Mode = 'idle' | 'copied' | 'fallback' | 'fallback-copied';
+// idle: nothing saved yet. downloaded: the browser got the PDF. print: the
+// PDF failed, so the student is asked to print to PDF. printed: the print
+// dialog closed (`afterprint`); whether the student saved or cancelled, the
+// browser does not say.
+type Mode = 'idle' | 'downloaded' | 'print' | 'printed';
 
-// Line breaks as \n, no blank lines inside an answer: in the copied text a
-// blank line separates one question from the next.
+// Line breaks as \n, no trailing spaces and no blank lines inside an
+// answer, so that it reads as one block under its question.
 function normalise(text: string): string {
   return text
     .replace(/\r\n?/g, '\n')
@@ -112,21 +120,45 @@ function collect(root: HTMLElement, moduleId: string): Collected {
   return { choices, items };
 }
 
+// What the PDF or the paper holds, to tell whether it went out of date.
+function signature({ choices, items }: Collected): string {
+  return JSON.stringify([choices.map((choice) => choice.label), items.map((item) => [item.question, item.answer])]);
+}
+
 // "doel" becomes "Doel", for the line "Doel: Een schriftelijke toets".
 function choiceTitle(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-// Plain text for a text field in Smartschool: the module and the choices on
-// top, one per line, then every question with its answer, separated by a
-// blank line.
-function plainText(moduleTitle: string, { choices, items }: Collected): string {
-  const head = [
-    `Module: ${moduleTitle}`,
-    ...choices.map((choice) => `${choiceTitle(choice.name)}: ${choice.label === '' ? '(niet gekozen)' : choice.label}`),
-  ].join('\n');
-  const blocks = items.map((item) => `${item.question}\n${item.answer === '' ? '(niet ingevuld)' : item.answer}`);
-  return [head, ...blocks].join('\n\n');
+function pdfOf(moduleId: string, moduleTitle: string, { choices, items }: Collected): PdfSummary {
+  return {
+    moduleId,
+    moduleTitle,
+    choices: choices.map((choice) => ({ title: choiceTitle(choice.name), label: choice.label })),
+    items: items.map((item) => ({ kind: 'answer', question: item.question, answer: item.answer })),
+    date: new Date(),
+  };
+}
+
+// "In de module … vulde je 12 van de 14 vragen in." Only the questions count,
+// not the choices.
+function intro(moduleTitle: string, items: readonly Item[]): ReactNode {
+  const total = items.length;
+  const filled = items.filter((item) => item.answer !== '').length;
+  const start = (
+    <>
+      In de module <strong>{moduleTitle}</strong>
+    </>
+  );
+  if (total === 0) return <>{start} zijn er geen vragen waarop je zelf iets schrijft.</>;
+  if (total === 1) return <>{start} vulde je de vraag {filled === 1 ? 'in' : 'nog niet in'}.</>;
+  if (filled === total) return <>{start} vulde je {total === 2 ? 'beide' : `alle ${total}`} vragen in.</>;
+  if (filled === 0) return <>{start} vulde je nog geen van de {total} vragen in.</>;
+  return (
+    <>
+      {start} vulde je {filled} van de {total} vragen in.
+    </>
+  );
 }
 
 function CheckIcon() {
@@ -137,11 +169,19 @@ function CheckIcon() {
   );
 }
 
-function CopyIcon() {
+function DownloadIcon() {
   return (
     <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="9" y="9" width="11" height="11" rx="2" />
-      <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+      <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+    </svg>
+  );
+}
+
+function PrintIcon() {
+  return (
+    <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" />
+      <rect x="7" y="14" width="10" height="6" rx="1" />
     </svg>
   );
 }
@@ -165,35 +205,59 @@ function StepLink({ step }: { readonly step: number | null }) {
   );
 }
 
-function missingNote(items: readonly Item[]): string {
-  const missing = items.filter((item) => item.answer === '').length;
-  if (missing === 0) return '';
-  return missing === 1 ? ' Eén vraag is nog leeg.' : ` ${missing} vragen zijn nog leeg.`;
+// The full summary for paper: the same as the PDF, with every question,
+// also the ones that are filled in. Hidden on screen, and so for screen
+// readers too.
+function OnPaper({ moduleTitle, collected }: { readonly moduleTitle: string; readonly collected: Collected }) {
+  return (
+    <div className={styles.paper} data-summary-print>
+      <p className={styles.paperSite}>{SITE_NAME}</p>
+      <p className={styles.paperTitle}>{moduleTitle}</p>
+      <p className={styles.paperMeta}>afgedrukt op {formatDate(new Date())}</p>
+      {collected.choices.length > 0 && (
+        <ul className={styles.paperChoices}>
+          {collected.choices.map((choice) => (
+            <li key={choice.name}>{choiceLine({ title: choiceTitle(choice.name), label: choice.label })}</li>
+          ))}
+        </ul>
+      )}
+      <dl className={styles.paperList}>
+        {collected.items.map((item) => (
+          <div key={item.id} className={styles.paperItem}>
+            <dt className={styles.paperQuestion}>{item.question}</dt>
+            <dd className={item.answer !== '' ? styles.paperAnswer : styles.paperEmpty}>
+              {item.answer !== '' ? item.answer : NOT_ANSWERED}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
 }
 
 export default function Samenvatting({ moduleTitle, formUrl }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
-  const fieldRef = useRef<HTMLTextAreaElement>(null);
-  // The text that was last copied or offered for copying.
-  const copiedTextRef = useRef('');
+  const emptyTitleId = useId();
+  // The signature of what was last downloaded or offered for printing.
+  const savedRef = useRef('');
+  // While jsPDF loads and the PDF is made: a second click does nothing.
+  const busyRef = useRef(false);
   // null until hydrated: the server cannot read localStorage, and the first
   // client render has to match what the server rendered.
   const [collected, setCollected] = useState<Collected | null>(null);
   const [mode, setMode] = useState<Mode>('idle');
-  // Bumped on every failed attempt, so that the fallback text is selected
-  // again, also when the fallback is already showing.
-  const [attempt, setAttempt] = useState(0);
+  const [busy, setBusy] = useState(false);
 
   const read = useCallback((): Collected => {
     const root = rootRef.current;
     const moduleId = root === null ? null : moduleIdOf(root);
     const next = root === null || moduleId === null ? { choices: [], items: [] } : collect(root, moduleId);
     setCollected(next);
-    // An answer changed after copying: the copied text is out of date, so
-    // the confirmation goes and the student copies again.
-    if (plainText(moduleTitle, next) !== copiedTextRef.current) setMode('idle');
+    // An answer changed after the download: the PDF is out of date, so the
+    // confirmation and the form button go, and the student downloads again.
+    if (signature(next) !== savedRef.current) setMode('idle');
     return next;
-  }, [moduleTitle]);
+  }, []);
 
   // Read when the step with the summary is shown, every time: the student
   // may have gone back and changed an answer. The player hides the other
@@ -220,100 +284,86 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
     };
   }, [read]);
 
-  useEffect(() => {
-    if (mode !== 'fallback') return;
-    fieldRef.current?.focus();
-    fieldRef.current?.select();
-  }, [mode, attempt]);
-
-  async function copyAll(): Promise<void> {
-    const text = plainText(moduleTitle, read());
-    copiedTextRef.current = text;
+  async function download(): Promise<void> {
+    const root = rootRef.current;
+    if (busyRef.current || root === null) return;
+    const next = read();
+    savedRef.current = signature(next);
+    busyRef.current = true;
+    setBusy(true);
     try {
-      // Throws when there is no Clipboard API (not a secure context) and
-      // rejects when the browser refuses.
-      await navigator.clipboard.writeText(text);
-      setMode('copied');
+      await downloadPdf(pdfOf(moduleIdOf(root) ?? 'module', moduleTitle, next));
+      setMode('downloaded');
     } catch {
-      setMode('fallback');
-      setAttempt((count) => count + 1);
+      // No error dialog: the student prints to PDF instead.
+      setMode('print');
+    } finally {
+      busyRef.current = false;
+      setBusy(false);
     }
   }
 
-  const fallback = mode === 'fallback' || mode === 'fallback-copied';
-  const copied = mode === 'copied' || mode === 'fallback-copied';
-  const text = collected === null ? '' : plainText(moduleTitle, collected);
-  const items = collected?.items ?? null;
-  const choices = collected?.choices ?? [];
+  // The print dialog blocks until it closes; `afterprint` follows. Only then
+  // the form button appears, as after a download.
+  function print(): void {
+    window.addEventListener('afterprint', () => setMode((current) => (current === 'print' ? 'printed' : current)), {
+      once: true,
+    });
+    window.print();
+  }
+
+  const printing = mode === 'print' || mode === 'printed';
+  const done = mode === 'downloaded' || mode === 'printed';
+  const openChoices = collected?.choices.filter((choice) => choice.label === '') ?? [];
+  const emptyItems = collected?.items.filter((item) => item.answer === '') ?? [];
 
   return (
     <div ref={rootRef} className={styles.root} data-summary>
-      <p className={styles.intro}>
-        Dit schreef je in de module <strong>{moduleTitle}</strong>. Kopieer alles en plak het in het eindformulier op
-        Smartschool.
-        {items !== null && <strong>{missingNote(items)}</strong>}
-      </p>
-
-      {fallback ? (
-        <textarea
-          ref={fieldRef}
-          className={styles.fallback}
-          value={text}
-          readOnly
-          aria-label="Je samenvatting, om te kopiëren"
-          onCopy={() => setMode('fallback-copied')}
-        />
+      {collected === null ? (
+        <p className={styles.noScript}>Je samenvatting verschijnt hier alleen als JavaScript aanstaat in je browser.</p>
       ) : (
-        <div className={styles.box} tabIndex={0} role="region" aria-label="Wat je schreef">
-          <p className={styles.noScript}>
-            Je samenvatting verschijnt hier alleen als JavaScript aanstaat in je browser.
+        <p className={styles.intro}>{intro(moduleTitle, collected.items)}</p>
+      )}
+
+      {openChoices.length + emptyItems.length > 0 && (
+        <div className={styles.box} tabIndex={0} role="region" aria-labelledby={emptyTitleId}>
+          <p id={emptyTitleId} className={styles.boxTitle}>
+            Nog leeg:
           </p>
-          {choices.length > 0 && (
-            <ul className={styles.choices}>
-              {choices.map((choice) => (
-                <li key={choice.name} className={styles.choice}>
-                  <span className={styles.question}>{choiceTitle(choice.name)}:</span>{' '}
-                  {choice.label !== '' ? (
-                    <span className={styles.chosen}>{choice.label}</span>
-                  ) : (
-                    <span className={styles.empty}>
-                      (nog niet gekozen)
-                      <StepLink step={choice.step} />
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-          {items !== null && items.length === 0 && (
-            <p className={styles.empty}>In deze module zijn er geen vragen waarop je zelf iets schrijft.</p>
-          )}
-          {items !== null && items.length > 0 && (
-            <dl className={styles.list}>
-              {items.map((item) => (
-                <div key={item.id} className={styles.item}>
-                  <dt className={styles.question}>{item.question}</dt>
-                  {item.answer !== '' ? (
-                    <dd className={styles.answer}>{item.answer}</dd>
-                  ) : (
-                    <dd className={styles.empty}>
-                      (nog niet ingevuld)
-                      <StepLink step={item.step} />
-                    </dd>
-                  )}
-                </div>
-              ))}
-            </dl>
-          )}
+          <ul className={styles.list}>
+            {openChoices.map((choice) => (
+              <li key={`keuze:${choice.name}`} className={styles.item}>
+                {choiceTitle(choice.name)}: (nog niet gekozen)
+                <StepLink step={choice.step} />
+              </li>
+            ))}
+            {emptyItems.map((item) => (
+              <li key={item.id} className={styles.item}>
+                {item.question}
+                <StepLink step={item.step} />
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
       <div className={styles.actions}>
-        <button type="button" className={copied ? styles.secondary : styles.primary} onClick={copyAll}>
-          <CopyIcon />
-          Kopieer alles
+        <button
+          type="button"
+          className={mode === 'idle' ? styles.primary : styles.secondary}
+          aria-busy={busy}
+          onClick={download}
+        >
+          <DownloadIcon />
+          Download als pdf
         </button>
-        {mode !== 'idle' &&
+        {printing && (
+          <button type="button" className={mode === 'print' ? styles.primary : styles.secondary} onClick={print}>
+            <PrintIcon />
+            Afdrukken
+          </button>
+        )}
+        {done &&
           (formUrl !== null ? (
             <a className={styles.primary} href={formUrl} target="_blank" rel="noopener noreferrer">
               Open het eindformulier
@@ -323,22 +373,29 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
           ) : (
             <p className={styles.pending}>De link naar het eindformulier volgt nog.</p>
           ))}
-        <p role="status" className={styles.status} data-tone={copied ? 'success' : fallback ? 'warning' : undefined}>
-          {copied && (
+        <p
+          role="status"
+          className={styles.status}
+          data-tone={mode === 'downloaded' ? 'success' : printing ? 'warning' : undefined}
+        >
+          {mode === 'downloaded' && (
             <>
               <CheckIcon />
               <span>
-                <strong>Gekopieerd.</strong> Plak de tekst in het eindformulier met Ctrl+V.
+                <strong>Gedownload.</strong> Laad de pdf op in het eindformulier.
               </span>
             </>
           )}
-          {mode === 'fallback' && (
+          {printing && (
             <span>
-              <strong>Kopiëren lukte niet vanzelf.</strong> De tekst hierboven is geselecteerd: druk op Ctrl+C.
+              Downloaden lukte niet. Klik op <strong>Afdrukken</strong> en kies bij Bestemming{' '}
+              <strong>Opslaan als PDF</strong>.
             </span>
           )}
         </p>
       </div>
+
+      {collected !== null && <OnPaper moduleTitle={moduleTitle} collected={collected} />}
     </div>
   );
 }

@@ -1,15 +1,15 @@
 ---
 // The summary at the end of a module (docs/BRIEFING.md § 6 and § 12):
 //
-//   <Stap titel="Klaar! Kopieer wat je schreef">
+//   <Stap titel="Klaar! Download je samenvatting">
 //   <Samenvatting />
 //   </Stap>
 //
-// It shows what the student wrote in <DenkEerst> and <Reflectie>, with the
-// question next to each answer, and copies it all for the final form in
-// Smartschool. It belongs in the last step, once per module; the module
-// route checks that when it builds. Authors write no import, no props and no
-// client directive.
+// It counts what the student wrote in <DenkEerst> and <Reflectie>, lists what
+// is still empty, and makes a PDF of every question with its answer for the
+// final form in Smartschool. It belongs in the last step, once per module;
+// the module route checks that when it builds. Authors write no import, no
+// props and no client directive.
 import SamenvattingIsland from './Samenvatting.tsx';
 import { checkLink, eindformulier } from '../../config/smartschool';
 
