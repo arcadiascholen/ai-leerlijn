@@ -48,7 +48,8 @@ Leg klaar wat je erover hebt:
 - foto's of screenshots van oefeningen, van het bord of van je handboek.
 
 Heb je niets concreets? Kies dan een vak dat je moeilijk vindt, zoals
-wiskunde, en werk met je handboek of je cursus van dit jaar.
+wiskunde, en werk met je handboek of je cursus van dit jaar. Of kies straks
+*Mijn examenperiode plannen*.
 </Stap>
 
 <Stap titel="Noteer je taak">
@@ -62,7 +63,7 @@ eindformulier.
 Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
 doel.
 
-<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat of presentatie' }} />
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat of presentatie', planning: 'Mijn examenperiode plannen' }} />
 </Stap>
 
 <Stap titel="Vier tools">
@@ -538,6 +539,103 @@ Stel me de lastigste vragen die mijn klas of de jury na mijn [presentatie of deb
 Denk terug aan de tegenstander en de jury.
 
 <Reflectie id="debat-tegenargument" vraag="Welk tegenargument of welke vraag had je niet verwacht, en wat antwoord je er nu op?" />
+</Stap>
+
+{/* Branch: examenplanning. */}
+
+<Stap titel="Wat heb je nodig?" tak="planning">
+Een goede planning begint bij context. Leg klaar:
+
+- je **examenrooster**, als foto of screenshot;
+- je **agenda**: andere toetsen en deadlines, en vaste dingen zoals sport,
+  werk of familie;
+- per vak: hoe goed ken je het al?
+
+Heb je geen examens? Plan dan je volgende toetsenweek of een grote opdracht.
+</Stap>
+
+<Stap titel="Eerst jij: wat ken je al?" tak="planning">
+Schat het zelf in, voor de AI meedenkt.
+
+<Reflectie id="planning-vakken" vraag="Welke vakken ken je al goed, en welke vragen het meeste werk? Waarom?" />
+</Stap>
+
+<Stap titel="Laat de AI eerst vragen stellen" tak="planning">
+Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je rooster
+op en begin zo:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Mijn examens beginnen op [datum]; het rooster zit in de bijlage. Ik wil een studieplanning maken tot dan. Stel me eerst vijf vragen, één per keer, voor je een planning maakt.
+</Prompt>
+
+<Tool naam="chatgpt">
+Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
+**+** → **Foto's & bestanden toevoegen**.
+</Tool>
+<Tool naam="gemini">
+Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
+**+**.
+</Tool>
+<Tool naam="notebook">
+Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
+gesprek.
+</Tool>
+<Tool naam="copilot">
+Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
+anders heten). Laad je bestanden op met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="De planning" tak="planning">
+<Prompt>
+Maak nu een planning per dag, als tabel. Wissel zware en lichte vakken af, plan herhaling in, laat ruimte voor uitloop, en hou rekening met mijn vaste afspraken.
+</Prompt>
+
+Lees de planning rustig. Je stuurt ze in de volgende stap bij.
+</Stap>
+
+<Stap titel="Kijk ze na" tak="planning">
+Leg de planning naast je agenda, en kijk na:
+
+- Is ze **haalbaar**, ook op een drukke dag?
+- Komt elk vak meer dan één keer terug?
+- Wisselen de vakken af, in plaats van alles van één vak na elkaar?
+- Zijn er pauzes, en een vrije avond?
+
+Zeg in de chat wat niet klopt, bijvoorbeeld: *„Op woensdag heb ik training tot
+20 uur."* Laat de AI de planning bijsturen.
+</Stap>
+
+<Stap titel="Wat paste je aan?" tak="planning">
+Jij beslist over je planning, niet de AI.
+
+<Reflectie id="planning-aangepast" vraag="Wat veranderde je aan de planning van de AI, en waarom?" />
+</Stap>
+
+<Stap titel="Bewaar ze buiten de chat" tak="planning">
+Een chat raak je kwijt. Zet je planning waar je ze elke dag ziet: in je
+agenda, in een Word- of Excel-bestand, of op papier.
+
+<Tool naam="chatgpt">
+Kopieer de tabel met het kopieerpictogram onder het antwoord, en plak ze in
+Word of Excel (kan bij jou anders heten).
+</Tool>
+<Tool naam="gemini">
+Kies onder het antwoord **Exporteren naar Documenten**, of kopieer de tabel
+(kan bij jou anders heten).
+</Tool>
+<Tool naam="notebook">
+Klik onder het antwoord op **Opslaan in notitie**, of kopieer de tabel.
+</Tool>
+<Tool naam="copilot">
+Kopieer de tabel, en plak ze in Word of Excel met je schoolaccount.
+</Tool>
+</Stap>
+
+<Stap titel="Wanneer kijk je ze opnieuw na?" tak="planning">
+Een planning loopt zelden helemaal zoals gepland.
+
+<Reflectie id="planning-opvolgen" vraag="Wanneer kijk je je planning opnieuw na, en wat doe je als je achterloopt?" />
 </Stap>
 
 {/* Shared end. */}
