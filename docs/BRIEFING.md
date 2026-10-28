@@ -106,12 +106,12 @@ en geen cookies.
 
 ## 5. Modules
 
-### Aanbod (stand 26 oktober 2026)
+### Aanbod (stand 28 oktober 2026)
 
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
 | Wat is AI? AI herkennen en begrijpen | 2e, met differentiatie | wordt aangeleverd | `wat-is-ai` |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de tak schriftelijke toets; de takken mondeling, debat en planning en de 2e graad in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
 | AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
@@ -123,8 +123,9 @@ issue dat een module levert, vult de stappen in, past de metadata aan en zet
 de status op `beschikbaar`. De controles op de inhoud (minstens één
 `<Stap>`, de plaats van de samenvatting; § 12) gelden alleen voor
 beschikbare modules: een plaatshouder heeft nog geen stappen en geen pagina.
-De testmodule `voorbeeld` blijft beschikbaar tot de eerste echte module er
-is.
+De testmodule `voorbeeld` toont elk component en blijft beschikbaar tot de
+laatste technische controle op maandag 9 november (§ 10); dan verdwijnt ze
+uit het aanbod.
 
 ### Aanleveren zonder sjabloon
 
@@ -228,6 +229,42 @@ Auteurs schrijven een module als **één MDX-bestand** waarin de stappen
 overzichtelijk; een presentatie van een collega wordt zo een reeks stappen.
 Hoe dat precies gaat, en hoe componenten binnen een stap werken, staat in
 § 12.
+
+### Een module opbouwen
+
+Dit patroon ontstond met `ai-als-coach-3e-graad`. Volgende modules volgen
+het, tenzij de auteur een andere opbouw voorziet.
+
+- **Opbouw.** Een gedeelde start (het idee, de taak, de keuzes), daarna
+  eventueel een vertakkende keuze op het doel met één tak per doel, en een
+  gedeeld slot: reflectie, verantwoording, het bewijsstuk en de
+  samenvatting. De keuzestap staat in de start; de samenvatting is altijd de
+  laatste, gedeelde stap.
+- **Eén tool, één chat.** In een module waarin de leerling zelf AI gebruikt,
+  kiest die in de start een tool (`<Keuze naam="tool">`), zet die de tool
+  klaar (training, denkmodus, opladen) en werkt die daarna in één chat in een
+  tweede tabblad. De werkvormen zijn voor elke tool dezelfde; alleen de
+  handelingen verschillen, in `<Tool>`-blokken. Die volgen de stand van de
+  tools (§ 7). Waar de bron onzeker is over een knop of menu, staat er *kan
+  bij jou anders heten*.
+- **Per werkvorm één prompt.** De leerling kopieert een `<Prompt>` met
+  invulplaatsen (`[vak]`, `[datum]`) en vult die aan in de tool. Een prompt
+  geeft context (wie ben je, wat is je bron, wat wil je), geen rolprompt.
+- **Wat de leerling schrijft, staat in de module.** Een score, een
+  voorspelling of een reflectie gaat in een `<Reflectie>` of `<DenkEerst>`,
+  zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
+  niet in; daarvoor is er het bewijsstuk (een link of een stuk van het
+  gesprek, per tool).
+- **Hoogte per combinatie** (gemeten op 1366 × 640): een `<Reflectie>` met
+  hoogstens één regel tekst erboven; een `<Prompt>` van drie regels met twee
+  regels tekst en één `<Tool>`-blok; een `<DenkEerst>` zonder inleiding; een
+  `<Chat naast>` met een `<Meerkeuze>` van vier opties van twee à drie
+  woorden, een vraag van één regel en feedback van hoogstens ± 70 tekens. Een
+  prompt die de leerling laat antwoorden en een reflectie op dat antwoord
+  staan op twee stappen.
+- **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
+  in hun hoogste toestand (voorbeeldantwoord getoond, alle opties
+  aangeklikt): de inhoud van de kaart mag niet scrollen.
 
 ## 7. AI-gebruik en de AI-barometer
 
