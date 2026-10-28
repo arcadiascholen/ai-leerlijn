@@ -62,14 +62,14 @@ eindformulier.
 Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
 doel.
 
-<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets' }} />
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht' }} />
 </Stap>
 
 <Stap titel="Vier tools">
 Je kunt vandaag met een van deze vier tools werken.
 
 - **ChatGPT** is sterk in uitleg en in een gesprek, en heeft een
-  **Leermodus**. Gratis kun je maar 3 bestanden per dag opladen, en een lange
+  **Leermodus** en spraak in de browser. Gratis kun je maar 3 bestanden per dag opladen, en een lange
   cursus leest hij maar voor een deel.
 - **Gemini** is sterk in uitleg en heeft **Begeleid leren**. Hij werkt niet
   met een account waarop je ouders toezicht houden met Family Link.
@@ -81,8 +81,9 @@ Je kunt vandaag met een van deze vier tools werken.
 </Stap>
 
 <Stap titel="Kies je tool">
-Twijfel je? Een hele cursus: **Gemini Notebook**. Geen toestemming of geen
-eigen account: **Copilot** met je schoolaccount. Anders: **ChatGPT** of
+Twijfel je? Een hele cursus: **Gemini Notebook**. Hardop oefenen:
+**ChatGPT**. Geen toestemming of geen eigen account: **Copilot** met je
+schoolaccount. Anders: **ChatGPT** of
 **Gemini**, wat je al gewoon bent.
 
 <Keuze naam="tool" vraag="Met welke tool werk je vandaag?" opties={{ chatgpt: 'ChatGPT', gemini: 'Gemini', notebook: 'Gemini Notebook', copilot: 'Copilot (schoolaccount)' }} />
@@ -158,7 +159,7 @@ Leg [begrip] uit.
 **Chat 2**, met jezelf en je toets erbij:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp]. Leg [begrip] uit.
+Ik zit in het [jaar en richting]. Op [datum] heb ik [een toets, examen of opdracht] [vak] over [onderwerp]. Leg [begrip] uit.
 </Prompt>
 </Stap>
 
@@ -167,7 +168,7 @@ Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak
 leerstof op, en vraag:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp]. In de bijlage zit mijn cursus. Leg [begrip] uit zoals het in mijn cursus staat, en zeg waar het staat.
+Ik zit in het [jaar en richting]. Op [datum] heb ik [een toets, examen of opdracht] [vak] over [onderwerp]. In de bijlage zit mijn cursus. Leg [begrip] uit zoals het in mijn cursus staat, en zeg waar het staat.
 </Prompt>
 
 <Tool naam="notebook">
@@ -340,6 +341,119 @@ Beantwoord de vragen in de chat, zonder in je cursus te kijken.
 Vergelijk met je score bij de start.
 
 <Reflectie id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist? Wat ging beter dan bij de start?" />
+</Stap>
+
+{/* Branch: mondeling examen of spreekopdracht. */}
+
+<Stap titel="Start je sessiechat" tak="mondeling">
+Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je
+leerstof op, en de vragenlijst als je leerkracht die gaf. Begin zo:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een mondeling examen [vak] over [onderwerp]. Het duurt [duur] en verloopt zo: [hoe]. In de bijlage zit mijn leerstof. Stel me vragen zoals op het examen, één per keer, en wacht telkens op mijn antwoord.
+</Prompt>
+
+<Tool naam="chatgpt">
+Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
+**+** → **Foto's & bestanden toevoegen**.
+</Tool>
+<Tool naam="gemini">
+Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
+**+**.
+</Tool>
+<Tool naam="notebook">
+Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
+gesprek.
+</Tool>
+<Tool naam="copilot">
+Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
+anders heten). Laad je bestanden op met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="Tekst of spraak?" tak="mondeling">
+Op het examen spreek je. Hier oefen je met tekst of met je stem.
+
+**Tekst werkt overal.** Typ je antwoord zoals je het zou zeggen: in
+volzinnen, zonder in je leerstof te kijken.
+
+<Tool naam="chatgpt">
+Wil je hardop antwoorden? Klik op het **spraakpictogram** in het invoerveld.
+Gratis is dat beperkt: is je tijd op, ga dan verder met tekst.
+</Tool>
+<Tool naam="gemini">
+Gemini Live werkt alleen in de app op een gsm of tablet. Op je laptop oefen je
+met tekst.
+</Tool>
+<Tool naam="notebook">
+In Gemini Notebook oefen je met tekst.
+</Tool>
+<Tool naam="copilot">
+Copilot kan je antwoord **dicteren** en zijn vraag **voorlezen**, beurt per
+beurt. Een echt gesprek met je stem gaat niet.
+</Tool>
+</Stap>
+
+<Stap titel="De examinator" tak="mondeling">
+De AI stelt de vragen, jij antwoordt. Een goede examinator vraagt door.
+
+<Prompt>
+Stel me een examenvraag over [onderwerp]. Vraag na mijn antwoord één keer door: waarom, of een voorbeeld. Zeg pas daarna wat goed was en wat ontbrak.
+</Prompt>
+
+Doe dit voor minstens vijf vragen.
+</Stap>
+
+<Stap titel="Leg het uit" tak="mondeling">
+Wie iets kan uitleggen, kent het echt.
+
+<Prompt>
+Ik leg je [onderwerp] uit alsof je een klasgenoot bent die het niet kent. Stel tussendoor vragen als iets niet duidelijk is. Zeg op het einde welke stukken van mijn uitleg ontbraken of niet klopten, volgens mijn leerstof.
+</Prompt>
+
+Leg het uit in je eigen woorden, zonder in je leerstof te kijken.
+</Stap>
+
+<Stap titel="Een vreemde taal?" tak="mondeling">
+Heb je een mondeling in een vreemde taal? Oefen dan het gesprek zelf. Geen
+taalexamen? Klik door naar de volgende stap.
+
+<Prompt>
+We voeren een gesprek in het [taal] over [onderwerp], op mijn niveau: [jaar en richting]. Stel me één vraag per keer, in het [taal]. Verbeter me nog niet. Geef me na tien vragen een lijst van mijn fouten, met de juiste vorm.
+</Prompt>
+
+De AI verbetert pas achteraf: zo blijf je praten, zoals op het examen.
+</Stap>
+
+<Stap titel="Feedback met de criteria" tak="mondeling">
+Waarop let je leerkracht? Plak de criteria in de chat, of schrijf ze zelf op:
+inhoud, opbouw, taal, vlotheid.
+
+<Prompt>
+Hier zijn de criteria van mijn examen: [criteria]. Geef feedback op mijn antwoorden van daarnet, per criterium. Schrijf geen verbeterde versie.
+</Prompt>
+</Stap>
+
+<Stap titel="Waar viel je stil?" tak="mondeling">
+Kijk terug naar je antwoorden.
+
+<Reflectie id="mondeling-zwak" vraag="Welke vraag kon je goed beantwoorden, en bij welke viel je stil?" />
+</Stap>
+
+<Stap titel="Tweede ronde" tak="mondeling">
+Oefen nu wat moeilijk was.
+
+<Prompt>
+Stel me opnieuw de vragen waarop ik zwak antwoordde, in een andere vorm. Vraag weer door.
+</Prompt>
+
+Lukt het nu beter? Let op wat je anders doet.
+</Stap>
+
+<Stap titel="Wat oefen je nog?" tak="mondeling">
+Je examen komt eraan.
+
+<Reflectie id="mondeling-verder" vraag="Wat ga je nog oefenen voor je examen, en hoe?" />
 </Stap>
 
 {/* Shared end. */}
