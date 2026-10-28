@@ -1,0 +1,85 @@
+/* A choice. Only design-system tokens (docs/DESIGN.md). Single classes, so
+   they win over the zero-specificity step defaults in Stap.astro. Height
+   budget: the question and four options fit in a step on 1366 × 640
+   (docs/BRIEFING.md § 12), also with a sentence of introduction above them,
+   hence two columns, like <Meerkeuze>. */
+
+/* Space below the choice only when the author wrote more after it; the
+   island element is the choice's place in the step. */
+:global(astro-island:not(:last-child)) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Padding, not margin, under the legend: browsers lay out a legend's own
+   margins differently. */
+.question {
+  display: block;
+  max-width: none;
+  padding: 0 0 var(--space-3);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+/* The whole card is the label of its radio button, so a click anywhere on
+   it chooses. */
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.option:hover {
+  background: var(--surface-sunken);
+}
+
+/* The chosen option: a border twice as thick in the colour of the primary
+   button. The filled radio button says the same, so it never rests on
+   colour alone. Not the colours of right and wrong: a choice is neither. */
+.option:has(.radio:checked) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+  background: var(--surface-sunken);
+}
+
+/* The focus ring goes around the whole card, not the small radio button. */
+.option:has(.radio:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 20px, centred on the first line of the label (26px). */
+.radio {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 3px 0 0;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.radio:focus-visible {
+  outline: none;
+}

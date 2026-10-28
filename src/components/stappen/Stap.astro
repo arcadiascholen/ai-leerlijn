@@ -4,20 +4,46 @@
 // module's MDX without an import; the module route passes this component to
 // <Content components={…}>. StepPlayer numbers the steps and shows one at a
 // time; without JavaScript every step is a card, one below the other.
+//
+// `tak="toets"` makes the step part of the branch "toets" of the module's
+// branching <Keuze> (BRIEFING § 12, "Keuzes en takken"); a step without
+// `tak` is shared. The player shows a branch step only to a student who
+// chose that option. Without JavaScript every step is there, and a branch
+// step says for whom it is.
+import type { BranchingChoice } from './checks';
+
 interface Props {
   titel: string;
+  tak?: string;
 }
 
-const { titel } = Astro.props;
+const { titel, tak } = Astro.props;
 
 // MDX props are not type-checked, so a missing title would otherwise only
 // show up as an empty heading.
 if (typeof titel !== 'string' || titel.trim() === '') {
   throw new Error('<Stap> needs a non-empty `titel` attribute.');
 }
+
+// The label of a branch step comes from the branching choice as the module
+// route read it from the source: the <Keuze> itself renders in another step,
+// and a step cannot rely on it having rendered first. The route's checks
+// already guarantee that `tak` is one of its options; this is the fallback
+// for a <Stap> used anywhere else.
+let branchLabel: string | undefined;
+if (tak !== undefined) {
+  const branching = (Astro.locals as { branching?: BranchingChoice | null }).branching;
+  if (typeof tak === 'string' && branching != null && Object.hasOwn(branching.options, tak)) {
+    branchLabel = branching.options[tak];
+  }
+  if (branchLabel === undefined) {
+    throw new Error(`<Stap titel="${titel}" tak=${JSON.stringify(tak)}> is not an option of a <Keuze … vertakt>.`);
+  }
+}
 ---
 
-<section class="step" data-step>
+<section class="step" data-step data-tak={tak}>
+  {branchLabel !== undefined && <p class="step-branch">Voor: {branchLabel}</p>}
   <h2 class="step-title" data-step-title tabindex="-1">{titel}</h2>
   <slot />
 </section>
@@ -45,6 +71,22 @@ if (typeof titel !== 'string' || titel.trim() === '') {
 
   .step > :global(:last-child) {
     margin-bottom: 0;
+  }
+
+  /* Without JavaScript: for whom a branch step is, above its title. With
+     JavaScript the student only sees the steps of their own branch. */
+  .step-branch {
+    margin: 0 0 var(--space-2);
+    color: var(--brand-text);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  :global(.js) .step-branch {
+    display: none;
   }
 
   /* The heading receives focus when the step changes, so that a screen reader

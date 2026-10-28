@@ -1,7 +1,7 @@
 // Build-time checks and plumbing for the Astro wrappers of the question
-// components. MDX props are not type-checked, so a mistake in a module
-// (a missing `id`, a duplicate `id`, a <Meerkeuze> without a right answer)
-// fails the build with a clear message instead of reaching a student.
+// components and of <Keuze>. MDX props are not type-checked, so a mistake in
+// a module (a missing `id`, a duplicate `id`, a <Meerkeuze> without a right
+// answer) fails the build with a clear message instead of reaching a student.
 
 export interface ChoiceOption {
   // The option's text as HTML: inline Markdown such as **bold** is allowed.
@@ -10,7 +10,17 @@ export interface ChoiceOption {
   feedback: string;
 }
 
-const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// One option of a <Keuze>: the key that is stored and that a branch step
+// names in `tak`, and the text the student sees.
+export interface KeuzeOption {
+  key: string;
+  label: string;
+}
+
+// The format of everything an author names that ends up in a storage key or
+// a `data-` attribute: a question `id`, the `naam` of a <Keuze>, its option
+// keys, the `tak` of a step.
+export const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 // The `id` of a question becomes part of its storage key, so it has to be
 // stable (written by the author, not a position that shifts when a question
@@ -33,6 +43,54 @@ export function checkQuestionId(component: string, id: unknown, locals: object):
   }
   registry.questionIds.add(id);
   return id;
+}
+
+// The `naam` of a <Keuze> becomes part of its storage key, like the `id` of a
+// question, so the same rules apply: stable, and unique among the choices of
+// the module.
+export function checkChoiceName(name: unknown, locals: object): string {
+  if (typeof name !== 'string' || !ID_PATTERN.test(name)) {
+    throw new Error(
+      '<Keuze> needs a `naam` of lowercase letters, digits and hyphens, unique within the module, ' +
+        `such as naam="doel". Got ${JSON.stringify(name)}.`,
+    );
+  }
+  const registry = locals as { choiceNames?: Set<string> };
+  registry.choiceNames ??= new Set();
+  if (registry.choiceNames.has(name)) {
+    throw new Error(
+      `Two <Keuze> in this module have naam="${name}". Every <Keuze> needs its own naam; ` +
+        'it is the key under which the choice is stored.',
+    );
+  }
+  registry.choiceNames.add(name);
+  return name;
+}
+
+// `opties` of a <Keuze>: an object of option key → the text the student sees,
+// such as opties={{ toets: 'Een schriftelijke toets' }}. One option is
+// allowed, so that a branching module can start with one branch.
+export function checkChoiceOptions(name: string, options: unknown): KeuzeOption[] {
+  const example = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
+  if (typeof options !== 'object' || options === null || Array.isArray(options)) {
+    throw new Error(`<Keuze naam="${name}"> needs \`opties\` as an object, such as ${example}.`);
+  }
+  const entries = Object.entries(options);
+  if (entries.length === 0) {
+    throw new Error(`<Keuze naam="${name}"> needs at least one option in \`opties\`, such as ${example}.`);
+  }
+  return entries.map(([key, label]) => {
+    if (!ID_PATTERN.test(key)) {
+      throw new Error(
+        `<Keuze naam="${name}">: the option key "${key}" may only have lowercase letters, digits and hyphens. ` +
+          'It is what is stored, and what a branch step names in `tak`.',
+      );
+    }
+    if (typeof label !== 'string' || label.trim() === '') {
+      throw new Error(`<Keuze naam="${name}">: option "${key}" needs a non-empty text, such as ${example}.`);
+    }
+    return { key, label: label.trim() };
+  });
 }
 
 export function checkText(component: string, name: string, value: unknown): string {
