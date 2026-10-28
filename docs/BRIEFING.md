@@ -245,7 +245,12 @@ het, tenzij de auteur een andere opbouw voorziet.
 - **Eén tool, één chat.** In een module waarin de leerling zelf AI gebruikt,
   kiest die in de start een tool (`<Keuze naam="tool">`), zet die de tool
   klaar (training, denkmodus, opladen) en werkt die daarna in één chat in een
-  tweede tabblad. De werkvormen zijn voor elke tool dezelfde; alleen de
+  tweede tabblad. Die chat begint waar de leerling de cursus voor het eerst
+  oplaadt, zodat die maar één keer opgeladen wordt; in
+  `ai-als-coach-3e-graad` is dat chat 3 van het contextexperiment, waarin de
+  takken toets en mondeling verder werken. Copilot start daar toch een nieuwe
+  chat (in tak toets in *Studeren en leren*); opladen heeft er geen
+  daglimiet. De werkvormen zijn voor elke tool dezelfde; alleen de
   handelingen verschillen, in `<Tool>`-blokken. Die volgen de stand van de
   tools (§ 7). Waar de bron onzeker is over een knop of menu, staat er *kan
   bij jou anders heten*.
