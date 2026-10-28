@@ -63,7 +63,7 @@ eindformulier.
 Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
 doel.
 
-<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat of presentatie', planning: 'Mijn examenperiode plannen' }} />
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat', presentatie: 'Een presentatie', planning: 'Mijn examenperiode plannen' }} />
 </Stap>
 
 <Stap titel="Vier tools">
@@ -470,7 +470,7 @@ Je examen komt eraan.
 <Reflectie id="mondeling-verder" vraag="Wat ga je nog oefenen voor je examen, en hoe?" />
 </Stap>
 
-{/* Branch: debat of presentatie. */}
+{/* Branch: debat. */}
 
 <Stap titel="Start je sessiechat" tak="debat">
 Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je
@@ -479,7 +479,7 @@ bij de documenten of bij de taak in de planner. Kreeg je een
 beoordelingsrubriek of een opdrachtblad? Daar staan ze ook. Begin zo:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik een [debat of presentatie] voor [vak] over [stelling of onderwerp]. Mijn standpunt: [standpunt]. Ik heb [tijd] spreektijd. In de bijlage zit de opdracht. Help me me voor te bereiden, maar schrijf mijn tekst niet voor mij.
+Ik zit in het [jaar en richting]. Op [datum] heb ik een debat voor [vak] over [stelling]. Mijn standpunt: [standpunt]. Ik heb [tijd] spreektijd. In de bijlage zit de opdracht. Help me me voor te bereiden, maar schrijf mijn tekst niet voor mij.
 </Prompt>
 
 <Tool naam="chatgpt">
@@ -503,7 +503,7 @@ anders heten). Laad je bestanden op met **+**.
 <Stap titel="Eerst jij: je argumenten" tak="debat">
 Voor de AI meedenkt, denk je zelf.
 
-<Reflectie id="debat-argumenten" vraag="Wat zijn je drie sterkste argumenten? Bij een presentatie: wat zijn je drie kernpunten?" />
+<Reflectie id="debat-argumenten" vraag="Wat zijn je drie sterkste argumenten?" />
 </Stap>
 
 <Stap titel="De tegenstander" tak="debat">
@@ -527,12 +527,15 @@ Welke argumenten van de andere kant zijn eigenlijk sterk?
 </Stap>
 
 <Stap titel="De jury" tak="debat">
-Plak je argumenten of je tekst in de chat, en vraag dit. Zet de criteria van
-je leerkracht op de plaats van **[criteria]**. Heb je er geen, gebruik dan: hoe
-sterk je argumenten zijn, hoe je weerlegt, je bronnen, je spreektijd.
+1. Kopieer de prompt en plak hem in de chat.
+2. Vervang **[plak hier je argumenten of je tekst]** door je argumenten of je
+   tekst.
+3. Zet de criteria van je leerkracht op de plaats van **[criteria]**. Heb je er
+   geen, gebruik dan: hoe sterk je argumenten zijn, hoe je weerlegt, je
+   bronnen, je spreektijd.
 
 <Prompt>
-Beoordeel mijn argumentatie met deze criteria: [criteria]. Wat is mijn sterkste argument, en wat mijn zwakste? Waarom? Schrijf geen verbeterde versie.
+Dit is mijn argumentatie: [plak hier je argumenten of je tekst] Beoordeel ze met deze criteria: [criteria]. Wat is mijn sterkste argument, en wat mijn zwakste? Waarom? Schrijf geen verbeterde versie.
 </Prompt>
 </Stap>
 
@@ -543,12 +546,12 @@ onafhankelijke bron**, niet via de AI.
 <Reflectie id="debat-bron" vraag="Welke bewering keek je na, in welke bron, en klopte ze?" />
 </Stap>
 
-<Stap titel="Voor een presentatie: lastige vragen" tak="debat">
-Plak de opbouw of de kernpunten van je presentatie in de chat. Bij een debat:
-je eigen argumenten.
+<Stap titel="Lastige vragen van de jury" tak="debat">
+Na een debat stelt de jury vragen. Kopieer de prompt, en vervang **[plak hier
+je argumenten]** door je eigen argumenten.
 
 <Prompt>
-Stel me de lastigste vragen die mijn klas of de jury na mijn [presentatie of debat] kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
+Dit zijn mijn argumenten: [plak hier je argumenten] Stel me de lastigste vragen die de jury of de tegenpartij na mijn debat kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
 </Prompt>
 </Stap>
 
@@ -556,6 +559,108 @@ Stel me de lastigste vragen die mijn klas of de jury na mijn [presentatie of deb
 Denk terug aan de tegenstander en de jury.
 
 <Reflectie id="debat-tegenargument" vraag="Welk tegenargument of welke vraag had je niet verwacht, en wat antwoord je er nu op?" />
+</Stap>
+
+{/* Branch: presentatie. */}
+
+<Stap titel="Start je sessiechat" tak="presentatie">
+Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je
+opdracht op, en de criteria als je die hebt. Kijk bij je vak op Smartschool,
+bij de documenten of bij de taak in de planner. Kreeg je een
+beoordelingsrubriek of een opdrachtblad? Daar staan ze ook. Begin zo:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] geef ik een presentatie voor [vak] over [onderwerp], voor [publiek]. Ik heb [tijd] spreektijd. In de bijlage zit de opdracht. Help me me voor te bereiden, maar schrijf mijn tekst en mijn slides niet voor mij.
+</Prompt>
+
+<Tool naam="chatgpt">
+Werk in een **nieuwe chat**. Laad je bestanden op met
+**+** → **Foto's & bestanden toevoegen**.
+</Tool>
+<Tool naam="gemini">
+Werk in een **nieuwe chat**. Laad je bestanden op met
+**+**.
+</Tool>
+<Tool naam="notebook">
+Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
+gesprek.
+</Tool>
+<Tool naam="copilot">
+Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
+anders heten). Laad je bestanden op met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="Eerst jij: je kernboodschap" tak="presentatie">
+<Prompt id="presentatie-kern" velden={{ kernboodschap: 'Mijn kernboodschap in één zin', kernpunten: 'Mijn drie kernpunten, in volgorde' }}>
+Mijn kernboodschap: [kernboodschap] Mijn kernpunten: [kernpunten] Kan een buitenstaander dit volgen? Wat ontbreekt, wat kan weg? Stel vragen over mijn begin en slot.
+</Prompt>
+</Stap>
+
+<Stap titel="Je publiek" tak="presentatie">
+1. Kies een deel van je presentatie dat moeilijk uit te leggen is.
+2. Kopieer de prompt, en schrijf op de plaats van **[schrijf hier het begin
+   van je uitleg]** hoe je begint, zoals je het zou zeggen.
+3. Leg de rest stukje per stukje uit. Typ **klaar** als je klaar bent.
+
+<Prompt>
+Ik leg je een deel van mijn presentatie uit alsof je in mijn publiek zit en er niets over weet. Ik doe het in stukjes. Zeg na elk stukje wat je niet begreep. Zeg pas als ik "klaar" typ, in twee zinnen, wat je onthield. Herschrijf mijn tekst niet. Mijn begin: [schrijf hier het begin van je uitleg]
+</Prompt>
+</Stap>
+
+<Stap titel="Wat onthield je publiek?" tak="presentatie">
+Leg wat de AI onthield naast je kernboodschap.
+
+<Reflectie id="presentatie-publiek" vraag="Wat onthield de AI van je uitleg? Komt dat overeen met je kernboodschap, en wat pas je aan?" />
+</Stap>
+
+<Stap titel="Je slides" tak="presentatie">
+Heb je geen slides? Klik dan door naar de volgende stap.
+
+Bewaar je slides als pdf, laad ze op in de chat, en plak de prompt erbij.
+
+<Prompt>
+Mijn slides zitten in de bijlage. Zeg per slide: staat er te veel tekst, en helpt ze mijn kernboodschap? Herschrijf niets: ik pas mijn slides zelf aan.
+</Prompt>
+
+<Tool naam="notebook">
+Voeg de pdf toe als extra **bron** in je notebook.
+</Tool>
+</Stap>
+
+<Stap titel="De jury met de criteria" tak="presentatie">
+1. Kopieer de prompt en plak hem in de chat.
+2. Vervang **[plak hier je tekst of je opbouw]** door je tekst of je opbouw.
+3. Zet de criteria van je leerkracht op de plaats van **[criteria]**. Heb je er
+   geen, gebruik dan: je kernboodschap, je opbouw, hoe duidelijk je uitlegt,
+   je slides, je spreektijd.
+
+<Prompt>
+Dit is mijn presentatie: [plak hier je tekst of je opbouw] Geef feedback met deze criteria: [criteria]. Zeg per criterium wat goed is en wat beter kan. Schrijf geen verbeterde versie.
+</Prompt>
+</Stap>
+
+<Stap titel="Kijk één bewering na" tak="presentatie">
+Kies één feit of cijfer uit je presentatie, of een dat de AI noemde. Zoek het
+zelf op in een **betrouwbare, onafhankelijke bron**, niet via de AI.
+
+<Reflectie id="presentatie-bron" vraag="Welke bewering keek je na, in welke bron, en klopte ze?" />
+</Stap>
+
+<Stap titel="Lastige vragen" tak="presentatie">
+Na een presentatie komen er vragen. Oefen je antwoorden.
+
+<Prompt>
+Stel me de lastigste vragen die mijn publiek of mijn leerkracht na mijn presentatie kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
+</Prompt>
+
+Antwoord telkens zelf, zoals je het in de klas zou zeggen.
+</Stap>
+
+<Stap titel="Wat zag je niet aankomen?" tak="presentatie">
+Denk terug aan je publiek, de jury en de vragen.
+
+<Reflectie id="presentatie-vragen" vraag="Welke vraag of opmerking had je niet verwacht, en wat doe je ermee?" />
 </Stap>
 
 {/* Branch: examenplanning. */}
