@@ -50,6 +50,10 @@ locals.moduleTitle = entry.data.title;
 locals.branching = branching;
 locals.tool = tool;
 
+// The page about which AI tools are allowed, linked next to the sentence about
+// AI use when the student uses AI (BRIEFING § 7).
+const toolsHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/tools/`;
+
 // Components that authors may use in a module's MDX without an import line
 // (BRIEFING § 12). Question and content components are added here.
 const components = {
@@ -75,7 +79,7 @@ const components = {
   <StepPlayer moduleId={entry.id} title={entry.data.title}>
     {/* Whether the student uses AI, in one sentence at the top of the module
         (BRIEFING § 7). */}
-    <AiGebruik slot="meta" value={entry.data.aiGebruik} />
+    <AiGebruik slot="meta" value={entry.data.aiGebruik} toolsHref={toolsHref} />
     <Content components={components} />
   </StepPlayer>
 </Base>

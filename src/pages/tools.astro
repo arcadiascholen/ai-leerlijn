@@ -1,0 +1,269 @@
+---
+// "Which AI tool may I use?" (docs/BRIEFING.md § 7): the student's version of
+// the table *Stand van de tools*. Per tool which account it needs, what it is
+// good at and what to do about privacy; then what never goes into a chat and
+// what to do without an account. Linked from the start page and from every
+// module where the student uses AI. Who changes the table in § 7 changes
+// this page too.
+import Base from '../layouts/Base.astro';
+
+interface Tool {
+  name: string;
+  url: string;
+  host: string;
+  account: string;
+  goodAt: string;
+  privacy: string;
+}
+
+// Claude is left out on purpose: its consumer terms require 18 (BRIEFING § 7).
+const tools: Tool[] = [
+  {
+    name: 'ChatGPT',
+    url: 'https://chatgpt.com',
+    host: 'chatgpt.com',
+    account: 'Eigen account, vanaf 13 jaar. Onder 18 met toestemming van je ouders.',
+    goodAt: 'Uitleg en gesprek, met leermodus en spraak.',
+    privacy: 'Zet training uit bij Instellingen → Gegevensbeheer.',
+  },
+  {
+    name: 'Gemini',
+    url: 'https://gemini.google.com',
+    host: 'gemini.google.com',
+    account: 'Eigen Google-account, vanaf 13 jaar. Niet met Family Link.',
+    goodAt: 'Uitleg, met Begeleid leren.',
+    privacy: 'Zet Activiteit uit. Je gesprek komt dan niet in je geschiedenis.',
+  },
+  {
+    name: 'Gemini Notebook',
+    url: 'https://notebook.google.com',
+    host: 'notebook.google.com',
+    account: 'Eigen Google-account dat je zelf beheert, vanaf 13 jaar.',
+    goodAt: 'Je hele cursus, met flashcards en quizzen.',
+    privacy: 'Traint niet op je bronnen. Wie je notebook deelt, deelt je cursus.',
+  },
+  {
+    name: 'Copilot',
+    url: 'https://copilot.cloud.microsoft',
+    host: 'copilot.cloud.microsoft',
+    account: 'Je schoolaccount: geen eigen account nodig.',
+    goodAt: 'Je cursus in Studeren en leren. Kies Think deeper.',
+    privacy: 'Traint niet op je gesprek: let op het groene schild en het label Werk.',
+  },
+];
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Base
+  title="Welke AI-tool mag ik gebruiken?"
+  description="Welke AI-tools je in het leerpad mag gebruiken, welk account je nodig hebt en waar je op let."
+  compact
+>
+  <h1>Welke AI-tool mag ik gebruiken?</h1>
+  <p class="lead">
+    In sommige modules gebruik je zelf AI. Kies een van deze vier tools. In de
+    eerste graad gebruik je geen AI-chatbots.
+  </p>
+
+  <ul class="tools" role="list">
+    {tools.map((tool) => (
+      <li class="tool">
+        <h2 class="tool-name">{tool.name}</h2>
+        <dl class="tool-facts">
+          <div>
+            <dt>Account</dt>
+            <dd>{tool.account}</dd>
+          </div>
+          <div>
+            <dt>Goed in</dt>
+            <dd>{tool.goodAt}</dd>
+          </div>
+          <div>
+            <dt>Privacy</dt>
+            <dd>{tool.privacy}</dd>
+          </div>
+        </dl>
+        <a class="tool-link" href={tool.url} target="_blank" rel="noopener noreferrer">
+          {tool.host}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+          </svg>
+          <span class="sr-only">(opent in een nieuw tabblad)</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="notes">
+    <section class="note note-warning" aria-labelledby="nooit">
+      <h2 id="nooit" class="note-title">Wat zet je nooit in een chat?</h2>
+      <ul>
+        <li>Namen, foto's, adressen of andere persoonlijke informatie over anderen.</li>
+        <li>Wachtwoorden en codes.</li>
+        <li>Klik ook geen duim omhoog of omlaag: dan kan je gesprek toch gebruikt worden om de AI te trainen.</li>
+      </ul>
+    </section>
+    <section class="note" aria-labelledby="geen-account">
+      <h2 id="geen-account" class="note-title">Geen account, of mag het niet?</h2>
+      <p>
+        Gebruik dan <strong>Copilot</strong> met je schoolaccount. Of kies een module waarin je zelf geen AI
+        gebruikt: dat staat bij elke module in het <a href={`${base}/modules/`}>overzicht</a>.
+      </p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: var(--space-2);
+  }
+
+  .lead {
+    max-width: none;
+    margin: 0 0 var(--space-5);
+    font-size: var(--text-lead-size);
+    line-height: var(--text-lead-line);
+    font-weight: var(--text-lead-weight);
+    letter-spacing: var(--text-lead-tracking);
+  }
+
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .tool {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+  }
+
+  .tool-name {
+    margin: 0 0 var(--space-3);
+    color: var(--forest);
+    font-size: var(--text-h3-size);
+    line-height: var(--text-h3-line);
+    font-weight: var(--text-h3-weight);
+    letter-spacing: var(--text-h3-tracking);
+  }
+
+  .tool-facts {
+    display: grid;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .tool-facts dt {
+    color: var(--ink-muted);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  .tool-facts dd {
+    margin: 0;
+  }
+
+  /* About AI, so teal (docs/DESIGN.md). At the bottom, so the four line up. */
+  .tool-link {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--space-1);
+    margin-top: auto;
+    color: var(--ai);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .tool-link svg {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .notes {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: var(--space-4);
+  }
+
+  .note {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  /* "Let op" for privacy (docs/DESIGN.md: warning on warning-soft). */
+  .note-warning {
+    border-color: var(--warning-soft);
+    background: var(--warning-soft);
+    color: var(--warning);
+  }
+
+  .note-title {
+    margin: 0 0 var(--space-2);
+    color: inherit;
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-body-tracking);
+  }
+
+  .note:not(.note-warning) .note-title {
+    color: var(--forest);
+  }
+
+  .note p,
+  .note ul {
+    max-width: none;
+    margin: 0;
+  }
+
+  .note ul {
+    padding-left: var(--space-5);
+  }
+
+  .note li + li {
+    margin-top: var(--space-1);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

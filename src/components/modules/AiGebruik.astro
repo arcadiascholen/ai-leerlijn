@@ -3,13 +3,18 @@
 // (docs/BRIEFING.md § 7), with an icon. On the module card in the overview
 // and at the top of the module page. Teal, because it is about AI
 // (docs/DESIGN.md: green is the student, teal is AI).
+//
+// `toolsHref` adds a link to the page about which AI tools are allowed, when
+// the student uses AI. Only on the module page: on a card the whole card is
+// already a link. It opens in a new tab, so the module stays open.
 import { aiUseSentence, type AiUse } from './labels';
 
 interface Props {
   value: AiUse;
+  toolsHref?: string;
 }
 
-const { value } = Astro.props;
+const { value, toolsHref } = Astro.props;
 ---
 
 <p class="ai-use" data-ai-use={value}>
@@ -24,7 +29,17 @@ const { value } = Astro.props;
     )}
     {value === 'geen' && <path d="M4 4l16 16" />}
   </svg>
-  <span>{aiUseSentence[value]}</span>
+  <span>
+    {aiUseSentence[value]}
+    {value === 'zelf' && toolsHref !== undefined && (
+      <>
+        {' '}
+        <a href={toolsHref} target="_blank" rel="noopener noreferrer">
+          Welke tool?<span class="sr-only"> (opent in een nieuw tabblad)</span>
+        </a>
+      </>
+    )}
+  </span>
 </p>
 
 <style>
@@ -46,6 +61,22 @@ const { value } = Astro.props;
      up with the module title next to it without pushing the line down. */
   span {
     align-self: baseline;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 
   svg {
