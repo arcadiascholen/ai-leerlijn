@@ -11,7 +11,7 @@ import Confetti from '../../components/stappen/Confetti.astro';
 import Keuze from '../../components/stappen/Keuze.astro';
 import Stap from '../../components/stappen/Stap.astro';
 import Samenvatting from '../../components/stappen/Samenvatting.astro';
-import { checkModuleBody, type SourceChoice } from '../../components/stappen/checks';
+import { checkModuleBody, type ModuleOutline, type SourceChoice } from '../../components/stappen/checks';
 import StepPlayer from '../../components/stappen/StepPlayer.astro';
 import Tool from '../../components/stappen/Tool.astro';
 import DenkEerst from '../../components/vragen/DenkEerst.astro';
@@ -36,8 +36,25 @@ interface Props {
   promptSteps: Readonly<Record<string, string>>;
 }
 
-const { entry, branching, tool, promptSteps } = Astro.props;
+const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+// In dev, <Content> follows a saved module file at once, but the content
+// store behind `entry.body`, and with it the props above, catches up about
+// half a second later. A page rendered in between would hand the new
+// components the old outline, and they fail on it. So dev reads the outline
+// from the file itself; the build has one source and keeps the props.
+let outline: ModuleOutline = Astro.props;
+if (import.meta.env.DEV) {
+  const sources = import.meta.glob<string>('/src/content/modules/**/*.mdx', { query: '?raw', import: 'default' });
+  const load = sources[`/${entry.filePath ?? ''}`];
+  if (load !== undefined) {
+    // The body as the MDX loader reads it: without frontmatter, trimmed.
+    const body = (await load()).replace(/^(?:\uFEFF|\s*\n)?---[\s\S]*?\n---/, '').trim();
+    outline = checkModuleBody(entry.id, body);
+  }
+}
+const { branching, tool, promptSteps } = outline;
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
