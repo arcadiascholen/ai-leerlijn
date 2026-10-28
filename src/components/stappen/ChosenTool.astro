@@ -1,0 +1,75 @@
+---
+// The chosen tool on <html>, for the <Tool> blocks of a module
+// (docs/BRIEFING.md § 12, "Instructies per tool"). The module route renders
+// this in the <head> of its page.
+//
+// The script of the step player is a deferred module script and may run
+// after the first paint. If the chosen tool were only applied then, every
+// block would flash open after a reload. So, before any step is parsed:
+//   - a <style> with one rule per option (toolRules in tools.ts): with
+//     CHOSEN_TOOL_ATTRIBUTE set on <html>, the blocks of the other tools are
+//     hidden;
+//   - a tiny inline script that reads the stored choice and sets that
+//     attribute, but only to one of the options: a stored key that is no
+//     longer an option counts as not chosen, as in `chosenOption`.
+// The bundled script below then keeps the attribute in sync with every
+// choice on the page, so switching works at once.
+import { choiceKey } from './choices';
+import type { SourceChoice } from './checks';
+import { storageKey } from './storage';
+import { CHOSEN_TOOL_ATTRIBUTE, TOOL_CHOICE, toolRules } from './tools';
+
+interface Props {
+  moduleId: string;
+  // The <Keuze naam="tool"> as read from the module source, or null if the
+  // module has none.
+  choice: SourceChoice | null;
+}
+
+const { moduleId, choice } = Astro.props;
+const keys = choice === null ? [] : Object.keys(choice.options);
+// An inline script cannot import storage.ts, so the build computes the key
+// with the same functions that read and write it.
+const key = storageKey(moduleId, choiceKey(TOOL_CHOICE));
+const attribute = CHOSEN_TOOL_ATTRIBUTE;
+---
+
+{
+  choice !== null && (
+    <>
+      <style is:inline set:html={toolRules(keys)} />
+      {/* readStored in storage.ts, inline: localStorage may be missing or throw. */}
+      <script is:inline define:vars={{ key, keys, attribute }}>
+        try {
+          const tool = window.localStorage.getItem(key);
+          if (tool !== null && keys.includes(tool)) document.documentElement.setAttribute(attribute, tool);
+        } catch {
+          // Storage blocked: no tool is chosen yet, so every block shows.
+        }
+      </script>
+    </>
+  )
+}
+
+<script>
+  import { chosenOption, onChoice } from './choices';
+  import { moduleIdOf } from './storage';
+  import { CHOSEN_TOOL_ATTRIBUTE, TOOL_CHOICE } from './tools';
+
+  // The same decision as the inline script, from the rendered <Keuze>:
+  // also when localStorage is blocked, through the choices made on this page.
+  function sync(choice: HTMLElement, moduleId: string): void {
+    const chosen = chosenOption(choice, moduleId);
+    if (chosen === null) document.documentElement.removeAttribute(CHOSEN_TOOL_ATTRIBUTE);
+    else document.documentElement.setAttribute(CHOSEN_TOOL_ATTRIBUTE, chosen);
+  }
+
+  const choice = document.querySelector<HTMLElement>(`[data-choice="${TOOL_CHOICE}"]`);
+  const moduleId = choice === null ? null : moduleIdOf(choice);
+  if (choice !== null && moduleId !== null) {
+    sync(choice, moduleId);
+    onChoice((detail) => {
+      if (detail.moduleId === moduleId && detail.name === TOOL_CHOICE) sync(choice, moduleId);
+    });
+  }
+</script>

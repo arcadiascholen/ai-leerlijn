@@ -426,7 +426,10 @@ Tekst, een beeld of een vraagcomponent.
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
-  privévenster. De voortgang wordt dan gewoon niet bewaard.
+  privévenster. De voortgang wordt dan gewoon niet bewaard. Eén uitzondering:
+  het inline script dat vóór de eerste weergave de gekozen tool leest (zie
+  *Instructies per tool*). Het kan `storage.ts` niet importeren; de sleutel
+  berekent de build wel met `storageKey`.
 - *Opnieuw beginnen* wist alle sleutels met het prefix van die module, en
   alleen die.
 - Waarden zijn tekst. Een component dat meer bewaart, gebruikt
@@ -459,8 +462,8 @@ Tekst, een beeld of een vraagcomponent.
   optie zonder feedback, tekst tussen de tags van `<Reflectie>` of
   `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
   dan één, een link in `src/config/smartschool.ts` die geen geldig
-  `https://`-adres is, een fout in een `<Keuze>` of in de takken (zie
-  *Keuzes en takken*).
+  `https://`-adres is, een fout in een `<Keuze>`, in de takken (zie
+  *Keuzes en takken*) of in een `<Tool>` (zie *Instructies per tool*).
 
 ### Vraagtypes
 
@@ -654,6 +657,81 @@ steunt.
   falen bij een ontbrekende, ongeldige of dubbele `naam`, een lege `vraag`,
   lege of ongeldige `opties`, `vertakt` met een waarde, of tekst tussen de
   tags.
+
+### Instructies per tool
+
+```mdx
+<Stap titel="Kies je tool">
+<Keuze naam="tool" vraag="Met welke tool werk je vandaag?"
+  opties={{ chatgpt: 'ChatGPT', gemini: 'Gemini', notebook: 'Gemini Notebook', copilot: 'Copilot (schoolaccount)' }} />
+</Stap>
+
+<Stap titel="Zet de leermodus aan">
+Wat voor elke tool geldt, staat gewoon in de stap.
+
+<Tool naam="chatgpt">Zet de **Leermodus** aan …</Tool>
+
+<Tool naam="copilot">Open **Studeren en leren** in de linkerkolom …</Tool>
+</Stap>
+```
+
+- Een module vraagt **één keer** met welke tool de leerling werkt, met een
+  gewone, niet-vertakkende `<Keuze naam="tool">`. De opties en hun teksten
+  kiest de module; de site kent geen vaste lijst van tools. Zoals elke keuze
+  wordt ze per module bewaard, onder `keuze:tool`: *Opnieuw beginnen* wist
+  ze, en een andere module vraagt ze opnieuw. In de samenvatting staat ze
+  zoals elke keuze: *Tool: ChatGPT*.
+- `<Tool naam="chatgpt">…</Tool>` staat binnen een `<Stap>`, na de keuze, en
+  bevat de handelingen voor één tool in gewone Markdown: alinea's, **vet**,
+  links, `code`. `naam` is een sleutel uit de `opties` van
+  `<Keuze naam="tool">`. `code` krijgt de stijl van een prompt: iets wat de
+  leerling in de tool typt. Wat voor elke tool hetzelfde is, staat buiten de
+  blokken.
+- **Met een gekozen tool** staan alleen de blokken van die tool er, zonder
+  label: het blok leest als een deel van de stap. Een tool zonder blok in een
+  stap toont daar niets. **Zonder keuze, of zonder JavaScript,** staan alle
+  blokken er, elk met een label: *In ChatGPT*, *In Copilot (schoolaccount)*.
+  Met JavaScript komt dat alleen voor als de leerling de keuzestap oversloeg,
+  bijvoorbeeld met `#stap-n`, of als `localStorage` geblokkeerd is en de
+  pagina herlaadt. De tekst van het label komt uit de MDX-bron, zoals bij
+  takken: de `<Keuze>` rendert in een andere stap.
+- **Wisselen.** Terug naar de keuzestap en een andere tool kiezen. De blokken
+  wisselen meteen, zonder herladen.
+- **Vóór de eerste weergave.** Het script van de speler is een uitgesteld
+  modulescript en kan na de eerste weergave lopen. Las de site de keuze pas
+  dan, dan stonden na herladen alle blokken even open. Daarom zet
+  `src/components/stappen/ChosenTool.astro` twee dingen in de `<head>` van de
+  modulepagina (de slot `head` van `src/layouts/Base.astro`), alleen in een
+  module met `<Keuze naam="tool">`:
+  - een `<style>` met één regel per optie, gemaakt bij de build (`toolRules`
+    in `src/components/stappen/tools.ts`): met
+    `<html data-chosen-tool="chatgpt">` zijn alle blokken `[data-tool]`
+    behalve `[data-tool="chatgpt"]` verborgen. CSS kan twee attributen niet
+    vergelijken, vandaar een regel per optie;
+  - een klein inline script dat de keuze uit `localStorage` leest, in een
+    try/catch, en `data-chosen-tool` op `<html>` zet, maar alleen op een van
+    de opties. De sleutel `ai-leerlijn:<module-id>:keuze:tool` en de opties
+    zet de build erin.
+
+  Beide staan in de `<head>`, dus vóór elke stap in de HTML: geen blok wordt
+  getoond voor het attribuut er is. Een gebundeld script in hetzelfde
+  component houdt het attribuut daarna bij: bij het laden met `chosenOption`,
+  en na elke keuze met `onChoice`. Zo werkt wisselen ook als `localStorage`
+  geblokkeerd is. Het label verbergt `Tool.astro` met dezelfde
+  `data-chosen-tool`; een blok zelf heeft geen script.
+- **Vorm.** Een blok heeft links een lijn in `--ai`, zonder achtergrond, en
+  het label in de stijl `label` in `--ai-text`. Inleidende tekst, een prompt
+  en één blok passen samen in een stap op 1366 × 640. Zonder keuze staan de
+  blokken dichter op elkaar; vier blokken van één of twee zinnen passen dan
+  met een inleidende zin. Houd een blok dus kort.
+- **Buildchecks**, elk met een duidelijke melding, in `checks.ts`: een
+  `<Tool>` in een module zonder `<Keuze naam="tool">`, een `<Tool>` vóór die
+  keuze, een `naam` die geen optie ervan is, een `naam` die geen tekst is, en
+  meer dan één `<Keuze naam="tool">`. De build leest de opties dus uit de
+  bron: schrijf `opties` als een object van gewone teksten, zoals bij de
+  vertakkende keuze. `<Keuze naam="tool">` controleert dat wat de build las,
+  exact zijn props zijn. `<Tool>` zelf laat de build falen bij een
+  ontbrekende of ongeldige `naam` en bij een leeg blok.
 
 ### De samenvatting
 

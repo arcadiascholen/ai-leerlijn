@@ -10,7 +10,7 @@
 // `tak` is shared. The player shows a branch step only to a student who
 // chose that option. Without JavaScript every step is there, and a branch
 // step says for whom it is.
-import type { BranchingChoice } from './checks';
+import type { SourceChoice } from './checks';
 
 interface Props {
   titel: string;
@@ -32,7 +32,7 @@ if (typeof titel !== 'string' || titel.trim() === '') {
 // for a <Stap> used anywhere else.
 let branchLabel: string | undefined;
 if (tak !== undefined) {
-  const branching = (Astro.locals as { branching?: BranchingChoice | null }).branching;
+  const branching = (Astro.locals as { branching?: SourceChoice | null }).branching;
   if (typeof tak === 'string' && branching != null && Object.hasOwn(branching.options, tak)) {
     branchLabel = branching.options[tak];
   }

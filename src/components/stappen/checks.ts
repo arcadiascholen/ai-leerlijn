@@ -8,23 +8,31 @@
 // checks apply as soon as it is switched to `beschikbaar`.
 
 import { ID_PATTERN } from '../vragen/authoring';
+import { TOOL_CHOICE } from './tools';
 
-// The one branching <Keuze> of a module, as read from the MDX source. The
-// route hands it to every <Stap> through Astro.locals, for the label of a
-// branch step without JavaScript ("Voor: …"): a step cannot rely on the
+// A <Keuze> as read from the MDX source: its `naam` and its options. The
+// route hands the choices that other components need at build time to them
+// through Astro.locals: a component in another step cannot rely on the
 // <Keuze> having rendered before it. <Keuze> itself checks that this is
 // exactly what its props say.
-export interface BranchingChoice {
+export interface SourceChoice {
   readonly name: string;
   // Option key → the text the student sees.
   readonly options: Readonly<Record<string, string>>;
 }
 
 export interface ModuleOutline {
-  readonly branching: BranchingChoice | null;
+  // The one branching <Keuze>, for the label of a branch step without
+  // JavaScript ("Voor: …", Stap.astro).
+  readonly branching: SourceChoice | null;
+  // The <Keuze naam="tool">, for the label of a <Tool> block ("In ChatGPT",
+  // Tool.astro) and the rules that show the blocks of the chosen tool
+  // (ChosenTool.astro).
+  readonly tool: SourceChoice | null;
 }
 
 const EXAMPLE_OPTIONS = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
+const EXAMPLE_TOOL_OPTIONS = "opties={{ chatgpt: 'ChatGPT', gemini: 'Gemini' }}";
 
 // Positions of every match of `pattern` (with the `g` flag) in `text`.
 function positions(text: string, pattern: RegExp): number[] {
@@ -177,15 +185,21 @@ function readString(cursor: Cursor): string | null {
   return null;
 }
 
-// `opties` of the branching <Keuze>, read from the source. Only an object of
-// plain texts, `{ toets: 'Een toets', 'met-koppelteken': "Een tekst" }`:
-// anything else (a variable, a template, a computed text) could differ from
-// what <Keuze> renders, so it fails the build instead.
-function readOptions(id: string, name: string, attribute: Attribute | undefined): Record<string, string> {
+// `opties` of a <Keuze>, read from the source. Only an object of plain
+// texts, `{ toets: 'Een toets', 'met-koppelteken': "Een tekst" }`: anything
+// else (a variable, a template, a computed text) could differ from what
+// <Keuze> renders, so it fails the build instead. `tag` names the <Keuze> in
+// the messages; `example` is a valid `opties` for it.
+function readOptions(
+  id: string,
+  tag: string,
+  example: string,
+  attribute: Attribute | undefined,
+): Record<string, string> {
   const fail = (): Error =>
     new Error(
-      `Module "${id}": write \`opties\` of <Keuze naam="${name}" vertakt> as an object of plain texts, ` +
-        `such as ${EXAMPLE_OPTIONS}. The build reads it from the source, so a variable or a computed text ` +
+      `Module "${id}": write \`opties\` of ${tag} as an object of plain texts, ` +
+        `such as ${example}. The build reads it from the source, so a variable or a computed text ` +
         'does not work there.',
     );
   if (attribute?.kind !== 'expression') throw fail();
@@ -200,12 +214,12 @@ function readOptions(id: string, name: string, attribute: Attribute | undefined)
     if (key === null) throw fail();
     if (!ID_PATTERN.test(key)) {
       throw new Error(
-        `Module "${id}": the option key "${key}" of <Keuze naam="${name}"> may only have lowercase letters, ` +
+        `Module "${id}": the option key "${key}" of ${tag} may only have lowercase letters, ` +
           'digits and hyphens.',
       );
     }
     if (Object.hasOwn(options, key)) {
-      throw new Error(`Module "${id}": <Keuze naam="${name}"> has the option "${key}" twice.`);
+      throw new Error(`Module "${id}": ${tag} has the option "${key}" twice.`);
     }
     skipSpace(cursor);
     if (cursor.text.charAt(cursor.at) !== ':') throw fail();
@@ -266,7 +280,8 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   // Branches (BRIEFING § 12, "Keuzes en takken"): one branching <Keuze> at
   // most, in a shared step; every branch step after it names one of its
   // options; every option has steps.
-  const branchingTags = tagsOf(id, body, 'Keuze').filter((tag) => isBranching(id, tag));
+  const choiceTags = tagsOf(id, body, 'Keuze');
+  const branchingTags = choiceTags.filter((tag) => isBranching(id, tag));
   if (branchingTags.length > 1) {
     const names = branchingTags.map((tag) => `"${textOf(tag, 'naam') ?? '…'}"`).join(', ');
     throw new Error(
@@ -275,13 +290,16 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     );
   }
   const choiceTag = branchingTags[0];
-  let branching: BranchingChoice | null = null;
+  let branching: SourceChoice | null = null;
   if (choiceTag !== undefined) {
     const name = textOf(choiceTag, 'naam');
     if (name === undefined) {
       throw new Error(`Module "${id}": the branching <Keuze> needs a \`naam\` as text, such as naam="doel".`);
     }
-    branching = { name, options: readOptions(id, name, choiceTag.attributes.get('opties')) };
+    branching = {
+      name,
+      options: readOptions(id, `<Keuze naam="${name}" vertakt>`, EXAMPLE_OPTIONS, choiceTag.attributes.get('opties')),
+    };
   }
   // The step that holds the branching choice: the last one that opens before it.
   const choiceStep = choiceTag === undefined ? undefined : steps.filter((step) => step.index < choiceTag.index).at(-1);
@@ -327,5 +345,55 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     }
   }
 
-  return { branching };
+  // Instructions per tool (BRIEFING § 12, "Instructies per tool"): at most
+  // one <Keuze naam="tool">, and every <Tool> comes after it and names one
+  // of its options.
+  const toolChoiceTags = choiceTags.filter((tag) => textOf(tag, 'naam') === TOOL_CHOICE);
+  if (toolChoiceTags.length > 1) {
+    throw new Error(
+      `Module "${id}" has ${toolChoiceTags.length} <Keuze naam="${TOOL_CHOICE}">. Ask for the tool once; every ` +
+        '<Tool> after it follows that choice.',
+    );
+  }
+  const toolChoiceTag = toolChoiceTags[0];
+  let tool: SourceChoice | null = null;
+  if (toolChoiceTag !== undefined) {
+    tool = {
+      name: TOOL_CHOICE,
+      options: readOptions(
+        id,
+        `<Keuze naam="${TOOL_CHOICE}">`,
+        EXAMPLE_TOOL_OPTIONS,
+        toolChoiceTag.attributes.get('opties'),
+      ),
+    };
+  }
+  for (const tag of tagsOf(id, body, 'Tool')) {
+    const attribute = tag.attributes.get('naam');
+    if (attribute?.kind !== 'text') {
+      throw new Error(`Module "${id}": write \`naam\` of every <Tool> as text, such as <Tool naam="chatgpt">.`);
+    }
+    const name = attribute.value;
+    if (tool === null || toolChoiceTag === undefined) {
+      throw new Error(
+        `Module "${id}": <Tool naam="${name}"> shows instructions for the tool the student chose, but the module ` +
+          `has no <Keuze naam="${TOOL_CHOICE}">. Ask for the tool in a step before the first <Tool>, such as ` +
+          `<Keuze naam="${TOOL_CHOICE}" vraag="Met welke tool werk je vandaag?" ${EXAMPLE_TOOL_OPTIONS} />.`,
+      );
+    }
+    if (tag.index < toolChoiceTag.index) {
+      throw new Error(
+        `Module "${id}": <Tool naam="${name}"> comes before <Keuze naam="${TOOL_CHOICE}">, so the student has not ` +
+          'chosen a tool there yet. Move the choice to a step before the first <Tool>.',
+      );
+    }
+    if (!Object.hasOwn(tool.options, name)) {
+      throw new Error(
+        `Module "${id}": <Tool naam="${name}">: "${name}" is not an option of <Keuze naam="${TOOL_CHOICE}">. ` +
+          `Its options are: ${Object.keys(tool.options).join(', ')}.`,
+      );
+    }
+  }
+
+  return { branching, tool };
 }
