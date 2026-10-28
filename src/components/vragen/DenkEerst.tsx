@@ -36,6 +36,7 @@ function hint(words: number, shown: boolean): string {
 
 export default function DenkEerst({ id, question, children }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLTextAreaElement>(null);
   const exampleRef = useRef<HTMLElement>(null);
   const moduleIdRef = useRef<string | null>(null);
   // Set by the button only: a restored answer does not move the focus.
@@ -53,9 +54,20 @@ export default function DenkEerst({ id, question, children }: Props) {
     moduleIdRef.current = moduleId;
     if (moduleId === null) return;
     const stored = readAnswer(moduleId, id);
-    if (stored?.kind !== 'think-first') return;
-    setAnswer(stored.answer);
-    setShown(stored.shown);
+    if (stored?.kind === 'think-first') {
+      setAnswer(stored.answer);
+      setShown(stored.shown);
+      return;
+    }
+    // What the student typed before hydration stays in the field, but not
+    // in the state: it would not be stored until the next keystroke, and the
+    // button would stay disabled. Take it over. The field has
+    // autocomplete="off", so the browser does not restore old text into it
+    // on Back or a reload.
+    const typed = fieldRef.current?.value ?? '';
+    if (typed === '') return;
+    setAnswer(typed);
+    save(typed, false);
   }, [id]);
 
   useEffect(() => {
@@ -92,10 +104,12 @@ export default function DenkEerst({ id, question, children }: Props) {
       <div className={styles.columns}>
         <div className={styles.own}>
           <textarea
+            ref={fieldRef}
             id={`${baseId}-antwoord`}
             className={styles.field}
             rows={5}
             placeholder="Typ hier je antwoord"
+            autoComplete="off"
             value={answer}
             onChange={(event) => {
               setAnswer(event.target.value);
