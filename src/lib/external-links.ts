@@ -1,9 +1,9 @@
 import type { Element, ElementContent } from 'hast';
 import type { Options } from 'rehype-external-links';
 
-// Options for rehype-external-links (astro.config.mjs; @astrojs/mdx inherits
-// them): a link to another site in Markdown opens in a new tab, so the module
-// stays open (docs/BRIEFING.md § 12). External means an absolute http(s)
+// Options for rehype-external-links, on the MDX integration in
+// astro.config.mjs: a link to another site in Markdown opens in a new tab, so
+// the module stays open (docs/BRIEFING.md § 12). External means an absolute http(s)
 // address; links within the site and to `#stap-n` stay in the same tab.
 //
 // After the link text comes the arrow-out-of-a-box icon of ExternalIcon in
