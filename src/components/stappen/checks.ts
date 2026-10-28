@@ -297,6 +297,16 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     }
   }
 
+  // Confetti plays once per module (BRIEFING § 12, "Confetti"), and it is
+  // stored per module: a second one would never play.
+  const confetti = positions(body, /<Confetti[\s/>]/g);
+  if (confetti.length > 1) {
+    throw new Error(
+      `Module "${id}" has ${confetti.length} <Confetti /> components; it may have one. Confetti plays once per ` +
+        'module: keep it in the step where it matters most.',
+    );
+  }
+
   // Branches (BRIEFING § 12, "Keuzes en takken"): one branching <Keuze> at
   // most, in a shared step; every branch step after it names one of its
   // options; every option has steps.

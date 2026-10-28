@@ -568,7 +568,8 @@ Tekst, een beeld of een vraagcomponent.
   `stap`. Een vraag, en een `<Prompt>` met invulvelden, bewaart haar
   antwoord onder `vraag:<id>`, met de `id` die de auteur schrijft (zie
   *Antwoorden bewaren* hieronder). Een `<Keuze>` bewaart de gekozen optie
-  onder `keuze:<naam>` (zie *Keuzes en takken*).
+  onder `keuze:<naam>` (zie *Keuzes en takken*). `<Confetti />` bewaart
+  onder `confetti` dat ze speelde (zie *Confetti*).
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -610,9 +611,10 @@ Tekst, een beeld of een vraagcomponent.
 - Een vergissing van de auteur laat de build falen met een duidelijke
   melding, in plaats van een kapotte vraag bij de leerling te zetten: een
   ontbrekende of dubbele `id`, een `<Meerkeuze>` zonder juiste optie, een
-  optie zonder feedback, tekst tussen de tags van `<Reflectie>` of
-  `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
-  dan één, een link in `src/config/smartschool.ts` die geen geldig
+  optie zonder feedback, tekst tussen de tags van `<Reflectie>`,
+  `<Samenvatting />` of `<Confetti />`, een `<Samenvatting />` buiten de
+  laatste stap, meer dan één `<Samenvatting />` of `<Confetti />` in een
+  module, een link in `src/config/smartschool.ts` die geen geldig
   `https://`-adres is, een fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*) of in
   een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*).
@@ -1191,6 +1193,50 @@ voor het [jaar en richting].
   vragen.
 - Zonder JavaScript wordt niets bewaard; de samenvatting zegt dan dat ze
   JavaScript nodig heeft.
+
+### Confetti
+
+```mdx
+<Stap titel="Wat werkte?">
+<Confetti />
+
+Denk terug aan je sessie. Er is geen fout antwoord.
+…
+</Stap>
+```
+
+- Een korte mentale pauze op een scharniermoment van een module. Er valt
+  niets te leren. In *AI als coach* (3e graad) staat ze in *Wat werkte?*,
+  na de vier vragen *Wat ging hier mis?* en vóór de reflectie.
+- `<Confetti />` heeft geen attributen en geen inhoud: tekst tussen de tags
+  laat de build falen. Hoogstens één per module; ook dat controleert de
+  build. Het component zelf is onzichtbaar en neemt geen plaats in; zet het
+  bovenaan de stap. Het staat in `src/components/stappen/`, het script
+  ernaast in `confetti.ts`.
+- De eerste keer dat de stap verschijnt, valt er 1,5 seconde confetti over
+  de stapkaart: 80 stukjes die op het einde vervagen. Daarna verdwijnt het
+  canvas uit de pagina. Verlaat de leerling de stap eerder, dan stopt de
+  confetti meteen; ook dan telt ze als gespeeld.
+- **Eén keer per module.** Na het afspelen staat er een sleutel
+  `ai-leerlijn:<module-id>:confetti`. Wie terugkeert naar de stap of de
+  pagina herlaadt, ziet niets meer. *Opnieuw beginnen* wist de sleutel mee.
+  Is opslag geblokkeerd, dan speelt ze hoogstens één keer per keer dat de
+  pagina geladen wordt.
+- **Kleuren:** alleen merkkleuren, gelezen uit de tokens bij het afspelen:
+  `brand`, `brand-text`, `forest` en `ai`. `ai-soft` valt weg op de witte
+  kaart. Nooit rood, oranje of geel: die horen bij de AI-barometer
+  (`docs/DESIGN.md`, *Kleur*).
+- **Nooit in de weg.** Het canvas ligt vast over de kaart, buiten de
+  layout: de stap blijft even hoog en er scrolt niets. Het is
+  `aria-hidden`, vangt geen klikken op en krijgt geen focus. De leerling
+  typt en klikt meteen verder. Geen geluid.
+- Bij `prefers-reduced-motion: reduce` is er geen confetti, en wordt er ook
+  niets bewaard.
+- Zelf gemaakt, zonder bibliotheek: ± 2 kB script dat op een `<canvas>`
+  tekent. Het start, zoals de samenvatting, met een `IntersectionObserver`
+  op de stap. Het begint pas te kijken na `DOMContentLoaded`: tot het script
+  van de speler gelopen heeft, staan alle stappen op het scherm.
+- Zonder JavaScript is er geen confetti.
 
 ### Links naar Smartschool
 

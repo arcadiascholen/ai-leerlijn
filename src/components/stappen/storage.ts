@@ -7,7 +7,9 @@
 //   - a question component stores its answer under `vraag:<id>`, unique
 //     within the module (../vragen/answers.ts);
 //   - a <Keuze> stores the key of the chosen option under `keuze:<naam>`
-//     (choices.ts).
+//     (choices.ts);
+//   - <Confetti /> stores `confetti` once it played, so it plays once per
+//     module (confetti.ts).
 // "Opnieuw beginnen" removes every key of one module, and only those.
 //
 // localStorage may be missing or throw (private windows, blocked site data,
