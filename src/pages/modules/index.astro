@@ -140,6 +140,18 @@ const options = [
     outline-offset: 2px;
   }
 
+  /* 120ms on hover and on choosing (docs/DESIGN.md, "Beweging"); only once
+     the filter shows the grade from the URL (`data-motion`, settle in
+     src/lib/motion.ts), so that it does not move at load. Cards that the
+     filter brings back fade in with `appear` from the same file. */
+  @media (prefers-reduced-motion: no-preference) {
+    .filter[data-motion] .filter-option span {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -159,6 +171,8 @@ const options = [
 </style>
 
 <script>
+  import { appear, settle } from '../../lib/motion';
+
   const PARAM = 'graad';
   const GRADES = ['1', '2', '3'];
 
@@ -171,13 +185,17 @@ const options = [
     const items = Array.from(document.querySelectorAll<HTMLElement>('[data-grades]'));
 
     // '' shows every module; '1' to '3' only the modules for that grade.
-    const apply = (grade: string): number => {
+    // After the student's choice (`fromStudent`), what comes back fades in;
+    // what goes, goes at once. Not at load.
+    const apply = (grade: string, fromStudent: boolean): number => {
       let shown = 0;
       for (const item of items) {
         const match = grade === '' || (item.dataset.grades ?? '').split(' ').includes(grade);
+        if (fromStudent && match && item.hidden) appear(item);
         item.hidden = !match;
         if (match) shown++;
       }
+      if (fromStudent && shown === 0 && empty.hidden) appear(empty);
       empty.hidden = shown > 0;
       return shown;
     };
@@ -194,14 +212,16 @@ const options = [
     const fromUrl = new URLSearchParams(window.location.search).get(PARAM);
     const initial = fromUrl !== null && GRADES.includes(fromUrl) ? fromUrl : '';
     for (const radio of radios) radio.checked = radio.value === initial;
-    apply(initial);
+    apply(initial, false);
     // An unknown value such as `?graad=5` is dropped from the URL.
     writeUrl(initial);
+    // From here on, the chosen grade changes colour with the student.
+    settle(filter);
 
     filter.addEventListener('change', (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
       const grade = event.target.value;
-      const shown = apply(grade);
+      const shown = apply(grade, true);
       writeUrl(grade);
       const what = shown === 1 ? '1 module' : `${shown} modules`;
       status.textContent = grade === '' ? `Alle modules: ${what}.` : `${what} voor de ${grade}e graad.`;

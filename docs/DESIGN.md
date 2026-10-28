@@ -154,6 +154,57 @@ Alle stijlen gebruiken `--font-sans`, behalve `prompt` (`--font-mono`).
 Het ontwerpdoel is een laptop van 1366 × 768; na de browserbalken blijft
 ± 1366 × 640 over.
 
+## Beweging
+
+Wat op het scherm verandert, beweegt kort, zodat de leerling ziet wat er
+veranderde, zonder erop te wachten. Het design system heeft geen
+bewegingstokens; deze drie zijn van de site zelf. Krijgt een nieuwe versie
+van het design system er wel, dan nemen die hun plaats in.
+
+| Token | Waarde | Gebruik |
+|---|---|---|
+| `motion-fast` | 120ms | Hover, en een kleur of rand die verandert: knoppen, links, kaarten, een gekozen `<Keuze>`-kaart of `<Meerkeuze>`-optie, de gekozen graad in het moduleoverzicht. |
+| `motion-base` | 200ms | Iets wat verschijnt: de nieuwe stap, de feedback van `<Meerkeuze>`, het voorbeeldantwoord van `<DenkEerst>`, ✓ *Gekopieerd* en *Nog leeg* bij een `<Prompt>`, de bevestiging en de knoppen die na een download in de samenvatting verschijnen, kaarten die het filter op graad terugbrengt. Ook de voortgangsbalk. |
+| `ease-out` | `cubic-bezier(0.2, 0, 0, 1)` | Elke beweging: snel vertrekken, rustig aankomen. |
+
+- **Alleen `opacity`, `transform` en kleuren** (achtergrond, rand, tekst;
+  een schaduw alleen als enkel haar kleur verandert). Nooit hoogte of
+  breedte: de layout verschuift niet, en de 390 px van een stap blijven
+  kloppen. Ook de voortgangsbalk schuift met `transform`.
+- **Niets duurt langer dan 250 ms.**
+- **Niets laat de leerling wachten.** De focus, `aria-live` en klikken
+  werken meteen; wat verdwijnt, verdwijnt meteen.
+- **Alles staat binnen `@media (prefers-reduced-motion: no-preference)`.**
+  Wie minder beweging vraagt, ziet geen enkele overgang.
+- **Alleen na een handeling van de leerling.** Niets beweegt bij het laden
+  van de pagina. Een island die bij het hydrateren een bewaarde toestand
+  toont (een beantwoorde `<Meerkeuze>`, een `<DenkEerst>` met
+  voorbeeldantwoord, een gekozen `<Keuze>`), beweegt niet.
+- **De stapwissel.** De oude stap verdwijnt meteen. De nieuwe verschijnt
+  met een fade en schuift 8 px (`space-2`) in de richting van de beweging:
+  met *Volgende* of → van rechts, met *Vorige* of ← van links. Na een
+  sprong (`#stap-n`, *Ga naar stap n*, een keuze die de stap verplaatst)
+  alleen een fade.
+- **Niet:** de `<Tool>`-blokken. CSS verbergt ze vóór de eerste weergave
+  (`ChosenTool.astro`); een overgang zou ze bij het laden toch even tonen.
+
+**In de code.** De overgangen en animaties staan in de CSS van elk
+component, met de tokens. `src/lib/motion.ts` beslist alleen *wanneer* iets
+beweegt:
+
+- `appear(element)` zet `data-appear` (de fade in `src/styles/global.css`)
+  en haalt het weg zodra de fade klaar of afgebroken is, zodat een stap die
+  later terugkomt niet opnieuw fadet. `appearOnMount` doet hetzelfde als
+  `ref` van een React-element dat pas na een handeling verschijnt. De speler
+  zet zo `data-enter` op de nieuwe stap (`playOnce`).
+- `settle(element)` zet `data-motion` zodra een element zijn eerste
+  toestand toont, ook een bewaarde. Overgangen die ook bij het herstellen
+  zouden lopen, gelden pas onder `[data-motion]`.
+
+Een nieuw component volgt hetzelfde: hover en kleur in CSS met
+`motion-fast`; iets wat na een handeling verschijnt met `appear`; een
+island die een toestand herstelt, zet zijn overgangen pas aan met `settle`.
+
 ## Iconografie
 
 - Lijniconen: 24 × 24 viewBox, stroke 2, ronde uiteinden, kleur via

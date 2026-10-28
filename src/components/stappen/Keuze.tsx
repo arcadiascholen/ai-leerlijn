@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { settle } from '../../lib/motion';
 import type { KeuzeOption } from '../vragen/authoring';
 import { readChoice, writeChoice } from './choices';
 import { moduleIdOf } from './storage';
@@ -26,10 +27,13 @@ export default function Keuze({ name, question, options, branching }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const moduleIdRef = useRef<string | null>(null);
   const [chosen, setChosen] = useState<string | null>(null);
+  // True from the render that shows the restored choice, if any.
+  const [restored, setRestored] = useState(false);
 
   // Restore after hydration, not during render: the server renders the
   // choice open, and the first client render has to match it.
   useEffect(() => {
+    setRestored(true);
     const root = rootRef.current;
     const moduleId = root === null ? null : moduleIdOf(root);
     moduleIdRef.current = moduleId;
@@ -48,6 +52,12 @@ export default function Keuze({ name, question, options, branching }: Props) {
     const checked = root.querySelector<HTMLInputElement>('input[type="radio"]:checked');
     if (checked !== null && options.some((option) => option.key === checked.value)) choose(checked.value);
   }, [name, options]);
+
+  // The cards change colour when the student chooses, but a restored choice
+  // simply stands there (docs/DESIGN.md, "Beweging").
+  useEffect(() => {
+    if (restored && rootRef.current !== null) settle(rootRef.current);
+  }, [restored]);
 
   // From onChange and from onClick: a click on a radio that is checked but
   // not stored (see above) fires no change. A choice that is already stored

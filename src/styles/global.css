@@ -91,6 +91,27 @@ a:hover {
   stroke-linejoin: round;
 }
 
+/* Motion (docs/DESIGN.md, "Beweging"). Only when the student did not ask
+   for reduced motion, and only for what changes because of something the
+   student did: nothing moves at page load. */
+@media (prefers-reduced-motion: no-preference) {
+  a {
+    transition: color var(--motion-fast) var(--ease-out);
+  }
+
+  /* Something that appears: set by `appear` in src/lib/motion.ts, right
+     after an action of the student, and removed when the fade ends. */
+  [data-appear] {
+    animation: appear var(--motion-base) var(--ease-out);
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
 /* Text for screen readers only: read aloud, not shown. */
 .sr-only {
   position: absolute;

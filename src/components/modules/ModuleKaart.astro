@@ -136,6 +136,13 @@ const stars = Array.from({ length: MAX_LEVEL }, (_, index) => index < niveau);
     text-decoration: underline;
   }
 
+  /* Hover only (docs/DESIGN.md, "Beweging"). */
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      transition: border-color var(--motion-fast) var(--ease-out);
+    }
+  }
+
   .card-kort {
     max-width: none;
     margin: 0;

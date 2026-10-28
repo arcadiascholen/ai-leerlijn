@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { appear, appearOnMount } from '../../lib/motion';
 import { readAnswer, type StoredAnswer } from '../vragen/answers';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import {
@@ -363,8 +364,19 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
 
   const printing = mode === 'print' || mode === 'printed';
   const done = mode === 'downloaded' || mode === 'printed';
+  const tone = mode === 'downloaded' ? 'success' : printing ? 'warning' : undefined;
   const openChoices = collected?.choices.filter((choice) => choice.label === '') ?? [];
   const emptyItems = collected?.items.filter((item) => !isFilled(item)) ?? [];
+
+  // What appears after a download, or after a failed one, fades in
+  // (docs/DESIGN.md, "Beweging"): the status through this effect, which runs
+  // before the paint so the status does not show at full strength first; the
+  // buttons and the note through `appearOnMount`. The mode is never
+  // restored, so this only follows an action of the student.
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  useLayoutEffect(() => {
+    if (tone !== undefined && statusRef.current !== null) appear(statusRef.current);
+  }, [tone]);
 
   return (
     <div ref={rootRef} className={styles.root} data-summary>
@@ -407,26 +419,29 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
           Download als pdf
         </button>
         {printing && (
-          <button type="button" className={mode === 'print' ? styles.primary : styles.secondary} onClick={print}>
+          <button
+            ref={appearOnMount}
+            type="button"
+            className={mode === 'print' ? styles.primary : styles.secondary}
+            onClick={print}
+          >
             <PrintIcon />
             Afdrukken
           </button>
         )}
         {done &&
           (formUrl !== null ? (
-            <a className={styles.primary} href={formUrl} target="_blank" rel="noopener noreferrer">
+            <a ref={appearOnMount} className={styles.primary} href={formUrl} target="_blank" rel="noopener noreferrer">
               Open het eindformulier
               <ExternalIcon />
               <span className={styles.srOnly}> (opent in een nieuw tabblad)</span>
             </a>
           ) : (
-            <p className={styles.pending}>De link naar het eindformulier volgt nog.</p>
+            <p ref={appearOnMount} className={styles.pending}>
+              De link naar het eindformulier volgt nog.
+            </p>
           ))}
-        <p
-          role="status"
-          className={styles.status}
-          data-tone={mode === 'downloaded' ? 'success' : printing ? 'warning' : undefined}
-        >
+        <p ref={statusRef} role="status" className={styles.status} data-tone={tone}>
           {mode === 'downloaded' && (
             <>
               <CheckIcon />

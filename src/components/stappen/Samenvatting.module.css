@@ -129,6 +129,19 @@
   background: var(--surface-sunken);
 }
 
+/* On hover, and when the download button turns secondary after the
+   download (docs/DESIGN.md, "Beweging"). What appears after a download fades
+   in with `appear` from src/lib/motion.ts. */
+@media (prefers-reduced-motion: no-preference) {
+  .primary,
+  .secondary {
+    transition:
+      background-color var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out),
+      color var(--motion-fast) var(--ease-out);
+  }
+}
+
 /* The note in place of the form button while its link is not known. Plain
    text, not a control. */
 .pending {
