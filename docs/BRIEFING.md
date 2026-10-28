@@ -525,6 +525,12 @@ Tekst, een beeld of een vraagcomponent.
   pijltjestoets naar rechts uitgeschakeld. Een korte zin naast de knop zegt
   waarom (*Kies eerst een antwoord om verder te gaan.*), in een
   `aria-live`-gebied.
+- Op de laatste stap van de route staat in plaats van *Volgende* een link
+  *Naar de startpagina*, naar `/ai-leerlijn/` in hetzelfde tabblad: een
+  primaire knop met een huisje, op dezelfde plek. De startpagina toont stap
+  3, het eindformulier (§ 4). Zolang de vertakkende keuze open is, is de
+  route niet volledig en verschijnt de link niet. De pijltjestoets naar
+  rechts doet op de laatste stap niets: een toets verlaat de module niet.
 - Bij het wisselen gaat de focus naar de kop van de nieuwe stap. "Stap n van
   m" staat als tekst in een `aria-live`-gebied, zodat een schermlezer de
   voortgang voorleest.
