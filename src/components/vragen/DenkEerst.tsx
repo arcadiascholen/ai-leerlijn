@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { appear } from '../../lib/motion';
 import { moduleIdOf } from '../stappen/storage';
 import { readAnswer, writeAnswer } from './answers';
 import styles from './DenkEerst.module.css';
@@ -84,6 +85,9 @@ export default function DenkEerst({ id, question, children }: Props) {
 
   function show(): void {
     if (words < MIN_WORDS) return;
+    // Fades in as it appears, after the button only: a restored example
+    // answer simply stands there (docs/DESIGN.md, "Beweging").
+    if (exampleRef.current !== null) appear(exampleRef.current);
     focusExampleRef.current = true;
     setShown(true);
     save(answer, true);

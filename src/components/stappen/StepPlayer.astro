@@ -167,17 +167,15 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     background: var(--line);
   }
 
+  /* As wide as the bar, and moved left by the part still to go: the script
+     sets the transform, so the bar moves without changing a width. The bar
+     clips the part outside it, and rounds its left end. */
   .player-fill {
-    width: 0;
+    width: 100%;
     height: 100%;
     border-radius: inherit;
     background: var(--brand);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .player-fill {
-      transition: width 0.2s ease-out;
-    }
+    transform: translateX(-100%);
   }
 
   :global(.js) .player-card {
@@ -292,6 +290,51 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     opacity: 0.4;
   }
 
+  /* Motion (docs/DESIGN.md, "Beweging"). The bar only moves once the step
+     player shows its first step (`data-motion`, set by `settle`): at load it
+     is already where it belongs. The new step fades in, 8px from the side
+     the student moves to; after a jump (`#stap-n`, a choice) it only fades.
+     The old step is hidden at once. The script sets `data-enter` only after
+     an action of the student, and removes it when the animation ends. */
+  @media (prefers-reduced-motion: no-preference) {
+    .player[data-motion] .player-fill {
+      transition: transform var(--motion-base) var(--ease-out);
+    }
+
+    .button {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        border-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+
+    .player-steps :global([data-step][data-enter]) {
+      animation: appear var(--motion-base) var(--ease-out);
+    }
+
+    .player-steps :global([data-step][data-enter='next']) {
+      animation-name: step-from-right;
+    }
+
+    .player-steps :global([data-step][data-enter='prev']) {
+      animation-name: step-from-left;
+    }
+
+    @keyframes step-from-right {
+      from {
+        opacity: 0;
+        transform: translateX(var(--space-2));
+      }
+    }
+
+    @keyframes step-from-left {
+      from {
+        opacity: 0;
+        transform: translateX(calc(-1 * var(--space-2)));
+      }
+    }
+  }
+
   /* Confirmation for "Opnieuw beginnen" */
   .player-dialog {
     width: min(30rem, calc(100vw - 2 * var(--space-5)));
@@ -316,6 +359,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 </style>
 
 <script>
+  import { playOnce, settle } from '../../lib/motion';
   import { hasOpenChoice, onChoice, routeOf, type Route } from './choices';
   import { clearModule, readStored, writeStored } from './storage';
 
@@ -323,6 +367,11 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
   const STEP_KEY = 'stap';
   const HASH_PATTERN = /^#stap-(\d+)$/;
   const OPEN_CHOICE_HINT = 'Kies eerst een antwoord om verder te gaan.';
+
+  // How the student reached a step, for the way it comes in (`data-enter`):
+  // one step forward, one back, or a jump (a link to `#stap-n`, or a choice
+  // that moved the step). Null at load: nothing moves then.
+  type Entry = 'next' | 'prev' | 'jump';
 
   function part<T extends Element>(root: Element, selector: string): T {
     const element = root.querySelector<T>(selector);
@@ -369,6 +418,9 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 
     let route: Route = routeOf(root, moduleId);
     let current = 1;
+    // The section on screen. Not route.steps[current - 1]: a choice can
+    // change the route before the step is shown again.
+    let shownSection: HTMLElement | undefined;
 
     // Within 1..limit: past an open branching choice there is nothing to
     // show yet, and a student could otherwise skip it through the shared end.
@@ -384,7 +436,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       const section = route.steps[current - 1];
       const open = section !== undefined && hasOpenChoice(section, moduleId);
       countText.textContent = `Stap ${current} van ${count}`;
-      fill.style.width = `${(current / count) * 100}%`;
+      fill.style.transform = `translateX(${(current / count) * 100 - 100}%)`;
       prevButton.disabled = current === 1;
       nextButton.disabled = current >= route.limit || open;
       // On the last step of a complete route the link to the start page
@@ -400,12 +452,20 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       if (hint.textContent !== text) hint.textContent = text;
     }
 
-    function show(step: number, moveFocus: boolean): void {
+    function show(step: number, moveFocus: boolean, entry: Entry | null): void {
       current = clamp(step);
       const shown = route.steps[current - 1];
+      const previous = shownSection;
+      shownSection = shown;
       sections.forEach((section) => {
         section.hidden = section !== shown;
+        // A step left while it was still coming in does not finish that
+        // when it is shown again.
+        if (section !== shown) section.removeAttribute('data-enter');
       });
+      // Only the step that comes in moves, and focus, the counter and
+      // clicks do not wait for it.
+      if (entry !== null && shown !== undefined && shown !== previous) playOnce(shown, 'enter', entry);
       update();
       stepsBox.scrollTop = 0;
 
@@ -422,7 +482,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     function move(direction: -1 | 1): boolean {
       const button = direction === 1 ? nextButton : prevButton;
       if (button.disabled) return false;
-      show(current + direction, true);
+      show(current + direction, true, direction === 1 ? 'next' : 'prev');
       return true;
     }
 
@@ -431,7 +491,9 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     }
 
     // Order at load: a `#stap-n` in the URL, then localStorage, then step 1.
-    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false);
+    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false, null);
+    // From here on, the bar moves with the student (see the styles).
+    settle(root);
 
     prevButton.addEventListener('click', () => move(-1));
     nextButton.addEventListener('click', () => move(1));
@@ -440,7 +502,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     // summary. Other hashes (footnotes) are not ours.
     window.addEventListener('hashchange', () => {
       const step = stepFromHash();
-      if (step !== null) show(step, clamp(step) !== current);
+      if (step !== null) show(step, clamp(step) !== current, 'jump');
     });
 
     document.addEventListener('keydown', (event) => {
@@ -462,7 +524,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       route = routeOf(root, moduleId);
       const position = section === undefined ? -1 : route.steps.indexOf(section) + 1;
       if (position === current) update();
-      else show(position > 0 ? position : current, false);
+      else show(position > 0 ? position : current, false, 'jump');
     });
 
     restartButton.addEventListener('click', () => {

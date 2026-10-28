@@ -4,9 +4,10 @@
    Light theme only. The design system also defines a dark theme; it is not
    used here (see docs/DESIGN.md).
 
-   Names match the design system one to one. What each token is for, and the
-   visual rules that go with them: docs/DESIGN.md. Components use only these
-   variables, never raw colour values or font names. */
+   Names match the design system one to one; only the motion tokens are the
+   site's own. What each token is for, and the visual rules that go with
+   them: docs/DESIGN.md. Components use only these variables, never raw
+   colour values or font names. */
 :root {
   /* Surfaces */
   --bg:             #fcfcf8;
@@ -82,6 +83,14 @@
   --content-max: 1120px;
   --shell-bar:   56px;
   --step-max-h:  520px;
+
+  /* Motion. Not in the design system, which has no motion tokens: the
+     site's own (docs/DESIGN.md, "Beweging"). Only opacity, transform and
+     colours move, and only inside
+     @media (prefers-reduced-motion: no-preference). */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --ease-out:    cubic-bezier(0.2, 0, 0, 1);
 
   /* Font families. The first name is the family that fontsource registers
      (self-hosted, imported in src/layouts/Base.astro); the rest are the

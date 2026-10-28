@@ -109,7 +109,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     {/* Always in the page, also when empty, so that a screen reader reads
         the confirmation when it appears. With fields, the note before it
         says which fields are still empty. */}
-    {fields !== null && <p class="prompt-note" id={noteId} data-prompt-note></p>}<p class="prompt-status" role="status">
+    {fields !== null && <p class="prompt-note" id={noteId} data-prompt-note></p>}<p class="prompt-status" role="status" data-prompt-status>
       <svg class="prompt-icon prompt-check" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M5 12.5l4.5 4.5L19 7.5"></path>
       </svg>
@@ -297,6 +297,16 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     color: var(--on-ai);
   }
 
+  /* Hover only (docs/DESIGN.md, "Beweging"). The status and the note fade in
+     with `appear` from src/lib/motion.ts when the script shows them. */
+  @media (prefers-reduced-motion: no-preference) {
+    .prompt-copy {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+  }
+
   /* Which fields are still empty, left of the button. It gives way to the
      status while that shows. */
   .prompt-note {
@@ -371,6 +381,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   // Copying a <Prompt>: one script for every prompt on the page, listening on
   // the document. Only a prompt with fields stores something: what the
   // student writes in its fields (see "Prompts with fields" below).
+  import { appear } from '../../lib/motion';
   import { moduleIdOf } from '../stappen/storage';
   import { readAnswer, writeAnswer } from '../vragen/answers';
 
@@ -388,11 +399,28 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   let current: HTMLElement | null = null;
   let timer: number | undefined;
 
+  // Left of the button, the note on the empty fields shows while it has text
+  // and no status takes its place (the styles hide it otherwise).
+  function noteShows(block: HTMLElement): boolean {
+    const note = block.querySelector('[data-prompt-note]');
+    return note !== null && note.textContent !== '' && block.dataset.state === undefined;
+  }
+
+  // What comes into view left of the button fades in (docs/DESIGN.md,
+  // "Beweging"): a new status, or the note it made way for. Always after
+  // something the student did: a copy, a selection, typing, or the end of a
+  // confirmation.
   function render(block: HTMLElement, state: State | null): void {
+    const before = block.dataset.state;
+    const noted = noteShows(block);
     if (state === null) block.removeAttribute('data-state');
     else block.dataset.state = state;
     const message = block.querySelector('[data-prompt-message]');
     if (message !== null) message.textContent = state === null ? '' : MESSAGES[state];
+    const status = block.querySelector<HTMLElement>('[data-prompt-status]');
+    if (state !== null && state !== before && status !== null) appear(status);
+    const note = block.querySelector<HTMLElement>('[data-prompt-note]');
+    if (!noted && note !== null && noteShows(block)) appear(note);
   }
 
   function show(block: HTMLElement, state: State | null): void {
@@ -512,7 +540,10 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   }
 
   // The placeholders of the fields, and the note on the fields still empty.
-  function fill(fields: Fields): void {
+  // A note that comes back because the student emptied a field fades in;
+  // not at load (`fromStudent` false).
+  function fill(fields: Fields, fromStudent: boolean): void {
+    const noted = noteShows(fields.block);
     const values = valuesOf(fields);
     for (const slot of fields.block.querySelectorAll<HTMLElement>('[data-prompt-slot]')) {
       const value = values.get(slot.dataset.promptSlot ?? '') ?? '';
@@ -521,9 +552,10 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
       slot.toggleAttribute('data-filled', value !== '');
     }
     const empty = Array.from(fields.labels).flatMap(([name, label]) => (values.get(name) ? [] : [label]));
-    const note = fields.block.querySelector('[data-prompt-note]');
+    const note = fields.block.querySelector<HTMLElement>('[data-prompt-note]');
     const text = empty.length === 0 ? '' : `Nog leeg: ${empty.join(', ')}`;
     if (note !== null && note.textContent !== text) note.textContent = text;
+    if (fromStudent && !noted && note !== null && noteShows(fields.block)) appear(note);
   }
 
   function save(fields: Fields): void {
@@ -584,7 +616,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
         if (typeof value === 'string') input.value = value;
       }
     }
-    fill(fields);
+    fill(fields, false);
     for (const input of fields.inputs) {
       fit(input);
       resizes.observe(input);
@@ -595,7 +627,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     root.addEventListener('input', (event) => {
       if (!(event.target instanceof HTMLTextAreaElement)) return;
       fit(event.target);
-      fill(fields);
+      fill(fields, true);
       save(fields);
       // What was copied is no longer what the prompt says.
       if (current === block) show(block, null);

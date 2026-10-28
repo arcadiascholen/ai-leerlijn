@@ -294,4 +294,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     background: var(--surface-sunken);
     color: var(--forest);
   }
+
+  /* Hover only (docs/DESIGN.md, "Beweging"). */
+  @media (prefers-reduced-motion: no-preference) {
+    .button {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        border-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+  }
 </style>
