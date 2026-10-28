@@ -501,6 +501,9 @@ Tekst, een beeld of een vraagcomponent.
 - `titel` is verplicht en wordt de kop van de stap. Binnen een stap werkt
   Markdown zoals overal: alinea's, lijsten, vet. Een gewoon `<textarea>`
   krijgt een eenvoudige standaardopmaak.
+- Een link naar een andere site opent vanzelf in een nieuw tabblad, met een
+  icoon achter de linktekst: de auteur schrijft gewone Markdown, zoals
+  `[chatgpt.com](https://chatgpt.com)`.
 
 ### De speler
 

@@ -68,6 +68,29 @@ a:hover {
   outline-offset: 2px;
 }
 
+/* A link that opens in a new tab: the last word and the icon after it
+   (src/lib/external-links.ts). They do not wrap apart, so the icon never
+   stands alone on the next line. Here and not in a scoped style, because the
+   Markdown plugin generates the markup. */
+.new-tab {
+  white-space: nowrap;
+}
+
+/* Text size, in the colour of the link. Lowered a little, so that the drawn
+   box runs from the baseline to about the top of a capital, within the line
+   height: the icon adds no height to the line. */
+.new-tab-icon {
+  width: 1em;
+  height: 1em;
+  margin-left: var(--space-1);
+  vertical-align: -0.125em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Text for screen readers only: read aloud, not shown. */
 .sr-only {
   position: absolute;
