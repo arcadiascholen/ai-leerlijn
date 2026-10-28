@@ -85,12 +85,24 @@
   --step-max-h:  520px;
 
   /* Motion. Not in the design system, which has no motion tokens: the
-     site's own (docs/DESIGN.md, "Beweging"). Only opacity, transform and
-     colours move, and only inside
+     site's own (docs/DESIGN.md, "Beweging"). Only opacity, transform,
+     clip-path and colours move, and only inside
      @media (prefers-reduced-motion: no-preference). */
   --motion-fast: 120ms;
   --motion-base: 200ms;
   --ease-out:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+
+  /* The step change and the build-up of a step. `--motion-flip` is the
+     whole flip: half to turn the old step away, half to turn the new one
+     in. `--motion-build` runs from the click until the last part of the new
+     step stands, the flip included. One part appears in `--motion-part`;
+     two parts start at most `--motion-stagger` apart. */
+  --motion-flip:        400ms;
+  --motion-build:       1000ms;
+  --motion-part:        240ms;
+  --motion-stagger:     120ms;
+  --motion-perspective: 2000px;
 
   /* Font families. The first name is the family that fontsource registers
      (self-hosted, imported in src/layouts/Base.astro); the rest are the

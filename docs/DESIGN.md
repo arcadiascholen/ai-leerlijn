@@ -156,62 +156,120 @@ Het ontwerpdoel is een laptop van 1366 × 768; na de browserbalken blijft
 
 ## Beweging
 
-Wat op het scherm verandert, beweegt kort, zodat de leerling ziet wat er
-veranderde, zonder erop te wachten. Het design system heeft geen
-bewegingstokens; deze drie zijn van de site zelf. Krijgt een nieuwe versie
-van het design system er wel, dan nemen die hun plaats in.
+Wat op het scherm verandert, beweegt, zodat de leerling ziet wat er
+veranderde, zonder erop te wachten. Twee bewegingen zijn duidelijk
+zichtbaar: de stapwissel is een **flip**, en een nieuwe stap **bouwt zich
+op** zoals je van een robot verwacht, mechanisch en precies. Al het andere
+is kort en subtiel. Het design system heeft geen bewegingstokens; deze zijn
+van de site zelf. Krijgt een nieuwe versie van het design system er wel,
+dan nemen die hun plaats in.
 
 | Token | Waarde | Gebruik |
 |---|---|---|
 | `motion-fast` | 120ms | Hover, en een kleur of rand die verandert: knoppen, links, kaarten, een gekozen `<Keuze>`-kaart of `<Meerkeuze>`-optie, de gekozen graad in het moduleoverzicht. |
-| `motion-base` | 200ms | Iets wat verschijnt: de nieuwe stap, de feedback van `<Meerkeuze>`, het voorbeeldantwoord van `<DenkEerst>`, ✓ *Gekopieerd* en *Nog leeg* bij een `<Prompt>`, de bevestiging en de knoppen die na een download in de samenvatting verschijnen, kaarten die het filter op graad terugbrengt. Ook de voortgangsbalk. |
-| `ease-out` | `cubic-bezier(0.2, 0, 0, 1)` | Elke beweging: snel vertrekken, rustig aankomen. |
+| `motion-base` | 200ms | Iets wat binnen een stap verschijnt: de feedback van `<Meerkeuze>`, het voorbeeldantwoord van `<DenkEerst>`, ✓ *Gekopieerd* en *Nog leeg* bij een `<Prompt>`, de bevestiging en de knoppen die na een download in de samenvatting verschijnen, kaarten die het filter op graad terugbrengt. Ook de voortgangsbalk. |
+| `motion-flip` | 400ms | De stapwissel: de helft om de oude stap weg te draaien, de helft om de nieuwe in te draaien. |
+| `motion-build` | 1000ms | De opbouw van een stap: van de klik tot het laatste onderdeel er volledig staat, de flip inbegrepen. |
+| `motion-part` | 240ms | Eén onderdeel dat verschijnt: een kop die zich typt, een blok dat gescand wordt. Daarna blijft de cursor van de kop nog 1,5 × zo lang staan en knippert hij één keer. |
+| `motion-stagger` | 120ms | Hoogstens zoveel tussen het begin van twee onderdelen. |
+| `motion-perspective` | 2000px | De diepte van de flip: hoe ver de kijker van de kaart staat. |
+| `ease-out` | `cubic-bezier(0.2, 0, 0, 1)` | Snel vertrekken, rustig aankomen: elke overgang, en de nieuwe stap die indraait. |
+| `ease-in` | `cubic-bezier(0.4, 0, 1, 1)` | Rustig vertrekken, snel weg: de oude stap die wegdraait. |
 
-- **Alleen `opacity`, `transform` en kleuren** (achtergrond, rand, tekst;
-  een schaduw alleen als enkel haar kleur verandert). Nooit hoogte of
-  breedte: de layout verschuift niet, en de 390 px van een stap blijven
-  kloppen. Ook de voortgangsbalk schuift met `transform`.
-- **Niets duurt langer dan 250 ms.**
-- **Niets laat de leerling wachten.** De focus, `aria-live` en klikken
-  werken meteen; wat verdwijnt, verdwijnt meteen.
+**De regels.**
+
+- **Alleen `opacity`, `transform`, `clip-path` en kleuren** (achtergrond,
+  rand, tekst; een schaduw alleen als enkel haar kleur verandert). Nooit
+  hoogte of breedte: de layout verschuift niet, en de 390 px van een stap
+  blijven kloppen. Ook de voortgangsbalk schuift met `transform`.
+- **Niets duurt langer dan 250 ms.** Twee uitzonderingen: de flip
+  (`motion-flip`) en de opbouw (`motion-build`), die samen binnen 1 s na de
+  klik klaar zijn; en `<Confetti />` (zie onder).
+- **Niets laat de leerling wachten.** De focus, `aria-live`, de URL en de
+  opslag gaan bij de klik meteen naar de nieuwe stap, niet pas na de flip.
+  Klikken en typen werken meteen, ook in een onderdeel dat nog niet
+  verschenen is. Wat binnen een stap verdwijnt, verdwijnt meteen; de oude
+  stap vangt tijdens het wegdraaien geen klikken meer op.
 - **Alles staat binnen `@media (prefers-reduced-motion: no-preference)`.**
-  Wie minder beweging vraagt, ziet geen enkele overgang.
-- **Alleen na een handeling van de leerling.** Niets beweegt bij het laden
-  van de pagina. Een island die bij het hydrateren een bewaarde toestand
-  toont (een beantwoorde `<Meerkeuze>`, een `<DenkEerst>` met
-  voorbeeldantwoord, een gekozen `<Keuze>`), beweegt niet.
-- **De stapwissel.** De oude stap verdwijnt meteen. De nieuwe verschijnt
-  met een fade en schuift 8 px (`space-2`) in de richting van de beweging:
-  met *Volgende* of → van rechts, met *Vorige* of ← van links. Na een
-  sprong (`#stap-n`, *Ga naar stap n*, een keuze die de stap verplaatst)
-  alleen een fade.
-- **Niet:** de `<Tool>`-blokken. CSS verbergt ze vóór de eerste weergave
-  (`ChosenTool.astro`); een overgang zou ze bij het laden toch even tonen.
-- **Uitzondering: `<Confetti />`** (`docs/BRIEFING.md` § 12). Eén keer per
-  module valt er 1,5 s confetti over de stapkaart, getekend door een script
-  op een `<canvas>`, niet met CSS. De grens van 250 ms geldt er niet; de
-  rest wel: de leerling wacht niet (geen klikken, geen focus, de layout
-  verschuift niet), en wie minder beweging vraagt, ziet niets.
+  Wie minder beweging vraagt, ziet geen enkele overgang: geen flip, geen
+  opbouw.
+- **Alleen na een handeling van de leerling.** Eén uitzondering: bij het
+  laden bouwt de eerste stap zich op, zonder flip. Een island die bij het
+  hydrateren een bewaarde toestand toont (een beantwoorde `<Meerkeuze>`,
+  een `<DenkEerst>` met voorbeeldantwoord, een gekozen `<Keuze>`), beweegt
+  daarbinnen niet: ze verschijnt als één blok.
+- **Ritme.** De opbouw gaat in stappen (`steps()`), niet in een vloeiende
+  curve. Geen veren, geen stuiteren. De barometerkleuren komen er niet in
+  voor: de cursor en de scanlijn zijn `brand`.
+
+**De flip.** De stappenkaart (`.player-steps`) draait rond haar verticale
+as; de kop, de voortgang en de navigatie staan stil, zodat de knoppen onder
+de muis blijven. De oude stap draait weg tot hij op zijn kant staat
+(200 ms, `ease-in`), de nieuwe draait van de andere kant in (200 ms,
+`ease-out`). Met *Volgende* of → draait de kaart naar links, zoals een
+bladzijde; met *Vorige* of ← naar rechts. Een sprong (`#stap-n`, *Ga naar
+stap n*, een keuze die de stap verplaatst) draait volgens de richting van
+de sprong. `perspective` staat op `.player-card`, die alles buiten de kaart
+afsnijdt; de navigatie ligt erboven. Er is geen wachtrij: een klik of
+pijltoets tijdens een flip zet de kaart meteen op de stap waar die flip
+heen ging, volledig opgebouwd, en start de volgende flip.
+
+**De opbouw.** Elk rechtstreeks kind van een stap is een onderdeel: de kop,
+een alinea, een lijst, een `<Prompt>`, een vraag, een `<Chat>`, het
+zichtbare `<Tool>`-blok. Wat verborgen is (`display: none`, zoals de
+`<Tool>`-blokken van een andere tool), telt niet mee; een island telt als
+één onderdeel. De onderdelen verschijnen in de volgorde van het document:
+na een flip begint het eerste halverwege de flip, als de nieuwe stap
+indraait, bij het laden meteen. Daarna begint er elke `motion-stagger` een,
+of sneller als dat nodig is om het laatste binnen `motion-build` te laten
+staan.
+
+- **De kop typt zich**, letter per letter van links naar rechts, met een
+  blokcursor in `brand` die daarna één keer knippert en verdwijnt.
+- **Een blok wordt gescand**, van boven naar onder in zes stappen, met een
+  dunne lijn in `brand` aan de rand die vordert.
+
+De onderdelen zelf bewegen niet. Over de stap ligt een laag met per
+onderdeel een paneel in de kleur van de kaart, dat in stappen wegschuift.
+De laag vangt geen klikken op, en de tekst staat vanaf het begin volledig in
+de DOM, zodat een schermlezer niets merkt. Een paneel bedekt alleen zolang
+zijn animatie loopt: start die niet of wordt ze afgebroken, dan staat het
+onderdeel er gewoon.
+
+**Uitzondering: `<Confetti />`** (`docs/BRIEFING.md` § 12). Eén keer per
+module valt er 1,5 s confetti over de stapkaart, getekend door een script
+op een `<canvas>`, niet met CSS. De grens van 250 ms geldt er niet; de rest
+wel: de leerling wacht niet (geen klikken, geen focus, de layout verschuift
+niet), en wie minder beweging vraagt, ziet niets.
 
 **In de code.** De overgangen en animaties staan in de CSS van elk
-component, met de tokens. `src/lib/motion.ts` beslist alleen *wanneer* iets
-beweegt:
+component, met de tokens: de flip in `StepPlayer.astro`, de opbouw
+(`.build-*`) in `src/styles/global.css`. `src/lib/motion.ts` beslist
+*wanneer* iets beweegt:
 
 - `appear(element)` zet `data-appear` (de fade in `src/styles/global.css`)
-  en haalt het weg zodra de fade klaar of afgebroken is, zodat een stap die
-  later terugkomt niet opnieuw fadet. `appearOnMount` doet hetzelfde als
-  `ref` van een React-element dat pas na een handeling verschijnt. De speler
-  zet zo `data-enter` op de nieuwe stap (`playOnce`).
+  en haalt het weg zodra de fade klaar of afgebroken is, zodat een element
+  dat later terugkomt niet opnieuw fadet. `appearOnMount` doet hetzelfde als
+  `ref` van een React-element dat pas na een handeling verschijnt.
 - `settle(element)` zet `data-motion` zodra een element zijn eerste
   toestand toont, ook een bewaarde. Overgangen die ook bij het herstellen
   zouden lopen, gelden pas onder `[data-motion]`.
+- `buildUp(step, afterFlip)` zoekt de onderdelen van een stap, legt de laag
+  met de panelen erover en ruimt die op zodra alles staat; `stopBuild(step)`
+  zet alles meteen neer. De speler roept ze aan bij elke stapwissel en bij
+  het laden. Verandert er tijdens de opbouw iets van grootte, zoals een
+  lettertype dat laadt of een island die hydrateert, dan schuiven de
+  panelen mee.
 - `mayMove()` zegt of iets mag bewegen: onwaar bij
   `prefers-reduced-motion: reduce`. Voor beweging die een script zelf
-  tekent, buiten de CSS, zoals de confetti.
+  tekent of start, zoals de confetti en de opbouw.
 
-Een nieuw component volgt hetzelfde: hover en kleur in CSS met
-`motion-fast`; iets wat na een handeling verschijnt met `appear`; een
-island die een toestand herstelt, zet zijn overgangen pas aan met `settle`.
+**Een nieuw component** doet vanzelf mee aan de opbouw: als rechtstreeks
+kind van een stap is het één onderdeel, en het hoeft daarvoor niets te
+doen. Het zet zelf geen animatie op zijn eerste weergave, en een island
+houdt zijn binnenkant stil met `settle`. Verder hetzelfde als hierboven:
+hover en kleur in CSS met `motion-fast`; iets wat na een handeling
+verschijnt met `appear`.
 
 ## Iconografie
 
