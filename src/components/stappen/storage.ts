@@ -2,9 +2,12 @@
 //
 // Everything stays in the student's browser. Every key has the form
 // `ai-leerlijn:<module-id>:<key>`:
-//   - `stap` is reserved for the step player (the current step, 1-based);
-//   - a question component stores its answer under its own key, unique
-//     within the module.
+//   - `stap` is reserved for the step player (the current step, 1-based:
+//     its position in the student's route through the module);
+//   - a question component stores its answer under `vraag:<id>`, unique
+//     within the module (../vragen/answers.ts);
+//   - a <Keuze> stores the key of the chosen option under `keuze:<naam>`
+//     (choices.ts).
 // "Opnieuw beginnen" removes every key of one module, and only those.
 //
 // localStorage may be missing or throw (private windows, blocked site data,

@@ -46,6 +46,32 @@
   resize: none;
 }
 
+/* The choices, one per line, above the answers and apart from them. */
+.choices {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.choices:not(:last-child) {
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.choice {
+  margin: 0;
+}
+
+.choice + .choice {
+  margin-top: var(--space-1);
+}
+
+.chosen {
+  overflow-wrap: anywhere;
+}
+
 .list {
   margin: 0;
 }

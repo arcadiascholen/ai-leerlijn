@@ -7,6 +7,11 @@
 // step in localStorage and "Opnieuw beginnen". Without JavaScript the steps
 // stay one below the other and the controls stay hidden.
 //
+// With a branching <Keuze> the student follows a route: the shared steps
+// plus the steps of the chosen branch (routeOf in choices.ts). Every step
+// number (the counter, the bar, `#stap-n`, the stored step) is a position in
+// that route.
+//
 // The layout with JavaScript fills the space under the header: the page must
 // fit on 1366 × 640 without scrolling. The module route renders Base with
 // `fill` for that.
@@ -44,6 +49,10 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
 
     <nav class="player-nav" aria-label="Stappen">
       <button type="button" class="button button-ghost" data-restart>Opnieuw beginnen</button>
+      {/* Why "Volgende" is disabled on a step with an open <Keuze>. Always in
+          the page, also when empty, so that a screen reader reads it when it
+          appears. */}
+      <p class="player-hint" data-hint aria-live="polite"></p>
       <div class="player-moves">
         <button type="button" class="button button-secondary" data-prev>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
@@ -193,8 +202,21 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     border-top: 1px solid var(--line);
   }
 
+  .player-hint {
+    flex: 1 1 auto;
+    max-width: none;
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+    text-align: right;
+  }
+
   .player-moves {
     display: flex;
+    flex: none;
     gap: var(--space-3);
   }
 
@@ -280,11 +302,13 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
 </style>
 
 <script>
+  import { hasOpenChoice, onChoice, routeOf, type Route } from './choices';
   import { clearModule, readStored, writeStored } from './storage';
 
   // localStorage key of the current step: `ai-leerlijn:<module-id>:stap`.
   const STEP_KEY = 'stap';
   const HASH_PATTERN = /^#stap-(\d+)$/;
+  const OPEN_CHOICE_HINT = 'Kies eerst een antwoord om verder te gaan.';
 
   function part<T extends Element>(root: Element, selector: string): T {
     const element = root.querySelector<T>(selector);
@@ -298,77 +322,101 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     return target.isContentEditable || target.closest('input, textarea, select') !== null;
   }
 
-  // A step number from the URL or from storage, clamped to 1..count; null if
-  // the value is not a number at all.
-  function parseStep(value: string | null | undefined, count: number): number | null {
+  // A step number from the URL or from storage; null if the value is not a
+  // number at all. `show` clamps it to the steps the student can reach.
+  function parseStep(value: string | null | undefined): number | null {
     if (value == null || !/^\d+$/.test(value)) return null;
-    return Math.min(Math.max(Number.parseInt(value, 10), 1), count);
+    return Number.parseInt(value, 10);
   }
 
   function initPlayer(root: HTMLElement): void {
     const moduleId = root.dataset.module ?? '';
-    const steps = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
-    if (moduleId === '' || steps.length === 0) return;
+    const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-step]'));
+    if (moduleId === '' || sections.length === 0) return;
 
-    const count = steps.length;
-    const headings = steps.map((step, index) => {
-      const heading = part<HTMLElement>(step, '[data-step-title]');
+    sections.forEach((section, index) => {
+      const heading = part<HTMLElement>(section, '[data-step-title]');
       // Not `stap-n`: an element with the id of the hash would make the
-      // browser scroll to it.
+      // browser scroll to it. The position in the whole module, not in the
+      // route, so that the id never changes.
       heading.id = `${moduleId}-stap-${index + 1}-titel`;
-      step.setAttribute('aria-labelledby', heading.id);
-      return heading;
+      section.setAttribute('aria-labelledby', heading.id);
     });
 
     const stepsBox = part<HTMLElement>(root, '[data-steps]');
     const countText = part<HTMLElement>(root, '[data-count]');
     const fill = part<HTMLElement>(root, '[data-fill]');
+    const hint = part<HTMLElement>(root, '[data-hint]');
     const prevButton = part<HTMLButtonElement>(root, '[data-prev]');
     const nextButton = part<HTMLButtonElement>(root, '[data-next]');
     const restartButton = part<HTMLButtonElement>(root, '[data-restart]');
     const dialog = part<HTMLDialogElement>(root, '[data-restart-dialog]');
 
+    let route: Route = routeOf(root, moduleId);
     let current = 1;
 
+    // Within 1..limit: past an open branching choice there is nothing to
+    // show yet, and a student could otherwise skip it through the shared end.
+    function clamp(step: number): number {
+      return Math.min(Math.max(step, 1), route.limit);
+    }
+
+    // The counter, the bar and the buttons for the current step. Also after
+    // a choice, which can change both the route and whether the student may
+    // go on.
+    function update(): void {
+      const count = route.steps.length;
+      const section = route.steps[current - 1];
+      const open = section !== undefined && hasOpenChoice(section, moduleId);
+      countText.textContent = `Stap ${current} van ${count}`;
+      fill.style.width = `${(current / count) * 100}%`;
+      prevButton.disabled = current === 1;
+      nextButton.disabled = current >= route.limit || open;
+      const text = open ? OPEN_CHOICE_HINT : '';
+      if (hint.textContent !== text) hint.textContent = text;
+    }
+
     function show(step: number, moveFocus: boolean): void {
-      current = step;
-      steps.forEach((section, index) => {
-        section.hidden = index !== step - 1;
+      current = clamp(step);
+      const shown = route.steps[current - 1];
+      sections.forEach((section) => {
+        section.hidden = section !== shown;
       });
-      countText.textContent = `Stap ${step} van ${count}`;
-      fill.style.width = `${(step / count) * 100}%`;
-      prevButton.disabled = step === 1;
-      nextButton.disabled = step === count;
+      update();
       stepsBox.scrollTop = 0;
 
       // replaceState, not pushState: the browser's back button leaves the
       // module instead of walking back through every step; "Vorige" does that.
-      const hash = `#stap-${step}`;
+      const hash = `#stap-${current}`;
       if (window.location.hash !== hash) window.history.replaceState(window.history.state, '', hash);
-      writeStored(moduleId, STEP_KEY, String(step));
+      writeStored(moduleId, STEP_KEY, String(current));
 
-      if (moveFocus) headings[step - 1]?.focus({ preventScroll: true });
+      if (moveFocus) shown?.querySelector<HTMLElement>('[data-step-title]')?.focus({ preventScroll: true });
     }
 
-    function go(step: number): void {
-      if (step >= 1 && step <= count && step !== current) show(step, true);
+    // One step back or forward, as far as the buttons allow. False if not.
+    function move(direction: -1 | 1): boolean {
+      const button = direction === 1 ? nextButton : prevButton;
+      if (button.disabled) return false;
+      show(current + direction, true);
+      return true;
     }
 
     function stepFromHash(): number | null {
-      return parseStep(HASH_PATTERN.exec(window.location.hash)?.[1], count);
+      return parseStep(HASH_PATTERN.exec(window.location.hash)?.[1]);
     }
 
     // Order at load: a `#stap-n` in the URL, then localStorage, then step 1.
-    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY), count) ?? 1, false);
+    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false);
 
-    prevButton.addEventListener('click', () => go(current - 1));
-    nextButton.addEventListener('click', () => go(current + 1));
+    prevButton.addEventListener('click', () => move(-1));
+    nextButton.addEventListener('click', () => move(1));
 
-    // A link or a typed URL with `#stap-n`. Other hashes (footnotes) are not
-    // ours.
+    // A link or a typed URL with `#stap-n`, such as "Ga naar stap n" in the
+    // summary. Other hashes (footnotes) are not ours.
     window.addEventListener('hashchange', () => {
       const step = stepFromHash();
-      if (step !== null) show(step, step !== current);
+      if (step !== null) show(step, clamp(step) !== current);
     });
 
     document.addEventListener('keydown', (event) => {
@@ -377,10 +425,20 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
       if (event.defaultPrevented || event.repeat) return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (dialog.open || isTextEntry(event.target)) return;
-      const step = current + (event.key === 'ArrowRight' ? 1 : -1);
-      if (step < 1 || step > count) return;
-      event.preventDefault();
-      go(step);
+      if (move(event.key === 'ArrowRight' ? 1 : -1)) event.preventDefault();
+    });
+
+    // A choice was made on the current step. The step with the branching
+    // choice is shared and comes before every branch step, so its position
+    // stays the same and only what follows it changes; the fallback is for
+    // a module that breaks that rule.
+    onChoice((detail) => {
+      if (detail.moduleId !== moduleId) return;
+      const section = route.steps[current - 1];
+      route = routeOf(root, moduleId);
+      const position = section === undefined ? -1 : route.steps.indexOf(section) + 1;
+      if (position === current) update();
+      else show(position > 0 ? position : current, false);
     });
 
     restartButton.addEventListener('click', () => {
@@ -388,8 +446,8 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
       dialog.showModal();
     });
 
-    // Clears the step and every answer of this module, then reloads, so that
-    // every component starts again from empty storage.
+    // Clears the step, every answer and every choice of this module, then
+    // reloads, so that every component starts again from empty storage.
     dialog.addEventListener('close', () => {
       if (dialog.returnValue !== 'confirm') return;
       clearModule(moduleId);
