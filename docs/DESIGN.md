@@ -187,6 +187,11 @@ van het design system er wel, dan nemen die hun plaats in.
   alleen een fade.
 - **Niet:** de `<Tool>`-blokken. CSS verbergt ze vóór de eerste weergave
   (`ChosenTool.astro`); een overgang zou ze bij het laden toch even tonen.
+- **Uitzondering: `<Confetti />`** (`docs/BRIEFING.md` § 12). Eén keer per
+  module valt er 1,5 s confetti over de stapkaart, getekend door een script
+  op een `<canvas>`, niet met CSS. De grens van 250 ms geldt er niet; de
+  rest wel: de leerling wacht niet (geen klikken, geen focus, de layout
+  verschuift niet), en wie minder beweging vraagt, ziet niets.
 
 **In de code.** De overgangen en animaties staan in de CSS van elk
 component, met de tokens. `src/lib/motion.ts` beslist alleen *wanneer* iets
@@ -200,6 +205,9 @@ beweegt:
 - `settle(element)` zet `data-motion` zodra een element zijn eerste
   toestand toont, ook een bewaarde. Overgangen die ook bij het herstellen
   zouden lopen, gelden pas onder `[data-motion]`.
+- `mayMove()` zegt of iets mag bewegen: onwaar bij
+  `prefers-reduced-motion: reduce`. Voor beweging die een script zelf
+  tekent, buiten de CSS, zoals de confetti.
 
 Een nieuw component volgt hetzelfde: hover en kleur in CSS met
 `motion-fast`; iets wat na een handeling verschijnt met `appear`; een

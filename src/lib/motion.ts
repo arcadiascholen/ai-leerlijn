@@ -6,13 +6,20 @@
 
 const NO_PREFERENCE = '(prefers-reduced-motion: no-preference)';
 
+// False when the student asked for less motion: then nothing moves at all.
+// The CSS checks it with the media query; a script that draws motion of its
+// own, such as the confetti (src/components/stappen/confetti.ts), calls this.
+export function mayMove(): boolean {
+  return window.matchMedia(NO_PREFERENCE).matches;
+}
+
 // Plays the CSS animation that `[data-<name>="<value>"]` selects, once. The
 // attribute goes again when the animation ends, or when it is cancelled
 // because the element or its step was hidden: otherwise the animation would
 // play again every time the step is shown. With reduced motion there is no
 // animation to end, so the attribute is not set at all.
 export function playOnce(element: HTMLElement, name: string, value = ''): void {
-  if (!window.matchMedia(NO_PREFERENCE).matches) return;
+  if (!mayMove()) return;
   const attribute = `data-${name}`;
   if (element.getAttribute(attribute) === value) return;
   const done = (event: AnimationEvent): void => {
