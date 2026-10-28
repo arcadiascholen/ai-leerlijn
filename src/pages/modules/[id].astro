@@ -23,8 +23,8 @@ import Reflectie from '../../components/vragen/Reflectie.astro';
 export async function getStaticPaths() {
   const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
   return entries.map((entry) => {
-    const { branching, tool } = checkModuleBody(entry.id, entry.body ?? '');
-    return { params: { id: entry.id }, props: { entry, branching, tool } };
+    const { branching, tool, promptSteps } = checkModuleBody(entry.id, entry.body ?? '');
+    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps } };
   });
 }
 
@@ -32,23 +32,27 @@ interface Props {
   entry: CollectionEntry<'modules'>;
   branching: SourceChoice | null;
   tool: SourceChoice | null;
+  promptSteps: Readonly<Record<string, string>>;
 }
 
-const { entry, branching, tool } = Astro.props;
+const { entry, branching, tool, promptSteps } = Astro.props;
 const { Content } = await render(entry);
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
 // <Keuze> need the branching choice as read from the source, <Tool> and
-// <Keuze> the tool choice.
+// <Keuze> the tool choice, and a <Prompt> with `velden` the title of its
+// step.
 const locals = Astro.locals as {
   moduleTitle?: string;
   branching?: SourceChoice | null;
   tool?: SourceChoice | null;
+  promptSteps?: Readonly<Record<string, string>>;
 };
 locals.moduleTitle = entry.data.title;
 locals.branching = branching;
 locals.tool = tool;
+locals.promptSteps = promptSteps;
 
 // The page about which AI tools are allowed, linked next to the sentence about
 // AI use when the student uses AI (BRIEFING § 7).

@@ -10,8 +10,9 @@
 // html2canvas and DOMPurify.
 //
 // The input is plain data, collected by Samenvatting.tsx: the module, the
-// choices and one item per question. An item has a `kind`, so that another
-// kind of block can be added next to `answer` without touching the rest.
+// choices and one item per question. An item has a `kind`: `answer` for a
+// question with one answer, `fields` for a prompt with fields, and room for
+// another kind of block without touching the rest.
 
 import type { jsPDF } from 'jspdf';
 
@@ -32,7 +33,22 @@ export interface PdfAnswer {
   readonly answer: string;
 }
 
-export type PdfItem = PdfAnswer;
+// One field of a prompt with fields: its label, and what the student wrote.
+export interface PdfField {
+  readonly label: string;
+  // '' when the student wrote nothing.
+  readonly value: string;
+}
+
+// A prompt with fields: the title of its step as the question, and one line
+// per field under it.
+export interface PdfFields {
+  readonly kind: 'fields';
+  readonly question: string;
+  readonly fields: readonly PdfField[];
+}
+
+export type PdfItem = PdfAnswer | PdfFields;
 
 export interface PdfSummary {
   readonly moduleId: string;
@@ -54,6 +70,11 @@ export function choiceLine(choice: PdfChoice): string {
 }
 
 export const NOT_ANSWERED = '(niet ingevuld)';
+
+// "Mijn uitleg: …", or "Mijn uitleg: (niet ingevuld)".
+export function fieldLine(field: PdfField): string {
+  return `${field.label}: ${field.value === '' ? NOT_ANSWERED : field.value}`;
+}
 
 // Builds the PDF and hands it to the browser as a download. Rejects when
 // jsPDF cannot be loaded (a flaky connection) or the PDF cannot be made; the
@@ -246,17 +267,26 @@ function render(doc: jsPDF, summary: PdfSummary): void {
     rule();
   }
 
+  // Keep a question with the first line under it.
+  function writeQuestion(text: string): void {
+    const needed = split(text, question).length * lineHeight(question) + lineHeight(body);
+    if (y + needed > BOTTOM && y > MARGIN) newPage();
+    write(text, question);
+    y += 1;
+  }
+
   summary.items.forEach((item, index) => {
     if (index > 0) y += 5;
     switch (item.kind) {
       case 'answer': {
-        // Keep the question with the first line of its answer.
-        const needed = split(item.question, question).length * lineHeight(question) + lineHeight(body);
-        if (y + needed > BOTTOM && y > MARGIN) newPage();
-        write(item.question, question);
-        y += 1;
+        writeQuestion(item.question);
         if (item.answer === '') write(NOT_ANSWERED, empty);
         else write(item.answer, body);
+        break;
+      }
+      case 'fields': {
+        writeQuestion(item.question);
+        for (const field of item.fields) write(fieldLine(field), field.value === '' ? empty : body);
         break;
       }
     }
