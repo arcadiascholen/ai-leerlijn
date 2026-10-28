@@ -1,0 +1,19 @@
+---
+// What the AI answered, as one turn of a <Chat> (docs/BRIEFING.md § 12,
+// "Prompts en gesprekken"):
+//
+//   <Chat>
+//   <Jij>Leg fotosynthese uit.</Jij>
+//   <AI>Fotosynthese is …</AI>
+//   </Chat>
+//
+// Between the tags goes ordinary Markdown. <Chat> renders its children and
+// reads the turns back from the JSON below; nothing of this reaches the page
+// itself. The module route fails the build for an <AI> outside a <Chat>.
+import { encodeTurn } from './authoring';
+
+const html = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const data = encodeTurn('AI', 'ai', html);
+---
+
+<script type="application/json" data-beurt is:inline set:html={data} />

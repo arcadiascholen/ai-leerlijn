@@ -364,6 +364,7 @@ src/
   content/modules/<id>.mdx   één bestand per module
   components/stappen/        stappenspeler en <Stap>
   components/vragen/         vraagtypes
+  components/inhoud/         prompts en gesprekken
   layouts/
   pages/                     start, modulekeuze, één route per module
   styles/tokens.css
@@ -535,7 +536,8 @@ Tekst, een beeld of een vraagcomponent.
   `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
   dan één, een link in `src/config/smartschool.ts` die geen geldig
   `https://`-adres is, een fout in een `<Keuze>`, in de takken (zie
-  *Keuzes en takken*) of in een `<Tool>` (zie *Instructies per tool*).
+  *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*) of in
+  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*).
 
 ### Vraagtypes
 
@@ -804,6 +806,121 @@ Wat voor elke tool geldt, staat gewoon in de stap.
   vertakkende keuze. `<Keuze naam="tool">` controleert dat wat de build las,
   exact zijn props zijn. `<Tool>` zelf laat de build falen bij een
   ontbrekende of ongeldige `naam` en bij een leeg blok.
+
+### Prompts en gesprekken
+
+```mdx
+<Stap titel="Kopieer je eerste prompt">
+Klik op **Kopieer** en plak de prompt in je tool.
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets
+[vak] over [onderwerp].
+
+Stel me vijf vragen, één per keer.
+</Prompt>
+</Stap>
+
+<Stap titel="Wat ging hier mis?">
+<Chat naast>
+<Jij>Leg fotosynthese uit.</Jij>
+<AI>Fotosynthese is het proces waarbij planten …</AI>
+</Chat>
+
+<Meerkeuze id="chat-context" vraag="Wat had de leerling beter gedaan?">
+  …
+</Meerkeuze>
+</Stap>
+```
+
+De componenten staan in `src/components/inhoud/`. Geen van beide bewaart
+iets.
+
+**Een prompt om te kopiëren**
+
+- `<Prompt>` toont een voorbeeldprompt die de leerling kopieert, in de tool
+  plakt en daar aanvult. Tussen de tags staat de prompt in gewone alinea's:
+  een lege regel begint een nieuwe alinea, een regeleinde binnen een alinea
+  is een spatie, zoals overal in Markdown. **Vet**, *cursief* en `code`
+  mogen; een lijst, een kop, een beeld of een component niet, want die
+  overleven het klembord niet.
+- Tekst tussen `[` en `]` is een invulplaats en krijgt een rustige eigen
+  opmaak: een wit vlakje. De haken blijven staan, ook in de gekopieerde
+  tekst, zodat de leerling ze in de tool terugvindt. Een invulplaats loopt
+  niet over opmaak heen: in `[**vak**]` wordt niets gemarkeerd.
+- **Vorm.** De stijl `prompt` op `ai-soft` met `ai-text`, `radius-md`, zo
+  breed als een regel lopende tekst. Links bovenaan het label *Prompt*,
+  rechts de knop *Kopieer*.
+- **Kopiëren.** *Kopieer* zet de prompt als platte tekst op het klembord
+  met `navigator.clipboard.writeText`, met een lege regel tussen de
+  alinea's. Die tekst maakt de build uit de alinea's (`readPrompt` in
+  `src/components/inhoud/authoring.ts`) en zet ze in het attribuut
+  `data-prompt-text`. Het script kopieert alleen dat attribuut, nooit de
+  tekst van het blok: het label, de knop en de bevestiging kunnen dus niet
+  mee op het klembord. Na het kopiëren staat links van de knop ✓
+  *Gekopieerd* (`role="status"`, dus voorgelezen). Na vier seconden, of
+  zodra de leerling een andere prompt kopieert, verdwijnt dat weer.
+- **Als het kopiëren mislukt** (geen klembord-API, of de browser weigert),
+  staat de tekst van het blok geselecteerd, met de vraag om Ctrl+C te
+  gebruiken. Kopieert de leerling een volledig geselecteerde prompt met
+  Ctrl+C, dan zet het script dezelfde platte tekst op het klembord als de
+  knop, en volgt dezelfde bevestiging. Wie maar een deel selecteert, kopieert
+  zoals de browser dat doet. Selecteert de leerling iets anders, dan
+  verdwijnt de vraag. De knop verspringt in geen van die gevallen.
+- Eén script in `Prompt.astro` doet dat voor alle prompts op de pagina; het
+  luistert op het document.
+- Zonder JavaScript staat het blok er, zonder knop.
+
+**Een gesprek**
+
+- `<Chat>` toont een vooraf geschreven gesprek, statisch, zonder
+  JavaScript. Elke beurt is een `<Jij>` (wat de leerling vroeg) of een
+  `<AI>` (wat de AI antwoordde), met gewone Markdown ertussen; een lijst in
+  een antwoord van de AI mag.
+- *Jij* staat rechts, in `surface-sunken` met een rand `line-strong`; *AI*
+  links, op `ai-soft` met `ai-text`; beide in de stijl `prompt`. Elke beurt
+  draagt een zichtbaar label, *Jij* of *AI*, dat een schermlezer ook
+  voorleest. Het gesprek is een lijst met het label *Gesprek*.
+- **Naast de vraag.** `<Chat naast>` zet het gesprek in een linkerkolom van
+  ongeveer 40 %, en alles wat erna in de stap staat in een rechterkolom. De
+  titel van de stap, en wat vóór de `<Chat>` staat, lopen over beide
+  kolommen. Zet `<Chat naast>` dus meteen onder de titel, of na één
+  inleidende zin over de volle breedte. Het is CSS op de stap (`:has()` en
+  een raster), dus het werkt ook zonder JavaScript, en de auteur schrijft
+  geen omhulsel. Is het gesprek hoger dan de rechterkolom, dan blijven de
+  blokken rechts gewoon onder elkaar staan. Een browser zonder `:has()`
+  toont het gesprek boven de rest.
+- Zonder `naast` staat de `<Chat>` in de stroom van de stap, zo breed als
+  een regel lopende tekst.
+
+**Hoogte op 1366 × 640** (gemeten in `voorbeeld`)
+
+- Een `<Prompt>` is 32 px plus 24 px per regel tekst, plus 12 px tussen twee
+  alinea's, plus 24 px binnenmarge: drie regels in één alinea is 128 px,
+  twee alinea's van twee regels 164 px. Een regel is ongeveer 65 tekens.
+- Twee korte beurten zijn naast de vraag 195 px hoog, in de stroom 147 px.
+- `<Chat naast>` met twee korte beurten en een `<Meerkeuze>` van vier korte
+  opties met elk één zin feedback, alle vier aangeklikt: 331 van de 390 px.
+  Onder elkaar zou dat 472 px zijn; daarom bestaat `naast`. Rechts is een
+  optie ongeveer 290 px breed: houd ze op twee à drie woorden en de
+  feedback op één zin.
+- Een `<Prompt>` van drie regels met daaronder een `<Meerkeuze>` van vier
+  korte opties past zolang de feedback dicht is (379 px), maar niet meer
+  als alle vier de opties aangeklikt zijn (453 px): dan scrolt de kaart.
+
+**Buildchecks**, elk met een duidelijke melding:
+
+- een lege `<Prompt>`, en een `<Prompt>` met iets anders dan alinea's
+  (een lijst, een kop, een beeld, een component);
+- een lege `<Chat>`, een `<Chat>` zonder beurten, en iets anders dan
+  `<Jij>` en `<AI>` in een `<Chat>`, zoals tekst buiten een beurt;
+  `<Chat>` rendert zijn kinderen en leest ze terug, zoals `<Meerkeuze>`
+  met zijn opties doet;
+- een lege `<Jij>` of `<AI>`;
+- een `<Jij>` of `<AI>` buiten een `<Chat>`: die zou stil verdwijnen, dus
+  controleert `checks.ts` dat in de bron, met de titel van de stap in de
+  melding;
+- `naast` met een waarde.
 
 ### De samenvatting
 

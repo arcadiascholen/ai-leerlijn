@@ -1,0 +1,161 @@
+---
+// A conversation written beforehand: what the student asked, what the AI
+// answered (docs/BRIEFING.md § 12, "Prompts en gesprekken"):
+//
+//   <Chat naast>
+//   <Jij>Leg fotosynthese uit.</Jij>
+//   <AI>Fotosynthese is het proces waarbij planten …</AI>
+//   </Chat>
+//
+// Static, no JavaScript. The turns render themselves as data (Jij.astro,
+// AI.astro); this component renders them back and reads them, so that text
+// outside a turn fails the build instead of disappearing. With `naast` the
+// conversation stands in a left column and the rest of the step beside it,
+// so that it fits on 1366 × 640 next to a question. Authors write no import.
+import { decodeTurns, type Speaker } from './authoring';
+
+interface Props {
+  naast?: boolean;
+}
+
+const { naast } = Astro.props;
+if (naast !== undefined && naast !== true) {
+  throw new Error('<Chat>: write `naast` without a value, <Chat naast>, or leave it out.');
+}
+
+const turns = decodeTurns(Astro.slots.has('default') ? await Astro.slots.render('default') : '');
+
+// The visible label of every turn, which a screen reader reads as well.
+const LABELS: Readonly<Record<Speaker, string>> = { jij: 'Jij', ai: 'AI' };
+---
+
+<ol class="chat" role="list" aria-label="Gesprek" data-chat data-naast={naast === true ? '' : undefined}>
+  {
+    turns.map((turn) => (
+      <li class="turn" data-speaker={turn.speaker}>
+        <p class="turn-label">{LABELS[turn.speaker]}</p>
+        <div class="turn-body">
+          <Fragment set:html={turn.html} />
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  /* Turns as bubbles: the student on the right in the sunken surface, the AI
+     on the left in the AI colours (docs/DESIGN.md), both in the prompt
+     style. Only design-system tokens. Single classes, so they win over the
+     zero-specificity step defaults in Stap.astro. Compact: two short turns
+     take about 170px. In the flow of a step the conversation is as wide as
+     a line of running text. */
+  .chat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: 65ch;
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+  }
+
+  .turn {
+    max-width: 85%;
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-mono);
+    font-size: var(--text-prompt-size);
+    line-height: var(--text-prompt-line);
+    font-weight: var(--text-prompt-weight);
+    letter-spacing: var(--text-prompt-tracking);
+    overflow-wrap: anywhere;
+  }
+
+  /* The corner on the speaker's side is the tail of the bubble. */
+  .turn[data-speaker='jij'] {
+    align-self: flex-end;
+    border-color: var(--line-strong);
+    border-bottom-right-radius: var(--radius-sm);
+    background: var(--surface-sunken);
+    color: var(--ink);
+  }
+
+  .turn[data-speaker='ai'] {
+    align-self: flex-start;
+    border-bottom-left-radius: var(--radius-sm);
+    background: var(--ai-soft);
+    color: var(--ai-text);
+  }
+
+  .turn-label {
+    max-width: none;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  /* Green is the student (docs/DESIGN.md). */
+  .turn[data-speaker='jij'] .turn-label {
+    color: var(--brand-text);
+  }
+
+  .turn-body > :global(*) {
+    max-width: none;
+    margin: 0 0 var(--space-2);
+  }
+
+  .turn-body > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .turn-body :global(:is(ul, ol)) {
+    padding-left: var(--space-4);
+  }
+</style>
+
+<style is:global>
+  /* <Chat naast>: the conversation in a left column of about 40 %, the rest
+     of the step in a right column; the step title, and anything an author
+     puts before the <Chat>, spans both. Pure CSS on the step (Stap.astro),
+     so it needs no JavaScript and the author writes no wrapper. A browser
+     without :has() shows the conversation above the rest, in the flow.
+
+     Why: stacked, two turns and a <Meerkeuze> with four answered options
+     take about 456px, and a step has 390px on 1366 × 640. Side by side the
+     <Meerkeuze> keeps its two columns of options in the right column.
+
+     The conversation spans many rows of the grid, so that the items on the
+     right stack in one row each beside it. When it is the taller column,
+     the extra height goes to the empty rows below them, not between them.
+     An island (<astro-island>) has display: contents: its element is the
+     grid item. Steps without a <Chat naast> are not touched. */
+  [data-step]:not([hidden]):has(> [data-chat][data-naast]) {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    column-gap: var(--space-5);
+  }
+
+  [data-step]:has(> [data-chat][data-naast]) > *,
+  [data-step]:has(> [data-chat][data-naast]) > astro-island > * {
+    grid-column: 1 / -1;
+  }
+
+  [data-step] > [data-chat][data-naast] {
+    grid-column: 1;
+    grid-row: span 99;
+    align-self: start;
+    max-width: none;
+    margin: 0;
+  }
+
+  [data-step] > [data-chat][data-naast] ~ *,
+  [data-step] > [data-chat][data-naast] ~ astro-island > * {
+    grid-column: 2;
+  }
+</style>
