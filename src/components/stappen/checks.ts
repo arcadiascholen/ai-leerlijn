@@ -29,6 +29,9 @@ export interface ModuleOutline {
   // Tool.astro) and the rules that show the blocks of the chosen tool
   // (ChosenTool.astro).
   readonly tool: SourceChoice | null;
+  // Per <Prompt> with `velden`: its `id` → the title of the step it is in,
+  // which the summary shows as the question above the fields (Prompt.astro).
+  readonly promptSteps: Readonly<Record<string, string>>;
 }
 
 const EXAMPLE_OPTIONS = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
@@ -429,5 +432,32 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     }
   }
 
-  return { branching, tool };
+  // Prompts with fields (BRIEFING § 12, "Prompts en gesprekken"): what the
+  // student writes in them is stored under the `id` of the prompt, and the
+  // summary shows it under the title of its step. A component cannot read
+  // the title of the step it renders in, so the build reads it here.
+  const promptSteps: Record<string, string> = {};
+  for (const tag of tagsOf(id, body, 'Prompt')) {
+    if (!tag.attributes.has('velden')) continue;
+    const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
+    const title = step === undefined ? undefined : textOf(step, 'titel');
+    const where = step === undefined ? '' : ` in <Stap titel="${title ?? '…'}">`;
+    const promptId = textOf(tag, 'id');
+    if (promptId === undefined) {
+      throw new Error(
+        `Module "${id}": the <Prompt> with \`velden\`${where} needs an \`id\` as text, such as ` +
+          '<Prompt id="uitleg-begrip" velden={…}>. What the student writes in the fields is stored under it, as ' +
+          'the answer to a question: lowercase letters, digits and hyphens, unique among the questions of the module.',
+      );
+    }
+    if (title === undefined) {
+      throw new Error(
+        `Module "${id}": <Prompt id="${promptId}"> with \`velden\` belongs in a <Stap> whose \`titel\` is written ` +
+          'as text: the summary shows that title as the question above the fields.',
+      );
+    }
+    promptSteps[promptId] = title;
+  }
+
+  return { branching, tool, promptSteps };
 }

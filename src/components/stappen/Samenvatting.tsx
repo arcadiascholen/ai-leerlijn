@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { readAnswer, type StoredAnswer } from '../vragen/answers';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
-import { choiceLine, downloadPdf, formatDate, NOT_ANSWERED, SITE_NAME, type PdfSummary } from './pdf';
+import {
+  choiceLine,
+  downloadPdf,
+  fieldLine,
+  formatDate,
+  NOT_ANSWERED,
+  SITE_NAME,
+  type PdfField,
+  type PdfItem,
+  type PdfSummary,
+} from './pdf';
 import { moduleIdOf } from './storage';
 import styles from './Samenvatting.module.css';
 
@@ -17,6 +27,10 @@ import styles from './Samenvatting.module.css';
 // through `readAnswer`. The question text comes from the page, not from
 // storage, because the stored one goes stale when an author rewrites it.
 //
+// A prompt with fields (<Prompt velden={…}>) is one question: the title of
+// its step, with a line per field. It counts as filled in when every field
+// is.
+//
 // The choices (<Keuze>) come first, one line each. In a module with
 // branches only the steps of the student's route count (routeOf in
 // choices.ts): the questions of a branch the student did not choose are left
@@ -28,7 +42,7 @@ import styles from './Samenvatting.module.css';
 // Samenvatting.module.css show only that on paper.
 
 // Only what the student wrote: multiple-choice answers are left out.
-const KINDS = ['think-first', 'reflection'];
+const KINDS = ['think-first', 'reflection', 'prompt-fields'];
 const SELECTOR = KINDS.map((kind) => `[data-question="${kind}"]`).join(', ');
 
 interface Props {
@@ -45,14 +59,14 @@ interface Choice {
   readonly step: number | null;
 }
 
-interface Item {
+// A question with what the student wrote by now, as the PDF takes it: an
+// answer (normalised; '' when the student wrote nothing yet), or the fields
+// of a prompt. With its id, and the 1-based step it is in, for a link back to
+// it.
+type Item = PdfItem & {
   readonly id: string;
-  readonly question: string;
-  // Normalised; '' when the student wrote nothing (yet).
-  readonly answer: string;
-  // The 1-based step the question is in, for a link back to it.
   readonly step: number | null;
-}
+};
 
 // idle: nothing saved yet. downloaded: the browser got the PDF. print: the
 // PDF failed, so the student is asked to print to PDF. printed: the print
@@ -72,7 +86,24 @@ function normalise(text: string): string {
 
 function answerOf(stored: StoredAnswer | null, kind: string | undefined): string {
   if (stored === null || stored.kind !== kind) return '';
-  return stored.kind === 'multiple-choice' ? '' : normalise(stored.answer);
+  return stored.kind === 'think-first' || stored.kind === 'reflection' ? normalise(stored.answer) : '';
+}
+
+// The fields of a prompt, in the order of `velden`, each with its label from
+// the page (`data-prompt-fields`) and what the student wrote in it.
+function fieldsOf(element: HTMLElement, stored: StoredAnswer | null): PdfField[] {
+  const labels = JSON.parse(element.dataset.promptFields ?? '[]') as [name: string, label: string][];
+  const values = stored?.kind === 'prompt-fields' ? stored.fields : {};
+  return labels.map(([name, label]) => {
+    const value = Object.hasOwn(values, name) ? values[name] : undefined;
+    return { label, value: typeof value === 'string' ? normalise(value) : '' };
+  });
+}
+
+// A prompt with fields is filled in when every field is.
+function isFilled(item: Item): boolean {
+  if (item.kind === 'answer') return item.answer !== '';
+  return item.fields.length > 0 && item.fields.every((field) => field.value !== '');
 }
 
 interface Collected {
@@ -107,22 +138,27 @@ function collect(root: HTMLElement, moduleId: string): Collected {
       step,
     };
   });
-  const items = onRoute(scope, moduleId, SELECTOR).map(([element, step]) => {
+  const items = onRoute(scope, moduleId, SELECTOR).map(([element, step]): Item => {
     const id = element.dataset.questionId ?? '';
     const stored = id === '' ? null : readAnswer(moduleId, id);
-    return {
-      id,
-      question: element.dataset.questionText ?? stored?.question ?? '',
-      answer: answerOf(stored, element.dataset.question),
-      step,
-    };
+    const question = element.dataset.questionText ?? stored?.question ?? '';
+    if (element.dataset.question === 'prompt-fields') {
+      return { kind: 'fields', id, question, fields: fieldsOf(element, stored), step };
+    }
+    return { kind: 'answer', id, question, answer: answerOf(stored, element.dataset.question), step };
   });
   return { choices, items };
 }
 
 // What the PDF or the paper holds, to tell whether it went out of date.
 function signature({ choices, items }: Collected): string {
-  return JSON.stringify([choices.map((choice) => choice.label), items.map((item) => [item.question, item.answer])]);
+  return JSON.stringify([
+    choices.map((choice) => choice.label),
+    items.map((item) => [
+      item.question,
+      item.kind === 'answer' ? item.answer : item.fields.map((field) => [field.label, field.value]),
+    ]),
+  ]);
 }
 
 // "doel" becomes "Doel", for the line "Doel: Een schriftelijke toets".
@@ -135,7 +171,12 @@ function pdfOf(moduleId: string, moduleTitle: string, { choices, items }: Collec
     moduleId,
     moduleTitle,
     choices: choices.map((choice) => ({ title: choiceTitle(choice.name), label: choice.label })),
-    items: items.map((item) => ({ kind: 'answer', question: item.question, answer: item.answer })),
+    items: items.map(
+      (item): PdfItem =>
+        item.kind === 'answer'
+          ? { kind: 'answer', question: item.question, answer: item.answer }
+          : { kind: 'fields', question: item.question, fields: item.fields },
+    ),
     date: new Date(),
   };
 }
@@ -144,7 +185,7 @@ function pdfOf(moduleId: string, moduleTitle: string, { choices, items }: Collec
 // not the choices.
 function intro(moduleTitle: string, items: readonly Item[]): ReactNode {
   const total = items.length;
-  const filled = items.filter((item) => item.answer !== '').length;
+  const filled = items.filter(isFilled).length;
   const start = (
     <>
       In de module <strong>{moduleTitle}</strong>
@@ -225,9 +266,17 @@ function OnPaper({ moduleTitle, collected }: { readonly moduleTitle: string; rea
         {collected.items.map((item) => (
           <div key={item.id} className={styles.paperItem}>
             <dt className={styles.paperQuestion}>{item.question}</dt>
-            <dd className={item.answer !== '' ? styles.paperAnswer : styles.paperEmpty}>
-              {item.answer !== '' ? item.answer : NOT_ANSWERED}
-            </dd>
+            {item.kind === 'answer' ? (
+              <dd className={item.answer !== '' ? styles.paperAnswer : styles.paperEmpty}>
+                {item.answer !== '' ? item.answer : NOT_ANSWERED}
+              </dd>
+            ) : (
+              item.fields.map((field, index) => (
+                <dd key={index} className={field.value !== '' ? styles.paperAnswer : styles.paperEmpty}>
+                  {fieldLine(field)}
+                </dd>
+              ))
+            )}
           </div>
         ))}
       </dl>
@@ -315,7 +364,7 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
   const printing = mode === 'print' || mode === 'printed';
   const done = mode === 'downloaded' || mode === 'printed';
   const openChoices = collected?.choices.filter((choice) => choice.label === '') ?? [];
-  const emptyItems = collected?.items.filter((item) => item.answer === '') ?? [];
+  const emptyItems = collected?.items.filter((item) => !isFilled(item)) ?? [];
 
   return (
     <div ref={rootRef} className={styles.root} data-summary>

@@ -9,8 +9,8 @@
 // In the static HTML every question's root element carries
 // `data-question="<kind>"` and `data-question-id="<id>"`, also in steps that
 // are hidden and not hydrated yet. The questions that the summary shows
-// (`think-first` and `reflection`) also carry `data-question-text`, the
-// question as it is on the page now. The summary at the end of a module
+// (`think-first`, `reflection` and `prompt-fields`) also carry
+// `data-question-text`, the question as it is on the page now. The summary at the end of a module
 // (../stappen/Samenvatting.tsx) walks those elements in document order, which
 // is the order of the module, and reads each answer with `readAnswer`. It
 // takes the question from the page, not from storage: the stored question
@@ -18,7 +18,7 @@
 
 import { readStored, writeStored } from '../stappen/storage';
 
-export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection';
+export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -45,7 +45,16 @@ export interface ReflectionAnswer {
   answer: string;
 }
 
-export type StoredAnswer = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer;
+// <Prompt velden={…}>: what the student wrote in each field, by the name of
+// the placeholder it fills in. `question` is the title of the step the
+// prompt is in, as the student saw it.
+export interface PromptFieldsAnswer {
+  kind: 'prompt-fields';
+  question: string;
+  fields: Record<string, string>;
+}
+
+export type StoredAnswer = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer | PromptFieldsAnswer;
 
 export function answerKey(questionId: string): string {
   return `vraag:${questionId}`;
@@ -64,6 +73,12 @@ function isStoredAnswer(value: unknown): value is StoredAnswer {
       return typeof value.answer === 'string' && typeof value.shown === 'boolean';
     case 'reflection':
       return typeof value.answer === 'string';
+    case 'prompt-fields':
+      return (
+        isRecord(value.fields) &&
+        !Array.isArray(value.fields) &&
+        Object.values(value.fields).every((field) => typeof field === 'string')
+      );
     default:
       return false;
   }

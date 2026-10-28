@@ -557,10 +557,10 @@ Tekst, een beeld of een vraagcomponent.
 
 - Elke sleutel in `localStorage` heeft de vorm
   `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
-  `stap`. Een vraag bewaart haar antwoord onder `vraag:<id>`, met de `id`
-  die de auteur schrijft (zie *Antwoorden bewaren* hieronder). Een
-  `<Keuze>` bewaart de gekozen optie onder `keuze:<naam>` (zie *Keuzes en
-  takken*).
+  `stap`. Een vraag, en een `<Prompt>` met invulvelden, bewaart haar
+  antwoord onder `vraag:<id>`, met de `id` die de auteur schrijft (zie
+  *Antwoorden bewaren* hieronder). Een `<Keuze>` bewaart de gekozen optie
+  onder `keuze:<naam>` (zie *Keuzes en takken*).
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -698,14 +698,22 @@ steunt.
 - `<Reflectie>` bewaart
   `{ "kind": "reflection", "question": "…", "answer": "…" }`: de vraag zoals
   de leerling ze zag en het antwoord.
+- `<Prompt>` met `velden` bewaart
+  `{ "kind": "prompt-fields", "question": "…", "fields": { "begrip": "…", "mijn uitleg": "…" } }`:
+  de titel van de stap zoals de leerling ze zag, en per veld, onder de naam
+  van zijn invulplaats, wat de leerling schreef, zoals getypt (zie *Prompts
+  en gesprekken*).
 - Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `StoredAnswer`
   in `answers.ts`, met een eigen controle in `isStoredAnswer`, zodat
   `readAnswer` een onvolledige waarde weigert.
 - In de statische HTML draagt het buitenste element van elke vraag
-  `data-question="<kind>"` (`multiple-choice`, `think-first` of
-  `reflection`) en `data-question-id="<id>"`. Een vraag die in de
+  `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`
+  of `prompt-fields`) en `data-question-id="<id>"`. Een vraag die in de
   samenvatting komt, draagt ook `data-question-text` met de vraag zoals ze
-  nu in de module staat. Dat geldt ook voor vragen in verborgen stappen die
+  nu in de module staat. Bij een prompt met velden is dat element het kader
+  met de velden, en draagt het ook `data-prompt-fields`: per veld de naam
+  en het label, in de volgorde van `velden`, als JSON
+  (`[["begrip", "Begrip"], …]`). Dat geldt ook voor vragen in verborgen stappen die
   nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in de
   volgorde van het document, dus van de module, en leest per `id` het
   antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
@@ -903,8 +911,8 @@ Stel me vijf vragen, één per keer.
 </Stap>
 ```
 
-De componenten staan in `src/components/inhoud/`. Geen van beide bewaart
-iets.
+De componenten staan in `src/components/inhoud/`. `<Chat>` bewaart niets,
+`<Prompt>` alleen met invulvelden.
 
 **Een prompt om te kopiëren**
 
@@ -940,6 +948,72 @@ iets.
 - Eén script in `Prompt.astro` doet dat voor alle prompts op de pagina; het
   luistert op het document.
 - Zonder JavaScript staat het blok er, zonder knop.
+
+**Een prompt met invulvelden**
+
+```mdx
+<Stap titel="Leg eerst zelf een begrip uit je cursus uit">
+<Prompt id="uitleg-begrip" velden={{ begrip: 'Begrip', 'mijn uitleg': 'Mijn uitleg' }}>
+Mijn uitleg van [begrip]: [mijn uitleg]
+
+Klopt mijn uitleg? Zeg wat ontbreekt, en leg [begrip] daarna eenvoudig uit
+voor het [jaar en richting].
+</Prompt>
+</Stap>
+```
+
+- Soms schrijft de leerling eerst zelf iets, zoals een eigen uitleg of
+  verwachte toetsvragen. Met `velden` doet die dat op de stap, en gaat het
+  mee in de gekopieerde prompt: *eerst jij, dan AI* staat zo in de prompt
+  zelf.
+- `velden` koppelt de naam van een invulplaats, de tekst tussen `[` en `]`,
+  aan het label van haar veld. Een label is een zelfstandig naamwoord: het
+  staat ook in de samenvatting. Andere invulplaatsen blijven invulplaatsen
+  voor in de tool, zoals `[jaar en richting]` hierboven. Staat dezelfde naam
+  twee keer in de prompt, dan vult één veld beide plaatsen in.
+- Een prompt met `velden` heeft een verplichte `id`, met de regels van een
+  vraag-`id` (zie *Vraagtypes*): uniek onder de vragen van de module, en
+  niet meer te wijzigen na publicatie.
+- **Vorm.** De velden staan boven het promptblok, naast elkaar, samen zo
+  breed als het blok; wat niet past, schuift naar een volgende regel. Elk
+  veld heeft een echt `<label>` erboven, in `brand-text`: groen is de
+  leerling. Een veld is een tekstveld van één regel dat meegroeit tot drie
+  regels en daarna scrolt.
+- **Live.** Bij elke toets vult de prompt zich aan. Een ingevulde
+  invulplaats toont de tekst van de leerling zonder haken, in `brand-text`
+  op `surface-sunken` (4.8:1), met een lijn in `brand` eronder; een lege
+  blijft `[begrip]` op wit. Een regeleinde in een veld blijft een regeleinde,
+  in het blok en op het klembord.
+- **Kopiëren.** *Kopieer* kopieert de ingevulde prompt, met dezelfde regels
+  voor alinea's als elke prompt. Naast `data-prompt-text` zet de build
+  `data-prompt-template`: dezelfde tekst, gesneden bij de invulplaatsen van
+  de velden. Het script vult die in; een leeg veld blijft `[begrip]`. Met
+  alle velden leeg is dat exact `data-prompt-text`, en dat controleert de
+  build. De knop werkt ook met lege velden.
+- Zolang er een veld leeg is, staat links van de knop *Nog leeg: Mijn
+  uitleg*, met de labels van de lege velden, zoals de lijst *Nog leeg* van
+  de samenvatting. Een schermlezer leest die zin bij de knop
+  (`aria-describedby`). Na het kopiëren maakt ze plaats voor ✓
+  *Gekopieerd*; wie daarna verder typt, ziet de bevestiging verdwijnen, want
+  het klembord klopt dan niet meer. De knop verspringt in geen van die
+  gevallen.
+- **Bewaren.** Wat de leerling in de velden schrijft, wordt bij elke toets
+  bewaard onder `vraag:<id>` (zie *Antwoorden bewaren*). Het staat er weer
+  na herladen en komt in de samenvatting; *Opnieuw beginnen* wist het mee.
+  Het kader met de velden is in de statische HTML de vraag voor de
+  samenvatting (`data-question="prompt-fields"`); `data-question-text` is
+  de titel van de stap. Die titel leest de build uit de bron (`checks.ts`,
+  via `Astro.locals`), zoals bij de takken: een component kan de titel van
+  zijn stap niet lezen.
+- De pijltjestoetsen wisselen niet van stap terwijl de focus in een veld
+  staat (zie *De speler*). Tab gaat van veld naar veld, en dan naar
+  *Kopieer*.
+- Geen island: hetzelfde script in `Prompt.astro` doet ook dit. De velden
+  staan in de statische HTML, net vóór hun blok, en het script werkt ook in
+  een verborgen stap: de samenvatting en het kopiëren wachten op niets.
+- Zonder JavaScript zijn de velden verborgen en staat de prompt er met haar
+  invulplaatsen, zoals een prompt zonder velden.
+- Een prompt zonder `velden` verandert niet, ook niet in de HTML.
 
 **Een gesprek**
 
@@ -977,11 +1051,31 @@ iets.
 - Een `<Prompt>` van drie regels met daaronder een `<Meerkeuze>` van vier
   korte opties past zolang de feedback dicht is (379 px), maar niet meer
   als alle vier de opties aangeklikt zijn (453 px): dan scrolt de kaart.
+- De velden van een `<Prompt>` met `velden` zijn 70 px hoog (label 22 px,
+  veld 44 px), plus 12 px tot het blok. Een veld van drie regels maakt ze
+  122 px; langer scrolt binnen het veld. Twee velden staan naast elkaar,
+  elk ± 350 px breed: een uitleg van twee zinnen is er al drie regels.
+- Wat de leerling schrijft, laat het blok groeien met 24 px per regel; daar
+  is geen bovengrens. In `voorbeeld` is de stap met titel, twee velden en
+  een prompt van twee alinea's (één en twee regels) leeg 272 px, ook met
+  het eerste veld ingevuld, en met een uitleg van drie regels in het tweede
+  veld 371 px van de 390 px. Een eerste versie van die stap, met twee regels
+  tekst boven de velden en een tweede alinea van drie regels, was ingevuld
+  463 px: dan scrolt de kaart. Zet dus geen tekst boven een prompt met
+  velden (de titel en de labels zeggen wat de leerling doet), en houd de
+  prompt zelf op drie regels.
 
 **Buildchecks**, elk met een duidelijke melding:
 
 - een lege `<Prompt>`, en een `<Prompt>` met iets anders dan alinea's
   (een lijst, een kop, een beeld, een component);
+- bij een `<Prompt>` met `velden`: geen `id` (`checks.ts` leest dat uit de
+  bron, met de titel van de stap in de melding), een `id` in een verkeerde
+  vorm of die al bij een andere vraag van de module hoort, `velden` die geen
+  object van gewone teksten is, een leeg label, een naam in `velden` die
+  niet als invulplaats in de prompt staat (de melding noemt de
+  invulplaatsen die er wel staan), en een `<Stap>` waarvan de `titel` geen
+  gewone tekst is; en een `id` op een `<Prompt>` zonder `velden`;
 - een lege `<Chat>`, een `<Chat>` zonder beurten, en iets anders dan
   `<Jij>` en `<AI>` in een `<Chat>`, zoals tekst buiten een beurt;
   `<Chat>` rendert zijn kinderen en leest ze terug, zoals `<Meerkeuze>`
@@ -1005,9 +1099,9 @@ iets.
   de module geeft de route mee via `Astro.locals`, de link naar het
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
   `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
-- Ze neemt, in de volgorde van de module, elke `<DenkEerst>` en
-  `<Reflectie>` mee. **Meerkeuze komt er niet in**: alleen wat de leerling
-  zelf schreef. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
+- Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`
+  en `<Prompt>` met `velden` mee. **Meerkeuze komt er niet in**: alleen wat
+  de leerling zelf schreef. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
   *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
   niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
@@ -1017,6 +1111,11 @@ iets.
   elke keuze die nog open is (*Tool: (nog niet gekozen)*), elk met *Ga naar
   stap n* (`#stap-n`). Is alles ingevuld, dan staat er geen lijst. De
   antwoorden zelf staan niet op de stap, wel in de pdf.
+- **Een prompt met velden** is één vraag. De vraag is de titel van haar
+  stap (`data-question-text`), met eronder één regel per veld, in de
+  volgorde van `velden`: *Mijn uitleg: …*, of *Mijn uitleg: (niet
+  ingevuld)*. Ze telt als ingevuld als alle velden ingevuld zijn; anders
+  staat de titel van de stap onder *Nog leeg*, met *Ga naar stap n*.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
@@ -1038,15 +1137,16 @@ iets.
   van de module, *gedownload op 10 november 2026*, de keuzes, één per regel
   (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met de `naam`
   van de keuze met een hoofdletter vooraan), en dan per vraag de vraag in
-  het vet met het antwoord eronder, of *(niet ingevuld)*. Onderaan elke
+  het vet met het antwoord eronder, of *(niet ingevuld)*; bij een prompt met
+  velden staat er één regel per veld. Onderaan elke
   pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
   volgende pagina; een vraag staat nooit alleen onderaan een pagina. Lege
   regels binnen een antwoord vallen weg. Er staat geen naam of ander
   persoonsgegeven in: de site kent de leerling niet, Smartschool koppelt het
   bestand aan de leerling.
 - `pdf.ts` krijgt gewone gegevens: de module, de keuzes en per vraag een
-  blok met een `kind` (nu alleen `answer`). Een nieuw soort blok komt daar
-  bij.
+  blok met een `kind`: `answer`, of `fields` voor een prompt met velden.
+  Een nieuw soort blok komt daar bij.
 - **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
   er gaat geen lettertypebestand mee, maar het kent alleen de tekens van
   WinAnsi (Windows-1252). Voor een teken daarbuiten schrijft jsPDF zonder
