@@ -281,14 +281,19 @@ datum waarop de bronnen geraadpleegd zijn.
 
 | | ChatGPT (gratis) | Gemini (gratis) | Gemini Notebook | Copilot (schoolaccount) |
 |---|---|---|---|---|
-| Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer]) |
-| Cursus opladen | 3 uploads per dag, leest ± 12 pagina's tegelijk ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
+| Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer], [leeftijdsgroep][copilot-faq]) |
+| Cursus opladen | 3 uploads per dag; leest maar een deel van een lange cursus (± 12 pagina's, geen officiële bron) ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
 | Leermodus | Leermodus (`@study`), niet in Projecten ([bron][chatgpt-leermodus]) | Begeleid leren ([bron][gemini-leren]) | flashcards en quizzen ([bron][notebook-leren]) | agent *Studeren en leren*, met de cursus ([bron][copilot-leren]) |
-| Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts vanaf 17 november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's, geen bestanden ([bron][copilot-agent]) |
+| Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts in november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's ([bron][copilot-agent]), geen bestanden zonder licentie ([bron][copilot-vereisten]) |
 | Denken | knop *Nadenken*, per chat | sinds 9 oktober 2026 *Auto*, inspanning instelbaar ([bron][gemini-denken]) | — | *Think deeper*, per chat opnieuw kiezen; vast in een agent |
-| Spraak | beperkt, in de browser ([bron][chatgpt-spraak]) | Gemini Live alleen op de gsm ([bron][gemini-live]) | — | alleen dicteren en voorlezen ([bron][copilot-faq]) |
+| Spraak | beperkt, in de browser ([bron][chatgpt-spraak]) | Gemini Live alleen in de app op gsm of tablet ([bron][gemini-live]) | — | alleen dicteren en voorlezen ([bron][copilot-faq]) |
 | Chat delen | publieke link, kan opgeladen bestanden tonen ([bron][chatgpt-delen]) | link werkt zolang de chat in de activiteit staat ([bron][gemini-delen]) | alleen met Google-account te openen | link alleen binnen de eigen organisatie |
 | Training | standaard aan; uit via *Gegevensbeheer*; een duim stuurt het gesprek toch door ([bron][chatgpt-training]) | met *Activiteit bewaren* aan ([bron][gemini-training]) | bronnen niet ([bron][notebook-training]) | nee ([bron][copilot-training]) |
+
+Bij Gemini betekent training uit: *Activiteit bewaren* uit. Een gesprek staat
+dan niet in de activiteit, dus een deellink werkt niet. Het bewijsstuk is dan
+gekopieerde tekst, en de leerling houdt het tabblad open tot het einde van de
+module.
 
 [digisprong]: https://www.vlaanderen.be/kenniscentrum-digisprong/themas/innovatie/artificiele-intelligentie/vanaf-welke-leeftijd-kunnen-of-mogen-je-leerlingen-generatieve-ai-gebruiken
 [chatgpt-voorwaarden]: https://openai.com/nl-NL/policies/eu-terms-of-use/
@@ -314,6 +319,7 @@ datum waarop de bronnen geraadpleegd zijn.
 [copilot-opladen]: https://support.microsoft.com/en-us/microsoft-365-copilot/file-upload-in-microsoft-copilot
 [copilot-leren]: https://support.microsoft.com/en-us/education/copilot/study-learn-agent
 [copilot-agent]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge
+[copilot-vereisten]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/prerequisites
 [copilot-faq]: https://learn.microsoft.com/en-us/copilot/faq
 [copilot-training]: https://learn.microsoft.com/en-us/copilot/microsoft-365/enterprise-data-protection
 
