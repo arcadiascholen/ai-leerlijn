@@ -57,7 +57,7 @@ de buurt, op een laptop.
 
 | Graad | Wat ze doen |
 |---|---|
-| Eerste | Geen generatieve AI: dat mag wettelijk niet. Ze herkennen AI in hun dagelijks leven (algoritmes, AI-overzicht in Google, spraakassistenten), bekijken voorbeeldgesprekken en vooraf gemaakte antwoorden, en werken eventueel met een niet-generatieve tool zonder account, zoals Teachable Machine. |
+| Eerste | Geen generatieve AI: een keuze van de school, in lijn met de grens van 13 jaar in de voorwaarden van de tools (§ 7). Ze herkennen AI in hun dagelijks leven (algoritmes, AI-overzicht in Google, spraakassistenten), bekijken voorbeeldgesprekken en vooraf gemaakte antwoorden, en werken eventueel met een niet-generatieve tool zonder account, zoals Teachable Machine. |
 | Tweede | Proberen zelf AI uit op een herkenbare taak die ze toch al moeten maken. Ze leren vragen bijsturen en beweringen controleren met betrouwbare, onafhankelijke bronnen. |
 | Derde | Moeilijkere studie- of beroepstaken. Ze zoeken ook minder opvallende fouten en verantwoorden hun keuzes. Wie wil, kan zich technisch verdiepen. |
 
@@ -258,10 +258,87 @@ als aanknopingspunt in *AI als coach* (AI als coach past bij niveau 1 en 2).
 De barometerkleuren (rood, oranje, geel, groen) zijn gereserveerd voor die
 betekenis en worden nergens anders in de vormgeving gebruikt.
 
-**Toepassingen.** Uitgangspunt zijn gangbare tools: ChatGPT, Gemini, Copilot
-en eventueel Claude. De leeftijdsvoorwaarden van die tools verschillen en
-zijn nog niet afgetoetst (§ 11). Waar een leerling geen geschikte toegang
-heeft, is er een alternatief zonder persoonlijk account.
+**Toepassingen.** Voor de tweede en derde graad zijn ChatGPT en Gemini, met
+Gemini Notebook (tot juli 2026 NotebookLM), de gangbare tools. Wie geen
+persoonlijk account heeft of er geen mag gebruiken, gebruikt Copilot Chat met
+het schoolaccount. Claude komt in de modules niet voor: de
+consumentenvoorwaarden vragen 18 jaar. De school vroeg bij de start van het
+schooljaar aan de ouders toestemming voor het gebruik van AI-tools, waaronder
+ChatGPT. Dat dekt de toestemming van de ouders die ChatGPT vraagt voor wie
+jonger is dan 18.
+
+De eerste graad gebruikt geen generatieve AI (§ 3). Dat is een keuze van de
+school, geen wettelijk verbod. De Belgische digitale toestemmingsleeftijd is
+13 jaar (art. 7, wet van 30 juli 2018; [Kenniscentrum Digisprong][digisprong]),
+en ChatGPT, Gemini en Copilot leggen hun grens ook op 13 jaar (zie de tabel
+hieronder).
+
+**Opladen.** De modules laten leerlingen zoveel mogelijk context geven: de
+cursus van hun leerkracht, hun eigen notities, een foto of screenshot van de
+oefening. Voor ze iets opladen, zorgen ze dat het niet voor training gebruikt
+wordt (zie de rij *Training* van de tabel), en ze klikken geen duim omhoog of
+omlaag. Ze laden geen persoonsgegevens van anderen op.
+
+### Stand van de tools (oktober 2026)
+
+Wie een module schrijft, vindt hier wat elke tool kan, zonder zelf onderzoek
+te doen. De tools veranderen snel: dit is de stand op 28 oktober 2026, de
+datum waarop de bronnen geraadpleegd zijn.
+
+| | ChatGPT (gratis) | Gemini (gratis) | Gemini Notebook | Copilot (schoolaccount) |
+|---|---|---|---|---|
+| Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account dat je zelf beheert, dus wellicht niet met Family Link; `notebook.google.com` ([bron][notebook-toegang]) | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer], [leeftijdsgroep][copilot-faq]) |
+| Cursus opladen | 3 uploads per dag; leest maar een deel van een lange cursus (± 12 pagina's, geen officiële bron) ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
+| Leermodus | Leermodus (`@study`), niet in Projecten ([bron][chatgpt-leermodus]) | Begeleid leren ([bron][gemini-leren]) | chatstijl *Leergids*; flashcards en toetsen ([bron][notebook-leren], [chat][notebook-chat]) | agent *Studeren en leren*, met de cursus; in het secundair standaard voorgeselecteerd ([bron][copilot-leren], [gebruik][copilot-leren-gebruik]) |
+| Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts in november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's ([bron][copilot-agent]), geen bestanden zonder licentie ([bron][copilot-vereisten]); voor leerlingenaccounts niet bevestigd |
+| Denken | *Nadenken*; het label kan verschillen, en gratis op het web wordt het nog uitgerold ([bron][chatgpt-gratis]) | sinds 9 oktober 2026 *Auto*; of je gratis zelf een denkniveau kiest, is niet zeker ([bron][gemini-denken], [modellen][gemini-modellen]) | — | *Think deeper*; op een schoolaccount per chat opnieuw te kiezen (eigen waarneming); vast in een agent ([bron][copilot-overzicht]) |
+| Spraak | beperkt, in de browser ([bron][chatgpt-spraak]) | Gemini Live alleen in de app op gsm of tablet ([bron][gemini-live]) | — | alleen dicteren en voorlezen ([bron][copilot-faq]) |
+| Chat delen | publieke link, kan opgeladen bestanden tonen ([bron][chatgpt-delen]) | link werkt zolang de chat in de activiteit staat ([bron][gemini-delen]) | deelt het hele notitieboek met de bronnen, nooit het gesprek ([bron][notebook-delen]) | link alleen binnen de eigen organisatie |
+| Training | standaard aan; uit via *Gegevensbeheer*; een duim stuurt het gesprek toch door ([bron][chatgpt-training]) | met *Activiteit bewaren* aan, de enige schakelaar ([bron][gemini-training], [activiteit][gemini-activiteit]) | niet rechtstreeks; een duim stuurt ook je bronnen door ([bron][notebook-training], [privacy][notebook-privacy]) | nee ([bron][copilot-training]) |
+
+Alleen ChatGPT heeft een aparte schakelaar voor training. Bij Gemini betekent
+training uit: *Activiteit bewaren* uit. Dan is er geen geschiedenis en werkt
+een deellink niet; het bewijsstuk is dan gekopieerde tekst, en de leerling
+houdt het tabblad open tot het einde van de module. Gemini Notebook en Copilot
+trainen standaard niet: daar valt niets uit te zetten. In ChatGPT, Gemini en
+Gemini Notebook stuurt een duim omhoog of omlaag het gesprek toch door.
+
+[digisprong]: https://www.vlaanderen.be/kenniscentrum-digisprong/themas/innovatie/artificiele-intelligentie/vanaf-welke-leeftijd-kunnen-of-mogen-je-leerlingen-generatieve-ai-gebruiken
+[chatgpt-voorwaarden]: https://openai.com/nl-NL/policies/eu-terms-of-use/
+[chatgpt-opladen]: https://help.openai.com/en/articles/8555545-uploading-files-and-audio-to-chatgpt
+[chatgpt-prijzen]: https://chatgpt.com/nl-NL/pricing/
+[chatgpt-leermodus]: https://help.openai.com/en/articles/11780217-using-study-mode-in-chatgpt
+[chatgpt-gpts]: https://help.openai.com/en/articles/20001519-custom-gpt-retirement-and-migration-faq
+[chatgpt-spraak]: https://help.openai.com/en/articles/20001274-chatgpt-voice
+[chatgpt-delen]: https://help.openai.com/en/articles/7925741-sharing-conversations-and-scheduled-tasks-in-chatgpt
+[chatgpt-training]: https://help.openai.com/nl-nl/articles/7730893-data-controls-in-chatgpt
+[chatgpt-gratis]: https://help.openai.com/nl-nl/articles/9275245-chatgpt-free-tier-faq
+[gemini-toezicht]: https://support.google.com/gemini/answer/16109150?hl=en
+[gemini-context]: https://support.google.com/gemini/answer/16275805?hl=en
+[gemini-leren]: https://support.google.com/gemini/answer/16448384?hl=en
+[gemini-gems]: https://support.google.com/gemini/answer/15146780?hl=en
+[gemini-denken]: https://support.google.com/gemini/answer/17004136?hl=en
+[gemini-live]: https://support.google.com/gemini/answer/15274899?hl=en
+[gemini-delen]: https://support.google.com/gemini/answer/13743730?hl=en
+[gemini-training]: https://support.google.com/gemini/answer/13594961?hl=en
+[gemini-activiteit]: https://support.google.com/gemini/answer/13278892?hl=nl
+[gemini-modellen]: https://support.google.com/gemini/answer/18648722?hl=nl
+[notebook-bronnen]: https://support.google.com/gemininotebook/answer/16215270?hl=en
+[notebook-leren]: https://support.google.com/gemininotebook/answer/16958963?hl=en
+[notebook-training]: https://support.google.com/notebooklm/answer/16164461?hl=en
+[notebook-toegang]: https://support.google.com/gemininotebook/answer/16164461?hl=en
+[notebook-privacy]: https://support.google.com/gemininotebook/answer/17004255?hl=nl
+[notebook-chat]: https://support.google.com/gemininotebook/answer/16179559?hl=nl
+[notebook-delen]: https://support.google.com/gemininotebook/answer/16206563?hl=nl
+[copilot-beheer]: https://learn.microsoft.com/en-us/copilot/manage
+[copilot-opladen]: https://support.microsoft.com/en-us/microsoft-365-copilot/file-upload-in-microsoft-copilot
+[copilot-leren]: https://support.microsoft.com/en-us/education/copilot/study-learn-agent
+[copilot-leren-gebruik]: https://support.microsoft.com/nl-nl/education/copilot/using-study-learn-agent
+[copilot-overzicht]: https://learn.microsoft.com/en-us/copilot/overview
+[copilot-agent]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge
+[copilot-vereisten]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/prerequisites
+[copilot-faq]: https://learn.microsoft.com/en-us/copilot/faq
+[copilot-training]: https://learn.microsoft.com/en-us/copilot/microsoft-365/enterprise-data-protection
 
 ## 8. Techniek
 
@@ -342,11 +419,6 @@ bediening met het toetsenbord, en tekst die met voorleessoftware werkt.
 
 ## 11. Open beslissingen
 
-- **Toepassingen en leeftijd.** Welke tools zijn toegelaten per graad, gezien
-  hun leeftijdsvoorwaarden? Volgens de voorwaarden zoals ze bij de start
-  bekend waren, vraagt Claude 18 jaar en ChatGPT 13 jaar met toestemming van
-  de ouders onder 18. Dit moet nog nagekeken worden en is een beslissing van
-  het team.
 - **Deadline.** Tegen welk uur dient de leerling het eindformulier in?
   Zodra het bekend is, komt het in `src/config/smartschool.ts`
   (`eindformulierUur`); tot dan zegt de startpagina dat het uur nog volgt.
