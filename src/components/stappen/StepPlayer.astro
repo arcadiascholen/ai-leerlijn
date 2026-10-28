@@ -392,8 +392,8 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       // the branching choice is open, the limit is that choice's step, and
       // there "Volgende" waits for it. "Volgende" stays disabled while
       // hidden, so the right arrow key does nothing: a key never leaves the
-      // module.
-      const end = current === count && route.limit === count;
+      // module. A last step with an open choice keeps "Volgende" and its hint.
+      const end = current === count && route.limit === count && !open;
       nextButton.hidden = end;
       homeLink.hidden = !end;
       const text = open ? OPEN_CHOICE_HINT : '';
