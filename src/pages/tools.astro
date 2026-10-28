@@ -105,10 +105,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       </ul>
     </section>
     <section class="note" aria-labelledby="geen-account">
-      <h2 id="geen-account" class="note-title">Geen account, of mag het niet?</h2>
+      <h2 id="geen-account" class="note-title">Geen eigen account of geen toestemming van je ouders?</h2>
       <p>
-        Gebruik dan <strong>Copilot</strong> met je schoolaccount. Of kies een module waarin je zelf geen AI
-        gebruikt: dat staat bij elke module in het <a href={`${base}/modules/`}>overzicht</a>.
+        Gebruik dan <strong>Copilot</strong> met je schoolaccount, in plaats van ChatGPT of Gemini. Of kies een
+        module waarin je zelf geen AI gebruikt: dat staat bij elke module in het
+        <a href={`${base}/modules/`}>overzicht</a>.
+      </p>
+      <p>
+        Copilot is geen uitzondering: staat er bij een opdracht geen AI-niveau, dan gebruik je geen AI, ook
+        Copilot niet.
       </p>
     </section>
   </div>
@@ -206,7 +211,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   .notes {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-4);
   }
 
@@ -245,6 +250,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   .note ul {
     max-width: none;
     margin: 0;
+  }
+
+  .note p + p {
+    margin-top: var(--space-2);
   }
 
   .note ul {

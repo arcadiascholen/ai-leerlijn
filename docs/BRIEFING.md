@@ -317,8 +317,10 @@ betekenis en worden nergens anders in de vormgeving gebruikt.
 
 **Toepassingen.** Voor de tweede en derde graad zijn ChatGPT en Gemini, met
 Gemini Notebook (tot juli 2026 NotebookLM), de gangbare tools. Wie geen
-persoonlijk account heeft of er geen mag gebruiken, gebruikt Copilot Chat met
-het schoolaccount. Claude komt in de modules niet voor: de
+persoonlijk account heeft, of van de ouders geen ChatGPT of Gemini mag
+gebruiken, gebruikt Copilot Chat met het schoolaccount. Copilot is geen
+uitzondering op de regel van de affiche: staat er bij een opdracht geen
+AI-niveau, dan gebruikt de leerling geen AI, ook Copilot niet. Claude komt in de modules niet voor: de
 consumentenvoorwaarden vragen 18 jaar. De school vroeg bij de start van het
 schooljaar aan de ouders toestemming voor het gebruik van AI-tools, waaronder
 ChatGPT. Dat dekt de toestemming van de ouders die ChatGPT vraagt voor wie
