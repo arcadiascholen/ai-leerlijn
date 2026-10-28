@@ -62,7 +62,7 @@ eindformulier.
 Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
 doel.
 
-<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht' }} />
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat of presentatie' }} />
 </Stap>
 
 <Stap titel="Vier tools">
@@ -454,6 +454,90 @@ Lukt het nu beter? Let op wat je anders doet.
 Je examen komt eraan.
 
 <Reflectie id="mondeling-verder" vraag="Wat ga je nog oefenen voor je examen, en hoe?" />
+</Stap>
+
+{/* Branch: debat of presentatie. */}
+
+<Stap titel="Start je sessiechat" tak="debat">
+Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je
+opdracht op, en de criteria als je die hebt. Begin zo:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een [debat of presentatie] voor [vak] over [stelling of onderwerp]. Mijn standpunt: [standpunt]. Ik heb [tijd] spreektijd. In de bijlage zit de opdracht. Help me me voor te bereiden, maar schrijf mijn tekst niet voor mij.
+</Prompt>
+
+<Tool naam="chatgpt">
+Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
+**+** → **Foto's & bestanden toevoegen**.
+</Tool>
+<Tool naam="gemini">
+Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
+**+**.
+</Tool>
+<Tool naam="notebook">
+Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
+gesprek.
+</Tool>
+<Tool naam="copilot">
+Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
+anders heten). Laad je bestanden op met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="Eerst jij: je argumenten" tak="debat">
+Voor de AI meedenkt, denk je zelf.
+
+<Reflectie id="debat-argumenten" vraag="Wat zijn je drie sterkste argumenten? Bij een presentatie: wat zijn je drie kernpunten?" />
+</Stap>
+
+<Stap titel="De tegenstander" tak="debat">
+Test je standpunt tegen de sterkste tegenargumenten.
+
+<Prompt>
+Val mijn standpunt aan met het sterkste tegenargument dat je kent. Geef één argument per keer en wacht op mijn antwoord. Zeg daarna hoe sterk mijn antwoord was.
+</Prompt>
+
+Antwoord telkens zelf. Doe minstens drie rondes.
+</Stap>
+
+<Stap titel="Wissel van kant" tak="debat">
+Wie de andere kant begrijpt, debatteert beter.
+
+<Prompt>
+Nu wissel ik van kant: ik verdedig [het andere standpunt], en jij verdedigt mijn eigen standpunt. Eén argument per keer.
+</Prompt>
+
+Welke argumenten van de andere kant zijn eigenlijk sterk?
+</Stap>
+
+<Stap titel="De jury" tak="debat">
+Plak je argumenten of je tekst in de chat, en vraag:
+
+<Prompt>
+Beoordeel mijn argumentatie met deze criteria: [criteria]. Wat is mijn sterkste argument, en wat mijn zwakste? Waarom? Schrijf geen verbeterde versie.
+</Prompt>
+</Stap>
+
+<Stap titel="Kijk één bewering na" tak="debat">
+Kies één feit of cijfer van de AI. Zoek het zelf op in een **betrouwbare,
+onafhankelijke bron**, niet via de AI.
+
+<Reflectie id="debat-bron" vraag="Welke bewering keek je na, in welke bron, en klopte ze?" />
+</Stap>
+
+<Stap titel="Voor een presentatie: lastige vragen" tak="debat">
+Plak de opbouw of de kernpunten van je presentatie in de chat. Bij een debat:
+je eigen argumenten.
+
+<Prompt>
+Stel me de lastigste vragen die mijn klas of de jury na mijn [presentatie of debat] kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
+</Prompt>
+</Stap>
+
+<Stap titel="Wat zag je niet aankomen?" tak="debat">
+Denk terug aan de tegenstander en de jury.
+
+<Reflectie id="debat-tegenargument" vraag="Welk tegenargument of welke vraag had je niet verwacht, en wat antwoord je er nu op?" />
 </Stap>
 
 {/* Shared end. */}
