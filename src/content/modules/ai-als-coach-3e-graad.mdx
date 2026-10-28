@@ -69,11 +69,11 @@ doel.
 <Stap titel="Vier tools">
 Je kunt vandaag met een van deze vier tools werken.
 
-- **ChatGPT** is sterk in uitleg en in een gesprek, en heeft een
-  **Leermodus** en spraak in de browser. Gratis kun je maar 3 bestanden per dag opladen, en een lange
+- **ChatGPT** is sterk in uitleg en in een gesprek, en heeft spraak in de
+  browser. Gratis kun je maar 3 bestanden per dag opladen, en een lange
   cursus leest hij maar voor een deel.
-- **Gemini** is sterk in uitleg en heeft **Begeleid leren**. Hij werkt niet
-  met een account waarop je ouders toezicht houden met Family Link.
+- **Gemini** is sterk in uitleg. Hij werkt niet met een account waarop je
+  ouders toezicht houden met Family Link.
 - **Gemini Notebook** werkt met je **hele cursus** en toont bij elk antwoord
   waar het in je cursus staat. Je maakt er ook flashcards en quizzen mee.
 - **Copilot** werkt met je **schoolaccount**: je hebt geen eigen account
@@ -127,9 +127,10 @@ wat langer, maar de antwoorden zijn veel beter.
 
 <Tool naam="chatgpt">
 Kies **Nadenken** bij **+** (kan bij jou anders heten, of nog ontbreken).
-Je laadt je cursus vandaag twee keer op, met **+** → **Foto's & bestanden
-toevoegen**; gratis mag dat drie keer per dag. Laad alleen het **hoofdstuk**
-voor je toets op: een hele cursus leest ChatGPT maar voor een deel.
+Je laadt je cursus vandaag één keer op, in chat 3 van het experiment, met
+**+** → **Foto's & bestanden toevoegen**; gratis mag dat drie keer per dag.
+Laad alleen het **hoofdstuk** voor je toets op: een hele cursus leest ChatGPT
+maar voor een deel.
 </Tool>
 <Tool naam="gemini">
 Gemini kiest zelf hoe lang hij nadenkt (**Auto**). Zegt Gemini dat hij niet
@@ -140,6 +141,7 @@ ga terug en kies een andere tool.
 Gemini Notebook werkt met **bronnen**: straks voeg je je cursus toe als bron.
 Dat mag de hele cursus zijn. Het experiment hierna begint zonder bron: doe chat
 1 en 2 daarom in [Gemini](https://gemini.google.com), met hetzelfde account.
+Chat 3 doe je weer in Gemini Notebook.
 </Tool>
 <Tool naam="copilot">
 Kies rechtsboven **Think deeper**, bij elke nieuwe chat opnieuw (kan bij jou
@@ -160,24 +162,25 @@ Leg [begrip] uit.
 **Chat 2**, met jezelf en je toets erbij:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik [een toets, examen of opdracht] [vak] over [onderwerp]. Leg [begrip] uit.
+Ik zit in het [jaar en richting] en heb [een toets, examen of opdracht] [vak] over [onderwerp]. Leg [begrip] uit.
 </Prompt>
 </Stap>
 
 <Stap titel="Het contextexperiment (2)">
+<Tool naam="notebook">
+**Wissel nu naar Gemini Notebook.** Ga terug naar het tabblad met Gemini
+Notebook, klik op **Nieuwe notebook maken** en stel de vraag daar.
+</Tool>
+
 **Chat 3**, met je cursus erbij. Laad je cursus of een screenshot van de
 leerstof op, en vraag:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik [een toets, examen of opdracht] [vak] over [onderwerp]. In de bijlage zit mijn cursus. Leg [begrip] uit zoals het in mijn cursus staat, en zeg waar het staat.
+Ik zit in het [jaar en richting] en heb [een toets, examen of opdracht] [vak] over [onderwerp]. In de bijlage zit mijn cursus. Leg [begrip] uit zoals het in mijn cursus staat, en zeg waar het staat.
 </Prompt>
 
-<Tool naam="notebook">
-Klik op **Nieuwe notebook maken** en upload je cursus als bron. Stel de vraag
-daar.
-</Tool>
-
-Lees de drie antwoorden naast elkaar.
+Lees de drie antwoorden naast elkaar. Sluit chat 3 niet: bereid je een toets
+of een mondeling voor, dan werk je er straks in verder.
 </Stap>
 
 <Stap titel="Wat maakte het verschil?">
@@ -203,30 +206,26 @@ Dat doe je vanaf nu bij elke werkvorm.
 
 {/* Branch: schriftelijke toets. */}
 
-<Stap titel="Start je sessiechat" tak="toets">
-Vanaf nu werk je in **één chat**, tot het einde van de module. Zo onthoudt de
-AI wat je al zei. Open een nieuwe chat in de leerstand, laad je cursus op, en
-begin zo:
+<Stap titel="Werk verder in chat 3" tak="toets">
+Vanaf nu werk je in **chat 3**, tot het einde van de module. Daar zit je
+cursus al, en de AI weet wie je bent. Zo onthoudt hij ook wat je al zei. Vertel
+hem wat je wil:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp], met [soort vragen]. In de bijlage zit mijn cursus. Ik wil die toets zelf leren maken: help me met vragen en hints, en geef me niet meteen de antwoorden.
+Mijn toets is op [datum], met [soort vragen]. Ik wil die toets zelf leren maken: help me met vragen en hints, en geef me niet meteen de antwoorden.
 </Prompt>
 
-<Tool naam="chatgpt">
-Zet de **leermodus** aan: typ `@study` en kies **Studeren**. Die werkt niet in
-een tijdelijke chat of in een project.
-</Tool>
 <Tool naam="gemini">
-Zet **Begeleid leren** aan: klik op **+** → **Meer tools** → **Begeleid
-leren** (kan bij jou anders heten).
+Je zette **Activiteit** uit: deze chat vind je later niet meer terug. Houd het
+tabblad open tot het einde van de module.
 </Tool>
 <Tool naam="notebook">
-Werk verder in je notebook met je cursus. Klik bij het gesprek op **Gesprek
-instellen** en kies **Leergids**.
+Klik bij het gesprek op **Gesprek instellen** en kies **Leergids**.
 </Tool>
 <Tool naam="copilot">
-Je nieuwe chat start waarschijnlijk al in **Studeren en leren**. Zo niet, kies
-die agent in de linkerkolom. Laad je cursus daar op met **+**.
+Hier start je toch een **nieuwe chat**: kies **Studeren en leren** in de
+linkerkolom en laad je cursus opnieuw op met **+**. Zet vóór de prompt:
+`Ik zit in het [jaar en richting]. In de bijlage zit mijn cursus [vak] over [onderwerp].`
 </Tool>
 </Stap>
 
@@ -346,29 +345,29 @@ Vergelijk met je score bij de start.
 
 {/* Branch: mondeling examen of spreekopdracht. */}
 
-<Stap titel="Start je sessiechat" tak="mondeling">
-Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je
-leerstof op, en de vragenlijst als je leerkracht die gaf. Begin zo:
+<Stap titel="Werk verder in chat 3" tak="mondeling">
+Vanaf nu werk je in **chat 3**, tot het einde van de module. Daar zit je
+leerstof al. Gaf je leerkracht een vragenlijst? Laad die nu op. Begin zo:
 
 <Prompt>
-Ik zit in het [jaar en richting]. Op [datum] heb ik een mondeling examen [vak] over [onderwerp]. Het duurt [duur] en verloopt zo: [hoe]. In de bijlage zit mijn leerstof. Stel me vragen zoals op het examen, één per keer, en wacht telkens op mijn antwoord.
+Op [datum] heb ik een mondeling examen over [onderwerp]. Het duurt [duur] en verloopt zo: [hoe]. Stel me vragen zoals op het examen, één per keer, en wacht telkens op mijn antwoord.
 </Prompt>
 
 <Tool naam="chatgpt">
-Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
-**+** → **Foto's & bestanden toevoegen**.
+Een vragenlijst laad je op met **+** → **Foto's & bestanden toevoegen**.
 </Tool>
 <Tool naam="gemini">
-Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
-**+**.
+Je zette **Activiteit** uit: deze chat vind je later niet meer terug. Houd het
+tabblad open tot het einde van de module.
 </Tool>
 <Tool naam="notebook">
-Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
-gesprek.
+Een vragenlijst voeg je toe als extra **bron** in je notebook.
 </Tool>
 <Tool naam="copilot">
-Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
-anders heten). Laad je bestanden op met **+**.
+Hier start je toch een **nieuwe chat**. Start die in **Studeren en leren**?
+Kies dan de gewone chat (kan bij jou anders heten). Laad je leerstof opnieuw
+op met **+**, en zet vóór de prompt:
+`Ik zit in het [jaar en richting]. In de bijlage zit mijn leerstof [vak].`
 </Tool>
 </Stap>
 
@@ -468,11 +467,11 @@ Ik zit in het [jaar en richting]. Op [datum] heb ik een [debat of presentatie] v
 </Prompt>
 
 <Tool naam="chatgpt">
-Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
+Werk in een **nieuwe chat**. Laad je bestanden op met
 **+** → **Foto's & bestanden toevoegen**.
 </Tool>
 <Tool naam="gemini">
-Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
+Werk in een **nieuwe chat**. Laad je bestanden op met
 **+**.
 </Tool>
 <Tool naam="notebook">
@@ -569,11 +568,11 @@ Ik zit in het [jaar en richting]. Mijn examens beginnen op [datum]; het rooster 
 </Prompt>
 
 <Tool naam="chatgpt">
-Werk in een **nieuwe chat**, zonder leermodus. Laad je bestanden op met
+Werk in een **nieuwe chat**. Laad je bestanden op met
 **+** → **Foto's & bestanden toevoegen**.
 </Tool>
 <Tool naam="gemini">
-Werk in een **nieuwe chat**, zonder Begeleid leren. Laad je bestanden op met
+Werk in een **nieuwe chat**. Laad je bestanden op met
 **+**.
 </Tool>
 <Tool naam="notebook">
