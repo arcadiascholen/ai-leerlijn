@@ -269,9 +269,9 @@ hieronder).
 
 **Opladen.** De modules laten leerlingen zoveel mogelijk context geven: de
 cursus van hun leerkracht, hun eigen notities, een foto of screenshot van de
-oefening. Voor ze iets opladen, zetten ze het delen van gegevens voor training
-uit; hoe dat per tool gaat, staat in de rij *Training* van de tabel. Ze laden
-geen persoonsgegevens van anderen op.
+oefening. Voor ze iets opladen, zorgen ze dat het niet voor training gebruikt
+wordt (zie de rij *Training* van de tabel), en ze klikken geen duim omhoog of
+omlaag. Ze laden geen persoonsgegevens van anderen op.
 
 ### Stand van de tools (oktober 2026)
 
@@ -281,19 +281,21 @@ datum waarop de bronnen geraadpleegd zijn.
 
 | | ChatGPT (gratis) | Gemini (gratis) | Gemini Notebook | Copilot (schoolaccount) |
 |---|---|---|---|---|
-| Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer], [leeftijdsgroep][copilot-faq]) |
+| Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account dat je zelf beheert, dus wellicht niet met Family Link; `notebook.google.com` ([bron][notebook-toegang]) | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer], [leeftijdsgroep][copilot-faq]) |
 | Cursus opladen | 3 uploads per dag; leest maar een deel van een lange cursus (± 12 pagina's, geen officiële bron) ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
-| Leermodus | Leermodus (`@study`), niet in Projecten ([bron][chatgpt-leermodus]) | Begeleid leren ([bron][gemini-leren]) | flashcards en quizzen ([bron][notebook-leren]) | agent *Studeren en leren*, met de cursus ([bron][copilot-leren]) |
-| Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts in november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's ([bron][copilot-agent]), geen bestanden zonder licentie ([bron][copilot-vereisten]) |
-| Denken | knop *Nadenken*, per chat | sinds 9 oktober 2026 *Auto*, inspanning instelbaar ([bron][gemini-denken]) | — | *Think deeper*, per chat opnieuw kiezen; vast in een agent |
+| Leermodus | Leermodus (`@study`), niet in Projecten ([bron][chatgpt-leermodus]) | Begeleid leren ([bron][gemini-leren]) | chatstijl *Leergids*; flashcards en toetsen ([bron][notebook-leren], [chat][notebook-chat]) | agent *Studeren en leren*, met de cursus; in het secundair standaard voorgeselecteerd ([bron][copilot-leren], [gebruik][copilot-leren-gebruik]) |
+| Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts in november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's ([bron][copilot-agent]), geen bestanden zonder licentie ([bron][copilot-vereisten]); voor leerlingenaccounts niet bevestigd |
+| Denken | *Nadenken*; het label kan verschillen, en gratis op het web wordt het nog uitgerold ([bron][chatgpt-gratis]) | sinds 9 oktober 2026 *Auto*; of je gratis zelf een denkniveau kiest, is niet zeker ([bron][gemini-denken], [modellen][gemini-modellen]) | — | *Think deeper*; op een schoolaccount per chat opnieuw te kiezen (eigen waarneming); vast in een agent ([bron][copilot-overzicht]) |
 | Spraak | beperkt, in de browser ([bron][chatgpt-spraak]) | Gemini Live alleen in de app op gsm of tablet ([bron][gemini-live]) | — | alleen dicteren en voorlezen ([bron][copilot-faq]) |
-| Chat delen | publieke link, kan opgeladen bestanden tonen ([bron][chatgpt-delen]) | link werkt zolang de chat in de activiteit staat ([bron][gemini-delen]) | alleen met Google-account te openen | link alleen binnen de eigen organisatie |
-| Training | standaard aan; uit via *Gegevensbeheer*; een duim stuurt het gesprek toch door ([bron][chatgpt-training]) | met *Activiteit bewaren* aan ([bron][gemini-training]) | bronnen niet ([bron][notebook-training]) | nee ([bron][copilot-training]) |
+| Chat delen | publieke link, kan opgeladen bestanden tonen ([bron][chatgpt-delen]) | link werkt zolang de chat in de activiteit staat ([bron][gemini-delen]) | deelt het hele notitieboek met de bronnen, nooit het gesprek ([bron][notebook-delen]) | link alleen binnen de eigen organisatie |
+| Training | standaard aan; uit via *Gegevensbeheer*; een duim stuurt het gesprek toch door ([bron][chatgpt-training]) | met *Activiteit bewaren* aan, de enige schakelaar ([bron][gemini-training], [activiteit][gemini-activiteit]) | niet rechtstreeks; een duim stuurt ook je bronnen door ([bron][notebook-training], [privacy][notebook-privacy]) | nee ([bron][copilot-training]) |
 
-Bij Gemini betekent training uit: *Activiteit bewaren* uit. Een gesprek staat
-dan niet in de activiteit, dus een deellink werkt niet. Het bewijsstuk is dan
-gekopieerde tekst, en de leerling houdt het tabblad open tot het einde van de
-module.
+Alleen ChatGPT heeft een aparte schakelaar voor training. Bij Gemini betekent
+training uit: *Activiteit bewaren* uit. Dan is er geen geschiedenis en werkt
+een deellink niet; het bewijsstuk is dan gekopieerde tekst, en de leerling
+houdt het tabblad open tot het einde van de module. Gemini Notebook en Copilot
+trainen standaard niet: daar valt niets uit te zetten. In ChatGPT, Gemini en
+Gemini Notebook stuurt een duim omhoog of omlaag het gesprek toch door.
 
 [digisprong]: https://www.vlaanderen.be/kenniscentrum-digisprong/themas/innovatie/artificiele-intelligentie/vanaf-welke-leeftijd-kunnen-of-mogen-je-leerlingen-generatieve-ai-gebruiken
 [chatgpt-voorwaarden]: https://openai.com/nl-NL/policies/eu-terms-of-use/
@@ -304,6 +306,7 @@ module.
 [chatgpt-spraak]: https://help.openai.com/en/articles/20001274-chatgpt-voice
 [chatgpt-delen]: https://help.openai.com/en/articles/7925741-sharing-conversations-and-scheduled-tasks-in-chatgpt
 [chatgpt-training]: https://help.openai.com/nl-nl/articles/7730893-data-controls-in-chatgpt
+[chatgpt-gratis]: https://help.openai.com/nl-nl/articles/9275245-chatgpt-free-tier-faq
 [gemini-toezicht]: https://support.google.com/gemini/answer/16109150?hl=en
 [gemini-context]: https://support.google.com/gemini/answer/16275805?hl=en
 [gemini-leren]: https://support.google.com/gemini/answer/16448384?hl=en
@@ -312,12 +315,20 @@ module.
 [gemini-live]: https://support.google.com/gemini/answer/15274899?hl=en
 [gemini-delen]: https://support.google.com/gemini/answer/13743730?hl=en
 [gemini-training]: https://support.google.com/gemini/answer/13594961?hl=en
+[gemini-activiteit]: https://support.google.com/gemini/answer/13278892?hl=nl
+[gemini-modellen]: https://support.google.com/gemini/answer/18648722?hl=nl
 [notebook-bronnen]: https://support.google.com/gemininotebook/answer/16215270?hl=en
 [notebook-leren]: https://support.google.com/gemininotebook/answer/16958963?hl=en
 [notebook-training]: https://support.google.com/notebooklm/answer/16164461?hl=en
+[notebook-toegang]: https://support.google.com/gemininotebook/answer/16164461?hl=en
+[notebook-privacy]: https://support.google.com/gemininotebook/answer/17004255?hl=nl
+[notebook-chat]: https://support.google.com/gemininotebook/answer/16179559?hl=nl
+[notebook-delen]: https://support.google.com/gemininotebook/answer/16206563?hl=nl
 [copilot-beheer]: https://learn.microsoft.com/en-us/copilot/manage
 [copilot-opladen]: https://support.microsoft.com/en-us/microsoft-365-copilot/file-upload-in-microsoft-copilot
 [copilot-leren]: https://support.microsoft.com/en-us/education/copilot/study-learn-agent
+[copilot-leren-gebruik]: https://support.microsoft.com/nl-nl/education/copilot/using-study-learn-agent
+[copilot-overzicht]: https://learn.microsoft.com/en-us/copilot/overview
 [copilot-agent]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-knowledge
 [copilot-vereisten]: https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/prerequisites
 [copilot-faq]: https://learn.microsoft.com/en-us/copilot/faq
