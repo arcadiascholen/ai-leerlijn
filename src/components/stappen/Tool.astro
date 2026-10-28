@@ -1,0 +1,108 @@
+---
+// Instructions for one AI tool inside a step (docs/BRIEFING.md § 12,
+// "Instructies per tool"):
+//
+//   <Tool naam="chatgpt">Zet de **Leermodus** aan …</Tool>
+//
+// `naam` is an option of the module's <Keuze naam="tool">; between the tags
+// goes ordinary Markdown. With a tool chosen, only the blocks of that tool
+// show, without their label. Without a choice, or without JavaScript, every
+// block shows, each with "In <tool>" above it. Which blocks show is CSS keyed
+// on an attribute on <html> (tools.ts, ChosenTool.astro), so this component
+// has no script. The module route checks the order and the names when it
+// builds. Authors write no import.
+import { ID_PATTERN } from '../vragen/authoring';
+import type { SourceChoice } from './checks';
+
+interface Props {
+  naam: string;
+}
+
+const { naam } = Astro.props;
+if (typeof naam !== 'string' || !ID_PATTERN.test(naam)) {
+  throw new Error(
+    '<Tool> needs a `naam` of lowercase letters, digits and hyphens: an option of <Keuze naam="tool">, ' +
+      `such as naam="chatgpt". Got ${JSON.stringify(naam)}.`,
+  );
+}
+
+// The label comes from the tool choice as the module route read it from the
+// source: the <Keuze> renders in an earlier step. The route's checks already
+// guarantee that `naam` is one of its options; this is the fallback for a
+// <Tool> used anywhere else.
+const tool = (Astro.locals as { tool?: SourceChoice | null }).tool;
+if (tool === undefined) {
+  throw new Error(`<Tool naam="${naam}"> only works inside a module (src/content/modules/).`);
+}
+const label = tool !== null && Object.hasOwn(tool.options, naam) ? tool.options[naam] : undefined;
+if (label === undefined) {
+  throw new Error(`<Tool naam="${naam}"> is not an option of a <Keuze naam="tool">.`);
+}
+
+// An empty block would show only its label, or nothing at all.
+const content = Astro.slots.has('default') ? (await Astro.slots.render('default')).trim() : '';
+if (content === '') {
+  throw new Error(`<Tool naam="${naam}"> needs the instructions for ${label} between its tags.`);
+}
+---
+
+<div class="tool" data-tool={naam}>
+  <p class="tool-label">In {label}</p>
+  <div class="tool-body"><Fragment set:html={content} /></div>
+</div>
+
+<style>
+  /* Instructions for the student's AI tool: a rule in the AI colour at the
+     left, no background, so that one block reads as part of the step and not
+     as a warning box. Only design-system tokens (docs/DESIGN.md). Height
+     budget: intro text, a prompt and one block fit in a step on 1366 × 640;
+     without a choice, four short blocks still do. */
+  .tool {
+    margin: 0 0 var(--space-4);
+    padding-left: var(--space-4);
+    border-left: 3px solid var(--ai);
+  }
+
+  /* Without a choice the blocks follow one another: closer together, so they
+     read as one list of alternatives. CHOSEN_TOOL_ATTRIBUTE in tools.ts. */
+  :global(:root:not([data-chosen-tool])) .tool:has(+ .tool) {
+    margin-bottom: var(--space-3);
+  }
+
+  /* Running text, also when the instructions are a single line without a
+     paragraph around them. */
+  .tool-body {
+    max-width: 65ch;
+  }
+
+  .tool-body > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .tool-label {
+    margin: 0 0 var(--space-1);
+    color: var(--ai-text);
+    font-size: var(--text-label-size);
+    line-height: var(--text-label-line);
+    font-weight: var(--text-label-weight);
+    letter-spacing: var(--text-label-tracking);
+    text-transform: uppercase;
+  }
+
+  /* With a tool chosen, only its blocks show (the rules in tools.ts), and
+     the label would only repeat the choice. */
+  :global(:root[data-chosen-tool]) .tool-label {
+    display: none;
+  }
+
+  /* Something to type in the tool: the prompt style (docs/DESIGN.md). */
+  .tool :global(code) {
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-sm);
+    background: var(--ai-soft);
+    color: var(--ai-text);
+    font-family: var(--font-mono);
+    font-size: var(--text-prompt-size);
+    letter-spacing: var(--text-prompt-tracking);
+  }
+</style>

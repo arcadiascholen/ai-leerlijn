@@ -17,6 +17,11 @@ interface Props {
   compact?: boolean;
 }
 
+// The named slot `head` goes at the end of <head>, before anything in
+// <body> is parsed: for state that has to apply before the first paint,
+// such as the chosen tool on a module page
+// (src/components/stappen/ChosenTool.astro).
+
 const siteName = 'AI-leerpad · Arcadia Scholen';
 const {
   title,
@@ -41,6 +46,7 @@ const logoWidth = Math.round((logo.width * logoHeight) / logo.height);
     {/* Marks that JavaScript runs, before the first paint, so styles for the
         scripted state apply at once instead of after a flash. */}
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <slot name="head" />
   </head>
   <body class:list={[{ fill }]}>
     <header class="site-header">
