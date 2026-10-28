@@ -75,6 +75,8 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    startpagina (`/ai-leerlijn/`) toont een korte welkomsttekst en de weg in
    drie genummerde stappen: *1. Nulmeting invullen*, *2. Kies je module*,
    *3. Eindformulier invullen*. Ze past op 1366 × 640 zonder te scrollen.
+   Naast *Zo ga je te werk* staat een link naar de pagina over de
+   toegelaten tools (§ 7).
 2. **Nulmeting.** Een korte Smartschool-bevraging (± 10 minuten, maximaal 15
    vragen, vertakt per graad). Die vult de leerling in vóór de module, zodat de
    beginsituatie zuiver gemeten wordt. De nulmeting wordt **niet** aan het LVS
@@ -288,7 +290,10 @@ barometericoon bij hoort, beslist het team later.
 
 De zin staat op de kaart in het overzicht en op de modulepagina naast de
 titel, boven de stappen, op elke stap. Hij kost de stap geen hoogte. De
-zinnen staan op één plek, in `src/components/modules/labels.ts`.
+zinnen staan op één plek, in `src/components/modules/labels.ts`. Bij `zelf`
+volgt op de modulepagina een link *Welke tool?* naar de pagina over de
+toegelaten tools (zie *Toepassingen*), in een nieuw tabblad, zodat de module
+open blijft. Op de kaart niet: daar is de hele kaart al een link.
 
 De barometer zelf is **leerinhoud**: in de module over verantwoord gebruik, en
 als aanknopingspunt in *AI als coach* (AI als coach past bij niveau 1 en 2).
@@ -315,6 +320,13 @@ cursus van hun leerkracht, hun eigen notities, een foto of screenshot van de
 oefening. Voor ze iets opladen, zorgen ze dat het niet voor training gebruikt
 wordt (zie de rij *Training* van de tabel), en ze klikken geen duim omhoog of
 omlaag. Ze laden geen persoonsgegevens van anderen op.
+
+**Voor de leerling.** De pagina *Welke AI-tool mag ik gebruiken?*
+(`/ai-leerlijn/tools/`, `src/pages/tools.astro`) zegt het voor leerlingen: per
+tool welk account, waarvoor ze goed is en wat je voor je privacy doet; wat je
+nooit in een chat zet; en wat je doet zonder account. De startpagina en elke
+module met `aiGebruik: zelf` linken ernaar. De tabel hieronder blijft de bron:
+wie ze aanpast, past ook die pagina aan.
 
 ### Stand van de tools (oktober 2026)
 
