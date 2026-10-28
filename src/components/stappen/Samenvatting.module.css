@@ -3,9 +3,9 @@
    Stap.astro.
 
    Height budget on 1366 × 640 (docs/BRIEFING.md § 12): the step has 390px,
-   the step title takes 50px of it. The list of answers scrolls inside its
-   own box, so that the buttons below it always stay in view, also with many
-   or long answers. */
+   the step title takes 50px of it. The list of what is still empty scrolls
+   inside its own box, so that the buttons below it always stay in view, also
+   with many or long questions. */
 
 .intro {
   max-width: none;
@@ -16,15 +16,13 @@
   font-weight: var(--text-label-weight);
 }
 
-/* The answers, as the student will copy them. 13.5rem is what is left of
-   the step's 390px under the title, the intro and the buttons, with room
-   for the intro to wrap to a second line. */
-.box,
-.fallback {
+/* What is still empty. 13.5rem is what is left of the step's 390px under
+   the title, the intro and the buttons, with room for the intro to wrap to
+   a second line. */
+.box {
   display: block;
   width: 100%;
   max-width: none;
-  height: auto;
   max-height: 13.5rem;
   margin: 0;
   padding: var(--space-3) var(--space-4);
@@ -35,54 +33,9 @@
   color: var(--ink);
 }
 
-.fallback {
-  height: 13.5rem;
-  border-color: var(--line-strong);
-  font-family: var(--font-sans);
-  font-size: var(--text-small-size);
-  line-height: var(--text-small-line);
-  font-weight: var(--text-small-weight);
-  letter-spacing: var(--text-small-tracking);
-  resize: none;
-}
-
-/* The choices, one per line, above the answers and apart from them. */
-.choices {
+.boxTitle {
   max-width: none;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.choices:not(:last-child) {
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--line);
-}
-
-.choice {
-  margin: 0;
-}
-
-.choice + .choice {
-  margin-top: var(--space-1);
-}
-
-.chosen {
-  overflow-wrap: anywhere;
-}
-
-.list {
-  margin: 0;
-}
-
-.item + .item {
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
-}
-
-.question {
+  margin: 0 0 var(--space-1);
   color: var(--forest);
   font-size: var(--text-small-size);
   line-height: var(--text-small-line);
@@ -90,24 +43,24 @@
   letter-spacing: var(--text-small-tracking);
 }
 
-.answer {
-  margin: var(--space-1) 0 0;
-  white-space: pre-line;
-  overflow-wrap: anywhere;
+.list {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.empty {
-  max-width: none;
-  margin: var(--space-1) 0 0;
-  color: var(--ink-muted);
+.item {
+  margin: 0;
   font-size: var(--text-small-size);
   line-height: var(--text-small-line);
   font-weight: var(--text-small-weight);
   letter-spacing: var(--text-small-tracking);
+  overflow-wrap: anywhere;
 }
 
-p.empty {
-  margin: 0;
+.item + .item {
+  margin-top: var(--space-2);
 }
 
 /* Without JavaScript nothing is stored, so there is nothing to show. */
@@ -148,6 +101,12 @@ p.empty {
   line-height: var(--text-body-line);
   text-decoration: none;
   cursor: pointer;
+}
+
+/* While jsPDF loads and the PDF is made. */
+.primary[aria-busy='true'],
+.secondary[aria-busy='true'] {
+  cursor: progress;
 }
 
 .primary {
@@ -199,8 +158,8 @@ p.empty {
   letter-spacing: var(--text-small-tracking);
 }
 
-/* Empty until the student copies. It stays in the accessibility tree, so
-   that a screen reader reads the confirmation when it appears; it only
+/* Empty until the student downloads. It stays in the accessibility tree,
+   so that a screen reader reads the confirmation when it appears; it only
    takes no room. */
 .status:empty {
   flex-basis: 0;
@@ -252,4 +211,109 @@ p.empty {
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* The summary on paper, for printing to PDF when the PDF itself fails: the
+   same content as the PDF (pdf.ts). Never on screen. */
+.paper {
+  display: none;
+}
+
+.paperSite {
+  max-width: none;
+  margin: 0;
+  color: var(--forest);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.paperTitle {
+  max-width: none;
+  margin: var(--space-1) 0;
+  color: var(--forest);
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  font-weight: var(--text-h2-weight);
+  letter-spacing: var(--text-h2-tracking);
+}
+
+.paperMeta {
+  max-width: none;
+  margin: 0;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.paperChoices {
+  max-width: none;
+  margin: 0;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.paperList {
+  margin: 0;
+  padding-top: var(--space-3);
+}
+
+.paperItem + .paperItem {
+  margin-top: var(--space-4);
+}
+
+.paperQuestion {
+  color: var(--forest);
+  font-weight: var(--text-label-weight);
+  break-after: avoid;
+}
+
+.paperAnswer,
+.paperEmpty {
+  margin: var(--space-1) 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.paperEmpty {
+  color: var(--ink-muted);
+}
+
+/* Printing. Only while the step with the summary is the one shown (the
+   player hides every other step), so that printing another step stays as it
+   was. Then the page shows nothing but the summary on paper: every ancestor
+   of it loses the one-screen layout of the player (fixed heights, scrolling
+   boxes, the card), and everything beside that line of ancestors (header,
+   progress, navigation, other steps, the step title, the buttons) is
+   hidden. Generic on purpose: it does not depend on the classes of the
+   layout or the player. */
+@media print {
+  :global(html:has([data-step]:not([hidden]) [data-summary-print])) :global(:has([data-summary-print])) {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: none !important;
+  }
+
+  :global(html:has([data-step]:not([hidden]) [data-summary-print]))
+    :global(:has([data-summary-print]) > :not(:has([data-summary-print])):not([data-summary-print])) {
+    display: none !important;
+  }
+
+  :global(html:has([data-step]:not([hidden]) [data-summary-print])) .paper {
+    display: block;
+  }
 }
