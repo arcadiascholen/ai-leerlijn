@@ -1,14 +1,476 @@
 ---
-title: AI als coach bij het leren
-kort: Je gebruikt AI als coach bij een moeilijke studietaak.
+title: AI als leercoach
+kort: Je bereidt een echte toets of opdracht voor, met AI als coach.
 graden: [3]
 niveau: 3
+duur: 70
 aiGebruik: zelf
 doelen: [2, 3, 4]
-status: binnenkort
+status: beschikbaar
 volgorde: 30
 ---
 
-{/* Placeholder: listed in the overview, without a page. The steps follow
-    when the content arrives; then set status to beschikbaar. Title, niveau,
-    aiGebruik and doelen are provisional. */}
+{/* Shared start: every student, whatever the goal. */}
+
+<Stap titel="Maakt AI je beter of slechter?">
+<DenkEerst id="voorspelling" vraag="Leerlingen oefenden wiskunde: een groep met gewone ChatGPT, een andere zonder AI. Daarna maakten ze allemaal een toets zonder AI. Welke groep deed het beter op die toets, denk je?">
+Bij het **oefenen** deed de groep met ChatGPT het 48 % beter. Maar op de
+**toets** zonder AI scoorde die groep **17 % slechter** dan de groep zonder AI.
+
+Een derde groep kreeg een AI die alleen hints gaf, nooit de oplossing. Die
+groep had op de toets geen nadeel.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Eerst jij, dan AI">
+Met AI krijg je vlot het juiste antwoord. Maar dan deed de AI het denkwerk,
+en net dat denkwerk is leren. Op de toets moet je het zelf kunnen.
+
+Daarom geldt in deze module één regel: **eerst jij, dan AI.** Je probeert
+eerst zelf. Daarna helpt de AI je verder, met een vraag, een hint of feedback.
+Niet met het antwoord.
+
+Een coach gebruik je om je **voor te bereiden**: op de AI-barometer is dat
+niveau 1 of 2. Tijdens de toets zelf gebruik je geen AI, tenzij je leerkracht
+er een niveau bij vermeldt.
+
+De studie: Bastani e.a., *PNAS*, 2025, met bijna 1000 leerlingen
+([samenvatting](https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education)).
+</Stap>
+
+<Stap titel="Waaraan werk je vandaag?">
+Je werkt vandaag aan iets echts: een toets of opdracht die je nog moet
+voorbereiden.
+
+Leg klaar wat je erover hebt:
+
+- je cursus of je notities, als Word, pdf of PowerPoint;
+- foto's of screenshots van oefeningen, van het bord of van je handboek.
+
+Heb je niets concreets? Kies dan een vak dat je moeilijk vindt, zoals
+wiskunde, en werk met je handboek of je cursus van dit jaar.
+</Stap>
+
+<Stap titel="Noteer je taak">
+Schrijf op waaraan je werkt. Je leerkracht ziet dit straks in je
+eindformulier.
+
+<Reflectie id="taak" vraag="Voor welke toets of opdracht werk je vandaag, en wanneer is die?" />
+</Stap>
+
+<Stap titel="Kies je doel">
+Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
+doel.
+
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets' }} />
+</Stap>
+
+<Stap titel="Vier tools">
+Je kunt vandaag met een van deze vier tools werken.
+
+- **ChatGPT** is sterk in uitleg en in een gesprek, en heeft een
+  **Leermodus**. Gratis kun je maar 3 bestanden per dag opladen, en een lange
+  cursus leest hij maar voor een deel.
+- **Gemini** is sterk in uitleg en heeft **Begeleid leren**. Hij werkt niet
+  met een account waarop je ouders toezicht houden met Family Link.
+- **Gemini Notebook** werkt met je **hele cursus** en toont bij elk antwoord
+  waar het in je cursus staat. Je maakt er ook flashcards en quizzen mee.
+- **Copilot** werkt met je **schoolaccount**: je hebt geen eigen account
+  nodig, en je gesprek wordt niet gebruikt om de AI te trainen. Kies er wel
+  altijd **Think deeper**, anders blijft het antwoord vaak algemeen.
+</Stap>
+
+<Stap titel="Kies je tool">
+Twijfel je? Een hele cursus: **Gemini Notebook**. Geen toestemming of geen
+eigen account: **Copilot** met je schoolaccount. Anders: **ChatGPT** of
+**Gemini**, wat je al gewoon bent.
+
+<Keuze naam="tool" vraag="Met welke tool werk je vandaag?" opties={{ chatgpt: 'ChatGPT', gemini: 'Gemini', notebook: 'Gemini Notebook', copilot: 'Copilot (schoolaccount)' }} />
+</Stap>
+
+<Stap titel="Voor je begint: training uit">
+Wat je in een chat typt of oplaadt, kan de maker soms gebruiken om de AI
+verder te trainen. Zorg dat dat niet gebeurt voor je iets oplaadt. Klik ook
+nooit een duim omhoog of omlaag: dan gaat je gesprek toch naar de maker. En
+laad niets op met namen of gegevens van anderen.
+
+Open je tool in een **nieuw tabblad**, zodat deze module open blijft.
+
+<Tool naam="chatgpt">
+Open [chatgpt.com](https://chatgpt.com) en meld je aan. Klik op je account →
+**Instellingen** → **Gegevensbeheer** en zet **Het model voor iedereen
+verbeteren** uit.
+</Tool>
+<Tool naam="gemini">
+Open [gemini.google.com](https://gemini.google.com) en meld je aan. Klik op
+**Activiteit**, dan op **Aan** → **Uitzetten**. Je gesprek komt dan niet in je
+geschiedenis: houd dit tabblad open tot het einde van de module.
+</Tool>
+<Tool naam="notebook">
+Open [notebook.google.com](https://notebook.google.com) en meld je aan.
+Gemini Notebook gebruikt je bronnen niet om te trainen: je hoeft niets uit te
+zetten.
+</Tool>
+<Tool naam="copilot">
+Open [Copilot](https://copilot.cloud.microsoft) en meld je aan met je
+**schoolaccount**. Zie je bovenaan een **groen schild**, en onder je naam het
+label **Werk**? Dan wordt je gesprek niet gebruikt voor training. Zie je ze
+niet, dan ben je met een ander account aangemeld.
+</Tool>
+</Stap>
+
+<Stap titel="Voor je begint: de juiste stand">
+Kies in **elke nieuwe chat** de stand waarin de AI eerst nadenkt. Het duurt
+wat langer, maar de antwoorden zijn veel beter.
+
+<Tool naam="chatgpt">
+Kies **Nadenken** bij **+** (kan bij jou anders heten, of nog ontbreken).
+Je laadt je cursus vandaag twee keer op, met **+** → **Foto's & bestanden
+toevoegen**; gratis mag dat drie keer per dag. Laad alleen het **hoofdstuk**
+voor je toets op: een hele cursus leest ChatGPT maar voor een deel.
+</Tool>
+<Tool naam="gemini">
+Gemini kiest zelf hoe lang hij nadenkt (**Auto**). Zegt Gemini dat hij niet
+beschikbaar is voor je account? Dan houden je ouders toezicht met Family Link:
+ga terug en kies een andere tool.
+</Tool>
+<Tool naam="notebook">
+Gemini Notebook werkt met **bronnen**: straks voeg je je cursus toe als bron.
+Dat mag de hele cursus zijn. Het experiment hierna begint zonder bron: doe chat
+1 en 2 daarom in [Gemini](https://gemini.google.com), met hetzelfde account.
+</Tool>
+<Tool naam="copilot">
+Kies rechtsboven **Think deeper**, bij elke nieuwe chat opnieuw (kan bij jou
+anders heten). Zonder die stand krijg je snel antwoord, maar vaak een
+algemeen.
+</Tool>
+</Stap>
+
+<Stap titel="Het contextexperiment (1)">
+Stel drie keer dezelfde vraag over een moeilijk **begrip**, telkens in een **nieuwe chat**.
+
+**Chat 1**, zonder context:
+
+<Prompt>
+Leg [begrip] uit.
+</Prompt>
+
+**Chat 2**, met jezelf en je toets erbij:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp]. Leg [begrip] uit.
+</Prompt>
+</Stap>
+
+<Stap titel="Het contextexperiment (2)">
+**Chat 3**, met je cursus erbij. Laad je cursus of een screenshot van de
+leerstof op, en vraag:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp]. In de bijlage zit mijn cursus. Leg [begrip] uit zoals het in mijn cursus staat, en zeg waar het staat.
+</Prompt>
+
+<Tool naam="notebook">
+Klik op **Nieuwe notebook maken** en upload je cursus als bron. Stel de vraag
+daar.
+</Tool>
+
+Lees de drie antwoorden naast elkaar.
+</Stap>
+
+<Stap titel="Wat maakte het verschil?">
+Een antwoord dat voor elke leerling klopt, is niet op jou afgestemd.
+
+<Reflectie id="contextexperiment" vraag="Welk van je drie antwoorden zou voor elke leerling kloppen, en welk alleen voor jou? Waaraan zie je dat?" />
+</Stap>
+
+<Stap titel="Context, geen trucjes">
+Je leest vaak dat je AI moet "leren prompten", met trucjes zoals *„Gedraag je
+als een strenge leraar"*. Dat helpt weinig. Wat wél helpt, zag je net: de AI
+moet weten **met wie** hij praat en **waarover**.
+
+Geef de AI daarom altijd drie dingen:
+
+1. **Wie je bent**: je jaar, je richting, wat je al kunt.
+2. **Wat je bron is**: je cursus, je notities, de oefening.
+3. **Wat je wil**: je toets voorbereiden, met vragen en hints, niet met
+   kant-en-klare antwoorden.
+
+Dat doe je vanaf nu bij elke werkvorm.
+</Stap>
+
+{/* Branch: schriftelijke toets. */}
+
+<Stap titel="Start je sessiechat" tak="toets">
+Vanaf nu werk je in **één chat**, tot het einde van de module. Zo onthoudt de
+AI wat je al zei. Open een nieuwe chat in de leerstand, laad je cursus op, en
+begin zo:
+
+<Prompt>
+Ik zit in het [jaar en richting]. Op [datum] heb ik een schriftelijke toets [vak] over [onderwerp], met [soort vragen]. In de bijlage zit mijn cursus. Ik wil die toets zelf leren maken: help me met vragen en hints, en geef me niet meteen de antwoorden.
+</Prompt>
+
+<Tool naam="chatgpt">
+Zet de **leermodus** aan: typ `@study` en kies **Studeren**. Die werkt niet in
+een tijdelijke chat of in een project.
+</Tool>
+<Tool naam="gemini">
+Zet **Begeleid leren** aan: klik op **+** → **Meer tools** → **Begeleid
+leren** (kan bij jou anders heten).
+</Tool>
+<Tool naam="notebook">
+Werk verder in je notebook met je cursus. Klik bij het gesprek op **Gesprek
+instellen** en kies **Leergids**.
+</Tool>
+<Tool naam="copilot">
+Je nieuwe chat start waarschijnlijk al in **Studeren en leren**. Zo niet, kies
+die agent in de linkerkolom. Laad je cursus daar op met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="Startquiz" tak="toets">
+Hoeveel ken je nu al? Laat je coach je testen voor je begint.
+
+<Prompt>
+Stel me vijf korte vragen over [onderwerp], één per keer. Wacht telkens op mijn antwoord en zeg dan of het juist was. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+Beantwoord de vragen in de chat, zonder in je cursus te kijken.
+</Stap>
+
+<Stap titel="Hoe ging de startquiz?" tak="toets">
+Noteer je score. Op het einde doe je dezelfde test opnieuw.
+
+<Reflectie id="quiz-start" vraag="Hoeveel van de vijf had je juist? Wat wist je nog niet?" />
+</Stap>
+
+<Stap titel="Ronde 1 · Uitleg op twee niveaus" tak="toets">
+In ronde 1 zorg je dat je de leerstof **begrijpt**. Begrijp je alles al?
+Klik dan door naar ronde 2.
+
+Kies het moeilijkste begrip. Leg het eerst **zelf** uit in één zin in de chat,
+en vraag dan:
+
+<Prompt>
+Klopt mijn uitleg? Leg [begrip] daarna uit op twee niveaus: eerst heel eenvoudig, met een voorbeeld uit het dagelijks leven, en dan zoals het op mijn toets moet. Gebruik mijn cursus.
+</Prompt>
+</Stap>
+
+<Stap titel="Ronde 1 · Schrijf op wat je weet" tak="toets">
+Kies één deel van de leerstof. Schrijf **zonder in je cursus te kijken** alles
+op wat je erover weet. Plak het in de chat en vraag:
+
+<Prompt>
+Vergelijk mijn tekst met mijn cursus. Wat ontbreekt er, en wat klopt niet? Geef me geen verbeterde versie: zeg alleen waar ik nog eens moet kijken.
+</Prompt>
+
+Zoek het daarna op in je cursus, en vul je tekst zelf aan.
+</Stap>
+
+<Stap titel="Ronde 2 · De quizmaster" tak="toets">
+In ronde 2 zorg je dat je de leerstof **onthoudt**. Ken je alles al? Klik dan
+door naar ronde 3.
+
+<Prompt>
+Overhoor me over [onderwerp]. Stel één vraag per keer en wacht op mijn antwoord. Leg uit wat fout was. Gaat het goed, maak de vragen dan moeilijker.
+</Prompt>
+
+Ga door tot je tien vragen beantwoordde.
+
+<Tool naam="notebook">
+In Gemini Notebook kun je ook **Flashcards** of **Toetsen** maken, rechts bij
+**Studio**.
+</Tool>
+</Stap>
+
+<Stap titel="Ronde 2 · De foutendetective" tak="toets">
+<Prompt>
+Schrijf een korte tekst over [onderwerp] met drie fouten die moeilijk te zien zijn. Zeg niet waar ze staan.
+</Prompt>
+
+Zoek de fouten zelf, en kijk ze na **in je cursus**. Zeg daarna in de chat
+welke fouten je vond.
+
+Let op: soms maakt de AI ongewild nog een fout. Daarom kijk je na in je
+cursus, en niet bij de AI.
+</Stap>
+
+<Stap titel="Ronde 3 · Voorspel je toets" tak="toets">
+In ronde 3 ga je de leerstof **toepassen**, zoals op de toets. Eerst jij:
+
+<Reflectie id="toetsvragen" vraag="Welke drie vragen verwacht jij op je toets?" />
+
+Plak ze in de chat: welke vragen verwacht de AI?
+</Stap>
+
+<Stap titel="Ronde 3 · Oefeningen bijmaken" tak="toets">
+Laad een screenshot op van een oefening uit je cursus, en vraag:
+
+<Prompt>
+Maak drie nieuwe oefeningen zoals deze, van makkelijk naar moeilijk. Geef de oplossingen pas als ik erom vraag.
+</Prompt>
+
+Los ze zelf op. **Bij wiskunde en andere rekenvakken:** reken de oplossingen
+van de AI na. Een AI rekent soms fout, ook als hij heel zeker klinkt.
+</Stap>
+
+<Stap titel="Ronde 3 · Feedback op je antwoord" tak="toets">
+Kies een vraag die op je toets kan komen. Schrijf je antwoord zoals op de
+toets, plak het in de chat en vraag:
+
+<Prompt>
+Geef feedback op mijn antwoord: wat is goed, wat ontbreekt, wat klopt niet? Gebruik mijn cursus. Schrijf geen verbeterde versie.
+</Prompt>
+
+Waarom geen verbeterde versie? Die lees je, je vindt hem goed, en je leerde
+niets. Verbeter je antwoord zelf.
+</Stap>
+
+<Stap titel="Eindquiz" tak="toets">
+Test jezelf opnieuw, zoals bij de start.
+
+<Prompt>
+Stel me opnieuw vijf korte vragen over [onderwerp], andere dan bij de start, één per keer. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+Beantwoord de vragen in de chat, zonder in je cursus te kijken.
+</Stap>
+
+<Stap titel="Hoe ging de eindquiz?" tak="toets">
+Vergelijk met je score bij de start.
+
+<Reflectie id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist? Wat ging beter dan bij de start?" />
+</Stap>
+
+{/* Shared end. */}
+
+<Stap titel="Je eigen coachprompt">
+<DenkEerst id="coachprompt" vraag="Schrijf een coachprompt die je volgende keer meteen kunt gebruiken: wie ben je, wat is je bron, en wat wil je ermee?">
+*„Ik zit in het zesde jaar [richting]. Ik bereid me voor op een toets
+[vak]; mijn cursus zit in de bijlage. Help me leren: stel me vragen, geef
+hints, wijs me op fouten. Geef me niet meteen het antwoord."*
+
+- **Wie je bent**, **je bron** en **wat je wil**.
+- Geen *„gedraag je als …"*: context doet het werk.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Bewaar je coachprompt">
+Bewaar je prompt, zodat je hem volgende keer niet opnieuw moet schrijven. Hij
+staat ook in je samenvatting op het einde.
+
+<Tool naam="chatgpt">
+Klik links op **Nieuw project**, dan op **•••** → **Projectinstellingen**, en
+plak je prompt bij de instructies. De leermodus werkt niet in een project:
+daarom vraagt je prompt zelf om vragen en hints.
+</Tool>
+<Tool naam="gemini">
+Bewaar je prompt als tekst, bijvoorbeeld in je notities, en plak hem bij het
+begin van een nieuwe chat. Gems, de eigen coaches van Gemini, verdwijnen in
+november.
+</Tool>
+<Tool naam="notebook">
+Klik bij het gesprek op **Gesprek instellen** → **Aangepast** en plak je prompt
+daar. Hij geldt dan voor dit notebook.
+</Tool>
+<Tool naam="copilot">
+Bewaar je prompt als tekst. Misschien kun je ook een eigen agent maken met het
+sjabloon **Leercoach**: plak je prompt bij de instructies en kies **Think
+deeper** als model. Dat lukt niet met elk schoolaccount.
+</Tool>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (1)">
+<Chat naast>
+<Jij>Maak een samenvatting van de Franse Revolutie voor mijn toets.</Jij>
+<AI>De Franse Revolutie (1789–1799) was een periode van grote politieke en maatschappelijke veranderingen in Frankrijk …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-1" vraag="Op de toets kwam iets anders. Wat ging mis?">
+  <Optie juist feedback="De AI weet niet wat in je cursus staat, of hoe je toets eruitziet.">Te weinig context</Optie>
+  <Optie feedback="Een andere stand helpt niet: de AI kent je cursus nog altijd niet.">De verkeerde instelling</Optie>
+  <Optie feedback="Een samenvatting vragen mag. Maar de AI weet niet wat jij moet kennen.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Nakijken helpt, maar de fout zit eerder: de AI kent je leerstof niet.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (2)">
+<Chat naast>
+<Jij>Vergelijk de twee theorieën uit hoofdstuk 4 van mijn cursus, en zeg waar ze elkaar tegenspreken.</Jij>
+<AI>Beide theorieën hebben voor- en nadelen. Ze bekijken het onderwerp elk vanuit een andere invalshoek …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-2" vraag="Dit gebeurde in de snelste stand. Wat ging mis?">
+  <Optie feedback="De cursus en het hoofdstuk zaten erbij. Aan context ontbrak het niet.">Te weinig context</Optie>
+  <Optie juist feedback="Een moeilijke vergelijking vraagt de stand waarin de AI eerst nadenkt.">De verkeerde instelling</Optie>
+  <Optie feedback="De vraag was goed. Het antwoord is vaag door de stand.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Er valt weinig na te kijken: het antwoord zegt bijna niets.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (3)">
+<Chat naast>
+<Jij>Geef me de antwoorden op oefening 1 tot 5.</Jij>
+<AI>Natuurlijk! 1. x = 4 · 2. x = −2 · 3. x = 7 · 4. geen oplossing · 5. x = ½</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-3" vraag="De leerling schrijft alles over. Wat ging mis?">
+  <Optie feedback="Meer context verandert niets: de AI doet nog altijd het werk.">Te weinig context</Optie>
+  <Optie feedback="De leerling vroeg zelf de antwoorden; ook in de leermodus kan dat.">De verkeerde instelling</Optie>
+  <Optie juist feedback="De AI deed het denkwerk. Zo oefen je niets voor de toets.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Eerst had de leerling de oefeningen zelf moeten maken.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (4)">
+<Chat naast>
+<Jij>Ik loste 3(x − 2) = 12 op en kom x = 6 uit. Klopt dat?</Jij>
+<AI>Bijna! 3(x − 2) = 3x − 2, dus 3x − 2 = 12 en x = 14/3.</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-4" vraag="De leerling neemt x = 14/3 over. Wat ging mis?">
+  <Optie feedback="De vraag was duidelijk. De fout zit in het antwoord.">Te weinig context</Optie>
+  <Optie feedback="Misschien rekent een andere stand beter, maar nakijken moet altijd.">De verkeerde instelling</Optie>
+  <Optie feedback="De leerling rekende zelf, en nog juist ook.">Zelf niet nagedacht</Optie>
+  <Optie juist feedback="3(x − 2) is 3x − 6, dus x = 6 was juist. De AI rekende fout.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat werkte?">
+Denk terug aan je sessie. Er is geen fout antwoord.
+
+<Reflectie id="wat-werkte" vraag="Welke werkvorm hielp je het meest, en waarom? Wat werkte niet?" />
+</Stap>
+
+<Stap titel="Waar trek je de grens?">
+Een coach helpt je leren. Maar niet alles laat je beter aan AI over.
+
+<Reflectie id="grens" vraag="Waarvoor zou jij AI niet gebruiken bij je schoolwerk, en waarom?" />
+</Stap>
+
+<Stap titel="Je bewijsstuk">
+<Tool naam="chatgpt">
+Klik op **Delen** → **Link maken** en kopieer de link. Wie de link heeft, ziet
+ook wat je oplaadde, zoals je cursus. Wil je dat niet, kopieer dan een stuk van
+je gesprek.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit, dus een link werkt niet. Kopieer een stuk van je
+gesprek.
+</Tool>
+<Tool naam="notebook">
+Delen deelt je hele notebook met je cursus, niet je gesprek. Kopieer daarom
+een stuk van je gesprek.
+</Tool>
+<Tool naam="copilot">
+Klik op **Delen** → **Chat delen** → **Koppeling kopiëren**. De link opent
+alleen voor wie aanmeldt met een account van school, dus ook voor je
+leerkracht.
+</Tool>
+
+<Reflectie id="bewijs" vraag="Plak hier de link naar je gesprek, of een stuk ervan." />
+</Stap>
+
+<Stap titel="Klaar! Kopieer wat je schreef">
+<Samenvatting />
+</Stap>
