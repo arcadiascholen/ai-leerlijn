@@ -24,6 +24,7 @@
     "astro": "^6.1.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "rehype-external-links": "^3.0.0",
     "typescript": "^5.9.3"
   }
 }
