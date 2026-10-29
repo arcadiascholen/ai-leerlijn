@@ -670,58 +670,86 @@ Een goede planning begint bij context. Leg klaar:
 
 - je **examenrooster**, als foto of screenshot;
 - je **agenda**: andere toetsen en deadlines, en vaste dingen zoals sport,
-  werk of familie;
-- per vak: hoe goed ken je het al?
+  werk of familie.
 
 Heb je geen examens? Plan dan je volgende toetsenweek of een grote opdracht.
-</Stap>
 
-<Stap titel="Eerst jij: wat ken je al?" tak="planning">
-Schat het zelf in, voor de AI meedenkt.
-
-<Reflectie id="planning-vakken" vraag="Welke vakken ken je al goed, en welke vragen het meeste werk? Waarom?" />
-</Stap>
-
-<Stap titel="Laat de AI eerst vragen stellen" tak="planning">
-Vanaf nu werk je in **één chat**, tot het einde van de module. Laad je rooster
-op en begin zo:
-
-<Prompt>
-Ik zit in het [jaar en richting]. Mijn examens beginnen op [datum]; het rooster zit in de bijlage. Ik wil een studieplanning maken tot dan. Stel me eerst vijf vragen, één per keer, voor je een planning maakt.
-</Prompt>
+Vanaf nu werk je in **één chat**, tot het einde van de module. Open een nieuwe
+chat en laad je rooster op. Verstuur nog niets: de prompt volgt.
 
 <Tool naam="chatgpt">
-Werk in een **nieuwe chat**. Laad je bestanden op met
-**+** → **Foto's & bestanden toevoegen**.
+Laad je rooster op met **+** → **Foto's & bestanden toevoegen**.
 </Tool>
 <Tool naam="gemini">
-Werk in een **nieuwe chat**. Laad je bestanden op met
-**+**.
+Laad je rooster op met **+**.
 </Tool>
 <Tool naam="notebook">
-Maak een **nieuwe notebook** met je bestanden als bron, en werk in het
+Maak een **nieuwe notebook** met je rooster als bron, en werk in het
 gesprek.
 </Tool>
 <Tool naam="copilot">
 Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
-anders heten). Laad je bestanden op met **+**.
+anders heten). Laad je rooster op met **+**.
 </Tool>
 </Stap>
 
-<Stap titel="De planning" tak="planning">
-<Prompt>
-Maak nu een planning per dag, als tabel. Wissel zware en lichte vakken af, plan herhaling in, laat ruimte voor uitloop, en hou rekening met mijn vaste afspraken.
+<Stap titel="Eerst jij: hoe sta je ervoor?" tak="planning">
+<Prompt id="planning-inschatting" velden={{ 'per vak': 'Hoe ik ervoor sta, per vak' }}>
+Ik zit in het [jaar en richting]. Mijn examens beginnen op [datum]; het rooster zit in de bijlage. Maak nog geen planning: mijn afspraken volgen. Zo sta ik ervoor per vak: [per vak]
+</Prompt>
+</Stap>
+
+<Stap titel="Laat de AI eerst vragen stellen" tak="planning">
+<Prompt id="planning-afspraken" velden={{ afspraken: 'Mijn vaste afspraken' }}>
+Wat moet je nog weten om een planning te maken die bij mij past? Vraag het me, één vraag per keer, hoogstens vijf. Vraag niet wat al in het rooster of in mijn berichten staat. Mijn vaste afspraken: [afspraken]
 </Prompt>
 
-Lees de planning rustig. Je stuurt ze in de volgende stap bij.
+Beantwoord de vragen van de AI in de chat.
+</Stap>
+
+<Stap titel="Spreiden of blokken?" tak="planning">
+<DenkEerst id="planning-spreiden" vraag="Je hebt vier dagen voor twee vakken. Wat werkt beter: eerst twee dagen het ene vak en dan twee dagen het andere, of elke dag een stuk van allebei? En wat helpt meer: herlezen of jezelf overhoren?">
+**Elke dag een stuk van allebei.** Wat je over meer dagen spreidt, onthoud je
+langer dan wat je in één blok leert.
+
+**Jezelf overhoren.** Herlezen en markeren voelen als leren, maar helpen
+weinig. Wie zichzelf overhoort, merkt wat nog niet zit, en net dat ophalen
+doet onthouden.
+
+Zo blijkt uit een groot overzicht van onderzoek naar studeertechnieken
+([Dunlosky e.a., 2013](https://doi.org/10.1177/1529100612453266)).
+</DenkEerst>
+</Stap>
+
+<Stap titel="De planning" tak="planning">
+Beantwoordde je de vragen van de AI? Vraag dan de planning.
+
+<Prompt>
+Maak nu een planning per dag, als tabel. Spreid elk vak over meer dagen, wissel de vakken af, en laat ruimte voor herhaling en uitloop. Zet bij elk blok hoe ik studeer: mezelf overhoren, oefeningen maken of herhalen. Hou rekening met mijn vaste afspraken.
+</Prompt>
+
+Lees de planning rustig. Je kijkt ze in de volgende stappen na.
+</Stap>
+
+<Stap titel="Zoek de fouten" tak="planning">
+Een AI kan in een planning fouten maken die je snel over het hoofd ziet. Leg
+de planning naast je rooster en kijk na:
+
+- Hoort bij elke **datum** de juiste **weekdag**?
+- Staat er een vak gepland **na** het examen ervan?
+- Telt een dag **meer uren** dan je echt kunt studeren?
+- **Ontbreekt** er een vak?
+
+Vind je een fout? Zeg het in de chat, en laat de AI de planning bijsturen.
 </Stap>
 
 <Stap titel="Kijk ze na" tak="planning">
-Leg de planning naast je agenda, en kijk na:
+Doet de planning wat werkt? Leg ze naast je agenda:
 
+- Komt elk vak op **meer dagen** terug, in plaats van in één blok?
+- Staat bij elk blok **hoe** je studeert, met jezelf overhoren erbij?
+- Wisselen de vakken af?
 - Is ze **haalbaar**, ook op een drukke dag?
-- Komt elk vak meer dan één keer terug?
-- Wisselen de vakken af, in plaats van alles van één vak na elkaar?
 - Zijn er pauzes, en een vrije avond?
 
 Zeg in de chat wat niet klopt, bijvoorbeeld: *„Op woensdag heb ik training tot
@@ -731,7 +759,23 @@ Zeg in de chat wat niet klopt, bijvoorbeeld: *„Op woensdag heb ik training tot
 <Stap titel="Wat paste je aan?" tak="planning">
 Jij beslist over je planning, niet de AI.
 
-<Reflectie id="planning-aangepast" vraag="Wat veranderde je aan de planning van de AI, en waarom?" />
+<Reflectie id="planning-aangepast" vraag="Welke fout vond je in de planning van de AI, wat veranderde je, en waarom?" />
+</Stap>
+
+<Stap titel="Wat als je achterloopt?" tak="planning">
+Een planning loopt zelden helemaal zoals gepland. Speel het na:
+
+<Prompt>
+Stel: na drie dagen loop ik een dag achter met [vak]. Pas de planning aan.
+</Prompt>
+
+Zou je het zelf zo doen? Schuift alles op, of laat de AI iets vallen?
+</Stap>
+
+<Stap titel="Wanneer kijk je ze opnieuw na?" tak="planning">
+Denk terug aan wat de AI deed toen je achterliep.
+
+<Reflectie id="planning-opvolgen" vraag="Wat deed de AI toen je achterliep, en zou jij het ook zo doen? Wanneer kijk je je planning opnieuw na?" />
 </Stap>
 
 <Stap titel="Bewaar ze buiten de chat" tak="planning">
@@ -752,12 +796,6 @@ Klik onder het antwoord op **Opslaan in notitie**, of kopieer de tabel.
 <Tool naam="copilot">
 Kopieer de tabel, en plak ze in Word of Excel met je schoolaccount.
 </Tool>
-</Stap>
-
-<Stap titel="Wanneer kijk je ze opnieuw na?" tak="planning">
-Een planning loopt zelden helemaal zoals gepland.
-
-<Reflectie id="planning-opvolgen" vraag="Wanneer kijk je je planning opnieuw na, en wat doe je als je achterloopt?" />
 </Stap>
 
 {/* Shared end. */}
