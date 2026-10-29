@@ -10,9 +10,14 @@
 // html2canvas and DOMPurify.
 //
 // The input is plain data, collected by Samenvatting.tsx: the module, the
-// choices and one item per question. An item has a `kind`: `answer` for a
-// question with one answer, `fields` for a prompt with fields, and room for
-// another kind of block without touching the rest.
+// choices, one item per question and the moments of the timeline. An item
+// has a `kind`: `answer` for a question with one answer, `fields` for a
+// prompt with fields, and room for another kind of block without touching
+// the rest.
+//
+// The timeline at the end has one line per moment in a fixed format,
+// "13:05  Noteer je taak" (two spaces), so that a script can read it from
+// the text of the PDF (`pdftotext`). Times are in the laptop's time zone.
 
 import type { jsPDF } from 'jspdf';
 
@@ -50,18 +55,55 @@ export interface PdfFields {
 
 export type PdfItem = PdfAnswer | PdfFields;
 
+// One line of the timeline: "Begonnen", or a question with the title of its
+// step as the label and the moment the student first answered it.
+export interface PdfMoment {
+  readonly label: string;
+  readonly at: Date;
+}
+
 export interface PdfSummary {
   readonly moduleId: string;
   readonly moduleTitle: string;
   readonly choices: readonly PdfChoice[];
   readonly items: readonly PdfItem[];
+  // The timeline in the order of the module, without the PDF itself: the
+  // PDF adds MADE_LABEL at `date`.
+  readonly moments: readonly PdfMoment[];
   // When the student downloads it.
   readonly date: Date;
 }
 
+export const STARTED_LABEL = 'Begonnen';
+export const MADE_LABEL = 'Pdf gemaakt';
+
 // "10 november 2026".
 export function formatDate(date: Date): string {
   return date.toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function twoDigits(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+// "14:38".
+export function formatTime(date: Date): string {
+  return `${twoDigits(date.getHours())}:${twoDigits(date.getMinutes())}`;
+}
+
+// The time in front of a line of the timeline: "13:05", or "9/11 20:14" on
+// another day than `reference`, the moment of the PDF.
+export function momentTime(at: Date, reference: Date): string {
+  const day = at.toDateString() === reference.toDateString() ? '' : `${at.getDate()}/${at.getMonth() + 1} `;
+  return `${day}${formatTime(at)}`;
+}
+
+// Between the time and the label: always two spaces.
+export const MOMENT_GAP = '  ';
+
+// "13:05  Noteer je taak".
+export function momentLine(moment: PdfMoment, reference: Date): string {
+  return `${momentTime(moment.at, reference)}${MOMENT_GAP}${moment.label}`;
 }
 
 // "Doel: Een schriftelijke toets", or "Doel: (niet gekozen)".
@@ -218,12 +260,16 @@ function render(doc: jsPDF, summary: PdfSummary): void {
     return style.size * LINE_FACTOR * MM_PER_PT;
   }
 
-  // Sets the font and splits `text` into lines that fit the width. jsPDF
-  // also breaks a word that is longer than a line.
-  function split(text: string, style: Style): string[] {
+  function setStyle(style: Style): void {
     doc.setFont('helvetica', style.bold === true ? 'bold' : 'normal');
     doc.setFontSize(style.size);
-    return doc.splitTextToSize(forPdf(text), TEXT_WIDTH) as string[];
+  }
+
+  // Sets the font and splits `text` into lines that fit the width. jsPDF
+  // also breaks a word that is longer than a line.
+  function split(text: string, style: Style, width = TEXT_WIDTH): string[] {
+    setStyle(style);
+    return doc.splitTextToSize(forPdf(text), width) as string[];
   }
 
   function newPage(): void {
@@ -259,7 +305,7 @@ function render(doc: jsPDF, summary: PdfSummary): void {
   y += 1;
   write(summary.moduleTitle, title);
   y += 1;
-  write(`gedownload op ${formatDate(summary.date)}`, meta);
+  write(`gedownload op ${formatDate(summary.date)} om ${formatTime(summary.date)}`, meta);
   rule();
 
   if (summary.choices.length > 0) {
@@ -291,6 +337,31 @@ function render(doc: jsPDF, summary: PdfSummary): void {
       }
     }
   });
+
+  // One line per moment. Not through `write`: `forPdf` would fold the two
+  // spaces after the time into one. A label too long for its line runs on
+  // under itself, so that the time stays alone in front.
+  function writeMoment(moment: PdfMoment): void {
+    const time = `${momentTime(moment.at, summary.date)}${MOMENT_GAP}`;
+    setStyle(body);
+    const indent = doc.getTextWidth(time);
+    const rows = split(moment.label, body, TEXT_WIDTH - indent);
+    const height = lineHeight(body);
+    setTextColour(doc, body.colour);
+    rows.forEach((row, index) => {
+      if (y + height > BOTTOM) newPage();
+      if (index === 0) doc.text(`${time}${row}`, MARGIN, y, { baseline: 'top' });
+      else doc.text(row, MARGIN + indent, y, { baseline: 'top' });
+      y += height;
+    });
+  }
+
+  // The timeline: when the student started, when they first answered each
+  // question on the route, and when this PDF was made.
+  if (summary.items.length > 0) rule();
+  writeQuestion('Tijdlijn');
+  for (const moment of summary.moments) writeMoment(moment);
+  writeMoment({ label: MADE_LABEL, at: summary.date });
 
   // "Pagina 1 van 2" under every page.
   const pages = doc.getNumberOfPages();

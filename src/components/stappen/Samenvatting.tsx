@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { appear, appearOnMount } from '../../lib/motion';
-import { readAnswer, type StoredAnswer } from '../vragen/answers';
+import { isTime, readAnswer, type StoredAnswer } from '../vragen/answers';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import {
   choiceLine,
   downloadPdf,
   fieldLine,
   formatDate,
+  formatTime,
+  momentLine,
   NOT_ANSWERED,
   SITE_NAME,
+  STARTED_LABEL,
   type PdfField,
   type PdfItem,
+  type PdfMoment,
   type PdfSummary,
 } from './pdf';
-import { moduleIdOf } from './storage';
+import { moduleIdOf, readStored, START_KEY } from './storage';
 import styles from './Samenvatting.module.css';
 
 // The summary in the last step of a module (docs/BRIEFING.md § 6 and § 12).
@@ -37,14 +41,22 @@ import styles from './Samenvatting.module.css';
 // choices.ts): the questions of a branch the student did not choose are left
 // out, and the step numbers are positions in the route.
 //
+// The PDF ends with a timeline: when the student started the module (`start`,
+// stored by the step player), when they first answered each question of the
+// route, multiple choice included, by the title of its step, and when the
+// PDF was made. A question without a valid time has no line.
+//
 // If the PDF cannot be made (jsPDF does not load on a flaky connection, or
 // building it throws), the student prints to PDF instead. For that, the full
 // summary is in the page too, hidden on screen; the print styles in
 // Samenvatting.module.css show only that on paper.
 
-// Only what the student wrote: multiple-choice answers are left out.
-const KINDS = ['think-first', 'reflection', 'prompt-fields'];
-const SELECTOR = KINDS.map((kind) => `[data-question="${kind}"]`).join(', ');
+// Only what the student wrote: multiple-choice answers are left out. The
+// timeline takes every question.
+const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields'];
+
+// The last line of the timeline on paper; the PDF has MADE_LABEL there.
+const PRINTED_LABEL = 'Afgedrukt';
 
 interface Props {
   readonly moduleTitle: string;
@@ -110,6 +122,11 @@ function isFilled(item: Item): boolean {
 interface Collected {
   readonly choices: readonly Choice[];
   readonly items: readonly Item[];
+  // The timeline without its last line: "Begonnen", then every question of
+  // the route with a time, in the order of the module.
+  readonly moments: readonly PdfMoment[];
+  // How many questions the route has, multiple choice included.
+  readonly questions: number;
 }
 
 // The elements matching `selector` on the student's route, in document
@@ -127,8 +144,16 @@ function onRoute(scope: HTMLElement, moduleId: string, selector: string): Placed
   });
 }
 
+// The title of the step a question is in, for its line in the timeline; the
+// question itself for one outside any step.
+function stepTitleOf(element: HTMLElement, question: string): string {
+  const title = element.closest('[data-step]')?.querySelector('[data-step-title]')?.textContent ?? '';
+  const clean = title.replace(/\s+/g, ' ').trim();
+  return clean === '' ? question : clean;
+}
+
 // Every choice and every question with something to write, with what the
-// student chose or wrote by now.
+// student chose or wrote by now, and the timeline.
 function collect(root: HTMLElement, moduleId: string): Collected {
   const scope = root.closest<HTMLElement>('[data-module]') ?? document.body;
   const choices = onRoute(scope, moduleId, '[data-choice]').map(([element, step]) => {
@@ -139,26 +164,39 @@ function collect(root: HTMLElement, moduleId: string): Collected {
       step,
     };
   });
-  const items = onRoute(scope, moduleId, SELECTOR).map(([element, step]): Item => {
+  const items: Item[] = [];
+  const moments: PdfMoment[] = [];
+  const started = readStored(moduleId, START_KEY);
+  if (isTime(started)) moments.push({ label: STARTED_LABEL, at: new Date(started) });
+  const questions = onRoute(scope, moduleId, '[data-question]');
+  for (const [element, step] of questions) {
     const id = element.dataset.questionId ?? '';
+    const kind = element.dataset.question;
     const stored = id === '' ? null : readAnswer(moduleId, id);
     const question = element.dataset.questionText ?? stored?.question ?? '';
-    if (element.dataset.question === 'prompt-fields') {
-      return { kind: 'fields', id, question, fields: fieldsOf(element, stored), step };
+    if (stored !== null && stored.kind === kind && stored.firstAt !== undefined) {
+      moments.push({ label: stepTitleOf(element, question), at: new Date(stored.firstAt) });
     }
-    return { kind: 'answer', id, question, answer: answerOf(stored, element.dataset.question), step };
-  });
-  return { choices, items };
+    if (kind === 'prompt-fields') {
+      items.push({ kind: 'fields', id, question, fields: fieldsOf(element, stored), step });
+    } else if (kind !== undefined && KINDS.includes(kind)) {
+      items.push({ kind: 'answer', id, question, answer: answerOf(stored, kind), step });
+    }
+  }
+  return { choices, items, moments, questions: questions.length };
 }
 
-// What the PDF or the paper holds, to tell whether it went out of date.
-function signature({ choices, items }: Collected): string {
+// What the PDF or the paper holds, to tell whether it went out of date. The
+// timeline too: a multiple-choice question answered after the download is
+// not in the PDF otherwise.
+function signature({ choices, items, moments }: Collected): string {
   return JSON.stringify([
     choices.map((choice) => choice.label),
     items.map((item) => [
       item.question,
       item.kind === 'answer' ? item.answer : item.fields.map((field) => [field.label, field.value]),
     ]),
+    moments.map((moment) => [moment.label, moment.at.getTime()]),
   ]);
 }
 
@@ -167,7 +205,7 @@ function choiceTitle(name: string): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-function pdfOf(moduleId: string, moduleTitle: string, { choices, items }: Collected): PdfSummary {
+function pdfOf(moduleId: string, moduleTitle: string, { choices, items, moments }: Collected): PdfSummary {
   return {
     moduleId,
     moduleTitle,
@@ -178,9 +216,14 @@ function pdfOf(moduleId: string, moduleTitle: string, { choices, items }: Collec
           ? { kind: 'answer', question: item.question, answer: item.answer }
           : { kind: 'fields', question: item.question, fields: item.fields },
     ),
+    moments,
     date: new Date(),
   };
 }
+
+// After the intro, when the route has a question: the PDF holds the
+// timeline.
+const TIMES_NOTE = 'In je pdf staat ook wanneer je aan elke vraag begon.';
 
 // "In de module … vulde je 12 van de 14 vragen in." Only the questions count,
 // not the choices.
@@ -248,14 +291,18 @@ function StepLink({ step }: { readonly step: number | null }) {
 }
 
 // The full summary for paper: the same as the PDF, with every question,
-// also the ones that are filled in. Hidden on screen, and so for screen
-// readers too.
+// also the ones that are filled in, and the timeline. Hidden on screen, and
+// so for screen readers too.
 function OnPaper({ moduleTitle, collected }: { readonly moduleTitle: string; readonly collected: Collected }) {
+  const now = new Date();
+  const moments = [...collected.moments, { label: PRINTED_LABEL, at: now }];
   return (
     <div className={styles.paper} data-summary-print>
       <p className={styles.paperSite}>{SITE_NAME}</p>
       <p className={styles.paperTitle}>{moduleTitle}</p>
-      <p className={styles.paperMeta}>afgedrukt op {formatDate(new Date())}</p>
+      <p className={styles.paperMeta}>
+        afgedrukt op {formatDate(now)} om {formatTime(now)}
+      </p>
       {collected.choices.length > 0 && (
         <ul className={styles.paperChoices}>
           {collected.choices.map((choice) => (
@@ -281,6 +328,12 @@ function OnPaper({ moduleTitle, collected }: { readonly moduleTitle: string; rea
           </div>
         ))}
       </dl>
+      <p className={styles.paperTimelineTitle}>Tijdlijn</p>
+      <ul className={styles.paperTimeline}>
+        {moments.map((moment, index) => (
+          <li key={index}>{momentLine(moment, now)}</li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -301,7 +354,8 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
   const read = useCallback((): Collected => {
     const root = rootRef.current;
     const moduleId = root === null ? null : moduleIdOf(root);
-    const next = root === null || moduleId === null ? { choices: [], items: [] } : collect(root, moduleId);
+    const next =
+      root === null || moduleId === null ? { choices: [], items: [], moments: [], questions: 0 } : collect(root, moduleId);
     setCollected(next);
     // An answer changed after the download: the PDF is out of date, so the
     // confirmation and the form button go, and the student downloads again.
@@ -383,7 +437,10 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
       {collected === null ? (
         <p className={styles.noScript}>Je samenvatting verschijnt hier alleen als JavaScript aanstaat in je browser.</p>
       ) : (
-        <p className={styles.intro}>{intro(moduleTitle, collected.items)}</p>
+        <p className={styles.intro}>
+          {intro(moduleTitle, collected.items)}
+          {collected.questions > 0 && ` ${TIMES_NOTE}`}
+        </p>
       )}
 
       {openChoices.length + emptyItems.length > 0 && (

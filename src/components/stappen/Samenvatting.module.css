@@ -298,6 +298,27 @@
   color: var(--ink-muted);
 }
 
+/* The timeline, as in the PDF: "13:05  Noteer je taak". `pre-wrap` keeps
+   the two spaces after the time. */
+.paperTimelineTitle {
+  max-width: none;
+  margin: var(--space-4) 0 var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--forest);
+  font-weight: var(--text-label-weight);
+  break-after: avoid;
+}
+
+.paperTimeline {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  white-space: pre-wrap;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Printing. Only while the step with the summary is the one shown (the
    player hides every other step), so that printing another step stays as it
    was. Then the page shows nothing but the summary on paper: every ancestor

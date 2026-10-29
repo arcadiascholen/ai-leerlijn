@@ -92,8 +92,13 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
 5. **Eindformulier.** **Eén Smartschool-formulier voor alle modules**, met de
    gekozen module als eerste vraag. Het bevat een korte reflectie en een
    bestand: de pdf met de samenvatting die de leerling aan het einde van de
-   module downloadt (§ 6). Dat het formulier een bestand aanvaardt, wordt in
-   Smartschool geregeld, buiten deze repo. De resultaten komen in het LVS,
+   module downloadt (§ 6). Die pdf bevat ook tijdstippen: wanneer de
+   leerling aan de module en aan elke vraag begon (§ 12, *De samenvatting*).
+   Zo kan het team achteraf zien waar leerlingen veel tijd voor nodig
+   hadden. De site zelf verwerkt die tijden niet en stuurt ze nergens heen:
+   ze staan in de browser van de leerling en in de pdf die de leerling zelf
+   oplaadt. Dat het formulier een bestand aanvaardt, wordt in Smartschool
+   geregeld, buiten deze repo. De resultaten komen in het LVS,
    zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
    en de samenvatting aan het einde van een module linken ernaar.
 
@@ -567,8 +572,12 @@ Tekst, een beeld of een vraagcomponent.
 
 - Elke sleutel in `localStorage` heeft de vorm
   `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
-  `stap`. Een vraag, en een `<Prompt>` met invulvelden, bewaart haar
-  antwoord onder `vraag:<id>`, met de `id` die de auteur schrijft (zie
+  `stap`, en onder `start` het moment waarop hij de eerste stap van de
+  module toonde (ISO 8601). `start` wordt één keer gezet, als de sleutel er
+  nog niet is: herladen of later terugkomen verandert het niet. Het is de
+  eerste regel van de tijdlijn in de pdf (zie *De samenvatting*). Een vraag,
+  en een `<Prompt>` met invulvelden, bewaart haar antwoord onder
+  `vraag:<id>`, met de `id` die de auteur schrijft (zie
   *Antwoorden bewaren* hieronder). Een `<Keuze>` bewaart de gekozen optie
   onder `keuze:<naam>` (zie *Keuzes en takken*). `<Confetti />` bewaart
   onder `confetti` dat ze speelde (zie *Confetti*).
@@ -715,9 +724,20 @@ steunt.
   de titel van de stap zoals de leerling ze zag, en per veld, onder de naam
   van zijn invulplaats, wat de leerling schreef, zoals getypt (zie *Prompts
   en gesprekken*).
-- Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `StoredAnswer`
+- Elk antwoord, van elk `kind`, heeft ook twee tijden:
+  `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
+  `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
+  het laatst bewaarde. `writeAnswer` zet ze, niet de componenten: het leest
+  het bewaarde antwoord, neemt `firstAt` daarvan over, of zet het op nu als
+  er nog geen is, en zet `lastAt` op nu. Zo blijft `firstAt` het moment
+  waarop de leerling aan de vraag begon, ook al bewaart `<Reflectie>` bij
+  elke toets. Een component geeft `writeAnswer` dus alleen de inhoud.
+- Een antwoord zonder tijden (bewaard vóór de site ze bijhield) is geldig.
+  Een tijd die geen geldige ISO 8601-tijd is (`"firstAt": "gisteren"`)
+  telt als geen tijd: `readAnswer` laat ze weg, het antwoord blijft.
+- Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `AnswerContent`
   in `answers.ts`, met een eigen controle in `isStoredAnswer`, zodat
-  `readAnswer` een onvolledige waarde weigert.
+  `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
   `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`
   of `prompt-fields`) en `data-question-id="<id>"`. Een vraag die in de
@@ -1118,7 +1138,9 @@ voor het [jaar en richting].
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
   niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
   twee *beide vragen*, zonder antwoord *nog geen van de 14 vragen*, en
-  zonder vragen *zijn er geen vragen waarop je zelf iets schrijft*.
+  zonder vragen *zijn er geen vragen waarop je zelf iets schrijft*. Heeft
+  de route minstens één vraag (meerkeuze telt mee), dan volgt in dezelfde
+  alinea *In je pdf staat ook wanneer je aan elke vraag begon.*
 - Is er iets leeg, dan staat eronder *Nog leeg:* met elke lege vraag en
   elke keuze die nog open is (*Tool: (nog niet gekozen)*), elk met *Ga naar
   stap n* (`#stap-n`). Is alles ingevuld, dan staat er geen lijst. De
@@ -1146,19 +1168,40 @@ voor het [jaar en richting].
   niets voor tot dan. Alleen de tekst-API (`text`, `splitTextToSize`,
   `addPage`), nooit `.html()`: dat sleept html2canvas en DOMPurify mee.
 - In de pdf staat, in deze volgorde: *AI-leerpad Arcadia Scholen*, de naam
-  van de module, *gedownload op 10 november 2026*, de keuzes, één per regel
-  (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met de `naam`
-  van de keuze met een hoofdletter vooraan), en dan per vraag de vraag in
-  het vet met het antwoord eronder, of *(niet ingevuld)*; bij een prompt met
-  velden staat er één regel per veld. Onderaan elke
-  pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
+  van de module, *gedownload op 10 november 2026 om 14:38*, de keuzes, één
+  per regel (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met
+  de `naam` van de keuze met een hoofdletter vooraan), dan per vraag de
+  vraag in het vet met het antwoord eronder, of *(niet ingevuld)*; bij een
+  prompt met velden staat er één regel per veld. Als laatste de *Tijdlijn*
+  (zie hieronder). Onderaan elke pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
   volgende pagina; een vraag staat nooit alleen onderaan een pagina. Lege
   regels binnen een antwoord vallen weg. Er staat geen naam of ander
   persoonsgegeven in: de site kent de leerling niet, Smartschool koppelt het
   bestand aan de leerling.
-- `pdf.ts` krijgt gewone gegevens: de module, de keuzes en per vraag een
-  blok met een `kind`: `answer`, of `fields` voor een prompt met velden.
-  Een nieuw soort blok komt daar bij.
+- **De tijdlijn.** Achteraan de pdf staat het blok *Tijdlijn*: één regel
+  per moment, in de volgorde van de module, in een vast formaat:
+
+  ```
+  13:05  Begonnen
+  13:12  Noteer je taak
+  13:41  Hoe ging de startquiz?
+  14:38  Pdf gemaakt
+  ```
+
+  Eerst *Begonnen* (`start`, zie *Lokaal bewaren*), dan elke vraag van de
+  route van de leerling, ook `<Meerkeuze>`, die verder niet in de pdf
+  staat, met de titel van de stap waarin ze staat, en als laatste *Pdf
+  gemaakt*, het moment van de download. Per vraag staat `firstAt`, het
+  moment waarop de leerling eraan begon. Een vraag zonder geldige tijd
+  (nooit beantwoord, of bewaard vóór de site tijden bijhield) heeft geen
+  regel; een antwoord zonder tijd staat wel gewoon in de pdf. De tijd staat als
+  `HH:MM` in de tijdzone van de laptop, met twee spaties voor de tekst;
+  op een andere dag dan de download staat de datum ervoor (`9/11 20:14`).
+  Een tekstextractie zoals `pdftotext` geeft die twee spaties als één
+  terug; een script herkent de regel aan de vorm van de tijd vooraan.
+- `pdf.ts` krijgt gewone gegevens: de module, de keuzes, per vraag een
+  blok met een `kind` (`answer`, of `fields` voor een prompt met velden) en
+  de momenten van de tijdlijn. Een nieuw soort blok komt daar bij.
 - **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
   er gaat geen lettertypebestand mee, maar het kent alleen de tekens van
   WinAnsi (Windows-1252). Voor een teken daarbuiten schrijft jsPDF zonder
@@ -1181,8 +1224,9 @@ voor het [jaar en richting].
   afdrukvenster (`afterprint`) verschijnt *Open het eindformulier*. Of de
   leerling opsloeg of annuleerde, zegt de browser niet.
 - **Op papier.** De volledige samenvatting, met dezelfde inhoud als de pdf
-  (*afgedrukt op* in plaats van *gedownload op*), staat ook in de pagina,
-  op het scherm verborgen. De printstijl (`@media print`) toont op papier
+  (*afgedrukt op* in plaats van *gedownload op*, en *Afgedrukt* in plaats
+  van *Pdf gemaakt* als laatste regel van de tijdlijn), staat ook in de
+  pagina, op het scherm verborgen. De printstijl (`@media print`) toont op papier
   alleen die: de header, de voortgang, de navigatie, de andere stappen, de
   titel van de stap en de knoppen zijn verborgen. Dat geldt zolang de stap
   met de samenvatting getoond wordt; een andere stap wordt afgedrukt zoals
