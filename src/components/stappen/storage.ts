@@ -4,6 +4,9 @@
 // `ai-leerlijn:<module-id>:<key>`:
 //   - `stap` is reserved for the step player (the current step, 1-based:
 //     its position in the student's route through the module);
+//   - `start` is reserved for the step player too: when it first showed a
+//     step of the module, as ISO 8601, for the timeline in the PDF of the
+//     summary;
 //   - a question component stores its answer under `vraag:<id>`, unique
 //     within the module (../vragen/answers.ts);
 //   - a <Keuze> stores the key of the chosen option under `keuze:<naam>`
@@ -17,6 +20,8 @@
 // try/catch, so the site keeps working; progress is then simply not kept.
 
 const PREFIX = 'ai-leerlijn';
+
+export const START_KEY = 'start';
 
 export function storageKey(moduleId: string, key: string): string {
   return `${PREFIX}:${moduleId}:${key}`;

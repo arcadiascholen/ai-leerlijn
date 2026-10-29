@@ -4,8 +4,9 @@
 // The steps (<Stap>) render statically as <section>s in the default slot.
 // The client script below shows one step at a time and handles navigation
 // (buttons, arrow keys, `#stap-n` in the URL), the progress bar, saving the
-// step in localStorage and "Opnieuw beginnen". Without JavaScript the steps
-// stay one below the other and the controls stay hidden.
+// step and the start of the module in localStorage and "Opnieuw beginnen".
+// Without JavaScript the steps stay one below the other and the controls
+// stay hidden.
 //
 // With a branching <Keuze> the student follows a route: the shared steps
 // plus the steps of the chosen branch (routeOf in choices.ts). Every step
@@ -427,7 +428,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 <script>
   import { buildUp, mayMove, settle, stopBuild } from '../../lib/motion';
   import { hasOpenChoice, onChoice, routeOf, type Route } from './choices';
-  import { clearModule, readStored, writeStored } from './storage';
+  import { clearModule, readStored, START_KEY, writeStored } from './storage';
 
   // localStorage key of the current step: `ai-leerlijn:<module-id>:stap`.
   const STEP_KEY = 'stap';
@@ -604,6 +605,10 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false, null);
     // From here on, the bar moves with the student (see the styles).
     settle(root);
+    // When the student first saw the module, for the timeline in the PDF of
+    // the summary: once, so a reload or a later visit keeps the first time.
+    // "Opnieuw beginnen" clears it with the rest.
+    if (readStored(moduleId, START_KEY) === null) writeStored(moduleId, START_KEY, new Date().toISOString());
 
     prevButton.addEventListener('click', () => move(-1));
     nextButton.addEventListener('click', () => move(1));

@@ -15,6 +15,10 @@
 // is the order of the module, and reads each answer with `readAnswer`. It
 // takes the question from the page, not from storage: the stored question
 // is the one the student saw, and goes stale when an author rewrites it.
+//
+// Every answer, of every kind, also carries two times (AnswerTimes), for the
+// timeline in the PDF of the summary. `writeAnswer` sets them, not the
+// components.
 
 import { readStored, writeStored } from '../stappen/storage';
 
@@ -54,7 +58,18 @@ export interface PromptFieldsAnswer {
   fields: Record<string, string>;
 }
 
-export type StoredAnswer = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer | PromptFieldsAnswer;
+// What a component writes. A new kind of question goes here.
+export type AnswerContent = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer | PromptFieldsAnswer;
+
+// When the student first saved an answer to the question, and when last, as
+// ISO 8601 (`toISOString`). Missing on an answer stored before the site kept
+// times, and dropped when it is not a valid time.
+export interface AnswerTimes {
+  firstAt?: string;
+  lastAt?: string;
+}
+
+export type StoredAnswer = AnswerContent & AnswerTimes;
 
 export function answerKey(questionId: string): string {
   return `vraag:${questionId}`;
@@ -64,7 +79,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-function isStoredAnswer(value: unknown): value is StoredAnswer {
+// A time as `toISOString` writes it, or with an offset; "gisteren" is none.
+const ISO_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+
+export function isTime(value: unknown): value is string {
+  return typeof value === 'string' && ISO_TIME.test(value) && !Number.isNaN(Date.parse(value));
+}
+
+// Checks the content only: the times are optional, and `readAnswer` drops an
+// invalid one without dropping the answer.
+function isStoredAnswer(value: unknown): value is AnswerContent & Record<string, unknown> {
   if (!isRecord(value) || typeof value.question !== 'string') return false;
   switch (value.kind) {
     case 'multiple-choice':
@@ -86,18 +110,31 @@ function isStoredAnswer(value: unknown): value is StoredAnswer {
 
 // The stored answer of one question, or null if there is none, if storage is
 // blocked, or if the value is not a valid answer (edited by hand, or from an
-// older version of the site).
+// older version of the site). A time that is not valid counts as no time.
 export function readAnswer(moduleId: string, questionId: string): StoredAnswer | null {
   const raw = readStored(moduleId, answerKey(questionId));
   if (raw === null) return null;
   try {
     const value: unknown = JSON.parse(raw);
-    return isStoredAnswer(value) ? value : null;
+    if (!isStoredAnswer(value)) return null;
+    const { firstAt, lastAt, ...content } = value;
+    return {
+      ...(content as AnswerContent),
+      ...(isTime(firstAt) ? { firstAt } : {}),
+      ...(isTime(lastAt) ? { lastAt } : {}),
+    };
   } catch {
     return null;
   }
 }
 
-export function writeAnswer(moduleId: string, questionId: string, answer: StoredAnswer): void {
-  writeStored(moduleId, answerKey(questionId), JSON.stringify(answer));
+// Stores `answer` with its times: `firstAt` stays what it was, or becomes now
+// on the first save, and `lastAt` becomes now. So `firstAt` stays the moment
+// the student started on the question, although <Reflectie> saves on every
+// keystroke.
+export function writeAnswer(moduleId: string, questionId: string, answer: AnswerContent): void {
+  const now = new Date().toISOString();
+  const firstAt = readAnswer(moduleId, questionId)?.firstAt ?? now;
+  const stored: StoredAnswer = { ...answer, firstAt, lastAt: now };
+  writeStored(moduleId, answerKey(questionId), JSON.stringify(stored));
 }
