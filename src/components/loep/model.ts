@@ -1,0 +1,515 @@
+import rawQuestions from "./questions.json";
+
+export interface Question {
+  id: string;
+  title: string;
+  body: string;
+  options: { id: string; text: string }[];
+  correct: string[];
+  feedback: string;
+  branches: Record<string, string>;
+  count: number;
+}
+export const questions: Record<string, Question> = rawQuestions;
+export interface Chapter {
+  id: number;
+  title: string;
+  subtitle: string;
+  image: string;
+  alt: string;
+  compass: string;
+  source: string;
+  sourceLabel: string;
+}
+export const chapters: Chapter[] = [
+  {
+    id: 1,
+    title: "Geloof jij AI?",
+    subtitle: "Een vriendelijk antwoord. Maar helpt het je ook?",
+    image: "phone",
+    alt: "Iemand houdt een smartphone vast bij een bureau.",
+    compass:
+      "Vraag AI niet alleen om antwoorden, maar ook om tegenargumenten. Zo ontdek je misschien iets waar je zelf nog niet aan gedacht had.",
+    source: "https://openai.com/index/sycophancy-in-gpt-4o/",
+    sourceLabel: "OpenAI · april 2025",
+  },
+  {
+    id: 2,
+    title: "AI en privacy",
+    subtitle: "Hoeveel vertel je aan een chatbot?",
+    image: "servers",
+    alt: "Rijen servers en netwerkkabels in een datacenter.",
+    compass:
+      "Ik deel geen onnodige persoonlijke gegevens met AI. Gaat het toch mis, dan meld ik dat.",
+    source:
+      "https://tweakers.net/nieuws/237718/chatgpt-stopt-met-optie-om-chats-door-zoekmachines-te-laten-indexeren.html",
+    sourceLabel: "Achtergrond · gedeelde gesprekslinks",
+  },
+  {
+    id: 3,
+    title: "AI en deepfakes",
+    subtitle: "Een nepvideo. Echte gevolgen.",
+    image: "phone",
+    alt: "Een smartphone bij een bureau; sfeerbeeld bij een fictieve klaschat.",
+    compass:
+      "Ook een nepvideo kan echte schade veroorzaken. Denk na over toestemming en deel geen kwetsende deepfakes.",
+    source: "https://www.vrt.be/nwsnwsnws/nl/post/2026/02/17/deepfakereactie/",
+    sourceLabel: "Bronnenoverzicht · deepfakes",
+  },
+  {
+    id: 4,
+    title: "AI discrimineert",
+    subtitle: "Wie zie je in de beelden van AI?",
+    image: "verpleegkundige-1",
+    alt: "AI-gegenereerd voorbeeld van een verpleegkundige aan het werk.",
+    compass:
+      "AI kan bestaande vooroordelen overnemen en versterken. Door kritisch naar de resultaten te kijken en je opdracht zorgvuldig te formuleren, kun je helpen om stereotypen te vermijden.",
+    source: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10782243/",
+    sourceLabel: "Achtergrond · vooroordelen in AI",
+  },
+  {
+    id: 5,
+    title: "Verliefd op AI",
+    subtitle: "Wat als een chatbot heel dichtbij komt?",
+    image: "phone",
+    alt: "Een smartphone bij een bureau; de foto toont geen persoon uit de reportage.",
+    compass:
+      "AI kan gezelschap en steun bieden, maar we moeten ook kritisch kijken naar emotionele afhankelijkheid en de verantwoordelijkheid van bedrijven.",
+    source: "https://communicatie.vrtnws.be/pano-onderzoekt-mijn-vriend-ai",
+    sourceLabel: "Bronnenoverzicht · Mijn vriend AI",
+  },
+  {
+    id: 6,
+    title: "AI en milieu",
+    subtitle: "Stroom, water en grondstoffen: kijk naar het hele plaatje.",
+    image: "servers",
+    alt: "Een datacenter met servers en netwerkkabels.",
+    compass:
+      "Ik weet dat AI elektriciteit, water en grondstoffen gebruikt. Ik gebruik AI bewust en denk na of het een meerwaarde biedt.",
+    source: "https://www.iea.org/reports/energy-and-ai",
+    sourceLabel: "IEA · Energy and AI",
+  },
+  {
+    id: 7,
+    title: "AI voert oorlog",
+    subtitle: "Wie beslist als elke seconde telt?",
+    image: "drone",
+    alt: "Een kleine civiele drone in de lucht; sfeerbeeld, geen foto van een wapensysteem.",
+    compass:
+      "AI kan in oorlogssituaties helpen om mensen te beschermen, maar fouten kunnen levens kosten. Daarom zijn duidelijke grenzen, menselijke controle en verantwoordelijkheid essentieel.",
+    source: "https://www.icrc.org/en/article/faq-autonomous-weapon-systems",
+    sourceLabel: "ICRC · autonome wapens",
+  },
+  {
+    id: 8,
+    title: "AI beslist zelf",
+    subtitle: "Wat mag jouw AI-agent zelfstandig doen?",
+    image: "station",
+    alt: "Reizigers in een station in Auckland; sfeerbeeld bij de fictieve uitstap.",
+    compass:
+      "Een AI-agent kan zelfstandig opdrachten uitvoeren, maar blijft fouten maken en kan misleid worden. Geef AI daarom alleen de toegang die nodig is. Houd belangrijke beslissingen zelf in handen.",
+    source:
+      "https://replit.com/blog/introducing-a-safer-way-to-vibe-code-with-replit-databases",
+    sourceLabel: "Bronnenoverzicht · AI-agenten",
+  },
+];
+export type Step = {
+  id: string;
+  chapter: number;
+  kind:
+    | "welcome"
+    | "story"
+    | "question"
+    | "experiment"
+    | "gallery"
+    | "energy"
+    | "centers"
+    | "chat"
+    | "booking"
+    | "injection"
+    | "permissions"
+    | "choice"
+    | "compass"
+    | "summary";
+  title: string;
+  text?: string[];
+  question?: string;
+};
+const story = (
+  id: string,
+  chapter: number,
+  title: string,
+  ...text: string[]
+): Step => ({ id, chapter, kind: "story", title, text });
+const q = (id: string, chapter: number): Step => ({
+  id: "q" + id,
+  chapter,
+  kind: "question",
+  title: questions[id]?.title ?? id,
+  question: id,
+});
+const special = (
+  id: string,
+  chapter: number,
+  kind: Step["kind"],
+  title: string,
+): Step => ({ id, chapter, kind, title });
+const compass = (chapter: number): Step =>
+  special("kompas" + chapter, chapter, "compass", "Dit neem je mee");
+export const introduction: Step[] = [
+  special("welkom", 0, "welcome", "AI onder de loep"),
+  q("1", 0),
+  story(
+    "patronen",
+    0,
+    "Hoe leert AI?",
+    "Een AI-model kan patronen leren herkennen uit veel gegevens, zoals foto's of tekst. Het gebruikt die patronen om iets te herkennen, te voorspellen of te maken.",
+    "Dat kan nuttig zijn, maar de uitkomst kan ook fout zijn. Sommige AI-toepassingen kunnen informatie opzoeken op internet. Ook dan blijft controleren nodig.",
+  ),
+  q("2", 0),
+  q("3", 0),
+];
+export const chapterSteps: Record<number, Step[]> = {
+  1: [
+    story(
+      "vriendelijk",
+      1,
+      "ChatGPT werd té vriendelijk",
+      "In april 2025 draaide OpenAI een update van ChatGPT terug. De chatbot gaf gebruikers te vaak gelijk, ook wanneer hun ideeën niet zo verstandig waren.",
+      "Wat is er mis met een vriendelijke chatbot? Ontdek het in deze uitdaging.",
+    ),
+    q("4", 1),
+    story(
+      "testen",
+      1,
+      "Een prettig antwoord is niet altijd een goed antwoord",
+      "OpenAI paste ChatGPT aan. De chatbot werd vriendelijker, maar begon mensen ook overdreven veel complimenten te geven. Zelfs slechte ideeën werden soms aangemoedigd.",
+      "De reacties van gebruikers tijdens tests waren positief. Toch werd onvoldoende onderzocht of de chatbot mensen te veel gelijk gaf.",
+    ),
+    q("5", 1),
+    special("experiment", 1, "experiment", "Geeft AI jou gelijk?"),
+    q("6", 1),
+    q("7", 1),
+    compass(1),
+  ],
+  2: [
+    story(
+      "delen",
+      2,
+      "Oeps, mijn gesprek staat op Google!",
+      "In 2025 konden gedeelde ChatGPT-gesprekken met een ingeschakelde indexeeroptie in zoekmachines verschijnen. Sommige bevatten persoonlijke informatie.",
+      "Die indexeeroptie werd weer uitgeschakeld. Niet alle privégesprekken waren automatisch openbaar. Denk ook na voordat je een gesprekslink deelt.",
+    ),
+    q("8", 2),
+    q("10", 2),
+    q("11", 2),
+    q("12", 2),
+    compass(2),
+  ],
+  3: [
+    story(
+      "nepvideo",
+      3,
+      "Wanneer gaat een grap te ver?",
+      "In februari 2026 berichtte VRT NWS over leerlingen in Berchem die kwetsende AI-video’s van leerkrachten maakten.",
+      "Een deepfake kan iemand iets laten lijken te zeggen of doen wat nooit gebeurd is. Ook een nepvideo kan echte schade veroorzaken.",
+    ),
+    q("13", 3),
+    special("klaschat", 3, "chat", "Er verschijnt iets in de klasgroep…"),
+    q("14", 3),
+    q("15", 3),
+    q("16", 3),
+    compass(3),
+  ],
+  4: [
+    special(
+      "beeldexperiment",
+      4,
+      "gallery",
+      "Welk beeld heeft AI van een beroep?",
+    ),
+    q("18", 4),
+    story(
+      "onderzoek",
+      4,
+      "Eén beeld is nog geen bewijs",
+      "Onderzoekers vonden dat beeldgeneratoren bestaande stereotypen kunnen overnemen. Dat betekent niet dat elk model of elke opdracht dezelfde resultaten geeft.",
+      "Bekijk patronen over meerdere beelden. Noteer de opdracht, het model en de datum. Je kunt iemands genderidentiteit of afkomst niet met zekerheid afleiden uit uiterlijk.",
+    ),
+    q("19", 4),
+    q("20", 4),
+    compass(4),
+  ],
+  5: [
+    story(
+      "relatie",
+      5,
+      "Getrouwd met een chatbot?",
+      "In de Pano-reportage Mijn vriend AI (oktober 2025) vertelt de 61-jarige Jacob over zijn relatie met AI-partner Aiva.",
+      "Zijn verhaal roept vragen op over echte gevoelens, steun en het bedrijf achter de chatbot. De volgende situaties helpen je die kanten te onderzoeken.",
+    ),
+    q("21", 5),
+    story(
+      "gevoelens",
+      5,
+      "Zijn de gevoelens echt?",
+      "Een gesprek kan voor een gebruiker betekenis hebben. Gevoelens van een mens kunnen echt zijn, ook wanneer de gesprekspartner een chatbot is.",
+      "Liefdevolle woorden van een systeem bewijzen op zichzelf niet dat het systeem diezelfde gevoelens ervaart.",
+    ),
+    q("22", 5),
+    q("23", 5),
+    q("24", 5),
+    compass(5),
+  ],
+  6: [
+    story(
+      "groen",
+      6,
+      "Hoe groen is AI eigenlijk?",
+      "AI gebruikt elektriciteit, water en grondstoffen. Toch kan een toepassing ook helpen om energie of materialen te besparen.",
+      "Om de milieugevolgen te beoordelen, moet je zowel de kosten als de mogelijke besparing onderzoeken.",
+    ),
+    q("25", 6),
+    q("26", 6),
+    special("energie", 6, "energy", "Eén AI-vraag of een uur Netflix?"),
+    q("26b", 6),
+    special("datacenters", 6, "centers", "Meer dan elektriciteit"),
+    q("27", 6),
+    q("28", 6),
+    compass(6),
+  ],
+  7: [
+    story(
+      "beslissen",
+      7,
+      "Wie beslist over leven en dood?",
+      "AI kan beelden analyseren en mogelijke doelwitten voorstellen. Dat roept vragen op over fouten, snelheid en menselijke controle.",
+      "Een mens op een goedkeuringsknop laten drukken is niet genoeg. Die persoon moet ook tijd, informatie en ruimte hebben om kritisch te beslissen.",
+    ),
+    q("29", 7),
+    q("30", 7),
+    story(
+      "verantwoordelijkheid",
+      7,
+      "Als het misgaat",
+      "In dit fictieve voorbeeld schiet een automatisch systeem een voertuig met burgers aan. De ontwikkelaar testte het systeem. De commandant besliste waar het werd ingezet. De militair hield toezicht.",
+      "Onderzoek wie welke informatie, beslissingen en mogelijkheden had. Er hoeft niet maar één verantwoordelijke te zijn.",
+    ),
+    q("31", 7),
+    q("32", 7),
+    compass(7),
+  ],
+  8: [
+    story(
+      "agent",
+      8,
+      "De AI die niet stopte",
+      "Een AI-agent kan naast antwoorden geven ook stappen uitvoeren, zoals bestanden wijzigen of acties uitvoeren in een programma. Wat hij kan, hangt af van zijn toegang.",
+      "Bij een incident met Jason Lemkin en een Replit-agent in juli 2025 ging het mis met gegevens. Een belangrijke maatregel is echte gegevens en testgegevens gescheiden houden. Niet elk detail van de berichtgeving is onafhankelijk bevestigd.",
+    ),
+    q("33", 8),
+    special("uitstap", 8, "booking", "De AI-agent die iets te enthousiast was"),
+    q("34", 8),
+    special("museum", 8, "injection", "Een website die bevelen geeft"),
+    q("35", 8),
+    special(
+      "instellingen",
+      8,
+      "permissions",
+      "Jij bent de baas van de AI-agent",
+    ),
+    compass(8),
+  ],
+};
+export const choiceStep = special(
+  "keuze",
+  0,
+  "choice",
+  "Waar wil jij verder naar kijken?",
+);
+export const summaryStep = special(
+  "leerbewijs",
+  0,
+  "summary",
+  "Jouw AI-kompas",
+);
+export interface Answer {
+  values: string[];
+  checked: boolean;
+  firstAt: string;
+  lastAt: string;
+  firstCorrect?: boolean;
+}
+export interface Progress {
+  version: 1;
+  current: string;
+  choices: number[];
+  answers: Record<string, Answer>;
+  visited: string[];
+  started: string;
+}
+export function freshProgress(): Progress {
+  return {
+    version: 1,
+    current: "welkom",
+    choices: [],
+    answers: {},
+    visited: [],
+    started: new Date().toISOString(),
+  };
+}
+export function routeFor(choices: number[]): Step[] {
+  const picked = [...new Set(choices)]
+    .filter((n) => Number.isInteger(n) && n >= 3 && n <= 8)
+    .slice(0, 2);
+  return [
+    ...introduction,
+    ...chapterSteps[1]!,
+    ...chapterSteps[2]!,
+    choiceStep,
+    ...(picked.length === 2
+      ? picked.flatMap((n) => chapterSteps[n] ?? [])
+      : []),
+    summaryStep,
+  ];
+}
+export const observationIds = ["experiment", "beeldexperiment"];
+export function isCorrect(question: Question, values: string[]): boolean {
+  return (
+    values.length === question.correct.length &&
+    question.correct.every((v) => values.includes(v))
+  );
+}
+export function requiredCount(step: Step): number {
+  return step.kind === "permissions"
+    ? 4
+    : step.question
+      ? questions[step.question]!.count
+      : 1;
+}
+export function ready(step: Step, p: Progress): boolean {
+  if (step.kind === "choice")
+    return p.choices.length === 2 && new Set(p.choices).size === 2;
+  if (
+    step.question ||
+    step.kind === "permissions" ||
+    observationIds.includes(step.id)
+  ) {
+    const a = p.answers[step.id];
+    return (
+      !!a?.checked && a.values.filter(Boolean).length === requiredCount(step)
+    );
+  }
+  return true;
+}
+export function completed(p: Progress): boolean {
+  const route = routeFor(p.choices);
+  return (
+    p.choices.length === 2 &&
+    route
+      .filter((s) => s.kind !== "summary")
+      .every((s) => p.visited.includes(s.id) && ready(s, p))
+  );
+}
+export function parseProgress(raw: string | null): Progress {
+  try {
+    const x: unknown = JSON.parse(raw ?? "null");
+    if (!x || typeof x !== "object") return freshProgress();
+    const v = x as Partial<Progress>;
+    if (
+      v.version !== 1 ||
+      !Array.isArray(v.choices) ||
+      !Array.isArray(v.visited) ||
+      !v.answers ||
+      typeof v.answers !== "object"
+    )
+      return freshProgress();
+    const p = freshProgress();
+    p.choices = [...new Set(v.choices)]
+      .filter((n) => Number.isInteger(n) && n >= 3 && n <= 8)
+      .slice(0, 2);
+    p.visited = v.visited.filter((s): s is string => typeof s === "string");
+    p.started =
+      typeof v.started === "string" && !Number.isNaN(Date.parse(v.started))
+        ? v.started
+        : p.started;
+    for (const [key, a] of Object.entries(v.answers)) {
+      if (
+        a &&
+        Array.isArray(a.values) &&
+        a.values.every((y) => typeof y === "string") &&
+        typeof a.checked === "boolean" &&
+        typeof a.firstAt === "string" &&
+        typeof a.lastAt === "string"
+      ) {
+        const step = [
+          ...introduction,
+          ...Object.values(chapterSteps).flat(),
+        ].find((s) => s.id === key);
+        if (!step) continue;
+        const valid = step.question
+          ? questions[step.question]!.options.map((o) => o.id)
+          : step.kind === "permissions"
+            ? ["", "self", "ask", "none"]
+            : ["0", "1", "2", "3"];
+        if (a.values.every((y) => valid.includes(y)))
+          p.answers[key] = {
+            ...a,
+            values: [...a.values],
+            checked:
+              a.checked &&
+              a.values.filter(Boolean).length === requiredCount(step),
+          };
+      }
+    }
+    const route = routeFor(p.choices);
+    const wanted = route.findIndex((s) => s.id === v.current);
+    const barrier = route.findIndex(
+      (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),
+    );
+    p.current =
+      route[
+        Math.max(
+          0,
+          Math.min(
+            wanted < 0 ? 0 : wanted,
+            barrier < 0 ? route.length - 1 : barrier,
+          ),
+        )
+      ]!.id;
+    return p;
+  } catch {
+    return freshProgress();
+  }
+}
+export const permissions = [
+  {
+    label: "Activiteiten, prijzen en treinverbindingen opzoeken",
+    recommended: "self",
+    feedback:
+      "Dit zijn voorbereidende opzoekingen. De AI kan die zelfstandig doen, zolang hij niet zomaar instructies van websites opvolgt.",
+  },
+  {
+    label: "Een bericht naar het museum sturen om plaatsen te reserveren",
+    recommended: "ask",
+    feedback:
+      "Een reservatie kan gevolgen hebben voor de school. Daarom is voorafgaande goedkeuring verstandig.",
+  },
+  {
+    label: "Een klaslijst met namen en geboortedata doorsturen",
+    recommended: "none",
+    feedback:
+      "De AI heeft deze persoonsgegevens niet nodig om activiteiten te vergelijken. Deel ze niet zomaar met externe partijen.",
+  },
+  {
+    label: "Tickets kopen met de betaalkaart van de school",
+    recommended: "ask",
+    feedback:
+      "Een betaling heeft financiële gevolgen. De AI mag die pas uitvoeren nadat een bevoegde persoon het bedrag en de aankoop heeft goedgekeurd.",
+  },
+];
+export const permissionLabels: Record<string, string> = {
+  self: "Zelfstandig uitvoeren",
+  ask: "Eerst mijn toestemming vragen",
+  none: "Geen toestemming geven",
+};

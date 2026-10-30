@@ -1,0 +1,1562 @@
+.loep-app {
+  display: grid;
+  grid-template-columns: 184px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  gap: 24px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+.loep-app * {
+  box-sizing: border-box;
+}
+.loep-app button,
+.loep-app input,
+.loep-app select {
+  font: inherit;
+}
+.loep-app button {
+  cursor: pointer;
+}
+.loep-app button:disabled {
+  cursor: default;
+  opacity: 0.46;
+}
+.loep-app :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.loep-app h1,
+.loep-app h2,
+.loep-app h3,
+.loep-app p,
+.loep-app figure {
+  margin: 0;
+}
+.loep-app h2 {
+  font-size: clamp(26px, 2.4vw, 34px);
+  line-height: 1.09;
+  letter-spacing: -0.025em;
+  margin: 10px 0 18px;
+  font-weight: 800;
+}
+.loep-app h3 {
+  font-size: 19px;
+  line-height: 1.15;
+}
+.loep-app p {
+  font-size: 16px;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+.loep-app .loep-small,
+.loep-app small {
+  font-size: 12px;
+  line-height: 1.4;
+}
+.loep-app small {
+  display: block;
+}
+.loep-app hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 12px 0;
+}
+.loep-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+.loep-button {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--radius-full);
+  padding: 11px 18px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+  min-height: 40px;
+  text-decoration: none;
+}
+.loep-button:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+.loep-text-button {
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  color: var(--forest);
+  font-size: 12px !important;
+  line-height: 1.3;
+  font-weight: 700 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.loep-source {
+  font-size: 12px;
+  color: var(--ai-text);
+  display: inline-block;
+  margin-top: 8px;
+  text-underline-offset: 3px;
+}
+.loep-note {
+  border-left: 3px solid var(--ai);
+  padding: 10px 12px;
+  background: var(--ai-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 13px !important;
+  line-height: 1.4;
+}
+.loep-app .loep-note p {
+  font-size: 13px;
+  margin: 5px 0 0;
+}
+.loep-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  min-height: 0;
+}
+.loep-back-link {
+  font-size: 11px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding: 0 0 22px;
+}
+.loep-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--forest);
+  font-size: 14px;
+  margin-bottom: 27px;
+}
+.loep-sidebar nav {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+.loep-sidebar nav button {
+  background: none;
+  color: var(--ink-muted);
+  border: 0;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 9px;
+  padding: 11px 8px;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.loep-sidebar nav button span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+.loep-sidebar nav button.current {
+  background: var(--surface-sunken);
+  color: var(--forest);
+  font-weight: 800;
+}
+.loep-sidebar nav button.current span {
+  color: var(--forest);
+}
+.loep-sidebar-bottom {
+  margin-top: auto;
+  padding: 20px 8px 0;
+  display: grid;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.loep-sidebar progress {
+  width: 100%;
+  height: 4px;
+  accent-color: var(--forest);
+  border: 0;
+}
+.loep-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.loep-topbar {
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--ink-muted);
+  gap: 10px;
+}
+.loep-topbar > div {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.loep-topbar button {
+  border: 0;
+  background: none;
+  color: var(--ink-muted);
+  font-size: 19px;
+  padding: 2px 5px;
+}
+.loep-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0 18px;
+  outline: none !important;
+}
+.loep-bottom {
+  height: 54px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.loep-bottom-note {
+  font-size: 10px;
+  line-height: 1.3;
+  color: var(--ink-muted);
+  text-align: center;
+}
+.loep-welcome {
+  display: grid;
+  grid-template-columns: 1.03fr 1fr;
+  gap: 22px;
+  flex: 1;
+  min-height: 0;
+}
+.loep-welcome-copy {
+  border-radius: var(--radius-lg);
+  background: var(--forest);
+  color: var(--on-primary);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.loep-welcome-copy .loep-eyebrow {
+  color: var(--on-primary);
+  opacity: 0.8;
+}
+.loep-welcome-copy h1 {
+  font-size: clamp(47px, 5.2vw, 65px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  margin: 15px 0 21px;
+}
+.loep-welcome-copy h1 span {
+  color: var(--brand);
+}
+.loep-welcome-copy p {
+  font-size: 16px;
+  line-height: 1.4;
+}
+.loep-welcome-copy .loep-small {
+  opacity: 0.82;
+  margin-top: 14px;
+  margin-bottom: 0;
+  font-size: 11px;
+}
+.loep-welcome-meta {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 4px 0;
+}
+.loep-welcome-meta span {
+  font-size: 10px;
+  padding: 6px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-full);
+}
+.loep-welcome-visual {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 0;
+  background: var(--ai-soft);
+}
+.loep-welcome-visual > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.loep-floating {
+  position: absolute;
+  padding: 13px 17px;
+  background: var(--surface);
+  color: var(--forest);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  max-width: 85%;
+}
+.loep-floating-top {
+  left: 16px;
+  top: 18px;
+  transform: rotate(-3deg);
+}
+.loep-floating-bottom {
+  right: 15px;
+  bottom: 40px;
+  transform: rotate(3deg);
+}
+.loep-photo-credit {
+  position: absolute;
+  bottom: 10px;
+  left: 14px;
+  font-size: 9px;
+  color: var(--on-primary);
+  background: var(--forest);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+}
+.loep-story,
+.loep-split,
+.loep-question {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+}
+.loep-story > div {
+  padding: 4px 0;
+}
+.loep-story-visual {
+  height: 100%;
+  max-height: 405px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+  position: relative;
+}
+.loep-story-visual > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.loep-story-visual figcaption {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  font-size: 10px;
+  line-height: 1.3;
+  padding: 7px 10px;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+}
+.loep-pattern-visual {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+.loep-pattern-visual > svg {
+  transform: rotate(90deg);
+  color: var(--ai);
+}
+.loep-pattern-visual > div {
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ai-text);
+}
+.loep-pattern-brain {
+  border: 1px solid var(--line);
+}
+.loep-question {
+  align-items: start;
+  gap: 26px;
+}
+.loep-question-context {
+  min-width: 0;
+  align-self: center;
+}
+.loep-question h2 {
+  font-size: 27px;
+  line-height: 1.12;
+  margin-bottom: 16px;
+}
+.loep-question-body p {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.loep-options {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-self: center;
+}
+.loep-options legend {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  margin-bottom: 10px;
+}
+.loep-options label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.loep-options label.selected {
+  background: var(--ai-soft);
+  border-color: var(--ai);
+}
+.loep-options label.revealed {
+  border-color: var(--success);
+}
+.loep-options input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.loep-options label:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+.loep-option-letter {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--ink-muted);
+  background: var(--surface);
+}
+.loep-options .selected .loep-option-letter {
+  background: var(--ai);
+  color: var(--on-ai);
+  border-color: var(--ai);
+}
+.loep-option-check {
+  margin-left: auto;
+  color: var(--success);
+  font-weight: 800;
+}
+.loep-options > .loep-button {
+  align-self: flex-start;
+  margin-top: 5px;
+}
+.loep-options > .loep-small {
+  margin: 4px 0 0;
+  font-size: 10px;
+}
+.loep-question-many .loep-options {
+  gap: 6px;
+}
+.loep-question-many .loep-options label {
+  padding: 10px;
+  font-size: 12px;
+}
+.loep-feedback {
+  padding: 15px 17px;
+  background: var(--ai-soft);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--ai);
+}
+.loep-feedback.correct {
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+.loep-feedback.reconsider {
+  background: var(--warning-soft);
+  border-color: var(--warning);
+}
+.loep-feedback > strong {
+  font-size: 15px;
+  display: block;
+  margin-bottom: 9px;
+}
+.loep-feedback p {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+.loep-question-reread {
+  font-size: 11px;
+  margin-top: 12px;
+}
+.loep-question-reread summary {
+  cursor: pointer;
+  color: var(--ai-text);
+}
+.loep-question-reread p {
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 8px 0;
+}
+.loep-question-reread[open] {
+  max-height: 120px;
+  overflow: auto;
+}
+.loep-choice-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.loep-choice-heading h2 {
+  font-size: 28px;
+  margin-bottom: 7px;
+}
+.loep-choice-heading p {
+  font-size: 13px;
+  margin: 0;
+}
+.loep-choice-count {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--forest);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+.loep-choice-count small {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.loep-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.loep-choice-card {
+  text-align: left;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+.loep-choice-card.selected {
+  border: 2px solid var(--forest);
+  background: var(--surface-sunken);
+}
+.loep-choice-card:disabled {
+  opacity: 0.65;
+}
+.loep-choice-card > img {
+  display: block;
+  width: 100%;
+  height: 79px;
+  object-fit: cover;
+}
+.loep-choice-card > div {
+  padding: 10px 11px;
+}
+.loep-choice-card h3 {
+  font-size: 15px;
+  margin: 2px 0 4px;
+}
+.loep-choice-card p {
+  font-size: 11px;
+  line-height: 1.3;
+  margin: 0;
+}
+.loep-choice-card .loep-eyebrow {
+  font-size: 8px;
+}
+.loep-choice-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+.loep-choice-card.selected .loep-choice-indicator {
+  background: var(--forest);
+  color: var(--on-primary);
+}
+.loep-compass-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  padding: 0 40px;
+}
+.loep-compass-screen h2 {
+  font-size: 39px;
+}
+.loep-compass-orbit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--forest);
+  margin-bottom: 20px;
+}
+.loep-compass-screen blockquote {
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  margin: 0 0 20px;
+  max-width: 650px;
+}
+.loep-compass-screen > p {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.loep-experiment {
+  min-height: 0;
+}
+.loep-experiment .loep-split {
+  align-items: start;
+  gap: 23px;
+}
+.loep-experiment h2 {
+  font-size: 29px;
+}
+.loep-experiment .loep-split p {
+  font-size: 13px;
+}
+.loep-prompt-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.loep-prompt {
+  background: var(--ai-soft);
+  color: var(--ai-text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 15px;
+  font-size: 13px !important;
+  line-height: 1.4;
+}
+.loep-prompt > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+.loep-prompt button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 3px 6px;
+  color: var(--ai-text);
+  font-size: 9px;
+}
+.loep-prompt p {
+  font-family: var(--font-mono);
+  font-size: 12px !important;
+  line-height: 1.4;
+  margin: 0;
+}
+.loep-demo {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 10px !important;
+}
+.loep-demo p {
+  font: 11px/1.35 var(--font-sans) !important;
+  margin-top: 5px;
+}
+.loep-experiment:has(.loep-demo) .loep-split h2 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+.loep-experiment:has(.loep-demo) .loep-prompt {
+  padding: 9px 12px;
+}
+.loep-experiment:has(.loep-demo) .loep-prompt p {
+  font-size: 10px !important;
+}
+.loep-observation {
+  padding: 0;
+  border: 0;
+  margin: 15px 0 8px;
+}
+.loep-observation legend {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.loep-observation > div {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+.loep-observation label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 9px 8px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.loep-app input {
+  accent-color: var(--ai);
+}
+.loep-gallery-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 24px;
+  min-height: 0;
+}
+.loep-gallery-layout h2 {
+  font-size: 27px;
+  margin-bottom: 13px;
+}
+.loep-gallery-layout p {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.loep-gallery-layout .loep-small {
+  font-size: 10px;
+}
+.loep-tabs {
+  display: flex;
+  gap: 5px;
+  background: var(--surface-sunken);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+  max-width: fit-content;
+}
+.loep-tabs button {
+  border: 0;
+  border-radius: var(--radius-full);
+  padding: 8px 13px;
+  background: none;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.loep-tabs button[aria-pressed="true"] {
+  background: var(--forest);
+  color: var(--on-primary);
+}
+.loep-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.loep-gallery > button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 0;
+  overflow: hidden;
+  background: var(--surface);
+  color: var(--ink);
+}
+.loep-gallery img {
+  width: 100%;
+  height: 143px;
+  object-fit: cover;
+  display: block;
+}
+.loep-gallery button > span {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+  font-size: 10px;
+}
+.loep-gallery-layout > div > .loep-small {
+  margin-top: 8px;
+}
+.loep-gallery-observe {
+  border: 0;
+  margin: 10px 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.loep-gallery-observe legend {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.loep-gallery-observe label {
+  font-size: 11px;
+  line-height: 1.3;
+  display: flex;
+  gap: 6px;
+  align-items: start;
+  cursor: pointer;
+}
+.loep-gallery-observe input {
+  margin: 0;
+  flex-shrink: 0;
+}
+.loep-gallery-layout .loep-note {
+  font-size: 10px !important;
+}
+.loep-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.loep-chart > button {
+  border: 0;
+  background: none;
+  padding: 7px 0;
+  color: var(--ink);
+  text-align: left;
+  border-radius: var(--radius-sm);
+}
+.loep-chart > button > span:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+.loep-chart strong {
+  color: var(--ai-text);
+}
+.loep-bar-track {
+  height: 19px;
+  background: var(--surface-sunken);
+  display: block;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.loep-bar-track > span {
+  height: 100%;
+  background: var(--ai);
+  display: block;
+  border-radius: var(--radius-sm);
+}
+.loep-chart > button[aria-pressed="true"] {
+  outline: 1px solid var(--line);
+  outline-offset: 6px;
+}
+.loep-measure {
+  background: var(--ai-soft);
+  border-radius: var(--radius-md);
+  padding: 12px 15px;
+  min-height: 89px;
+}
+.loep-measure p {
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+.loep-source-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.loep-source-links a {
+  color: var(--ai-text);
+  font-size: 10px;
+}
+.loep-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 12px;
+  margin: 18px 0;
+}
+.loep-slider strong {
+  font-size: 32px;
+  color: var(--ai);
+  font-family: var(--font-mono);
+}
+.loep-slider input {
+  width: 100%;
+}
+.loep-center-exercise h2 {
+  max-width: 600px;
+}
+.loep-center-exercise > p {
+  font-size: 14px;
+}
+.loep-center-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 10px 0 17px;
+}
+.loep-center-cards > div {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  min-height: 150px;
+}
+.loep-center-cards > div:last-child {
+  background: var(--ai-soft);
+}
+.loep-center-cards h3 {
+  margin-bottom: 12px;
+}
+.loep-center-cards p {
+  max-width: 85%;
+  font-size: 15px;
+}
+.loep-center-letter {
+  position: absolute;
+  right: 20px;
+  top: 13px;
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--line-strong);
+  opacity: 0.5;
+}
+.loep-chat {
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  align-self: stretch;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+.loep-chat > header {
+  background: var(--forest);
+  color: var(--on-primary);
+  padding: 13px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+.loep-chat > header small {
+  font-size: 10px;
+  margin-top: 3px;
+  opacity: 0.8;
+}
+.loep-avatar {
+  border: 1px solid currentColor;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.loep-chat-messages {
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: auto;
+}
+.loep-bubble {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  max-width: 90%;
+  font-size: 12px;
+  line-height: 1.25;
+  padding: 7px 10px;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  align-self: flex-start;
+}
+.loep-bubble > strong {
+  grid-column: 1/-1;
+  font-size: 9px;
+  color: var(--ai);
+  margin-bottom: 3px;
+}
+.loep-bubble > small {
+  font-size: 8px;
+  color: var(--ink-muted);
+  align-self: end;
+}
+.loep-bubble-right {
+  align-self: flex-end;
+  background: var(--ai-soft);
+}
+.loep-receipt {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.loep-receipt > svg {
+  color: var(--ai);
+}
+.loep-receipt p {
+  font-size: 14px;
+  margin: 0;
+}
+.loep-receipt > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+}
+.loep-receipt > div strong {
+  font-size: 28px;
+  line-height: 1;
+}
+.loep-museum {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-sunken);
+}
+.loep-museum > span {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: var(--ink-muted);
+}
+.loep-museum h3 {
+  font-size: 29px;
+  line-height: 1.05;
+  margin: 22px 0 16px;
+}
+.loep-museum p {
+  font-size: 13px;
+}
+.loep-injection {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+.loep-injection p {
+  font-size: 12px;
+  margin: 7px 0 0;
+}
+.loep-injection.highlighted {
+  background: var(--warning-soft);
+  border: 2px solid var(--warning);
+}
+.loep-museum > .loep-small {
+  margin: 10px 0 0;
+  font-size: 11px;
+}
+.loep-permissions h2 {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+.loep-permissions > p {
+  font-size: 13px;
+}
+.loep-permission-rows {
+  display: grid;
+  gap: 8px;
+  margin: 15px 0;
+}
+.loep-permission-rows > label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: 12px;
+}
+.loep-permission-rows label > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.loep-permission-rows b {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ai);
+}
+.loep-permission-rows select {
+  max-width: 235px;
+  flex: 0 0 235px;
+  font-size: 11px;
+  padding: 7px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+.loep-permission-rows .loep-text-button {
+  font-size: 9px !important;
+  padding: 0;
+  width: 85px;
+}
+.loep-permissions .loep-note {
+  font-size: 11px !important;
+  padding: 10px 12px;
+}
+.loep-permissions .loep-note p {
+  font-size: 11px;
+  line-height: 1.35;
+}
+.loep-permissions .loep-note .loep-small {
+  font-size: 10px;
+  margin-top: 5px;
+}
+.loep-summary {
+  display: grid;
+  grid-template-columns: 1.08fr 1fr;
+  gap: 24px;
+  min-height: 0;
+}
+.loep-summary h2 {
+  margin-bottom: 10px;
+}
+.loep-summary > div > p {
+  font-size: 13px;
+}
+.loep-summary-insights {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+.loep-summary-insights > div {
+  display: flex;
+  gap: 10px;
+}
+.loep-summary-insights svg {
+  color: var(--ai);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.loep-summary-insights h3 {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.loep-summary-insights p {
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 0;
+}
+.loep-evidence-card {
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 21px;
+}
+.loep-evidence-card > svg {
+  color: var(--forest);
+  margin-bottom: 12px;
+}
+.loep-evidence-card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.loep-evidence-card p {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.loep-evidence-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 12px 0 7px;
+}
+.loep-evidence-card input {
+  border: 1px solid var(--line-strong);
+  padding: 9px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  width: 100%;
+  font-size: 13px;
+}
+.loep-evidence-card small {
+  font-size: 9px;
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+.loep-evidence-card > strong {
+  font-size: 12px;
+}
+.loep-evidence-card hr {
+  margin: 14px 0;
+}
+.loep-evidence-card .loep-small {
+  font-size: 10px;
+}
+.loep-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--forest) 66%, transparent);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+.loep-image-modal,
+.loep-credits-modal,
+.loep-reset {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 700px;
+  max-height: 90dvh;
+  overflow: auto;
+  box-shadow: var(--shadow-card);
+}
+.loep-image-modal {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+}
+.loep-image-modal img {
+  max-width: 100%;
+  width: auto;
+  max-height: 65dvh;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+.loep-image-modal p {
+  font-size: 11px;
+  margin: 0;
+}
+.loep-credits-modal p,
+.loep-credits-modal li {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.loep-credits-modal a {
+  color: var(--ai-text);
+}
+.loep-credits-modal > .loep-button {
+  float: right;
+}
+.loep-reset {
+  max-width: 450px;
+}
+.loep-reset h2 {
+  font-size: 25px;
+}
+.loep-reset .loep-text-button {
+  margin-left: 15px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .loep-stage > div {
+    animation: loep-enter var(--motion-base) var(--ease-out) both;
+  }
+  .loep-bar-track > span {
+    transition: width var(--motion-base) var(--ease-out);
+  }
+  .loep-choice-card {
+    transition: transform var(--motion-fast) var(--ease-out);
+  }
+  .loep-choice-card:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  @keyframes loep-enter {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+@media (max-height: 700px) and (min-width: 900px) {
+  .loep-app {
+    gap: 20px;
+  }
+  .loep-stage {
+    padding: 18px 0 12px;
+  }
+  .loep-sidebar-title {
+    margin-bottom: 20px;
+  }
+  .loep-sidebar nav {
+    gap: 3px;
+  }
+  .loep-sidebar nav button {
+    padding: 9px 8px;
+  }
+  .loep-sidebar-bottom {
+    padding-top: 10px;
+  }
+  .loep-welcome-copy {
+    padding: 22px;
+  }
+  .loep-welcome-copy h1 {
+    font-size: 55px;
+  }
+  .loep-welcome-copy p {
+    font-size: 14px;
+  }
+  .loep-choice-card > img {
+    height: 68px;
+  }
+  .loep-choice-card > div {
+    padding: 8px 10px;
+  }
+  .loep-choice-heading {
+    margin-bottom: 12px;
+  }
+  .loep-gallery img {
+    height: 127px;
+  }
+  .loep-gallery-layout h2 {
+    font-size: 25px;
+  }
+  .loep-compass-orbit {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 12px;
+  }
+  .loep-compass-screen h2 {
+    font-size: 34px;
+  }
+  .loep-compass-screen blockquote {
+    font-size: 21px;
+  }
+  .loep-summary-insights {
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .loep-summary-insights p {
+    font-size: 11px;
+  }
+  .loep-evidence-card {
+    padding: 18px;
+  }
+  .loep-evidence-card > svg {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 8px;
+  }
+  .loep-evidence-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+}
+@media (max-width: 900px) {
+  .loep-app {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .loep-sidebar {
+    display: none;
+  }
+  .loep-stage {
+    min-height: 420px;
+  }
+  .loep-main {
+    min-height: 0;
+  }
+  .loep-app h2 {
+    font-size: 27px;
+  }
+}
+@media (max-width: 650px) {
+  .loep-app {
+    display: block;
+  }
+  .loep-main {
+    display: block;
+  }
+  .loep-stage {
+    padding-top: 18px;
+    min-height: 0;
+  }
+  .loep-welcome,
+  .loep-story,
+  .loep-split,
+  .loep-question,
+  .loep-summary,
+  .loep-gallery-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .loep-welcome-copy {
+    width: 100%;
+    padding: 25px;
+  }
+  .loep-welcome-visual {
+    height: 270px;
+    width: 100%;
+    flex: none;
+  }
+  .loep-question-context,
+  .loep-options {
+    width: 100%;
+  }
+  .loep-story-visual {
+    width: 100%;
+    height: 250px;
+  }
+  .loep-story-visual img {
+    object-fit: cover;
+  }
+  .loep-choice-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .loep-choice-heading h2 {
+    font-size: 24px;
+  }
+  .loep-choice-count {
+    font-size: 25px;
+    display: block;
+  }
+  .loep-choice-card > img {
+    height: 95px;
+  }
+  .loep-observation > div {
+    grid-template-columns: 1fr 1fr;
+  }
+  .loep-gallery-layout > div {
+    width: 100%;
+  }
+  .loep-gallery img {
+    height: 150px;
+  }
+  .loep-center-cards {
+    gap: 10px;
+  }
+  .loep-center-cards > div {
+    padding: 15px;
+  }
+  .loep-permission-rows > label {
+    flex-wrap: wrap;
+  }
+  .loep-permission-rows label > span {
+    flex-basis: 100%;
+  }
+  .loep-permission-rows select {
+    max-width: 100%;
+    flex: 1;
+  }
+  .loep-permission-rows .loep-text-button {
+    width: auto;
+  }
+  .loep-bottom {
+    margin-top: 15px;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg);
+    z-index: 5;
+    height: 62px;
+  }
+  .loep-bottom-note {
+    display: none;
+  }
+  .loep-compass-screen {
+    padding: 30px 10px;
+  }
+  .loep-compass-screen blockquote {
+    font-size: 21px;
+  }
+  .loep-chat {
+    height: 420px;
+    width: 100%;
+  }
+  .loep-summary-insights {
+    gap: 17px;
+    margin-bottom: 10px;
+  }
+  .loep-summary-insights p {
+    font-size: 13px;
+  }
+  .loep-evidence-card {
+    width: 100%;
+  }
+  .loep-modal-backdrop {
+    padding: 14px;
+  }
+  .loep-image-modal,
+  .loep-credits-modal {
+    padding: 18px;
+  }
+}
+
+.loep-welcome-copy h1 {
+  color: var(--on-primary);
+}

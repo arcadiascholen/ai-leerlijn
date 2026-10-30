@@ -23,7 +23,8 @@ import Reflectie from '../../components/vragen/Reflectie.astro';
 // shown in the overview but get no page (BRIEFING § 5).
 export async function getStaticPaths() {
   const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
-  return entries.map((entry) => {
+  // The dedicated route supports two choices from six.
+  return entries.filter(entry => entry.id !== 'verantwoord-gebruik').map((entry) => {
     const { branching, tool, promptSteps } = checkModuleBody(entry.id, entry.body ?? '');
     return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps } };
   });

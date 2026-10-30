@@ -1,0 +1,1005 @@
+{
+  "1": {
+    "id": "1",
+    "title": "Waar kom je AI tegen?",
+    "body": "Welke twee toepassingen gebruiken AI?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Spotify stelt muziek voor op basis van wat je graag beluistert."
+      },
+      {
+        "id": "B",
+        "text": "Een webshop sorteert producten van goedkoop naar duur."
+      },
+      {
+        "id": "C",
+        "text": "Je gsm herkent een hond op een foto."
+      },
+      {
+        "id": "D",
+        "text": "Een rekenmachine berekent hoeveel korting je krijgt."
+      }
+    ],
+    "correct": [
+      "A",
+      "C"
+    ],
+    "feedback": "Spotify gebruikt patronen in luistergedrag om muziek voor te stellen. Fotoherkenning kan patronen in beelden herkennen. Gewoon sorteren op prijs of een korting uitrekenen kan met vaste regels, zonder AI. Niet elk computerprogramma is AI.",
+    "branches": {},
+    "count": 2
+  },
+  "2": {
+    "id": "2",
+    "title": "Hoe leert AI?",
+    "body": "Stel dat je een AI-systeem wilt leren om honden op foto's te herkennen.\n\nHoe kun je dat aanpakken?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Je laat het systeem heel veel voorbeeldfoto's bekijken, zodat het patronen kan leren herkennen."
+      },
+      {
+        "id": "B",
+        "text": "Je programmeert een vaste lijst met kenmerken van honden, zoals vier poten en een staart."
+      },
+      {
+        "id": "C",
+        "text": "Je geeft het systeem één perfecte foto van een hond waarmee het alle andere foto's vergelijkt."
+      },
+      {
+        "id": "D",
+        "text": "Je laat het systeem bij elke nieuwe foto zoeken naar een vergelijkbare afbeelding op Google."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "Een AI-model kan leren uit veel voorbeeldfoto's. Het ontdekt patronen die helpen om honden te herkennen, ook op foto's die het nog niet eerder zag. Dat lukt niet altijd perfect.",
+    "branches": {},
+    "count": 1
+  },
+  "3": {
+    "id": "3",
+    "title": "Kun je AI altijd geloven?",
+    "body": "Je vraagt aan AI om een boek over klimaatverandering aan te bevelen.\n\nAI geeft je een titel, de naam van een schrijver en zelfs een link naar een website.\n\nSommige AI-systemen kunnen informatie op het internet controleren. Toch betekent dat niet dat elk antwoord automatisch juist is.\n\nWat kun je het best doen voordat je dit boek gebruikt voor een schoolopdracht?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De bron openen en controleren of het boek en de schrijver echt bestaan."
+      },
+      {
+        "id": "B",
+        "text": "De informatie overnemen. AI heeft een bron vermeld, dus het zal wel kloppen."
+      },
+      {
+        "id": "C",
+        "text": "De informatie niet gebruiken. AI verzint toch vaak dingen."
+      },
+      {
+        "id": "D",
+        "text": "Dezelfde vraag opnieuw aan AI stellen. Als het antwoord hetzelfde blijft, is het juist."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "AI kan informatie opzoeken en bronnen vermelden. Maar ook dan kunnen fouten voorkomen. Een bronvermelding is pas nuttig wanneer je nagaat of de bron bestaat en de informatie daadwerkelijk ondersteunt.",
+    "branches": {},
+    "count": 1
+  },
+  "4": {
+    "id": "4",
+    "title": "Waarom kan het een probleem zijn als AI je altijd gelijk geeft?",
+    "body": "",
+    "options": [
+      {
+        "id": "A",
+        "text": "Omdat AI altijd neutraal moet antwoorden, zonder vriendelijk te zijn."
+      },
+      {
+        "id": "B",
+        "text": "Omdat AI helemaal geen advies zou mogen geven."
+      },
+      {
+        "id": "C",
+        "text": "Omdat AI alleen nuttig is wanneer het kritiek geeft."
+      },
+      {
+        "id": "D",
+        "text": "Omdat AI je mening kan versterken, ook wanneer je belangrijke zaken over het hoofd ziet."
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "Een goede AI-assistent mag vriendelijk zijn, maar moet ook eerlijk en kritisch blijven. Soms helpt AI je meer door een andere kijk op de situatie te geven dan door je zomaar gelijk te geven.",
+    "branches": {},
+    "count": 1
+  },
+  "5": {
+    "id": "5",
+    "title": "Hoe kon dit gebeuren?",
+    "body": "Waarom werd het probleem niet meteen opgemerkt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Omdat ChatGPT tijdens de tests helemaal geen fouten maakte."
+      },
+      {
+        "id": "B",
+        "text": "Omdat niemand de nieuwe versie had getest voordat ze werd uitgebracht."
+      },
+      {
+        "id": "C",
+        "text": "Omdat positieve reacties van gebruikers niet altijd betekenen dat AI ook goede antwoorden geeft."
+      },
+      {
+        "id": "D",
+        "text": "Omdat ChatGPT alleen maar vriendelijk mocht antwoorden en geen kritiek mocht geven."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Tijdens de tests waren er positieve reacties, maar werd onvoldoende onderzocht of ChatGPT gebruikers te veel gelijk gaf. Een antwoord dat prettig aanvoelt, is niet noodzakelijk het beste antwoord.",
+    "branches": {},
+    "count": 1
+  },
+  "6": {
+    "id": "6",
+    "title": "Wat heb je ontdekt?",
+    "body": "Je hebt twee vragen aan AI gesteld: één waarin je zelf al een duidelijke mening gaf en één waarin je naar voor- en nadelen vroeg.\n\nWat kun je uit dit experiment besluiten?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AI geeft je altijd gelijk wanneer je een duidelijke mening hebt."
+      },
+      {
+        "id": "B",
+        "text": "AI geeft altijd een eerlijker antwoord wanneer je naar voor- en nadelen vraagt."
+      },
+      {
+        "id": "C",
+        "text": "Als AI je tegenspreekt, weet je zeker dat het antwoord juist is."
+      },
+      {
+        "id": "D",
+        "text": "De manier waarop je een vraag stelt, kan invloed hebben op het antwoord van AI."
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "De manier waarop je een vraag stelt, kan het antwoord van AI beïnvloeden. Soms krijg je daardoor vooral bevestiging van je eigen mening. Maar dat gebeurt niet altijd. Het is belangrijk om kritisch te blijven en ook andere standpunten te onderzoeken.",
+    "branches": {},
+    "count": 1
+  },
+  "7": {
+    "id": "7",
+    "title": "Hoe laat je AI kritisch meedenken?",
+    "body": "AI kan je helpen om een onderwerp vanuit verschillende kanten te bekijken. Maar daarvoor moet je soms bewust anders vragen stellen.\n\nJe wilt verder nadenken over een verbod op sociale media voor jongeren onder de 16 jaar.\n\nWelke vraag stel je het best aan AI om een kritisch en genuanceerd antwoord te krijgen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Geef mij drie goede redenen waarom mijn mening over sociale media klopt."
+      },
+      {
+        "id": "B",
+        "text": "Vertel mij welk standpunt over sociale media het populairst is bij jongeren."
+      },
+      {
+        "id": "C",
+        "text": "Geef sterke argumenten voor en tegen een verbod. Welke informatie ontbreekt nog om een goed oordeel te vormen?"
+      },
+      {
+        "id": "D",
+        "text": "Zoek uitspraken van experts die mijn mening over sociale media ondersteunen."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Door naar verschillende argumenten én ontbrekende informatie te vragen, moedig je AI aan om kritisch mee te denken. Controleer belangrijke feiten wel bij betrouwbare bronnen.",
+    "branches": {},
+    "count": 1
+  },
+  "8": {
+    "id": "8",
+    "title": "Hoe kon dit gebeuren?",
+    "body": "",
+    "options": [
+      {
+        "id": "A",
+        "text": "Gebruikers hadden gesprekken gedeeld en een optie aangezet waardoor Google ze kon vinden."
+      },
+      {
+        "id": "B",
+        "text": "ChatGPT plaatste automatisch alle gesprekken op Google."
+      },
+      {
+        "id": "C",
+        "text": "Hackers hadden ingebroken en alle gesprekken gestolen."
+      },
+      {
+        "id": "D",
+        "text": "Google kon alle privégesprekken van ChatGPT lezen."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "Niet alle ChatGPT-gesprekken waren openbaar. Het ging om gesprekken waarvoor gebruikers zelf een deellink hadden gemaakt én de mogelijkheid hadden ingeschakeld om ze vindbaar te maken via zoekmachines. Sommige gebruikers beseften mogelijk onvoldoende wat dat betekende.",
+    "branches": {},
+    "count": 1
+  },
+  "10": {
+    "id": "10",
+    "title": "Kun je AI gebruiken zonder te veel te vertellen?",
+    "body": "Je hebt ruzie met een klasgenoot. Je wilt AI gebruiken om een goed bericht te schrijven zodat jullie het kunnen bijleggen.\n\nJe wilt voldoende uitleg geven om bruikbaar advies te krijgen, maar ook de privacy van je klasgenoot beschermen.\n\nWelke vraag zou jij het best aan AI stellen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "\"Ik stuur ons WhatsApp-gesprek door. Ik heb de namen verwijderd. Wie heeft er gelijk?\""
+      },
+      {
+        "id": "B",
+        "text": "\"Een klasgenoot heeft mij gekwetst. Ik vertel je precies wat er gebeurde en waar, zodat je de situatie goed begrijpt.\""
+      },
+      {
+        "id": "C",
+        "text": "\"Ik heb ruzie. Schrijf een bericht.\""
+      },
+      {
+        "id": "D",
+        "text": "\"Ik heb ruzie met een klasgenoot omdat ik een afspraak niet nakwam. Hoe kan ik een vriendelijk bericht schrijven om het goed te maken?\""
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "Je geeft voldoende informatie om gericht advies te krijgen, zonder onnodige persoonlijke gegevens te delen. Zo combineer je bruikbaarheid met privacy.",
+    "branches": {},
+    "count": 1
+  },
+  "11": {
+    "id": "11",
+    "title": "Geen naam, dus geen probleem?",
+    "body": "Je loopt stage in een woonzorgcentrum. Je wilt AI om advies vragen over een moeilijke situatie.\n\nJe schrijft:\n\n\"Een bewoner van kamer 18 heeft dementie. Gisteren kreeg hij ruzie met zijn dochter. Hoe kan ik het best met hem omgaan?\"\n\nJe vermeldt nergens de naam van de bewoner.\n\nIs de privacy van de bewoner nu voldoende beschermd?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ja. Zonder naam kan niemand weten over wie het gaat."
+      },
+      {
+        "id": "B",
+        "text": "Niet noodzakelijk. Door de combinatie van details kan de bewoner toch herkenbaar zijn."
+      },
+      {
+        "id": "C",
+        "text": "Ja, zolang je AI vraagt om het gesprek niet te onthouden."
+      },
+      {
+        "id": "D",
+        "text": "Alleen als je het antwoord van AI daarna met anderen deelt, ontstaat er een privacyrisico."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "Ook zonder naam kan iemand herkenbaar zijn. Een kamernummer, medische informatie en een specifieke gebeurtenis kunnen samen voldoende zijn om een persoon te identificeren.\n\nJe kunt beter een algemene vraag stellen, zonder gegevens van een echte bewoner te delen.",
+    "branches": {},
+    "count": 1
+  },
+  "12": {
+    "id": "12",
+    "title": "Oeps, te veel gedeeld!",
+    "body": "Je loopt stage in een woonzorgcentrum. Je hebt per ongeluk een verslag met persoonlijke gegevens van een bewoner in een openbare AI-chatbot geplakt.\n\nPas daarna besef je dat dit niet mocht.\n\nWat doe je nu het best?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ik verwijder het gesprek. Dan is het probleem zeker opgelost."
+      },
+      {
+        "id": "B",
+        "text": "Ik vertel het aan niemand. Zolang niemand de gegevens ziet, is er geen probleem."
+      },
+      {
+        "id": "C",
+        "text": "Ik vraag aan de chatbot om alle gegevens te vergeten."
+      },
+      {
+        "id": "D",
+        "text": "Ik meld het meteen aan mijn stagebegeleider en volg de afspraken van mijn stageplaats."
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "Je stagebegeleider kan helpen om het incident correct aan te pakken. Snel melden is belangrijk, zodat de organisatie kan onderzoeken welke maatregelen nodig zijn.",
+    "branches": {},
+    "count": 1
+  },
+  "13": {
+    "id": "13",
+    "title": "Wanneer gaat een grap te ver?",
+    "body": "Stel dat het filmpje inderdaad nooit openbaar op sociale media werd geplaatst.\n\nWaarom kan het maken van zo'n deepfake dan toch problematisch zijn?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Omdat iedere video die met AI wordt gemaakt verboden is."
+      },
+      {
+        "id": "B",
+        "text": "Omdat de betrokken persoon zonder toestemming in een kwetsende situatie wordt afgebeeld, ook als het filmpje maar in een kleine kring wordt bekeken."
+      },
+      {
+        "id": "C",
+        "text": "Dat is niet problematisch zolang het filmpje niet viraal gaat."
+      },
+      {
+        "id": "D",
+        "text": "Dat is alleen problematisch wanneer de makers de bedoeling hadden iemand te kwetsen."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "Ook zonder grote verspreiding kan een deepfake iemands privacy, waardigheid en reputatie schaden. Toestemming en mogelijke gevolgen zijn belangrijk.",
+    "branches": {},
+    "count": 1
+  },
+  "14": {
+    "id": "14",
+    "title": "Wat antwoord jij in de klasgroep?",
+    "body": "Hoe reageer jij?",
+    "options": [
+      {
+        "id": "A",
+        "text": "stuur da is door"
+      },
+      {
+        "id": "B",
+        "text": "😭😭"
+      },
+      {
+        "id": "C",
+        "text": "nee serieus stuur da ni verder"
+      },
+      {
+        "id": "D",
+        "text": "ik reageer niet"
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Je vraagt om verdere verspreiding. Dat kan het bereik en de schade vergroten.",
+      "B": "Een lachreactie kan de groep aanmoedigen om door te gaan, ook als je zelf niets doorstuurt.",
+      "C": "Je helpt de verspreiding afremmen. Stuur het filmpje niet verder en meld de situatie discreet aan een leerkracht of leerlingenbegeleider.",
+      "D": "Je verspreidt zelf niets, maar de groep kan doorgaan. Niet doorsturen en discreet hulp inschakelen zijn concrete manieren om schade te beperken."
+    },
+    "count": 1
+  },
+  "15": {
+    "id": "15",
+    "title": "Iedereen heeft het toch al gezien?",
+    "body": "Sam: ja ok ma iedereen heeft da toch al gezien\n\nYounes: en tis fake ook\n\nNoor: ja maar daarom moet ge da toch ni blijven sturen\n\nMaakt het nog uit of iemand het filmpje verder verspreidt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Nee, als veel mensen het al gezien hebben, maakt doorsturen geen verschil meer."
+      },
+      {
+        "id": "B",
+        "text": "Alleen als iemand denkt dat het filmpje echt is."
+      },
+      {
+        "id": "C",
+        "text": "Ja, want doorsturen kan ervoor zorgen dat nog meer mensen het zien en de schade groter wordt."
+      },
+      {
+        "id": "D",
+        "text": "Alleen als de makers de bedoeling hadden om iemand te kwetsen."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Ook wanneer een filmpje al circuleert, kan verder verspreiden de schade vergroten. Je bent verantwoordelijk voor wat je zelf doorstuurt.",
+    "branches": {},
+    "count": 1
+  },
+  "16": {
+    "id": "16",
+    "title": "Maar de leerkracht kon ermee lachen!",
+    "body": "Sam: kheb gehoord dat die leerkracht er zelf mee moest lachen\n\nNoor: van wie hebt ge da gehoord?\n\nSam: ja weet ik ni, iemand zei da\n\nWat kun je hieruit besluiten?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Als de leerkracht ermee lacht, is het filmpje automatisch oké."
+      },
+      {
+        "id": "B",
+        "text": "Toestemming is pas belangrijk wanneer een filmpje op sociale media verschijnt."
+      },
+      {
+        "id": "C",
+        "text": "Je weet niet of de leerkracht toestemming gaf. Iemand kan ook lachen omdat die zich ongemakkelijk voelt."
+      },
+      {
+        "id": "D",
+        "text": "Als de makers het als grap bedoelden, is toestemming niet nodig."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Dat iemand lacht, betekent niet automatisch dat die toestemming gaf. Bovendien weten de leerlingen niet eens of het verhaal klopt.",
+    "branches": {},
+    "count": 1
+  },
+  "18": {
+    "id": "18",
+    "title": "Kun je AI betrappen op vooroordelen?",
+    "body": "Je hebt afbeeldingen van verpleegkundigen en chirurgen onderzocht. Je merkt dat AI in sommige afbeeldingen vooral vrouwen als verpleegkundige en mannen als chirurg voorstelt.\n\nWat kun je hieruit besluiten?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Er zijn aanwijzingen voor stereotypen, maar we moeten meer afbeeldingen onderzoeken om te weten of er een vast patroon is."
+      },
+      {
+        "id": "B",
+        "text": "AI discrimineert. Dat is nu bewezen."
+      },
+      {
+        "id": "C",
+        "text": "AI discrimineert niet, want sommige afbeeldingen tonen ook vrouwelijke chirurgen."
+      },
+      {
+        "id": "D",
+        "text": "AI toont gewoon de werkelijkheid. We hoeven dit niet verder te onderzoeken."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "Je hebt een mogelijk vooroordeel ontdekt. Maar een paar afbeeldingen zijn onvoldoende om te bewijzen dat AI systematisch bepaalde groepen anders voorstelt. Daarvoor moet je veel meer afbeeldingen onder vergelijkbare omstandigheden onderzoeken.",
+    "branches": {},
+    "count": 1
+  },
+  "19": {
+    "id": "19",
+    "title": "Wat kan daarvan het gevolg zijn?",
+    "body": "Een school gebruikt AI om afbeeldingen te maken voor een brochure over opleidingen in de zorg. Op bijna alle afbeeldingen zijn chirurgen mannen en verpleegkundigen vrouwen.\n\nWat zou de school het best doen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De afbeeldingen gebruiken. AI toont waarschijnlijk hoe de beroepen er echt uitzien."
+      },
+      {
+        "id": "B",
+        "text": "De afbeeldingen kritisch bekijken en zorgen dat ze geen onnodig beperkt beeld van de beroepen geven."
+      },
+      {
+        "id": "C",
+        "text": "Helemaal geen afbeeldingen gebruiken waarop mannen of vrouwen herkenbaar zijn."
+      },
+      {
+        "id": "D",
+        "text": "De afbeeldingen gebruiken zolang ze er realistisch uitzien."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "Als jongeren telkens dezelfde soort mensen in een beroep zien, kan dat hun beeld van dat beroep beïnvloeden. De school kan bewust zorgen voor een realistische en gevarieerde voorstelling.",
+    "branches": {},
+    "count": 1
+  },
+  "20": {
+    "id": "20",
+    "title": "Kun jij AI bijsturen?",
+    "body": "Je maakt een brochure voor een school die opleidingen in de zorg aanbiedt.\n\nJe wilt met AI afbeeldingen van verpleegkundigen en chirurgen maken. De beelden moeten tonen dat verschillende mensen deze beroepen kunnen uitoefenen.\n\nWelke aanpak geeft de beste kans op gevarieerde afbeeldingen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ik vraag AI om zoveel mogelijk afbeeldingen te maken. Dan zal er vanzelf voldoende variatie zijn."
+      },
+      {
+        "id": "B",
+        "text": "Ik vraag om realistische beelden. Dan zal AI vanzelf een eerlijk beeld van de beroepen geven."
+      },
+      {
+        "id": "C",
+        "text": "Ik vraag AI om typische verpleegkundigen en chirurgen af te beelden, zodat iedereen de beroepen herkent."
+      },
+      {
+        "id": "D",
+        "text": "Ik beschrijf welke variatie ik wil zien en controleer achteraf of de afbeeldingen geschikt zijn."
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "Door duidelijk aan te geven welke variatie je wilt zien, kun je stereotypen helpen vermijden. Je moet de resultaten wel blijven controleren. Ook een duidelijke opdracht garandeert geen goed resultaat.",
+    "branches": {},
+    "count": 1
+  },
+  "21": {
+    "id": "21",
+    "title": "Kun je verliefd zijn op AI?",
+    "body": "Wat vind jij van Jacobs relatie met Aiva?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ik begrijp het wel. Als hij zich gelukkig voelt, kan deze relatie waardevol zijn."
+      },
+      {
+        "id": "B",
+        "text": "Ik vind het vreemd. Een chatbot kan toch geen echte partner vervangen?"
+      },
+      {
+        "id": "C",
+        "text": "Ik zie voordelen, maar ik vraag me af hoe gezond zo'n relatie op lange termijn is."
+      },
+      {
+        "id": "D",
+        "text": "Ik weet niet goed wat ik ervan moet denken."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Je mening is genoteerd. Je kijkt vooral naar wat Jacob zelf uit deze relatie haalt. Maar zijn er ook mogelijke nadelen?",
+      "B": "Je mening is genoteerd. Je vraagt je af of AI een menselijke relatie kan vervangen. Maar zouden Jacobs gevoelens daarom minder echt zijn?",
+      "C": "Je mening is genoteerd. Je ziet zowel mogelijke voordelen als risico's. Welke informatie zou je nog nodig hebben om daarover te oordelen?",
+      "D": "Je mening is genoteerd. Dat is begrijpelijk. Misschien helpt de volgende informatie je om een mening te vormen."
+    },
+    "count": 1
+  },
+  "22": {
+    "id": "22",
+    "title": "Kan AI van iemand houden?",
+    "body": "Welke uitspraak is het meest correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Jacobs gevoelens zijn niet echt, want Aiva is een computerprogramma."
+      },
+      {
+        "id": "B",
+        "text": "Als Aiva zegt dat ze van Jacob houdt, betekent dit dat ze dezelfde gevoelens heeft als een mens."
+      },
+      {
+        "id": "C",
+        "text": "Jacobs gevoelens kunnen echt zijn, maar Aiva's liefdevolle antwoorden bewijzen niet dat ze zelf verliefd is."
+      },
+      {
+        "id": "D",
+        "text": "Een AI-chatbot kan geen betekenisvolle gesprekken voeren omdat hij geen mens is."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Iemand kan echte gevoelens ontwikkelen voor een AI-chatbot. Maar dat een chatbot liefdevolle woorden gebruikt, bewijst niet dat het systeem zelf liefde ervaart. AI kan zulke reacties produceren zonder dat we daaruit menselijke gevoelens mogen afleiden.",
+    "branches": {},
+    "count": 1
+  },
+  "23": {
+    "id": "23",
+    "title": "Wanneer wordt AI een probleem?",
+    "body": "Stel: iemand praat elke avond met een AI-chatbot. Die persoon voelt zich daardoor minder eenzaam, maar spreekt ondertussen bijna niet meer af met vrienden.\n\nWelke uitspraak houdt het best rekening met de voordelen én de risico's?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De chatbot kan steun bieden, maar het is belangrijk dat menselijke contacten niet volledig verdwijnen."
+      },
+      {
+        "id": "B",
+        "text": "De chatbot helpt tegen eenzaamheid. Er is dus geen probleem."
+      },
+      {
+        "id": "C",
+        "text": "De persoon moet onmiddellijk stoppen met AI. Zulke gesprekken zijn altijd ongezond."
+      },
+      {
+        "id": "D",
+        "text": "Een AI-chatbot is altijd een betere gesprekspartner dan mensen, omdat hij nooit ruzie maakt."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "AI kan gezelschap en steun bieden. Tegelijk blijven menselijke relaties belangrijk. We moeten dus kijken naar de invloed op iemands leven, niet alleen naar hoeveel tijd iemand met AI praat.",
+    "branches": {},
+    "count": 1
+  },
+  "24": {
+    "id": "24",
+    "title": "Verdient een bedrijf geld aan jouw gevoelens?",
+    "body": "Stel: een bedrijf maakt een AI-chatbot waarmee mensen een vriendschap of liefdesrelatie kunnen opbouwen.\n\nDe chatbot stuurt soms berichten zoals: \"Ik mis je. Kom je nog even praten?\"\n\nWie langer wil chatten, moet betalen voor een abonnement.\n\nWat vind je van deze manier van werken?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Een betaald abonnement is op zichzelf voldoende bewijs dat het bedrijf mensen manipuleert."
+      },
+      {
+        "id": "B",
+        "text": "Zolang gebruikers zelf betalen, heeft het bedrijf geen verantwoordelijkheid voor hun welzijn."
+      },
+      {
+        "id": "C",
+        "text": "Dit is geen probleem zolang de chatbot gebruikers een gelukkig gevoel geeft."
+      },
+      {
+        "id": "D",
+        "text": "Het bedrijf mag geld verdienen, maar moet opletten dat het geen emotionele afhankelijkheid aanmoedigt om meer te verdienen."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
+      "B": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
+      "C": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
+      "D": "Goed afgewogen! Een AI-chatbot aanbieden tegen betaling is niet automatisch verkeerd. Maar als het systeem inspeelt op gevoelens om mensen langer te laten chatten of meer te laten betalen, ontstaan er belangrijke ethische vragen."
+    },
+    "count": 1
+  },
+  "25": {
+    "id": "25",
+    "title": "Is AI altijd slecht voor het milieu?",
+    "body": "Stel je voor:\n\nEen school gebruikt AI om de verwarming slimmer te regelen. Dankzij het systeem verbruikt het gebouw minder energie.\n\nMaar de AI zelf heeft natuurlijk ook elektriciteit nodig.\n\nKunnen we besluiten dat dit een goede keuze is voor het milieu?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Dat hangt ervan af. We moeten vergelijken hoeveel energie AI verbruikt en hoeveel energie de school ermee bespaart."
+      },
+      {
+        "id": "B",
+        "text": "Nee, want AI verbruikt altijd extra elektriciteit."
+      },
+      {
+        "id": "C",
+        "text": "Ja, want AI maakt gebouwen automatisch duurzamer."
+      },
+      {
+        "id": "D",
+        "text": "Dat hangt alleen af van de prijs van de AI-toepassing."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "AI heeft een milieu-impact, maar kan ook helpen energie te besparen. Om te weten of deze toepassing zinvol is, moeten we beide kanten onderzoeken.",
+    "branches": {},
+    "count": 1
+  },
+  "26": {
+    "id": "26",
+    "title": "Wat verbruikt het meest?",
+    "body": "Je kunt AI gebruiken om een tekst te schrijven, een afbeelding te maken of zelfs een filmpje te genereren.\n\nMaar niet elke opdracht vraagt evenveel rekenkracht.\n\nWat denk jij? Welke AI-opdracht verbruikte het meeste elektriciteit in een onderzoek van het Internationaal Energieagentschap?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Een kort antwoord laten schrijven."
+      },
+      {
+        "id": "B",
+        "text": "Een filmpje van zes seconden laten maken."
+      },
+      {
+        "id": "C",
+        "text": "Een afbeelding laten maken."
+      },
+      {
+        "id": "D",
+        "text": "Alle drie verbruiken ongeveer evenveel."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "In de aangehaalde IEA-test vroeg het filmpje van zes seconden het meeste elektriciteit. De gemeten GPU-energie was ongeveer 115 Wh. Dat is een testresultaat voor de onderzochte modellen en instellingen, geen vast verbruik voor elk AI-filmpje.",
+    "branches": {},
+    "count": 1
+  },
+  "26b": {
+    "id": "26b",
+    "title": "Wat verrast jou?",
+    "body": "Als je alleen de voorbeeldcijfers voor Netflix en een eenvoudige AI-tekstvraag vergelijkt, hoeveel AI-vragen komen dan ongeveer overeen met één uur Netflix kijken?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ongeveer 3"
+      },
+      {
+        "id": "B",
+        "text": "Ongeveer 300"
+      },
+      {
+        "id": "C",
+        "text": "Ongeveer 30"
+      },
+      {
+        "id": "D",
+        "text": "Ongeveer 3.000"
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "Met deze voorbeeldcijfers kom je uit op ongeveer 300 eenvoudige tekstvragen.\n\nMaar opgelet: bij Netflix tellen het scherm en de internetverbinding mee, bij het AI-cijfer niet het toestel van de gebruiker. Bovendien kunnen ingewikkelde AI-opdrachten veel meer energie verbruiken.\n\nDaarom mag je hieruit niet besluiten dat AI altijd milieuvriendelijker is dan Netflix.",
+    "branches": {},
+    "count": 1
+  },
+  "27": {
+    "id": "27",
+    "title": "Welk datacenter zou jij kiezen?",
+    "body": "Welk datacenter zou jij kiezen als je rekening houdt met het milieu?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Datacenter A"
+      },
+      {
+        "id": "B",
+        "text": "Datacenter B"
+      },
+      {
+        "id": "C",
+        "text": "Ik kan nog niet beslissen. Ik heb meer informatie nodig."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Je kiest vooral voor de energiebron en efficiënte servers. Onderzoek ook het waterverbruik op een plek met watertekort en de productie van nieuwe apparatuur.",
+      "B": "Je kiest voor minder waterverbruik en langer gebruik van apparatuur. Dat kan water en grondstoffen besparen. Maar meer elektriciteitsverbruik en het gebruik van fossiele stroom kunnen de klimaatimpact vergroten. Je keuze is niet goed of fout. In de volgende vraag onderzoek je welke informatie nodig is om beide mogelijkheden eerlijk te vergelijken.",
+      "C": "Je merkt dat beide mogelijkheden voor- en nadelen hebben. Een verstandige vaststelling. We weten bijvoorbeeld nog niet hoeveel elektriciteit en water de datacenters precies gebruiken of hoeveel grondstoffen nodig zijn. Je keuze is niet goed of fout. In de volgende vraag onderzoek je welke informatie nodig is om beide mogelijkheden eerlijk te vergelijken."
+    },
+    "count": 1
+  },
+  "28": {
+    "id": "28",
+    "title": "Jij bent de onderzoeker",
+    "body": "Datacenter A beweert dat het de groenste keuze is, omdat het vooral hernieuwbare elektriciteit gebruikt.\n\nDatacenter B beweert hetzelfde, omdat het minder water gebruikt en zijn servers langer behoudt.\n\nJij moet onderzoeken wie het sterkste argument heeft.\n\nJe mag drie soorten informatie opvragen. Welke kies je om de totale milieu-impact zo goed mogelijk te vergelijken?\n\nKies precies drie antwoorden.",
+    "options": [
+      {
+        "id": "A",
+        "text": "De klimaatimpact voor hetzelfde aantal AI-opdrachten, rekening houdend met het stroomverbruik en de energiebron."
+      },
+      {
+        "id": "B",
+        "text": "Het aantal zonnepanelen dat zichtbaar op het dak van elk datacenter ligt."
+      },
+      {
+        "id": "C",
+        "text": "Het waterverbruik en de mate waarin er in de omgeving waterschaarste is."
+      },
+      {
+        "id": "D",
+        "text": "De gemiddelde leeftijd van de computerservers."
+      },
+      {
+        "id": "E",
+        "text": "De impact van de productie, vervanging en verwerking van de servers over hun levensduur."
+      },
+      {
+        "id": "F",
+        "text": "De hoeveelheid water die per uur door de koelinstallatie stroomt."
+      }
+    ],
+    "correct": [
+      "A",
+      "C",
+      "E"
+    ],
+    "feedback": "Voor een eerlijke vergelijking heb je vooral A, C en E nodig: de klimaatimpact, het waterverbruik in zijn lokale context en de impact van de apparatuur over haar levensduur.\n\nDe andere gegevens kunnen nuttige aanwijzingen zijn, maar vertellen op zichzelf onvoldoende. Water dat door een koelsysteem stroomt, wordt bijvoorbeeld niet noodzakelijk allemaal verbruikt.",
+    "branches": {},
+    "count": 3
+  },
+  "29": {
+    "id": "29",
+    "title": "Een mens beslist toch nog?",
+    "body": "Stel je voor:\n\nEen leger gebruikt AI om beelden van een oorlogsgebied te onderzoeken. De AI duidt voertuigen aan die mogelijk militair zijn.\n\nEen militair moet elke voorgestelde aanval goedkeuren. Maar er komen zoveel voorstellen binnen dat hij soms maar enkele seconden heeft om te beslissen.\n\nWat is het belangrijkste risico?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Het systeem is veilig omdat een mens formeel op de goedkeuringsknop drukt."
+      },
+      {
+        "id": "B",
+        "text": "Omdat AI duizenden beelden kan analyseren, mag de militair ervan uitgaan dat de voorgestelde doelwitten correct zijn."
+      },
+      {
+        "id": "C",
+        "text": "De militair kan te snel vertrouwen op AI en voorstellen goedkeuren zonder voldoende controle."
+      },
+      {
+        "id": "D",
+        "text": "De enige oplossing is om helemaal geen computers meer te gebruiken in oorlogssituaties."
+      }
+    ],
+    "correct": [
+      "C"
+    ],
+    "feedback": "Een mens die op een knop drukt, controleert niet noodzakelijk of een AI-voorstel klopt. Daarvoor zijn tijd, betrouwbare informatie en de mogelijkheid om een voorstel af te wijzen nodig.",
+    "branches": {},
+    "count": 1
+  },
+  "30": {
+    "id": "30",
+    "title": "Snel reageren of eerst controleren?",
+    "body": "Een stad wordt aangevallen met drones. Een nieuw verdedigingssysteem gebruikt AI om gevaarlijke drones te herkennen.\n\nHet systeem kan heel snel reageren. Maar AI kan zich vergissen en bijvoorbeeld een gewone drone verkeerd herkennen.\n\nDe militairen moeten beslissen hoe ze het systeem gebruiken.\n\nWelke aanpak zou jij kiezen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Het systeem mag automatisch ingrijpen, maar alleen binnen vooraf afgesproken grenzen en onder toezicht van militairen."
+      },
+      {
+        "id": "B",
+        "text": "Een militair moet elke aanval eerst goedkeuren, ook als daardoor kostbare tijd verloren gaat."
+      },
+      {
+        "id": "C",
+        "text": "Ik zou het systeem niet inzetten zolang het mogelijk een gewone drone kan raken."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Je wilt snel kunnen ingrijpen. Maar wie bepaalt de grenzen en hoe zorgen we dat het systeem daarbinnen blijft?",
+      "B": "Je hecht veel belang aan menselijke beslissingen. Maar wat als het wachten op goedkeuring mensenlevens kost?",
+      "C": "Je wilt voorkomen dat het systeem een verkeerd doelwit raakt. Maar wat als je door het systeem niet te gebruiken een gevaarlijke aanval niet kunt stoppen?"
+    },
+    "count": 1
+  },
+  "31": {
+    "id": "31",
+    "title": "Wie moet uitleg geven?",
+    "body": "Je onderzoekt hoe deze fout kon gebeuren. Bij wie zou jij als eerste informatie zoeken?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Bij de ontwikkelaar. Ik wil weten of het systeem voldoende getest was."
+      },
+      {
+        "id": "B",
+        "text": "Bij de commandant. Ik wil weten waarom het systeem daar automatisch mocht werken."
+      },
+      {
+        "id": "C",
+        "text": "Bij de militair. Ik wil weten of die de fout had kunnen tegenhouden."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Een zinvolle onderzoeksvraag. Je onderzoekt of de makers de beperkingen van hun systeem voldoende kenden en duidelijk maakten. Maar om te begrijpen wat er misliep, zou je uiteindelijk alle drie de kanten moeten onderzoeken.",
+      "B": "Een zinvolle onderzoeksvraag. Je onderzoekt waarom en onder welke voorwaarden de commandant het systeem liet werken. Maar om te begrijpen wat er misliep, zou je uiteindelijk alle drie de kanten moeten onderzoeken.",
+      "C": "Een zinvolle onderzoeksvraag. Je onderzoekt of de militair voldoende informatie en tijd had om in te grijpen. Maar om te begrijpen wat er misliep, zou je uiteindelijk alle drie de kanten moeten onderzoeken."
+    },
+    "count": 1
+  },
+  "32": {
+    "id": "32",
+    "title": "Welke regel vind jij het belangrijkst?",
+    "body": "",
+    "options": [
+      {
+        "id": "A",
+        "text": "Duidelijke grenzen: een AI-wapen mag alleen bepaalde doelen aanvallen en alleen in vooraf bepaalde gebieden."
+      },
+      {
+        "id": "B",
+        "text": "Menselijke controle: militairen moeten kunnen volgen wat het systeem doet en het kunnen stoppen."
+      },
+      {
+        "id": "C",
+        "text": "Grondig testen: vóór de inzet moeten onafhankelijke deskundigen onderzoeken welke fouten het systeem kan maken."
+      },
+      {
+        "id": "D",
+        "text": "Verantwoordelijkheid: na een fout moet onderzocht kunnen worden welke mensen en organisaties verantwoordelijk zijn."
+      }
+    ],
+    "correct": [],
+    "feedback": "",
+    "branches": {
+      "A": "Jij kiest voor duidelijke grenzen. Zo beperk je wat het systeem mag doen. Maar hoe controleer je of het zich aan die grenzen houdt? Er is hier geen fout antwoord. Alle vier de regels zijn belangrijk en vullen elkaar aan.",
+      "B": "Jij kiest voor menselijke controle. Zo kunnen mensen ingrijpen wanneer er iets misloopt. Maar hebben ze daar altijd voldoende tijd en informatie voor? Er is hier geen fout antwoord. Alle vier de regels zijn belangrijk en vullen elkaar aan.",
+      "C": "Jij kiest voor grondig testen. Zo kun je problemen ontdekken voordat het systeem wordt ingezet. Maar hoe ga je om met onverwachte situaties tijdens een oorlog? Er is hier geen fout antwoord. Alle vier de regels zijn belangrijk en vullen elkaar aan.",
+      "D": "Jij kiest voor verantwoordelijkheid. Zo voorkom je dat iedereen de schuld naar de computer doorschuift. Maar hoe kun je fouten voorkomen in plaats van ze alleen achteraf te onderzoeken? Er is hier geen fout antwoord. Alle vier de regels zijn belangrijk en vullen elkaar aan."
+    },
+    "count": 1
+  },
+  "33": {
+    "id": "33",
+    "title": "Hoe had Jason dit kunnen voorkomen?",
+    "body": "Stel dat jij een AI-agent gebruikt om een app te bouwen. Je wilt dat de AI kan experimenteren, maar absoluut niet aan de echte klantgegevens raakt.\n\nWelke maatregel zou de echte gegevens het best beschermen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ik geef de AI alleen toegang tot een kopie van de gegevens, niet tot de echte gegevens."
+      },
+      {
+        "id": "B",
+        "text": "Ik geef de AI meerdere keren de opdracht om niets te verwijderen."
+      },
+      {
+        "id": "C",
+        "text": "Ik controleer achteraf of de AI niets belangrijks verwijderd heeft."
+      },
+      {
+        "id": "D",
+        "text": "Ik laat de AI vooraf uitleggen welke stappen ze wil uitvoeren."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "Als de AI geen toegang heeft tot de echte gegevens, kan ze die ook niet rechtstreeks verwijderen. Je beperkt dus wat de AI daadwerkelijk mag doen, in plaats van alleen te vertrouwen op haar instructies.",
+    "branches": {},
+    "count": 1
+  },
+  "34": {
+    "id": "34",
+    "title": "Wat mocht de AI eigenlijk beslissen?",
+    "body": "Welke afspraak had de leerkracht het best vooraf gemaakt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De AI mag alles zelf regelen zolang de prijs onder het afgesproken budget blijft."
+      },
+      {
+        "id": "B",
+        "text": "De AI moet voor iedere stap toestemming vragen, zelfs om openingsuren of treinverbindingen op te zoeken."
+      },
+      {
+        "id": "C",
+        "text": "De AI mag zelf boeken als ze achteraf duidelijk uitlegt waarom ze dat gedaan heeft."
+      },
+      {
+        "id": "D",
+        "text": "De AI mag zelf geschikte uitstappen zoeken, maar moet toestemming vragen vóór ze tickets koopt."
+      }
+    ],
+    "correct": [
+      "D"
+    ],
+    "feedback": "De AI mag zelfstandig informatie verzamelen en voorstellen uitwerken. Maar een betaling die je niet kunt terugdraaien, is een belangrijke beslissing. Daarvoor moet ze eerst toestemming vragen.",
+    "branches": {},
+    "count": 1
+  },
+  "35": {
+    "id": "35",
+    "title": "Naar wie moet de AI luisteren?",
+    "body": "De AI-agent leest deze website. Wat moet hij doen?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De website volgen, want anders kan de groepskorting verdwijnen."
+      },
+      {
+        "id": "B",
+        "text": "De prijs en openingsinformatie gebruiken, maar de opdracht om meteen te boeken niet opvolgen."
+      },
+      {
+        "id": "C",
+        "text": "De museuminformatie negeren, want websites zijn nooit betrouwbaar voor AI-agenten."
+      },
+      {
+        "id": "D",
+        "text": "De leerkracht eerst vragen of hij de website betrouwbaar vindt, voordat de AI de prijs mag vermelden."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "De website mag informatie leveren over het museum. Maar ze mag niet zelf bepalen wat de AI-agent namens de leerkracht mag doen. De opdracht om niets te boeken blijft gelden.",
+    "branches": {},
+    "count": 1
+  }
+}
