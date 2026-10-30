@@ -436,7 +436,7 @@ export function Energy() {
             </span>
             <span className="loep-bar-track">
               <span
-                style={{ width: Math.max(1.5, (e.value / max) * 100) + "%" }}
+                style={{ width: (e.value / max) * 100 + "%" }}
               />
             </span>
           </button>
