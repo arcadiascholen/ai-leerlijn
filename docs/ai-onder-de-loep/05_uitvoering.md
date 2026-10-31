@@ -4,7 +4,7 @@ Uitgewerkt op 30 oktober 2026, uitsluitend in een eigen fork van het oorspronkel
 
 ## Inhoud en route
 
-De drie inhoudelijke Markdownbestanden vormen het archief van de vaste basisversie. De actieve inhoud staat in `src/components/loep/`: vragen en feedback in `questions.json`, route en context in `model.ts`, schermen in de React-componenten. Alle 35 actieve vragen/opdrachten zijn aanwezig: 34 vragen met antwoordopties plus de vier instellingen van vraag 36. De lettervolgorde en sleutels van de Markdownbasis blijven behouden. Vraag 7, 18, 20 en 24 zijn verduidelijkt in de app; de oorspronkelijke formuleringen blijven in het archief. Vraag 9 blijft alleen in het bronarchief. Vraag 17 vervalt; 37–39 en differentiatie zijn uitgesteld. Vraag 40 en een extra eindtoets zijn niet toegevoegd.
+De drie inhoudelijke Markdownbestanden vormen het archief van de vaste basisversie. De actieve inhoud staat in `src/components/loep/`: vragen en feedback in `questions.json`, route en context in `model.ts`, schermen in de React-componenten. Er zijn 36 actieve meerkeuzevragen, inclusief twee nieuwe kijkvragen, plus de vier instellingen van vraag 36. De lettervolgorde en sleutels van de Markdownbasis blijven behouden. Vraag 7, 18, 20 en 24 zijn verduidelijkt in de app; de oorspronkelijke formuleringen blijven in het archief. Vraag 9 blijft alleen in het bronarchief. Vraag 17 vervalt; 37–39 en differentiatie zijn uitgesteld. Vraag 40 en een extra eindtoets zijn niet toegevoegd.
 
 De leerling volgt de introductie, Geloof jij AI? en AI en privacy, kiest precies twee verschillende onderwerpen uit zes en ontvangt daarna een AI-kompas en PDF. Richtduur is 60–90 minuten. De kaart in het bestaande moduleoverzicht gebruikt 75 minuten en de bestaande metadata voor tweede en derde graad. Er is één inhoudelijke versie; geen niveaukeuze of aparte leerroute naar vaardigheid.
 
@@ -45,7 +45,7 @@ De gebruikte tool was de ingebouwde ImageGen. De afzonderlijke promptregistratie
 
 ## Voortgang, feedback en PDF
 
-Voortgang en antwoorden blijven lokaal onder `ai-leerlijn:verantwoord-gebruik:loep:v1`. Geblokkeerde opslag wordt opgevangen; de oefening blijft dan tijdens de sessie werken. Opnieuw beginnen wist alleen de voortgang van deze module en vraagt eerst bevestiging. Er is geen eigen backend, login of analytics. Een filmpje maakt pas na een klik verbinding met YouTube via youtube-nocookie; daarbij gelden de voorwaarden van die aanbieder.
+Voortgang en antwoorden blijven lokaal onder `ai-leerlijn:verantwoord-gebruik:loep:v1`. Geblokkeerde opslag wordt opgevangen; de oefening blijft dan tijdens de sessie werken. Opnieuw beginnen wist alleen de voortgang van deze module en vraagt eerst bevestiging. Er is geen eigen backend, login of analytics. De miniatuur maakt verbinding met YouTube; de videospeler laadt na een klik via youtube-nocookie. Daarbij gelden de voorwaarden van die aanbieder.
 
 Een antwoord moet gekozen en de feedback geopend zijn voordat de leerling verder kan. Een fout antwoord blokkeert het leren niet: de volledige uitleg en juiste keuze worden getoond en opnieuw proberen blijft mogelijk. Bij kennistaken bewaart de PDF of de eerste gecontroleerde keuze juist was, plus de laatste keuze. Er is geen totaal schoolcijfer, slaaggrens of beoordeling van meningen. De instellingentaak vergelijkt met vier aanbevolen instellingen; een strengere instelling wordt niet automatisch onveilig genoemd.
 
@@ -87,3 +87,5 @@ De start en alle acht uitdagingen zijn aangescherpt op taal, samenhang, brongebr
 De startvraag en de observatie bij het AI-experiment zijn inhoudelijk gewijzigd. Wie de oudere versie op hetzelfde toestel hervat, krijgt deze twee vernieuwde onderdelen opnieuw aangeboden; andere opgeslagen antwoorden blijven behouden. Sommige interactieve schermen bewaren dat de oefening is afgerond, maar niet elke tussentijdse instelling; dat staat bij terugkeer vermeld.
 
 Een passend kort Pano-fragment met gecontroleerde tijdcodes en de definitieve formulierlink zijn nog niet beschikbaar. De tijdsduur en toegankelijkheid moeten met leerlingen en op schooltoestellen worden getest.
+
+De kennismaking start met het filmpje van Karrewiet, gevolgd door twee kijkvragen en zes voorbeelden met schuifregelaars. De video kan in de module of via de videolink worden geopend. De miniatuur is afkomstig van YouTube en wordt al bij het tonen van het videoscherm geladen; de videospeler zelf wordt pas na een klik geladen.

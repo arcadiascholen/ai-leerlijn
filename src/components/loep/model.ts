@@ -131,6 +131,7 @@ export type Step = {
     | "choice"
     | "compass"
     | "summary"
+    | "video-intro"
     | "sorteren"
     | "promptbuilder"
     | "privacy-editor"
@@ -164,7 +165,10 @@ const compass = (chapter: number): Step =>
   special("kompas" + chapter, chapter, "compass", "Dit neem je mee");
 export const introduction: Step[] = [
   special("welkom", 0, "welcome", "AI onder de loep"),
-  special("sorteren", 0, "sorteren", "Waar zit AI in?"),
+  special("video-ai", 0, "video-intro", "Hoe werkt AI?"),
+  q("video1", 0),
+  q("video2", 0),
+  special("sorteren-v2", 0, "sorteren", "Waar zit AI in?"),
   q("1", 0),
   story(
     "patronen",
@@ -379,7 +383,8 @@ export function routeFor(choices: number[]): Step[] {
 export const observationIds = [
   "experiment-vergelijk",
   "beeldexperiment",
-  "sorteren",
+  "video-ai",
+  "sorteren-v2",
   "privacy-editor",
   "agent-sim",
 ];

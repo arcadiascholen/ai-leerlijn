@@ -2127,3 +2127,76 @@
   display: block;
   line-height: 1.3;
 }
+
+/* Film en herkenningsoefening in de kennismaking. */
+.loep-video-poster {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+.loep-video-poster > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+.loep-video-poster > span {
+  position: relative;
+}
+.loep-intro-video .loep-video-card {
+  border-radius: var(--radius-lg);
+}
+.loep-sort-screen h2 {
+  margin: 6px 0 8px;
+}
+.loep-sort-screen > p {
+  max-width: 85ch;
+  font-size: 13px;
+  line-height: 1.35;
+  margin: 0 0 10px;
+}
+.loep-sort-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 10px;
+}
+.loep-sort-item {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 12px;
+}
+.loep-sort-item > label {
+  display: block;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.loep-sort-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.loep-sort-control input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--ai);
+}
+.loep-sort-item > small {
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+.loep-sort-item .loep-sort-feedback {
+  font-size: 11px;
+  line-height: 1.3;
+  margin: 4px 0 0;
+  color: var(--ai-text);
+}
+@media (max-width: 650px) {
+  .loep-sort-grid { grid-template-columns: 1fr; }
+}

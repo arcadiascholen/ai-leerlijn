@@ -30,6 +30,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
     <section className="loep-video-card" aria-label={v.title}>
       {!playing ? (
         <button className="loep-video-poster" onClick={() => setPlaying(true)}>
+          <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" />
           <span className="loep-video-play" aria-hidden="true">
             ▶
           </span>
@@ -49,16 +50,17 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
         />
       )}
       <div className="loep-video-foot">
-        <span>Optioneel · de video opent via YouTube.</span>
+        <span>De video opent via YouTube.</span>
         <a href={v.url} target="_blank" rel="noreferrer">
           Open video ↗
         </a>
       </div>
-      <p className="loep-small">{kind === "intro" ? "Kijkvraag: wat leert een AI-systeem uit voorbeelden?" : "Kijkvraag: hoe controleer je wie een video heeft gemaakt?"}</p>
-      <details>
-        <summary>Lees de uitleg als je niet kijkt</summary>
-        <p>{v.summary}</p>
-      </details>
+      {kind === "deepfake" && (
+        <>
+          <p className="loep-small">Kijkvraag: hoe controleer je wie een video heeft gemaakt?</p>
+          <details><summary>Lees de uitleg als je niet kijkt</summary><p>{v.summary}</p></details>
+        </>
+      )}
     </section>
   );
 }
@@ -147,92 +149,69 @@ export function SourceCard({ chapter }: { chapter: number }) {
   );
 }
 
+export function VideoIntro({ onAnswer, onCheck, checked }: Actions) {
+  return (
+    <div className="loep-discover loep-intro-video">
+      <div>
+        <span className="loep-eyebrow">Start · bekijk het filmpje</span>
+        <h2>Hoe werkt AI?</h2>
+        <p>Jensen vraagt AI-kenner Lieven Scheire hoe een computer honden en katten kan leren herkennen.</p>
+        <p>Bekijk het filmpje van Karrewiet. Daarna krijg je twee vragen over wat je zag.</p>
+        {checked ? <p className="loep-note" role="status">✓ Je kunt verder naar de kijkvragen.</p> : (
+          <button className="loep-button" onClick={() => { onAnswer(["0"]); onCheck(); }}>
+            Ik heb het filmpje bekeken
+          </button>
+        )}
+      </div>
+      <VideoCard kind="intro" />
+    </div>
+  );
+}
+
 const examples = [
-  {
-    text: "Een AI-assistent schrijft een verhaal.",
-    correct: "ai",
-  },
-  {
-    text: "Een wekker gaat elke dag om zeven uur af.",
-    correct: "regels",
-  },
-  { text: "Een telefoon zet gesproken woorden om in tekst.", correct: "ai" },
-  { text: "Een rekenmachine telt twee getallen bij elkaar op.", correct: "regels" },
+  { text: "Een mailfilter leerde uit voorbeelden om ongewenste berichten te herkennen.", ai: true, explain: "De filter gebruikt wat hij uit voorbeelden leerde om nieuwe berichten in te schatten." },
+  { text: "Een webshop geeft bij het afrekenen automatisch 10% korting op elk product.", ai: false, explain: "Voor iedereen dezelfde korting berekenen kan met een vaste rekenregel." },
+  { text: "Een telefoon herkent het gezicht van de eigenaar om te ontgrendelen.", ai: true, explain: "Gezichtsherkenning gebruikt AI om kenmerken in beelden te herkennen." },
+  { text: "Een routeplanner vergelijkt de afstanden van drie vaste routes en kiest de kortste.", ai: false, explain: "De routeplanner vergelijkt de drie afstanden met een vaste regel." },
+  { text: "Een muziekapp leerde uit luistergedrag om nummers aan te raden.", ai: true, explain: "De app gebruikt patronen uit luistergedrag voor aanbevelingen." },
+  { text: "Een leerlingenlijst wordt op achternaam van A tot Z gesorteerd.", ai: false, explain: "Alfabetisch sorteren volgt een vaste regel en heeft geen AI nodig." },
 ];
 export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
-  const [choices, setChoices] = useState<Record<number, string>>({});
+  const [choices, setChoices] = useState<Record<number, number>>({});
   const [result, setResult] = useState(false);
-  function set(i: number, v: string) {
-    setChoices({ ...choices, [i]: v });
+  const all = examples.every((_, i) => choices[i] !== undefined);
+  function set(i: number, value: number) {
+    setChoices((old) => {
+      const next = { ...old };
+      if (value === 1) delete next[i]; else next[i] = value;
+      return next;
+    });
     setResult(false);
     if (checked) onAnswer(["0"]);
   }
-  const all = examples.every((_, i) => choices[i]);
-  function check() {
-    setResult(true);
-    onAnswer(["0"]);
-    onCheck();
-  }
   return (
-    <div className="loep-discover">
-      <div>
-        <span className="loep-eyebrow">Start · ontdek AI</span>
-        <h2>Waar zit AI in?</h2>
-        <p>
-          Sommige systemen leren patronen uit voorbeelden. Andere volgen vaste regels. Kies bij elk voorbeeld wat het best past.
-        </p>
-        <div className="loep-sort">
-          {examples.map((e, i) => (
-            <div key={e.text}>
-              <span>{e.text}</span>
-              <div>
-                {[
-                  ["ai", "AI"],
-                  ["regels", "Vaste regels"],
-                ].map(([v, t]) => (
-                  <button
-                    key={v}
-                    className={choices[i] === v ? "active" : ""}
-                    aria-pressed={choices[i] === v}
-                    onClick={() => set(i, v)}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-              {result && (
-                <small>
-                  {choices[i] === e.correct ? "✓" : "↻"}{" "}
-                  {e.correct === "ai"
-                    ? "Kan AI gebruiken om patronen te herkennen."
-                    : "Kan met vaste regels, zonder AI."}
-                </small>
-              )}
+    <div className="loep-sort-screen">
+      <span className="loep-eyebrow">Zelf onderzoeken</span>
+      <h2>Wordt hier AI gebruikt?</h2>
+      <p>AI kan leren uit veel voorbeelden, zoals in het filmpje. Andere programma’s volgen stappen die mensen vooraf vastleggen. Schuif voor elk voorbeeld naar links voor <strong>geen AI</strong> of naar rechts voor <strong>AI</strong>.</p>
+      <div className="loep-sort-grid">
+        {examples.map((e, i) => (
+          <div className="loep-sort-item" key={e.text}>
+            <label htmlFor={`loep-ai-slider-${i}`}>{e.text}</label>
+            <div className="loep-sort-control">
+              <span>Geen AI</span>
+              <input id={`loep-ai-slider-${i}`} type="range" min="0" max="2" step="1" value={choices[i] ?? 1}
+                aria-valuetext={choices[i] === undefined ? "Nog geen keuze" : choices[i] === 0 ? "Geen AI" : "AI"}
+                onChange={(event) => set(i, Number(event.target.value))} />
+              <span>AI</span>
             </div>
-          ))}
-        </div>
-        <button className="loep-button" disabled={!all} onClick={check}>
-          Bekijk de uitleg
-        </button>
-        {checked && !result && (
-          <p className="loep-small">
-            Je hebt deze oefening eerder afgerond. Je eerdere keuzes zijn niet bewaard; je kunt opnieuw oefenen.
-          </p>
-        )}
+            {!result && <small>{choices[i] === undefined ? "Nog geen keuze" : choices[i] === 0 ? "Jouw keuze: geen AI" : "Jouw keuze: AI"}</small>}
+            {result && <p className="loep-sort-feedback" role="status"><strong>{(choices[i] === 2) === e.ai ? "✓ Goed gezien." : "↻ Kijk nog eens."}</strong> {e.explain}</p>}
+          </div>
+        ))}
       </div>
-      <div>
-        <VideoCard kind="intro" />
-        <p className="loep-small">
-          Bekijk ook de filmpjes van{" "}
-          <a
-            href="https://www.imec.be/nl/vlaamse-innovatiemotor/kennisuitwisseling/wetenschap-in-de-klas/educatief-aanbod/klaar-ai"
-            target="_blank"
-            rel="noreferrer"
-          >
-            KLAAR over AI ↗
-          </a>
-        </p>
-      </div>
+      {!result && <button className="loep-button" disabled={!all} onClick={() => { setResult(true); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>}
+      {checked && !result && <p className="loep-small">Je deed deze oefening eerder. Je keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>}
     </div>
   );
 }

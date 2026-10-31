@@ -76,7 +76,7 @@ export async function createEvidence(name: string, progress: Progress) {
         170,
       ).length;
       keep(30 + blockLines * 6.3);
-      text("Vraag " + q.id + ": " + q.title, 11, true);
+      text((q.id.startsWith("video") ? "Kijkvraag " + q.id.slice(5) : "Vraag " + q.id) + ": " + q.title, 11, true);
       text(
         q.correct.length
           ? a.firstCorrect

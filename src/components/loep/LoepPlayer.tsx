@@ -61,7 +61,7 @@ function Knowledge({
     >
       <div className="loep-question-context">
         <span className="loep-eyebrow">
-          Vraag {q.id} ·{" "}
+          {q.id.startsWith("video") ? `Kijkvraag ${q.id.slice(5)}` : `Vraag ${q.id}`} ·{" "}
           {q.correct.length
             ? "Kies je antwoord"
             : "Jouw afweging · zonder score"}
@@ -694,7 +694,7 @@ export default function LoepPlayer({
             const isCurrent =
               n.id === step.id ||
               (n.chapter !== 0 && n.chapter === step.chapter) ||
-              (n.id === "welkom" && step.chapter === 0 && index < 5);
+              (n.id === "welkom" && step.chapter === 0 && index < route.findIndex((s) => s.chapter === 1));
             const unlocked =
               position === 0 ||
               progress.visited.includes(n.id) ||

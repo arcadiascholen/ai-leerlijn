@@ -1001,5 +1001,63 @@
     "feedback": "De website mag informatie leveren over het museum. Maar ze mag niet zelf bepalen wat de AI-agent namens de leerkracht mag doen. De opdracht om niets te boeken blijft gelden.",
     "branches": {},
     "count": 1
+  },
+  "video1": {
+    "id": "video1",
+    "title": "Denkt AI zoals een mens?",
+    "body": "Wat zegt Lieven Scheire daarover in het filmpje?",
+    "options": [
+      {
+        "id": "A",
+        "text": "AI denkt precies zoals een mens."
+      },
+      {
+        "id": "B",
+        "text": "AI lijkt op sommige manieren op de werking van hersenen, maar er zijn grote verschillen."
+      },
+      {
+        "id": "C",
+        "text": "AI kan alleen rekenen en geen beelden herkennen."
+      },
+      {
+        "id": "D",
+        "text": "AI begrijpt altijd wat een mens bedoelt."
+      }
+    ],
+    "correct": [
+      "B"
+    ],
+    "feedback": "Volgens Lieven Scheire lijkt AI op sommige manieren op de werking van hersenen, maar zijn er ook grote verschillen. AI denkt niet gewoon zoals een mens.",
+    "branches": {},
+    "count": 1
+  },
+  "video2": {
+    "id": "video2",
+    "title": "Hoe leert AI honden en katten herkennen?",
+    "body": "Welk voorbeeld gebruikt Lieven Scheire in het filmpje?",
+    "options": [
+      {
+        "id": "A",
+        "text": "De computer krijgt duizenden voorbeelden en past zich aan wanneer hij fouten maakt."
+      },
+      {
+        "id": "B",
+        "text": "De computer bekijkt één foto en kent meteen alle dieren."
+      },
+      {
+        "id": "C",
+        "text": "De computer kiest willekeurig een antwoord zonder voorbeelden."
+      },
+      {
+        "id": "D",
+        "text": "Iemand schrijft voor elke mogelijke foto apart het antwoord op."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "In het filmpje krijgt het programma veel voorbeelden van honden en katten. Het past zich aan om de dieren beter te herkennen. Ook na het leren kan een AI-systeem fouten maken.",
+    "branches": {},
+    "count": 1
   }
 }

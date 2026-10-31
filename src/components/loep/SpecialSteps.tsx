@@ -8,6 +8,7 @@ import {
 } from "./model";
 import {
   SortIntro,
+  VideoIntro,
   PromptBuilder,
   PrivacyEdit,
   Perspectives,
@@ -976,6 +977,8 @@ export function Special({
   onCheck: () => void;
 }) {
   switch (step.kind) {
+    case "video-intro":
+      return <VideoIntro onAnswer={onAnswer} onCheck={onCheck} checked={answer?.checked} />;
     case "sorteren":
       return (
         <SortIntro

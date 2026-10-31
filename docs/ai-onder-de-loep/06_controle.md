@@ -46,3 +46,7 @@ Dit is een functionele en inhoudelijke controle door de ontwikkelaar, geen gebru
 ## Startscherm aangepast
 
 De inleiding en instructies zijn aangepast, vijf verkennende vragen staan bij de foto en de zichtbare fotovermelding en informatieknop zijn verwijderd. De bronnen bij de leerinhoud blijven beschikbaar; de herkomst van de foto’s blijft in 05_uitvoering.md bewaard. De weergave is gecontroleerd op 1366 × 640 en 975 × 752.
+
+## Kennismaking met video en schuifjes
+
+Het Karrewiet-filmpje staat vóór de kijkvragen en de oefening. De twee kijkvragen zijn gebaseerd op de Nederlandstalige ondertiteling van het filmpje. De miniatuur wordt rechtstreeks van YouTube geladen; bij het openen van het scherm maakt de browser daarvoor verbinding met YouTube. De zes voorbeelden beschrijven steeds een concrete werkwijze, zodat de keuze om die werkwijze gaat. Bestaande voortgang blijft bewaard; de nieuwe stappen en de vernieuwde oefening moeten worden afgerond voordat het leerbewijs opnieuw beschikbaar is.
