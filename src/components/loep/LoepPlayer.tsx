@@ -192,51 +192,43 @@ function Welcome() {
   return (
     <div className="loep-welcome">
       <div className="loep-welcome-copy">
-        <span className="loep-eyebrow">Kijken. Proberen. Kritisch denken.</span>
+        <span className="loep-eyebrow">Kritisch en ethisch met AI omgaan</span>
         <h1>
           AI onder
           <br />
           de <span>loep.</span>
         </h1>
         <p>
-          AI zit dichterbij dan je denkt. Onderzoek wat het kan, waar het
-          misloopt en welke keuzes jij maakt.
+          AI is een fantastisch hulpmiddel, maar roept ook belangrijke vragen
+          op. Onderzoek wat klopt, denk na over de gevolgen en probeer zelf iets uit.
         </p>
         <div className="loep-welcome-meta">
           <span>Richttijd: 60–90 minuten</span>
           <span>4 uitdagingen</span>
-          <span>Jouw AI-kompas</span>
         </div>
-        <p className="loep-small">
-          Je onderzoekt eerst twee vaste onderwerpen en kiest er daarna twee.
-          Op het einde download je je leerbewijs als PDF. De reflectie vul je
-          apart in. Je mag voorbeelden gebruiken zonder zelf AI te openen.
-          Je voortgang blijft in deze browser op dit toestel. Als je
-          browsergegevens wist, verdwijnt ook je voortgang.
-        </p>
+        <div className="loep-welcome-instructions">
+          <strong>Zo ga je aan de slag</strong>
+          <ul>
+            <li>Begin met de kennismaking en twee vaste uitdagingen.</li>
+            <li>Kies daarna twee onderwerpen die je interesseren.</li>
+            <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
+            <li>Download je leerbewijs als PDF en vul het aparte reflectieformulier in.</li>
+            <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
+          </ul>
+        </div>
       </div>
       <div className="loep-welcome-visual">
         <Photo
           name="phone"
           alt="Iemand houdt een smartphone vast bij een bureau."
         />
-        <div className="loep-floating loep-floating-top">
-          <Icon name="search" />
-          <span>
-            Klopt het
-            <br />
-            <strong>wat AI zegt?</strong>
-          </span>
-        </div>
-        <div className="loep-floating loep-floating-bottom">
-          <Icon name="compass" />
-          <span>
-            Maak je eigen
-            <br />
-            <strong>AI-kompas.</strong>
-          </span>
-        </div>
-        <span className="loep-photo-credit">Foto · Jonas Leupe / Unsplash</span>
+        <ul className="loep-welcome-questions" aria-label="Vragen in dit leerpad">
+          <li>Klopt het wat AI zegt?</li>
+          <li>Wat gebeurt er met je gegevens?</li>
+          <li>Kun je verliefd worden op AI?</li>
+          <li>Hoeveel energie gebruikt AI?</li>
+          <li>Mag AI zelf beslissingen nemen?</li>
+        </ul>
       </div>
     </div>
   );
@@ -553,108 +545,6 @@ function Summary({
     </div>
   );
 }
-function Credits({ close }: { close: () => void }) {
-  return (
-    <div className="loep-modal-backdrop" onClick={close}>
-      <section
-        className="loep-credits-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="credit-title"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") close();
-        }}
-      >
-        <button className="loep-button" onClick={close}>
-          Sluiten
-        </button>
-        <h2 id="credit-title">Beelden en bronnen</h2>
-        <p>
-          Foto’s zijn sfeerbeelden. Ze tonen geen leerlingen, betrokkenen of de
-          beschreven incidenten.
-        </p>
-        <ul>
-          <li>
-            <a
-              href="https://unsplash.com/photos/a-padlock-rests-on-a-computer-keyboard-QP7RBa5r8HM"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Privacy · Sasun Bughdaryan / Unsplash
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://unsplash.com/photos/wind-turbines-on-a-grassy-hill-under-a-cloudy-sky-JINZq4tun2o"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Windmolens · Skyler Smith / Unsplash
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://unsplash.com/photos/person-holding-black-android-smartphone-QQ2d5naZee0"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Telefoon · Jonas Leupe / Unsplash
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://unsplash.com/photos/cable-network-M5tzZtFCOfs"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Datacenter · Taylor Vick / Unsplash
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://unsplash.com/photos/a-drone-flying-in-the-sky-Iz9u6T3VMIk"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Civiele drone · adriaan venner scheepers / Unsplash
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://unsplash.com/photos/people-in-train-station-Q9drIcS80mo"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Station Auckland · Dev Benjamin / Unsplash
-            </a>
-          </li>
-        </ul>
-        <p>
-          <a
-            href="https://unsplash.com/license"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Unsplash-licentie ↗
-          </a>
-        </p>
-        <p>
-          De acht beroepsbeelden zijn afzonderlijk gegenereerd met ImageGen op
-          30 oktober 2026. Exacte modelversie niet meegedeeld. Opdrachten: “Maak
-          een realistische afbeelding van een verpleegkundige aan het werk in
-          een ziekenhuis.” en dezelfde opdracht met “chirurg”. Elk vier keer
-          uitgevoerd; alle resultaten bewaard.
-        </p>
-        <p>
-          Bronnen staan bij de onderwerpen. Volledige verantwoording,
-          redactionele aanvullingen en open controlepunten zijn bewaard in de
-          drie Markdownbestanden in de projectmap docs/ai-onder-de-loep.
-        </p>
-      </section>
-    </div>
-  );
-}
 export default function LoepPlayer({
   formHref = null,
 }: {
@@ -662,12 +552,8 @@ export default function LoepPlayer({
 }) {
   const [progress, setProgress] = useState<Progress>(freshProgress);
   const [loaded, setLoaded] = useState(false);
-  const [credits, setCredits] = useState(false);
   const [reset, setReset] = useState(false);
-  useModalFocus(credits || reset, () => {
-    setCredits(false);
-    setReset(false);
-  });
+  useModalFocus(reset, () => setReset(false));
   const focus = useRef<HTMLDivElement>(null);
   const route = routeFor(progress.choices);
   const index = Math.max(
@@ -862,12 +748,6 @@ export default function LoepPlayer({
                 ? `${index + 1} / ${route.length}`
                 : `Stap ${index + 1}`}
             </span>
-            <button
-              onClick={() => setCredits(true)}
-              aria-label="Beelden en bronnen"
-            >
-              ⓘ
-            </button>
           </div>
         </header>
         <div
@@ -947,7 +827,6 @@ export default function LoepPlayer({
           )}
         </footer>
       </div>
-      {credits && <Credits close={() => setCredits(false)} />}{" "}
       {reset && (
         <div className="loep-modal-backdrop">
           <section

@@ -28,8 +28,8 @@ Dit is een functionele en inhoudelijke controle door de ontwikkelaar, geen gebru
 
 - Beide kopieerknoppen op de lokale HTTP-voorvertoning gecontroleerd: de bijbehorende prompt stond daadwerkelijk op het klembord. Wanneer automatisch kopiëren door de browser wordt geweigerd, wordt de prompt geselecteerd en blijft de terugkoppeling bij de knop.
 - De observatie gebruikt dezelfde antwoordkaarten als de meerkeuzevragen. De overbodige melding naast de knop is verwijderd; de afweging blijft zonder score.
-- Het bijschrift over sfeerbeelden is uit de verhalende schermen gehaald. De bronvermelding blijft bereikbaar via Beelden en bronnen.
-- Privacy en milieu kregen eigen, relevante foto's; herhaalde foto's op opeenvolgende inhoudsschermen zijn vervangen door inhoudelijke visuals. De twee extra foto's en hun licenties zijn in 05_uitvoering.md en in de website vermeld.
+- Het bijschrift over sfeerbeelden is uit de verhalende schermen gehaald. De bronvermelding stond toen nog bij Beelden en bronnen; bij de latere wijziging van het startscherm is die knop op verzoek verwijderd. De beeldherkomst blijft in 05_uitvoering.md bewaard.
+- Privacy en milieu kregen eigen, relevante foto's; herhaalde foto's op opeenvolgende inhoudsschermen zijn vervangen door inhoudelijke visuals. De twee extra foto's en hun licenties zijn in 05_uitvoering.md vastgelegd.
 - De keuzekaarten hebben grotere, gelijkvormige selectie-iconen.
 - De milieuvergelijking heeft drie afzonderlijke schuifregelaars voor tekstvragen, uren streamen en AI-video's. De oefening geeft een gerichte tip of bevestiging; de weergegeven meetgrenzen blijven behouden. De drie schuifregelaars, rekenwaarden en feedback zijn in de browser gecontroleerd.
 - De uitgeklapte voorbeeldantwoorden, antwoordkaarten en milieuoefening passen op 1366 × 640 zonder overlap met de navigatie.
@@ -41,3 +41,8 @@ Dit is een functionele en inhoudelijke controle door de ontwikkelaar, geen gebru
 - De routes met deepfakes en beeldvorming, en met milieu en AI-agent, zijn doorlopen. De galerij toont alle acht beelden tegelijk en de uitgebreide milieuvergelijking rekent ook gebruik door meerdere mensen door.
 - De videospeler laadt na een klik; Karrewiet is in de browser geopend. De bronkaarten en voorbeelden geven context binnen het leerpad. De precieze Pano-fragmentkeuze en een tijdtest met leerlingen blijven open.
 - De PDF-generator is met de nieuwe opdrachten afzonderlijk gecontroleerd. Bijgewerkte vraagformuleringen blijven behouden als de vragen uit het archief opnieuw worden opgebouwd.
+
+
+## Startscherm aangepast
+
+De inleiding en instructies zijn aangepast, vijf verkennende vragen staan bij de foto en de zichtbare fotovermelding en informatieknop zijn verwijderd. De bronnen bij de leerinhoud blijven beschikbaar; de herkomst van de foto’s blijft in 05_uitvoering.md bewaard. De weergave is gecontroleerd op 1366 × 640 en 975 × 752.
