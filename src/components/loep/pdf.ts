@@ -108,7 +108,12 @@ export async function createEvidence(name: string, progress: Progress) {
         );
       }
     } else {
-      text(step.title + ": observatie opgeslagen, zonder score.");
+      text(
+        step.title +
+          (step.kind === "experiment" || step.kind === "gallery"
+            ? ": observatie ingevuld, zonder score."
+            : ": oefening bekeken."),
+      );
     }
   }
   pdf.addPage();

@@ -74,7 +74,7 @@ export const chapters: Chapter[] = [
     image: "phone",
     alt: "Een smartphone bij een bureau; de foto toont geen persoon uit de reportage.",
     compass:
-      "AI kan gezelschap en steun bieden, maar we moeten ook kritisch kijken naar emotionele afhankelijkheid en de verantwoordelijkheid van bedrijven.",
+      "AI kan gezelschap en steun bieden, maar we moeten ook kritisch kijken naar te veel afhankelijk worden van een chatbot en wat bedrijven daaraan kunnen doen.",
     source: "https://communicatie.vrtnws.be/pano-onderzoekt-mijn-vriend-ai",
     sourceLabel: "Bronnenoverzicht · Mijn vriend AI",
   },
@@ -130,7 +130,13 @@ export type Step = {
     | "permissions"
     | "choice"
     | "compass"
-    | "summary";
+    | "summary"
+    | "sorteren"
+    | "promptbuilder"
+    | "privacy-editor"
+    | "perspectieven"
+    | "afwegen"
+    | "agent-sim";
   title: string;
   text?: string[];
   question?: string;
@@ -158,6 +164,7 @@ const compass = (chapter: number): Step =>
   special("kompas" + chapter, chapter, "compass", "Dit neem je mee");
 export const introduction: Step[] = [
   special("welkom", 0, "welcome", "AI onder de loep"),
+  special("sorteren", 0, "sorteren", "Waar zit AI in?"),
   q("1", 0),
   story(
     "patronen",
@@ -190,6 +197,7 @@ export const chapterSteps: Record<number, Step[]> = {
     special("experiment", 1, "experiment", "Geeft AI jou gelijk?"),
     q("6", 1),
     q("7", 1),
+    special("promptbuilder", 1, "promptbuilder", "Bouw een betere vraag"),
     compass(1),
   ],
   2: [
@@ -197,10 +205,11 @@ export const chapterSteps: Record<number, Step[]> = {
       "delen",
       2,
       "Oeps, mijn gesprek staat op Google!",
-      "In 2025 konden gedeelde ChatGPT-gesprekken met een ingeschakelde indexeeroptie in zoekmachines verschijnen. Sommige bevatten persoonlijke informatie.",
-      "Die indexeeroptie werd weer uitgeschakeld. Niet alle privégesprekken waren automatisch openbaar. Denk ook na voordat je een gesprekslink deelt.",
+      "In 2025 konden sommige gedeelde ChatGPT-gesprekken op Google verschijnen. Dat gebeurde wanneer iemand de link ook vindbaar had gemaakt. Sommige gesprekken bevatten persoonlijke informatie.",
+      "Die optie werd weer uitgeschakeld. Niet alle privégesprekken waren automatisch openbaar. Denk ook na voordat je een gesprekslink deelt.",
     ),
     q("8", 2),
+    special("privacy-editor", 2, "privacy-editor", "Wat laat je weg?"),
     q("10", 2),
     q("11", 2),
     q("12", 2),
@@ -249,13 +258,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "Zijn verhaal roept vragen op over echte gevoelens, steun en het bedrijf achter de chatbot. De volgende situaties helpen je die kanten te onderzoeken.",
     ),
     q("21", 5),
-    story(
-      "gevoelens",
-      5,
-      "Zijn de gevoelens echt?",
-      "Een gesprek kan voor een gebruiker betekenis hebben. Gevoelens van een mens kunnen echt zijn, ook wanneer de gesprekspartner een chatbot is.",
-      "Liefdevolle woorden van een systeem bewijzen op zichzelf niet dat het systeem diezelfde gevoelens ervaart.",
-    ),
+    special("gevoelens", 5, "perspectieven", "Hoe kijk jij hiernaar?"),
     q("22", 5),
     q("23", 5),
     q("24", 5),
@@ -288,12 +291,11 @@ export const chapterSteps: Record<number, Step[]> = {
     ),
     q("29", 7),
     q("30", 7),
-    story(
+    special(
       "verantwoordelijkheid",
       7,
-      "Als het misgaat",
-      "In dit fictieve voorbeeld schiet een automatisch systeem een voertuig met burgers aan. De ontwikkelaar testte het systeem. De commandant besliste waar het werd ingezet. De militair hield toezicht.",
-      "Onderzoek wie welke informatie, beslissingen en mogelijkheden had. Er hoeft niet maar één verantwoordelijke te zijn.",
+      "afwegen",
+      "Snel reageren of eerst kijken?",
     ),
     q("31", 7),
     q("32", 7),
@@ -318,6 +320,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "permissions",
       "Jij bent de baas van de AI-agent",
     ),
+    special("agent-sim", 8, "agent-sim", "Wat mag de agent doen?"),
     compass(8),
   ],
 };
@@ -373,7 +376,13 @@ export function routeFor(choices: number[]): Step[] {
     summaryStep,
   ];
 }
-export const observationIds = ["experiment", "beeldexperiment"];
+export const observationIds = [
+  "experiment",
+  "beeldexperiment",
+  "sorteren",
+  "privacy-editor",
+  "agent-sim",
+];
 export function isCorrect(question: Question, values: string[]): boolean {
   return (
     values.length === question.correct.length &&

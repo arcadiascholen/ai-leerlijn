@@ -1725,10 +1725,349 @@
   object-position: center 85%;
 }
 @media (max-height: 700px) and (min-width: 900px) {
-  .loep-experiment:has(.loep-demo) .loep-prompt-stack { gap: 5px; }
-  .loep-experiment:has(.loep-demo) .loep-prompt { padding: 7px 10px; }
-  .loep-experiment:has(.loep-demo) .loep-demo { margin-top: 4px; padding-top: 4px; }
-  .loep-experiment:has(.loep-demo) .loep-observation { margin: 7px 0 4px; }
-  .loep-experiment:has(.loep-demo) .loep-observation label { padding: 5px 9px; min-height: 34px; }
-  .loep-experiment:has(.loep-demo) .loep-note { padding: 6px 9px; font-size: 11px !important; }
+  .loep-experiment:has(.loep-demo) .loep-prompt-stack {
+    gap: 5px;
+  }
+  .loep-experiment:has(.loep-demo) .loep-prompt {
+    padding: 7px 10px;
+  }
+  .loep-experiment:has(.loep-demo) .loep-demo {
+    margin-top: 4px;
+    padding-top: 4px;
+  }
+  .loep-experiment:has(.loep-demo) .loep-observation {
+    margin: 7px 0 4px;
+  }
+  .loep-experiment:has(.loep-demo) .loep-observation label {
+    padding: 5px 9px;
+    min-height: 34px;
+  }
+  .loep-experiment:has(.loep-demo) .loep-note {
+    padding: 6px 9px;
+    font-size: 11px !important;
+  }
+}
+/* Onderzoeksopdrachten */
+.loep-discover {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  min-height: 0;
+  flex: 1;
+}
+.loep-discover > div {
+  min-width: 0;
+}
+.loep-discover h2 {
+  margin: 8px 0 14px;
+}
+.loep-discover h3 {
+  margin: 0 0 12px;
+}
+.loep-discover p {
+  font-size: 14px;
+  line-height: 1.4;
+}
+.loep-explore-panel,
+.loep-builder-result {
+  background: var(--surface-sunken);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+}
+.loep-builder-result {
+  background: var(--ai-soft);
+  color: var(--ai-text);
+}
+.loep-builder-result p {
+  margin: 10px 0;
+  font-size: 15px;
+}
+.loep-sort {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+.loep-sort > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 8px;
+  background: var(--surface);
+  font-size: 12px;
+}
+.loep-sort > div > div {
+  display: flex;
+  gap: 4px;
+}
+.loep-sort button,
+.loep-secondary {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--forest);
+  padding: 6px 10px;
+  font-size: 11px;
+}
+.loep-sort button.active {
+  background: var(--forest);
+  color: var(--on-primary);
+  border-color: var(--forest);
+}
+.loep-sort small {
+  grid-column: 1/-1;
+  color: var(--ai-text);
+  font-size: 10px;
+}
+.loep-build-options {
+  display: grid;
+  gap: 8px;
+  margin: 15px 0;
+}
+.loep-build-options label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-size: 13px;
+}
+.loep-example-lines {
+  display: grid;
+  gap: 5px;
+}
+.loep-example-lines button {
+  padding: 10px;
+  text-align: left;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+}
+.loep-example-lines button[aria-pressed="true"] {
+  border-color: var(--ai);
+  background: var(--ai-soft);
+}
+.loep-message {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 15px;
+  font-size: 14px;
+  line-height: 2.2;
+  margin: 12px 0;
+}
+.loep-message button {
+  background: var(--ai-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ai-text);
+  padding: 3px 6px;
+  font-size: 13px;
+}
+.loep-message button.removed {
+  background: var(--surface-sunken);
+  color: var(--ink-muted);
+  text-decoration: line-through;
+}
+.loep-opinion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.loep-opinion input {
+  width: 100%;
+}
+.loep-action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+.loep-source-card {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.loep-source-card summary {
+  cursor: pointer;
+  color: var(--ai-text);
+  font-weight: 700;
+}
+.loep-app .loep-source-card p {
+  font-size: 12px;
+  margin: 6px 0;
+}
+.loep-source-card a,
+.loep-video-foot a,
+.loep-discover a {
+  color: var(--ai-text);
+  font-size: 11px;
+}
+.loep-video-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  background: var(--ai-soft);
+}
+.loep-video-poster {
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--forest);
+  color: var(--on-primary);
+  padding: 24px;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+}
+.loep-video-poster span:last-child {
+  display: grid;
+  gap: 8px;
+}
+.loep-video-poster strong {
+  font-size: 22px;
+  line-height: 1.2;
+}
+.loep-video-poster small {
+  font-size: 11px;
+}
+.loep-video-play {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: var(--forest);
+  background: var(--surface);
+}
+.loep-video-card iframe {
+  width: 100%;
+  height: 230px;
+  border: 0;
+  border-radius: var(--radius-md);
+}
+.loep-video-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 9px;
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+.loep-video-card details {
+  margin-top: 8px;
+  font-size: 11px;
+}
+.loep-video-card summary {
+  cursor: pointer;
+}
+.loep-app .loep-video-card details p {
+  margin: 5px 0;
+  font-size: 11px;
+}
+.loep-gallery-all {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.loep-gallery-all img {
+  height: 95px;
+}
+.loep-gallery-all button > span {
+  font-size: 9px;
+  padding: 6px;
+}
+.loep-energy .loep-tabs {
+  margin: 0 0 8px;
+}
+.loep-energy .loep-tabs button {
+  padding: 6px 11px;
+}
+.loep-branch-chat {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0;
+}
+.loep-branch-chat small {
+  font-size: 10px;
+}
+@media (max-height: 700px) and (min-width: 900px) {
+  .loep-discover {
+    gap: 22px;
+  }
+  .loep-discover h2 {
+    font-size: 25px;
+    margin: 5px 0 9px;
+  }
+  .loep-discover p {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .loep-sort {
+    gap: 4px;
+    margin: 7px 0;
+  }
+  .loep-sort > div {
+    padding: 5px 7px;
+    font-size: 11px;
+  }
+  .loep-sort button {
+    padding: 5px 7px;
+    font-size: 10px;
+  }
+  .loep-video-poster {
+    min-height: 140px;
+    padding: 18px;
+  }
+  .loep-video-card iframe {
+    height: 200px;
+  }
+  .loep-video-card {
+    padding: 15px;
+  }
+  .loep-explore-panel,
+  .loep-builder-result {
+    padding: 16px;
+  }
+  .loep-gallery-all img {
+    height: 76px;
+  }
+  .loep-gallery-all button > span {
+    font-size: 8px;
+  }
+  .loep-energy .loep-tabs {
+    margin-bottom: 4px;
+  }
+}
+@media (max-width: 650px) {
+  .loep-discover {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .loep-gallery-all {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .loep-gallery-all img {
+    height: 120px;
+  }
+  .loep-sort > div {
+    grid-template-columns: 1fr;
+  }
+  .loep-video-card {
+    min-height: 250px;
+  }
 }

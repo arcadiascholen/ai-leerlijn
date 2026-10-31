@@ -33,3 +33,11 @@ Dit is een functionele en inhoudelijke controle door de ontwikkelaar, geen gebru
 - De keuzekaarten hebben grotere, gelijkvormige selectie-iconen.
 - De milieuvergelijking heeft drie afzonderlijke schuifregelaars voor tekstvragen, uren streamen en AI-video's. De oefening geeft een gerichte tip of bevestiging; de weergegeven meetgrenzen blijven behouden. De drie schuifregelaars, rekenwaarden en feedback zijn in de browser gecontroleerd.
 - De uitgeklapte voorbeeldantwoorden, antwoordkaarten en milieuoefening passen op 1366 × 640 zonder overlap met de navigatie.
+
+
+## Uitbreiding — 31 oktober 2026
+
+- De introductie bevat een sorteeroefening en een filmpje. De promptbouwer, privacyoefening en de keuze uit onderwerpen zijn in de browser doorlopen.
+- De routes met deepfakes en beeldvorming, en met milieu en AI-agent, zijn doorlopen. De galerij toont alle acht beelden tegelijk en de uitgebreide milieuvergelijking rekent ook gebruik door meerdere mensen door.
+- De videospeler laadt na een klik; Karrewiet is in de browser geopend. De bronkaarten en voorbeelden geven context binnen het leerpad. De precieze Pano-fragmentkeuze en een tijdtest met leerlingen blijven open.
+- De PDF-generator is met de nieuwe opdrachten afzonderlijk gecontroleerd. Bijgewerkte vraagformuleringen blijven behouden als de vragen uit het archief opnieuw worden opgebouwd.

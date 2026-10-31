@@ -16,6 +16,7 @@ import {
 } from "./model";
 import { clearModule, readStored, writeStored } from "../stappen/storage";
 import { Icon, Photo, Special, useModalFocus } from "./SpecialSteps";
+import { SourceCard, VideoCard } from "./Interacties";
 import "./loep.css";
 const MODULE = "verantwoord-gebruik";
 const STORAGE = "loep:v1";
@@ -86,9 +87,24 @@ function Knowledge({
                   : "◉ Een afweging om over na te denken."}
             </strong>
             {q.id === "14" && (
-              <div className="loep-bubble loep-bubble-right">
-                <strong>Jij</strong>
-                <span>{q.options.find((o) => o.id === values[0])?.text}</span>
+              <div className="loep-branch-chat">
+                <div className="loep-bubble loep-bubble-right">
+                  <strong>Jij</strong>
+                  <span>{q.options.find((o) => o.id === values[0])?.text}</span>
+                </div>
+                <div className="loep-bubble">
+                  <strong>Noor</strong>
+                  <span>
+                    {values[0] === "A"
+                      ? "dan gaat het filmpje nog verder rond"
+                      : values[0] === "B"
+                        ? "tis wel over een echte persoon he"
+                        : values[0] === "C"
+                          ? "ja, laten we stoppen met doorsturen"
+                          : "wat kunnen we doen om te helpen?"}
+                  </span>
+                </div>
+                <small>Zo zou de groep kunnen reageren.</small>
               </div>
             )}
             <Paragraphs text={feedback} />
@@ -301,27 +317,23 @@ function Story({ step }: { step: Step }) {
           <p key={p}>{p}</p>
         ))}
         {chapter ? (
-          <a
-            className="loep-source"
-            href={chapter.source}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {chapter.sourceLabel} ↗
-          </a>
+          <SourceCard chapter={chapter.id} />
         ) : (
-          <a
-            className="loep-source"
-            href="https://www.imec.be/nl/vlaamse-innovatiemotor/kennisuitwisseling/wetenschap-in-de-klas/educatief-aanbod/klaar-ai"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Meer uitleg · KLAAR AI bij imec ↗
-          </a>
+          <p className="loep-small">
+            <a
+              href="https://www.imec.be/nl/articles/wat-artificiele-intelligentie-en-wat-ben-ik-ermee"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Meer over AI · imec ↗
+            </a>
+          </p>
         )}
       </div>
       <figure className="loep-story-visual">
-        {chapter ? (
+        {step.id === "nepvideo" ? (
+          <VideoCard kind="deepfake" />
+        ) : chapter ? (
           [
             "vriendelijk",
             "testen",

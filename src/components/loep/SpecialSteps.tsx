@@ -6,6 +6,14 @@ import {
   type Step,
   type Answer,
 } from "./model";
+import {
+  SortIntro,
+  PromptBuilder,
+  PrivacyEdit,
+  Perspectives,
+  WarBalance,
+  AgentSimulation,
+} from "./Interacties";
 export function useModalFocus(open: boolean, onClose: () => void) {
   const close = useRef(onClose);
   close.current = onClose;
@@ -213,7 +221,7 @@ export function Experiment({
               <p id={`loep-prompt-${i}`}>{p}</p>
               {example && (
                 <div className="loep-demo">
-                  <strong>Redactioneel demonstratieantwoord</strong>
+                  <strong>Voorbeeldantwoord</strong>
                   <p>
                     {i === 0
                       ? "Een verbod kan jongeren beschermen tegen bepaalde risico’s. Maar “beter voor iedereen” gaat te ver: er zijn ook nadelen, uitzonderingen en vragen over de uitvoering."
@@ -274,8 +282,9 @@ export function Gallery({
   onCheck: () => void;
 }) {
   const [group, setGroup] = useState(0);
-  const [detail, setDetail] = useState<number | null>(null);
+  const [detail, setDetail] = useState<string | null>(null);
   const [instructions, setInstructions] = useState(false);
+  const [diverse, setDiverse] = useState(false);
   useModalFocus(detail !== null, () => setDetail(null));
   const profession = group === 0 ? "verpleegkundige" : "chirurg";
   return (
@@ -301,12 +310,25 @@ export function Gallery({
             <hr />
             Maak een realistische afbeelding van een chirurg aan het werk in een
             ziekenhuis.
+            <hr />
+            <label>
+              <input
+                type="checkbox"
+                checked={diverse}
+                onChange={(e) => setDiverse(e.target.checked)}
+              />{" "}
+              Vraag om verschillende mensen
+            </label>
+            {diverse && (
+              <p>
+                Maak een realistische afbeelding van {group === 1 ? "chirurgen" : "verpleegkundigen"} aan het werk in een ziekenhuis. Toon mensen van verschillende leeftijden en achtergronden.
+              </p>
+            )}
           </div>
         )}
         <p className="loep-small">
           Elke opdracht werd vier keer uitgevoerd met ImageGen, op 30 oktober
-          2026. Alle acht resultaten zijn bewaard. Geen bewijs over alle
-          modellen.
+          2026. Alle acht resultaten zijn bewaard. Dit vertelt niet hoe alle AI werkt.
         </p>
         <p className="loep-small">
           Je kunt genderidentiteit of afkomst niet met zekerheid uit uiterlijk
@@ -346,7 +368,7 @@ export function Gallery({
       </div>
       <div>
         <div className="loep-tabs" role="group" aria-label="Beroep bekijken">
-          {["Verpleegkundigen", "Chirurgen"].map((t, i) => (
+          {["Verpleegkundigen", "Chirurgen", "Alles"].map((t, i) => (
             <button
               key={t}
               aria-pressed={group === i}
@@ -356,26 +378,37 @@ export function Gallery({
             </button>
           ))}
         </div>
-        <div className="loep-gallery">
-          {[1, 2, 3, 4].map((n) => (
-            <button
-              key={profession + n}
-              onClick={() => setDetail(n)}
-              aria-label={`Vergroot ${profession} ${n}`}
-            >
-              <Photo
-                name={profession + "-" + n}
-                alt={`AI-gegenereerd voorbeeld ${n}: ${profession} aan het werk in een ziekenhuis.`}
-              />
-              <span>
-                AI-beeld {n} <Icon name="search" size={15} />
-              </span>
-            </button>
-          ))}
+        <div
+          className={
+            group === 2 ? "loep-gallery loep-gallery-all" : "loep-gallery"
+          }
+        >
+          {(group === 2 ? ["verpleegkundige", "chirurg"] : [profession])
+            .flatMap((job) => [1, 2, 3, 4].map((n) => ({ job, n })))
+            .map(({ job, n }) => (
+              <button
+                key={job + n}
+                onClick={() => setDetail(job + "-" + n)}
+                aria-label={`Vergroot ${job} ${n}`}
+              >
+                <Photo
+                  name={job + "-" + n}
+                  alt={`AI-beeld ${n}: ${job} aan het werk.`}
+                />
+                <span>
+                  {group === 2
+                    ? job === "chirurg"
+                      ? "Chirurg "
+                      : "Verpleegkundige "
+                    : "AI-beeld "}
+                  {n} <Icon name="search" size={15} />
+                </span>
+              </button>
+            ))}
         </div>
         <p className="loep-small">
           Klik op een beeld om het groter te bekijken. Dit zijn gegenereerde
-          beelden van fictieve mensen.
+          beelden van verzonnen mensen.
         </p>
       </div>
       {detail !== null && (
@@ -396,10 +429,7 @@ export function Gallery({
             >
               Sluiten
             </button>
-            <Photo
-              name={profession + "-" + detail}
-              alt={`Vergroot AI-beeld: ${profession} ${detail}.`}
-            />
+            <Photo name={detail} alt={`Vergroot AI-beeld: ${detail}.`} />
             <p>AI-gegenereerd · ImageGen · 30 oktober 2026</p>
           </section>
         </div>
@@ -411,31 +441,34 @@ export function Energy() {
   const [amount, setAmount] = useState(1);
   const [hours, setHours] = useState(1);
   const [videos, setVideos] = useState(1);
+  const [people, setPeople] = useState(1);
+  const [mode, setMode] = useState<"compare" | "people">("compare");
   const [selected, setSelected] = useState(0);
   const [feedback, setFeedback] = useState("");
   const number = (value: number) =>
     Number(value.toFixed(2)).toLocaleString("nl-BE");
+  const total = amount * (mode === "people" ? people : 1) * 0.24;
   const entries = [
     {
       title: "Eenvoudige tekstvragen",
-      value: 0.24 * amount,
-      tag: `${number(0.24 * amount)} Wh`,
+      value: total,
+      tag: `${number(total)} Wh`,
       boundary:
-        "Mediaan voor Gemini Apps, Google 2025. Operationele dienst; jouw toestel telt niet mee.",
+        "Gemini Apps, Google 2025: het middelste gemeten verbruik. Je eigen toestel telt niet mee.",
     },
     {
       title: "Netflix streamen",
       value: 77 * hours,
       tag: `${number(77 * hours)} Wh`,
       boundary:
-        "IEA-raming voor 2019. Datacenters, netwerk én gewogen eindtoestellen tellen mee.",
+        "Schatting van het IEA voor 2019. Datacenters, internet en toestellen tellen mee.",
     },
     {
       title: "AI-video’s van zes seconden",
       value: 115 * videos,
       tag: `circa ${number(115 * videos)} Wh`,
       boundary:
-        "GPU-energie in de IEA-test van 2025, bij acht beelden per seconde. Niet het volledige systeem.",
+        "IEA-test uit 2025. Alleen het verbruik van de gebruikte grafische chips telt mee.",
     },
   ];
   const max = Math.max(1, ...entries.map((e) => e.value));
@@ -444,11 +477,19 @@ export function Energy() {
     setFeedback("");
   };
   function check() {
+    if (mode === "people") {
+      setFeedback(
+        amount === 5 && people === 1000
+          ? "Goed! Samen zijn dat 5.000 vragen en ongeveer 1.200 Wh volgens dit voorbeeld."
+          : "Probeer 1.000 mensen en 5 vragen per persoon in te stellen.",
+      );
+      return;
+    }
     if (hours !== 1)
       setFeedback("Zet Netflix eerst op één uur en vergelijk opnieuw.");
     else if (Math.abs(amount * 0.24 - 77) <= 5)
       setFeedback(
-        "Dat komt in de buurt: met deze voorbeeldcijfers is dat ongeveer 300 vragen. Let op de verschillende meetgrenzen.",
+        "Dat komt in de buurt: volgens dit voorbeeld zijn dat ongeveer 300 vragen. Er worden niet overal dezelfde dingen meegeteld.",
       );
     else if (amount * 0.24 < 72)
       setFeedback(
@@ -464,13 +505,35 @@ export function Energy() {
       <div>
         <span className="loep-eyebrow">Onderzoek de grootteorde</span>
         <h2>Vergelijk en probeer uit</h2>
+        <div className="loep-tabs" role="group" aria-label="Kies een oefening">
+          <button
+            aria-pressed={mode === "compare"}
+            onClick={() => {
+              setMode("compare");
+              setFeedback("");
+            }}
+          >
+            Vergelijk
+          </button>
+          <button
+            aria-pressed={mode === "people"}
+            onClick={() => {
+              setMode("people");
+              setFeedback("");
+            }}
+          >
+            Veel mensen
+          </button>
+        </div>
         <p>
-          Hoeveel tekstvragen komen ongeveer overeen met één uur Netflix?
-          Verschuif de aantallen en vergelijk de balken.
+          {mode === "compare"
+            ? "Hoeveel tekstvragen komen ongeveer overeen met één uur Netflix?"
+            : "Wat als 1.000 mensen elk 5 vragen stellen?"}
         </p>
         <div className="loep-energy-sliders">
           <label>
-            Aantal tekstvragen <strong>{amount}</strong>
+            {mode === "people" ? "Vragen per persoon" : "Aantal tekstvragen"}{" "}
+            <strong>{amount}</strong>
             <input
               type="range"
               min="1"
@@ -479,16 +542,29 @@ export function Energy() {
               onChange={(e) => change(setAmount, Number(e.target.value))}
             />
           </label>
-          <label>
-            Netflix (uren) <strong>{hours}</strong>
-            <input
-              type="range"
-              min="0"
-              max="3"
-              value={hours}
-              onChange={(e) => change(setHours, Number(e.target.value))}
-            />
-          </label>
+          {mode === "people" ? (
+            <label>
+              Aantal mensen <strong>{people}</strong>
+              <input
+                type="range"
+                min="1"
+                max="1000"
+                value={people}
+                onChange={(e) => change(setPeople, Number(e.target.value))}
+              />
+            </label>
+          ) : (
+            <label>
+              Netflix (uren) <strong>{hours}</strong>
+              <input
+                type="range"
+                min="0"
+                max="3"
+                value={hours}
+                onChange={(e) => change(setHours, Number(e.target.value))}
+              />
+            </label>
+          )}
           <label>
             AI-video’s van zes seconden <strong>{videos}</strong>
             <input
@@ -530,9 +606,10 @@ export function Energy() {
           <p>{entries[selected]!.boundary}</p>
         </div>
         <p className="loep-energy-caveat">
-          Historische voorbeeldcijfers uit verschillende jaren en met
-          verschillende meetgrenzen. Dit bewijst niet welke toepassing altijd
-          milieuvriendelijker is.
+          {mode === "people" &&
+            "Alleen de tekstvragen worden vermenigvuldigd met het aantal mensen. "}
+          Voor deze voorbeelden tellen verschillende dingen mee. Je kunt hieruit
+          niet besluiten welke toepassing altijd beter is voor het milieu.
         </p>
         <div className="loep-small loep-source-links">
           <a
@@ -583,7 +660,7 @@ export function Centers() {
   return (
     <div className="loep-center-exercise">
       <span className="loep-eyebrow">
-        Fictief dilemma · er ontbreken gegevens
+        Verzonnen voorbeeld · we weten nog niet alles
       </span>
       <h2>Welk datacenter is de beste keuze?</h2>
       <div
@@ -669,7 +746,7 @@ export function Chat() {
           </span>
           <div>
             <strong>Klasgroep</strong>
-            <small>26 deelnemers · fictieve chat</small>
+            <small>26 deelnemers · verzonnen chat</small>
           </div>
         </header>
         <div className="loep-chat-messages" aria-live="polite">
@@ -731,7 +808,9 @@ export function Injection() {
   return (
     <div className="loep-split">
       <div>
-        <span className="loep-eyebrow">Fictieve situatie · promptinjectie</span>
+        <span className="loep-eyebrow">
+          Verzonnen situatie · misleidende instructie
+        </span>
         <h2>
           Wie geeft
           <br />
@@ -894,6 +973,36 @@ export function Special({
   onCheck: () => void;
 }) {
   switch (step.kind) {
+    case "sorteren":
+      return (
+        <SortIntro
+          onAnswer={onAnswer}
+          onCheck={onCheck}
+          checked={answer?.checked}
+        />
+      );
+    case "promptbuilder":
+      return <PromptBuilder />;
+    case "privacy-editor":
+      return (
+        <PrivacyEdit
+          onAnswer={onAnswer}
+          onCheck={onCheck}
+          checked={answer?.checked}
+        />
+      );
+    case "perspectieven":
+      return <Perspectives />;
+    case "afwegen":
+      return <WarBalance />;
+    case "agent-sim":
+      return (
+        <AgentSimulation
+          onAnswer={onAnswer}
+          onCheck={onCheck}
+          checked={answer?.checked}
+        />
+      );
     case "experiment":
       return (
         <Experiment answer={answer} onAnswer={onAnswer} onCheck={onCheck} />

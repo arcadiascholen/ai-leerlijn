@@ -177,7 +177,7 @@
   "7": {
     "id": "7",
     "title": "Hoe laat je AI kritisch meedenken?",
-    "body": "AI kan je helpen om een onderwerp vanuit verschillende kanten te bekijken. Maar daarvoor moet je soms bewust anders vragen stellen.\n\nJe wilt verder nadenken over een verbod op sociale media voor jongeren onder de 16 jaar.\n\nWelke vraag stel je het best aan AI om een kritisch en genuanceerd antwoord te krijgen?",
+    "body": "AI kan je helpen om een onderwerp vanuit verschillende kanten te bekijken. Maar daarvoor moet je soms bewust anders vragen stellen.\n\nJe wilt verder nadenken over een verbod op sociale media voor jongeren onder de 16 jaar.\n\nWelke vraag stel je het best aan AI om een antwoord te krijgen dat verschillende kanten bekijkt?",
     "options": [
       {
         "id": "A",
@@ -441,11 +441,11 @@
   "18": {
     "id": "18",
     "title": "Kun je AI betrappen op vooroordelen?",
-    "body": "Je hebt afbeeldingen van verpleegkundigen en chirurgen onderzocht. Je merkt dat AI in sommige afbeeldingen vooral vrouwen als verpleegkundige en mannen als chirurg voorstelt.\n\nWat kun je hieruit besluiten?",
+    "body": "Stel: in een reeks afbeeldingen lijken vooral vrouwen als verpleegkundige en mannen als chirurg afgebeeld.\n\nWat zou je daaruit kunnen besluiten?",
     "options": [
       {
         "id": "A",
-        "text": "Er zijn aanwijzingen voor stereotypen, maar we moeten meer afbeeldingen onderzoeken om te weten of er een vast patroon is."
+        "text": "Dat kan wijzen op een vast beeld van deze beroepen. We moeten meer afbeeldingen onderzoeken om te weten of er een patroon is."
       },
       {
         "id": "B",
@@ -463,7 +463,7 @@
     "correct": [
       "A"
     ],
-    "feedback": "Je hebt een mogelijk vooroordeel ontdekt. Maar een paar afbeeldingen zijn onvoldoende om te bewijzen dat AI systematisch bepaalde groepen anders voorstelt. Daarvoor moet je veel meer afbeeldingen onder vergelijkbare omstandigheden onderzoeken.",
+    "feedback": "Dat kan wijzen op een vast beeld van deze beroepen. Een paar afbeeldingen zijn niet genoeg om te weten of er echt een patroon is. Onderzoek meer beelden met dezelfde opdracht en hetzelfde systeem.",
     "branches": {},
     "count": 1
   },
@@ -521,7 +521,7 @@
     "correct": [
       "D"
     ],
-    "feedback": "Door duidelijk aan te geven welke variatie je wilt zien, kun je stereotypen helpen vermijden. Je moet de resultaten wel blijven controleren. Ook een duidelijke opdracht garandeert geen goed resultaat.",
+    "feedback": "Door duidelijk aan te geven welke variatie je wilt zien, kun je vaste ideeën over mensen helpen vermijden. Je moet de resultaten wel blijven controleren. Ook een duidelijke opdracht garandeert geen goed resultaat.",
     "branches": {},
     "count": 1
   },
@@ -622,7 +622,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Een betaald abonnement is op zichzelf voldoende bewijs dat het bedrijf mensen manipuleert."
+        "text": "Een betaald abonnement is op zichzelf voldoende bewijs dat het bedrijf mensen bewust probeert te beïnvloeden."
       },
       {
         "id": "B",
@@ -634,7 +634,7 @@
       },
       {
         "id": "D",
-        "text": "Het bedrijf mag geld verdienen, maar moet opletten dat het geen emotionele afhankelijkheid aanmoedigt om meer te verdienen."
+        "text": "Het bedrijf mag geld verdienen, maar moet opletten dat het geen mensen aanmoedigt om steeds meer op de chatbot te steunen om meer te verdienen."
       }
     ],
     "correct": [],
