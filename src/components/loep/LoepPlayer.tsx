@@ -212,7 +212,7 @@ function Welcome() {
             <li>Begin met de kennismaking en twee vaste uitdagingen.</li>
             <li>Kies daarna twee onderwerpen die je interesseren.</li>
             <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
-            <li>Download je AI-kompas als PDF. Het helpt je nadenken over hoe jij AI bewust wilt gebruiken.</li>
+            <li>Download je AI-kompas als PDF. Het helpt je nadenken over bewust AI-gebruik en is je leerbewijs voor deze module.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
         </div>
