@@ -16,7 +16,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
           source: "Karrewiet · VRT",
           url: "https://www.youtube.com/watch?v=IsrnnWOGkqk",
           summary:
-            "AI kan patronen leren herkennen uit voorbeelden. Het systeem kan ook fouten maken.",
+            "AI leert vaak patronen uit veel voorbeelden, zoals tekst of beelden. Die patronen helpen bij voorspellen of nieuwe inhoud maken. Ook een overtuigend resultaat kan fout zijn: blijf controleren.",
         }
       : {
           id: "uHaJH0ojL8s",
@@ -24,7 +24,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
           source: "NOS Jeugdjournaal",
           url: "https://www.youtube.com/watch?v=uHaJH0ojL8s",
           summary:
-            "Een video kan echt lijken en toch met AI gemaakt zijn. Controleer wie het bericht verspreidt en zoek andere bronnen.",
+            "Een video kan echt lijken en toch met AI gemaakt of aangepast zijn. Aan het beeld alleen zie je dat niet altijd. Controleer wie het bericht verspreidt, zoek de oorspronkelijke bron en vergelijk met andere betrouwbare informatie. Soms blijf je onzeker.",
         };
   return (
     <section className="loep-video-card" aria-label={v.title}>
@@ -49,13 +49,14 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
         />
       )}
       <div className="loep-video-foot">
-        <span>De video opent via YouTube.</span>
+        <span>Optioneel · de video opent via YouTube.</span>
         <a href={v.url} target="_blank" rel="noreferrer">
           Open video ↗
         </a>
       </div>
+      <p className="loep-small">{kind === "intro" ? "Kijkvraag: wat leert een AI-systeem uit voorbeelden?" : "Kijkvraag: hoe controleer je wie een video heeft gemaakt?"}</p>
       <details>
-        <summary>Lukt kijken niet?</summary>
+        <summary>Lees de uitleg als je niet kijkt</summary>
         <p>{v.summary}</p>
       </details>
     </section>
@@ -116,6 +117,16 @@ export function SourceCard({ chapter }: { chapter: number }) {
       url: "https://replit.com/blog/introducing-a-safer-way-to-vibe-code-with-replit-databases",
     },
   };
+  const questions: Record<number, string> = {
+    1: "Wat vertelt de maker zelf, en welke andere bron kun je raadplegen?",
+    2: "Wat is het verschil tussen een link delen en vindbaar maken?",
+    3: "Wie geeft informatie en hoe kun je die controleren?",
+    4: "Wat onderzochten de onderzoekers precies?",
+    5: "Welk perspectief laat de reportage zien?",
+    6: "Welke kosten en mogelijke besparingen beschrijft het rapport?",
+    7: "Wat is nodig om menselijk toezicht betekenisvol te maken?",
+    8: "Welke maatregel beschrijft de maker van het systeem?",
+  };
   const info = sources[chapter];
   if (!info) return null;
   return (
@@ -128,6 +139,7 @@ export function SourceCard({ chapter }: { chapter: number }) {
         <br />
         {info.why}
       </p>
+      <p className="loep-small">Denkvraag: {questions[chapter]}</p>
       <a href={info.url} target="_blank" rel="noreferrer">
         Bekijk de bron ↗
       </a>
@@ -153,6 +165,7 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
   function set(i: number, v: string) {
     setChoices({ ...choices, [i]: v });
     setResult(false);
+    if (checked) onAnswer(["0"]);
   }
   const all = examples.every((_, i) => choices[i]);
   function check() {
@@ -166,7 +179,7 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
         <span className="loep-eyebrow">Start · ontdek AI</span>
         <h2>Waar zit AI in?</h2>
         <p>
-          Kies bij elk voorbeeld. Een gewone vaste regel kan ook slim lijken.
+          Sommige systemen leren patronen uit voorbeelden. Andere volgen vaste regels. Kies bij elk voorbeeld wat het best past.
         </p>
         <div className="loep-sort">
           {examples.map((e, i) => (
@@ -203,7 +216,7 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
         </button>
         {checked && !result && (
           <p className="loep-small">
-            Je hebt deze oefening al gedaan. Je mag ze opnieuw proberen.
+            Je hebt deze oefening eerder afgerond. Je eerdere keuzes zijn niet bewaard; je kunt opnieuw oefenen.
           </p>
         )}
       </div>
@@ -234,7 +247,7 @@ const builderParts = [
     text: "Welke informatie ontbreekt om een goed oordeel te vormen?",
   },
   {
-    label: "Vraag waar twijfel is",
+    label: "Vraag wat onzeker is",
     text: "Geef aan waar je onzeker over bent.",
   },
 ];
@@ -280,7 +293,7 @@ export function PromptBuilder() {
       <div>
         <span className="loep-eyebrow">Zelf proberen</span>
         <h2>Bouw een betere vraag</h2>
-        <p>Vink aan wat je aan je vraag wilt toevoegen.</p>
+        <p>Vink twee onderdelen aan en vergelijk je vraag met de sturende vraag van daarnet. Je kunt daarna je vraag kopiëren.</p>
         <div className="loep-build-options">
           {builderParts.map((part, i) => (
             <label key={part.label}>
@@ -350,7 +363,7 @@ const pieces = [
   { id: "telefoon", label: "haar telefoonnummer", sensitive: true },
   {
     id: "probleem",
-    label: "een afspraak werd niet nagekomen",
+    label: "een afspraak niet werd nagekomen",
     sensitive: false,
   },
 ];
@@ -362,6 +375,7 @@ export function PrivacyEdit({ onAnswer, onCheck, checked }: Actions) {
       removed.includes(id) ? removed.filter((x) => x !== id) : [...removed, id],
     );
     setResult(false);
+    if (checked) onAnswer(["0"]);
   }
   function check() {
     setResult(true);
@@ -375,7 +389,7 @@ export function PrivacyEdit({ onAnswer, onCheck, checked }: Actions) {
         <h2>Wat laat je weg?</h2>
         <p>
           Je wilt hulp vragen na ruzie. Klik op de onderdelen die je uit dit
-          verzonnen bericht zou halen.
+          verzonnen bericht zou halen. Controleer daarna je aangepaste vraag.
         </p>
         <div className="loep-message">
           Ik heb ruzie met{" "}
@@ -404,24 +418,19 @@ export function PrivacyEdit({ onAnswer, onCheck, checked }: Actions) {
           Bekijk mijn bericht
         </button>
         {checked && !result && (
-          <p className="loep-small">Je kunt je keuze opnieuw bekijken.</p>
+          <p className="loep-small">Je hebt deze oefening eerder afgerond. Je eerdere keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>
         )}
       </div>
       <div className="loep-explore-panel">
-        <h3>Je aangepaste vraag</h3>
+        <h3>Zo ziet je vraag eruit</h3>
         <p>
-          Ik heb ruzie met{" "}
-          {removed.includes("naam") ? "een klasgenoot" : "Mila Janssens"}
-          {removed.includes("bericht")
-            ? ""
-            : "; ik stuur een screenshot van ons privégesprek mee"}
-          {removed.includes("telefoon")
-            ? ""
-            : ", samen met haar telefoonnummer"}
-          {removed.includes("probleem")
-            ? ""
-            : ". Een afspraak werd niet nagekomen"}
-          . Hoe maak ik het weer goed?
+          {[
+            `Ik heb ruzie met ${removed.includes("naam") ? "een klasgenoot" : "Mila Janssens"}.`,
+            !removed.includes("bericht") ? "Ik stuur een screenshot van ons privégesprek mee." : "",
+            !removed.includes("telefoon") ? "Ik geef haar telefoonnummer mee." : "",
+            !removed.includes("probleem") ? "Een afspraak werd niet nagekomen." : "",
+            "Hoe maak ik het weer goed?",
+          ].filter(Boolean).join(" ")}
         </p>
         {result && (
           <div className="loep-note" role="status">
@@ -459,18 +468,19 @@ const views = [
 export function Perspectives() {
   const [view, setView] = useState(0);
   const [opinion, setOpinion] = useState(2);
+  const [seen, setSeen] = useState<number[]>([0]);
   return (
     <div className="loep-discover">
       <div>
         <span className="loep-eyebrow">Drie kanten</span>
         <h2>Hoe kijk jij hiernaar?</h2>
-        <p>Kies een van de drie kanten.</p>
+        <p>Bekijk de drie kanten. Welk belang wil je verder onderzoeken?</p>
         <div className="loep-tabs" role="group" aria-label="Kies een kant">
           {views.map((v, i) => (
             <button
               key={v.label}
               aria-pressed={view === i}
-              onClick={() => setView(i)}
+              onClick={() => { setView(i); setSeen((old) => old.includes(i) ? old : [...old, i]); }}
             >
               {v.label}
             </button>
@@ -483,15 +493,15 @@ export function Perspectives() {
       </div>
       <div>
         <span className="loep-eyebrow">Wat denk jij?</span>
-        <h3>Een chatbot kan voor iemand belangrijk zijn.</h3>
+        <h3>Hoeveel vragen heb jij nog over deze relatie?</h3>
         <label className="loep-opinion">
           {
             [
-              "Helemaal niet akkoord",
-              "Eerder niet akkoord",
-              "Ik twijfel",
-              "Eerder akkoord",
-              "Helemaal akkoord",
+              "Geen",
+              "Weinig",
+              "Enkele",
+              "Veel",
+              "Heel veel",
             ][opinion]
           }
           <input
@@ -503,7 +513,7 @@ export function Perspectives() {
           />
         </label>
         <p className="loep-note">
-          Je mening is niet goed of fout. Denk ook na over de andere kanten.
+          Je antwoord is niet goed of fout. {seen.length < 3 ? "Bekijk ook de andere kanten." : "Welke vraag wil je als eerste verder onderzoeken?"}
         </p>
         <SourceCard chapter={5} />
       </div>
@@ -513,8 +523,7 @@ export function Perspectives() {
 
 export function WarBalance() {
   const [time, setTime] = useState(1);
-  const [review, setReview] = useState(1);
-  const times = ["Weinig", "Meer", "Veel"];
+  const times = ["Snel reageren", "Tijd verdelen", "Meer tijd voor controle"];
   return (
     <div className="loep-discover">
       <div>
@@ -525,7 +534,7 @@ export function WarBalance() {
           ermee gebeurt.
         </p>
         <label className="loep-opinion">
-          Tijd om te reageren: <strong>{times[time]}</strong>
+          Kies hoe de beschikbare tijd wordt gebruikt: <strong>{times[time]}</strong>
           <input
             type="range"
             min="0"
@@ -534,28 +543,17 @@ export function WarBalance() {
             onChange={(e) => setTime(Number(e.target.value))}
           />
         </label>
-        <label className="loep-opinion">
-          Tijd om het voorstel te controleren: <strong>{times[review]}</strong>
-          <input
-            type="range"
-            min="0"
-            max="2"
-            value={review}
-            onChange={(e) => setReview(Number(e.target.value))}
-          />
-        </label>
+
       </div>
       <div className="loep-explore-panel">
         <h3>Wat moet je afwegen?</h3>
         <p>
           {time === 0
-            ? "Bij weinig tijd kan wachten gevolgen hebben."
-            : "Meer tijd kan ruimte geven om informatie te zoeken."}
+            ? "Snel reageren kan belangrijk zijn, maar laat minder tijd om een fout te ontdekken."
+            : time === 2 ? "Meer tijd voor controle helpt om informatie te onderzoeken, maar kan een reactie vertragen." : "Een deel van de tijd gaat naar controle; daarna volgt een beslissing."}
         </p>
         <p>
-          {review === 0
-            ? "Bij weinig controle kan iemand fouten missen."
-            : "Controle vraagt ook bruikbare informatie en de mogelijkheid om te stoppen."}
+          Controle vraagt bruikbare informatie, voldoende tijd en de mogelijkheid om te stoppen.
         </p>
         <p className="loep-small">
           Dit is een verzonnen situatie. De schuiven voorspellen geen echte
@@ -618,8 +616,8 @@ export function AgentSimulation({ onAnswer, onCheck, checked }: Actions) {
         <span className="loep-eyebrow">Jij houdt de controle</span>
         <h2>Wat mag de agent doen?</h2>
         <p>
-          De opdracht is: zoek een uitstap en vergelijk de opties. Boek en
-          betaal nog niets.
+          Gebruik je keuzes van daarnet. De opdracht is: zoek een uitstap en
+          vergelijk de opties. Boek en betaal nog niets.
         </p>
         <p className="loep-small">
           Dit is een oefening. Er wordt niets verstuurd of gekocht.

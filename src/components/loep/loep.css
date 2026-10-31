@@ -2071,3 +2071,17 @@
     min-height: 250px;
   }
 }
+
+/* Laat langere oefeningen scrollen zonder dat de navigatie tekst overlapt. */
+.loep-stage {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.loep-stage:focus-visible {
+  outline: 2px solid var(--ai) !important;
+  outline-offset: 3px;
+}
+.loep-permission-rows > label > .loep-small {
+  display: block;
+  line-height: 1.3;
+}

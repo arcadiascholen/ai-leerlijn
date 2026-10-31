@@ -78,3 +78,12 @@ npm run dev
 ```
 
 Open de door Astro getoonde lokale URL en kies **AI onder de loep**. De controles zijn `npm run check` en `npm run build`. Een overzicht van de werkelijk uitgevoerde controles staat in `06_controle.md`.
+
+
+## Verbeteringen na de leerlinggerichte controle
+
+De start en alle acht uitdagingen zijn aangescherpt op taal, samenhang, brongebruik en instructies. De startvraag gaat nu over veranderende aanbevelingen; het AI-experiment laat twee antwoorden vergelijken. Bij privacy is de voorbeeldzin vereenvoudigd en wordt de aanpassing direct getoond. De fictieve fout vóór vraag 31 is toegevoegd, en de agentoefening gebruikt verzonnen testgegevens. De milieuvergelijking geeft de meetgrenzen en het doel van de rekensom nadrukkelijker weer.
+
+De startvraag en de observatie bij het AI-experiment zijn inhoudelijk gewijzigd. Wie de oudere versie op hetzelfde toestel hervat, krijgt deze twee vernieuwde onderdelen opnieuw aangeboden; andere opgeslagen antwoorden blijven behouden. Sommige interactieve schermen bewaren dat de oefening is afgerond, maar niet elke tussentijdse instelling; dat staat bij terugkeer vermeld.
+
+Een passend kort Pano-fragment met gecontroleerde tijdcodes en de definitieve formulierlink zijn nog niet beschikbaar. De tijdsduur en toegankelijkheid moeten met leerlingen en op schooltoestellen worden getest.

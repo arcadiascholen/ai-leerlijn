@@ -63,7 +63,7 @@ function Knowledge({
         <span className="loep-eyebrow">
           Vraag {q.id} ·{" "}
           {q.correct.length
-            ? "Onderzoek je inzicht"
+            ? "Kies je antwoord"
             : "Jouw afweging · zonder score"}
         </span>
         <h2>{q.title}</h2>
@@ -104,7 +104,7 @@ function Knowledge({
                           : "wat kunnen we doen om te helpen?"}
                   </span>
                 </div>
-                <small>Zo zou de groep kunnen reageren.</small>
+                <small>Zo zou de verzonnen klasgroep kunnen reageren.</small>
               </div>
             )}
             <Paragraphs text={feedback} />
@@ -203,14 +203,16 @@ function Welcome() {
           misloopt en welke keuzes jij maakt.
         </p>
         <div className="loep-welcome-meta">
-          <span>60–90 minuten</span>
+          <span>Richttijd: 60–90 minuten</span>
           <span>4 uitdagingen</span>
           <span>Jouw AI-kompas</span>
         </div>
         <p className="loep-small">
-          Je begint met twee vaste uitdagingen en kiest er daarna nog twee. Je
-          gebruikt zo mogelijk zelf AI; voorbeelden zijn ook beschikbaar. Je
-          voortgang blijft op dit toestel.
+          Je onderzoekt eerst twee vaste onderwerpen en kiest er daarna twee.
+          Op het einde download je je leerbewijs als PDF. De reflectie vul je
+          apart in. Je mag voorbeelden gebruiken zonder zelf AI te openen.
+          Je voortgang blijft in deze browser op dit toestel. Als je
+          browsergegevens wist, verdwijnt ook je voortgang.
         </p>
       </div>
       <div className="loep-welcome-visual">
@@ -464,7 +466,7 @@ function Summary({
     <div className="loep-summary">
       <div>
         <span className="loep-eyebrow">Vier uitdagingen. Jouw inzichten.</span>
-        <h2>Jouw AI-kompas.</h2>
+        <h2>Jouw inzichten uit deze route.</h2>
         <p>
           {done
             ? "Je hebt de afgesproken route afgerond. Dit neem je mee."
@@ -489,7 +491,7 @@ function Summary({
         <Icon name="download" size={32} />
         <h3>Je persoonlijke leerbewijs</h3>
         <p>
-          Je vier uitdagingen, inzichtsvragen, AI-kompas en tijdlijn in één PDF.
+          Je vier uitdagingen, antwoorden, inzichten en tijdlijn in één PDF.
           Meningen krijgen geen goed/foutscore.
         </p>
         {done ? (
@@ -927,7 +929,7 @@ export default function LoepPlayer({
                 ? "Kies precies twee onderwerpen"
                 : !allowNext
                   ? "Maak eerst de opdracht af en bekijk de feedback"
-                  : "Je voortgang wordt op dit toestel bewaard"}
+                  : "Je voortgang blijft in deze browser op dit toestel"}
           </span>
           {step.kind !== "summary" && (
             <button

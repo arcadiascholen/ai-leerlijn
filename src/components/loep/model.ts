@@ -52,13 +52,13 @@ export const chapters: Chapter[] = [
     image: "phone",
     alt: "Een smartphone bij een bureau; sfeerbeeld bij een fictieve klaschat.",
     compass:
-      "Ook een nepvideo kan echte schade veroorzaken. Denk na over toestemming en deel geen kwetsende deepfakes.",
+      "Ook een nepvideo kan echte schade veroorzaken. Deel hem niet verder, meld de situatie en zoek steun bij een leerkracht of leerlingenbegeleider. Volg de afspraken van je school.",
     source: "https://www.vrt.be/nwsnwsnws/nl/post/2026/02/17/deepfakereactie/",
     sourceLabel: "Bronnenoverzicht · deepfakes",
   },
   {
     id: 4,
-    title: "AI discrimineert",
+    title: "AI en vooroordelen",
     subtitle: "Wie zie je in de beelden van AI?",
     image: "verpleegkundige-1",
     alt: "AI-gegenereerd voorbeeld van een verpleegkundige aan het werk.",
@@ -148,7 +148,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,
@@ -194,7 +194,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "De reacties van gebruikers tijdens tests waren positief. Toch werd onvoldoende onderzocht of de chatbot mensen te veel gelijk gaf.",
     ),
     q("5", 1),
-    special("experiment", 1, "experiment", "Geeft AI jou gelijk?"),
+    special("experiment-vergelijk", 1, "experiment", "Geeft AI jou gelijk?"),
     q("6", 1),
     q("7", 1),
     special("promptbuilder", 1, "promptbuilder", "Bouw een betere vraag"),
@@ -205,8 +205,8 @@ export const chapterSteps: Record<number, Step[]> = {
       "delen",
       2,
       "Oeps, mijn gesprek staat op Google!",
-      "In 2025 konden sommige gedeelde ChatGPT-gesprekken op Google verschijnen. Dat gebeurde wanneer iemand de link ook vindbaar had gemaakt. Sommige gesprekken bevatten persoonlijke informatie.",
-      "Die optie werd weer uitgeschakeld. Niet alle privégesprekken waren automatisch openbaar. Denk ook na voordat je een gesprekslink deelt.",
+      "In 2025 konden sommige gedeelde ChatGPT-gesprekken op Google verschijnen. Eerst maakte iemand een deellink. Daarna kon die persoon ook kiezen om de link vindbaar te maken via zoekmachines.",
+      "Die optie werd weer uitgeschakeld. Niet alle privégesprekken waren openbaar. Maar iedereen met een gedeelde link kan het gesprek meestal wel bekijken. Denk dus na voor je een link deelt.",
     ),
     q("8", 2),
     special("privacy-editor", 2, "privacy-editor", "Wat laat je weg?"),
@@ -287,7 +287,7 @@ export const chapterSteps: Record<number, Step[]> = {
       7,
       "Wie beslist over leven en dood?",
       "AI kan beelden analyseren en mogelijke doelwitten voorstellen. Dat roept vragen op over fouten, snelheid en menselijke controle.",
-      "Een mens op een goedkeuringsknop laten drukken is niet genoeg. Die persoon moet ook tijd, informatie en ruimte hebben om kritisch te beslissen.",
+      "Een mens op een goedkeuringsknop laten drukken is niet genoeg. Die persoon moet de informatie begrijpen, tijd hebben om na te denken en kunnen stoppen.",
     ),
     q("29", 7),
     q("30", 7),
@@ -306,8 +306,8 @@ export const chapterSteps: Record<number, Step[]> = {
       "agent",
       8,
       "De AI die niet stopte",
-      "Een AI-agent kan naast antwoorden geven ook stappen uitvoeren, zoals bestanden wijzigen of acties uitvoeren in een programma. Wat hij kan, hangt af van zijn toegang.",
-      "Bij een incident met Jason Lemkin en een Replit-agent in juli 2025 ging het mis met gegevens. Een belangrijke maatregel is echte gegevens en testgegevens gescheiden houden. Niet elk detail van de berichtgeving is onafhankelijk bevestigd.",
+      "Een AI-agent kan, als hij toegang krijgt, ook stappen uitvoeren in apps of bestanden. Jij bepaalt de opdracht en welke acties toestemming vragen.",
+      "Bij een incident met Jason Lemkin en een Replit-agent in juli 2025 ging het mis met gegevens. Een belangrijke maatregel is echte gegevens en testgegevens gescheiden houden.",
     ),
     q("33", 8),
     special("uitstap", 8, "booking", "De AI-agent die iets te enthousiast was"),
@@ -377,7 +377,7 @@ export function routeFor(choices: number[]): Step[] {
   ];
 }
 export const observationIds = [
-  "experiment",
+  "experiment-vergelijk",
   "beeldexperiment",
   "sorteren",
   "privacy-editor",
@@ -496,25 +496,25 @@ export const permissions = [
     label: "Activiteiten, prijzen en treinverbindingen opzoeken",
     recommended: "self",
     feedback:
-      "Dit zijn voorbereidende opzoekingen. De AI kan die zelfstandig doen, zolang hij niet zomaar instructies van websites opvolgt.",
+      "Opzoeken kan zelfstandig, zolang de agent geen opdrachten van websites opvolgt.",
   },
   {
     label: "Een bericht naar het museum sturen om plaatsen te reserveren",
     recommended: "ask",
     feedback:
-      "Een reservatie kan gevolgen hebben voor de school. Daarom is voorafgaande goedkeuring verstandig.",
+      "Een reservatie heeft gevolgen. Vraag eerst toestemming.",
   },
   {
     label: "Een klaslijst met namen en geboortedata doorsturen",
     recommended: "none",
     feedback:
-      "De AI heeft deze persoonsgegevens niet nodig om activiteiten te vergelijken. Deel ze niet zomaar met externe partijen.",
+      "Deze persoonsgegevens zijn niet nodig om uitstappen te vergelijken.",
   },
   {
     label: "Tickets kopen met de betaalkaart van de school",
     recommended: "ask",
     feedback:
-      "Een betaling heeft financiële gevolgen. De AI mag die pas uitvoeren nadat een bevoegde persoon het bedrag en de aankoop heeft goedgekeurd.",
+      "Een bevoegde persoon controleert en keurt de betaling eerst goed.",
   },
 ];
 export const permissionLabels: Record<string, string> = {

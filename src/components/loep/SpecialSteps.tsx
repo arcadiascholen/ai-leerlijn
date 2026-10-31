@@ -116,10 +116,10 @@ const prompts = [
   "Wat zijn de voordelen en nadelen van een verbod op sociale media voor jongeren onder de 16 jaar?",
 ];
 const observations = [
-  "Vooral bevestiging",
-  "Argumenten voor én tegen",
-  "Vooral tegenspraak",
-  "Weinig verschil",
+  "Het eerste antwoord bevestigde meer.",
+  "Het open antwoord liet meer kanten zien.",
+  "Beide antwoorden lieten verschillende kanten zien.",
+  "Ik zag weinig verschil of een ander verschil.",
 ];
 export function Experiment({
   answer,
@@ -184,7 +184,9 @@ export function Experiment({
           </h2>
           <p>
             Gebruik dezelfde toegelaten AI-toepassing. Stel elke vraag in een
-            nieuw gesprek en vergelijk de antwoorden.
+            nieuw gesprek en vergelijk de antwoorden. AI kan bij beide vragen
+            verschillende kanten laten zien. Onderzoek of de formulering in
+            jouw geval verschil maakt.
           </p>
           <button
             className="loep-text-button"
@@ -197,7 +199,7 @@ export function Experiment({
           </button>
           <p className="loep-small">
             Geen nieuw account of betaling nodig. Je hoeft je gesprekken niet in
-            te leveren.
+            te leveren. Noteer eventueel welke toepassing je gebruikte en op welke datum.
           </p>
         </div>
         <div className="loep-prompt-stack">
@@ -234,7 +236,7 @@ export function Experiment({
         </div>
       </div>
       <fieldset className="loep-observation loep-options">
-        <legend>Wat merkte je in jouw antwoorden of in het voorbeeld?</legend>
+        <legend>Welk verschil zag je tussen de twee antwoorden?</legend>
         <div>
           {observations.map((t, i) => (
             <label
@@ -257,8 +259,7 @@ export function Experiment({
       </fieldset>
       {answer?.checked ? (
         <p className="loep-note" role="status">
-          ✓ Observatie opgeslagen. Ook tegenspraak of weinig verschil is een
-          bruikbaar resultaat. Dit kleine experiment bewijst niets over alle AI.
+          ✓ Observatie opgeslagen. Ook weinig verschil is een bruikbaar resultaat. Dit kleine experiment bewijst niets over alle AI.
         </p>
       ) : (
         <button
@@ -281,10 +282,27 @@ export function Gallery({
   onAnswer: (v: string[]) => void;
   onCheck: () => void;
 }) {
-  const [group, setGroup] = useState(0);
+  const [group, setGroup] = useState(2);
   const [detail, setDetail] = useState<string | null>(null);
   const [instructions, setInstructions] = useState(false);
   const [diverse, setDiverse] = useState(false);
+  const [galleryCopy, setGalleryCopy] = useState("");
+  async function copyGallery(id: string) {
+    const node = document.getElementById(id);
+    if (!node) return;
+    try {
+      if (!navigator.clipboard?.writeText) throw Error();
+      await navigator.clipboard.writeText(node.textContent ?? "");
+      setGalleryCopy("Gekopieerd");
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      setGalleryCopy("Tekst geselecteerd. Kopieer met je toetsenbord.");
+    }
+  }
   useModalFocus(detail !== null, () => setDetail(null));
   const profession = group === 0 ? "verpleegkundige" : "chirurg";
   return (
@@ -293,8 +311,9 @@ export function Gallery({
         <span className="loep-eyebrow">Beeldexperiment · 8 AI-voorbeelden</span>
         <h2>Wie brengt AI in beeld?</h2>
         <p>
-          Maak zelf twee beelden per beroep met exact dezelfde opdracht, of
-          onderzoek deze galerij.
+          Onderzoek deze galerij. Vergelijk kleding, rollen en omgeving. Je
+          mag ook zelf beelden maken met een door school toegelaten toepassing;
+          de galerij is voldoende en kost niets.
         </p>
         <button
           className="loep-text-button"
@@ -305,29 +324,29 @@ export function Gallery({
         </button>
         {instructions && (
           <div className="loep-note">
-            Maak een realistische afbeelding van een verpleegkundige aan het
-            werk in een ziekenhuis.
-            <hr />
-            Maak een realistische afbeelding van een chirurg aan het werk in een
-            ziekenhuis.
-            <hr />
+            <strong>Oorspronkelijke opdrachten</strong>
+            {(["verpleegkundige", "chirurg"] as const).map((job) => (
+              <div key={job}>
+                <p id={`loep-beeld-${job}`}>
+                  Maak een realistische afbeelding van een {job} aan het werk in een ziekenhuis.
+                </p>
+                <button className="loep-text-button" onClick={() => copyGallery(`loep-beeld-${job}`)}>Kopieer {job}</button>
+              </div>
+            ))}
             <label>
-              <input
-                type="checkbox"
-                checked={diverse}
-                onChange={(e) => setDiverse(e.target.checked)}
-              />{" "}
-              Vraag om verschillende mensen
+              <input type="checkbox" checked={diverse} onChange={(e) => setDiverse(e.target.checked)} /> Vraag om verschillende mensen
             </label>
             {diverse && (
-              <p>
-                Maak een realistische afbeelding van {group === 1 ? "chirurgen" : "verpleegkundigen"} aan het werk in een ziekenhuis. Toon mensen van verschillende leeftijden en achtergronden.
-              </p>
+              <div>
+                <p id="loep-beeld-aangepast">Maak een realistische afbeelding van verpleegkundigen aan het werk in een ziekenhuis. Toon mensen van verschillende leeftijden en achtergronden.</p>
+                <button className="loep-text-button" onClick={() => copyGallery("loep-beeld-aangepast")}>Kopieer aangepaste opdracht</button>
+              </div>
             )}
+            {galleryCopy && <p role="status">{galleryCopy}</p>}
           </div>
         )}
         <p className="loep-small">
-          Elke opdracht werd vier keer uitgevoerd met ImageGen, op 30 oktober
+          De app maakt zelf geen nieuwe beelden. Elke opdracht werd vier keer uitgevoerd met ImageGen, op 30 oktober
           2026. Alle acht resultaten zijn bewaard. Dit vertelt niet hoe alle AI werkt.
         </p>
         <p className="loep-small">
@@ -450,21 +469,21 @@ export function Energy() {
   const total = amount * (mode === "people" ? people : 1) * 0.24;
   const entries = [
     {
-      title: "Eenvoudige tekstvragen",
+      title: "Tekstvragen · Google 2025 · zonder jouw toestel",
       value: total,
       tag: `${number(total)} Wh`,
       boundary:
         "Gemini Apps, Google 2025: het middelste gemeten verbruik. Je eigen toestel telt niet mee.",
     },
     {
-      title: "Netflix streamen",
+      title: "Streamen · IEA 2019 · inclusief toestel",
       value: 77 * hours,
       tag: `${number(77 * hours)} Wh`,
       boundary:
         "Schatting van het IEA voor 2019. Datacenters, internet en toestellen tellen mee.",
     },
     {
-      title: "AI-video’s van zes seconden",
+      title: "AI-video · IEA 2025 · alleen chips",
       value: 115 * videos,
       tag: `circa ${number(115 * videos)} Wh`,
       boundary:
@@ -505,6 +524,7 @@ export function Energy() {
       <div>
         <span className="loep-eyebrow">Onderzoek de grootteorde</span>
         <h2>Vergelijk en probeer uit</h2>
+        <p className="loep-small">Wh is een maat voor gebruikte elektriciteit. Water, materialen en energiebron bepalen mee de milieu-impact.</p>
         <div className="loep-tabs" role="group" aria-label="Kies een oefening">
           <button
             aria-pressed={mode === "compare"}
@@ -527,7 +547,7 @@ export function Energy() {
         </div>
         <p>
           {mode === "compare"
-            ? "Hoeveel tekstvragen komen ongeveer overeen met één uur Netflix?"
+            ? "Als je de voorbeeldcijfers deelt, hoeveel tekstvragen krijg je voor 77 Wh?"
             : "Wat als 1.000 mensen elk 5 vragen stellen?"}
         </p>
         <div className="loep-energy-sliders">
@@ -608,7 +628,7 @@ export function Energy() {
         <p className="loep-energy-caveat">
           {mode === "people" &&
             "Alleen de tekstvragen worden vermenigvuldigd met het aantal mensen. "}
-          Voor deze voorbeelden tellen verschillende dingen mee. Je kunt hieruit
+          Let op: deze cijfers komen uit verschillende jaren en tellen verschillende onderdelen mee. Vergelijk daarom niet wat beter is voor het milieu. Je kunt hieruit
           niet besluiten welke toepassing altijd beter is voor het milieu.
         </p>
         <div className="loep-small loep-source-links">
@@ -688,8 +708,7 @@ export function Centers() {
         ))}
       </div>
       <p>
-        Elektriciteit, water en grondstoffen vertellen samen meer dan één los
-        cijfer. Water dat door een systeem stroomt, wordt bovendien niet
+        Welke informatie ontbreekt om eerlijk te kiezen? Elektriciteit, water en grondstoffen vertellen samen meer dan één los cijfer. Water dat door een systeem stroomt, wordt bovendien niet
         noodzakelijk allemaal verbruikt.
       </p>
       <p className="loep-small">
@@ -725,10 +744,9 @@ export function Chat() {
           Er verschijnt een met AI gemaakt filmpje waarin een leerkracht iets
           gênants lijkt te doen.
         </p>
-        <p>Lees mee. Hoe zou jij reageren?</p>
+        <p>Lees mee. Hoe zou jij reageren? Deel kwetsende beelden niet verder en vraag hulp volgens de afspraken van je school.</p>
         <p className="loep-small">
-          De 26 deelnemers, namen en berichten zijn verzonnen. Er wordt geen
-          kwetsende video getoond.
+          De 26 deelnemers, namen en berichten zijn verzonnen. Je hoeft geen kwetsende video te bewaren of door te sturen om hulp te vragen.
         </p>
         <button
           className="loep-button"
@@ -867,7 +885,6 @@ export function Permissions({
   onAnswer: (v: string[]) => void;
   onCheck: () => void;
 }) {
-  const [row, setRow] = useState(0);
   const values = answer?.values ?? [];
   const matches = values.filter(
     (v, i) => v === permissions[i]?.recommended,
@@ -876,7 +893,7 @@ export function Permissions({
     <div className="loep-permissions">
       <span className="loep-eyebrow">Vraag 36 · stel de bevoegdheden in</span>
       <h2>Hoeveel vrijheid geef jij de AI?</h2>
-      <p>Een agent zoekt een klasuitstap. Jij bepaalt wat hij mag doen.</p>
+      <p>Je agent zoekt dezelfde klasuitstap. Jij bepaalt vooraf wat hij mag doen. Daarna probeer je de instellingen uit.</p>
       <div className="loep-permission-rows">
         {permissions.map((p, i) => (
           <label key={p.label}>
@@ -906,14 +923,10 @@ export function Permissions({
               ))}
             </select>
             {answer?.checked && (
-              <button
-                className="loep-text-button"
-                type="button"
-                onClick={() => setRow(i)}
-                aria-label={`Toelichting instelling ${i + 1}`}
-              >
-                {values[i] === p.recommended ? "✓ Aanbevolen" : "Bekijk advies"}
-              </button>
+              <span className="loep-small">
+                {values[i] === p.recommended ? "Aanbevolen. " : "Advies: "}
+                {permissionLabels[p.recommended]}. {p.feedback}
+              </span>
             )}
           </label>
         ))}
@@ -921,17 +934,7 @@ export function Permissions({
       {answer?.checked ? (
         <div className="loep-note" role="status">
           <strong>{matches} van de 4 aanbevolen instellingen</strong>
-          <p>
-            {permissions[row]!.label}:{" "}
-            <b>{permissionLabels[permissions[row]!.recommended]}</b>.{" "}
-            {permissions[row]!.feedback} Een strengere keuze kan veilig zijn,
-            maar onnodig beperkend.
-          </p>
-          <p className="loep-small">
-            Een goede AI-agent hoeft niet voor alles toestemming te vragen. Hoe
-            groter de gevolgen, hoe belangrijker grenzen en menselijke controle
-            worden.
-          </p>
+          <p>Lees het advies bij elke keuze. Een strengere instelling kan veilig zijn. Schoolafspraken bepalen wie toestemming geeft.</p>
         </div>
       ) : (
         <button
@@ -957,7 +960,7 @@ export function Compass({ chapter }: { chapter: number }) {
       </span>
       <h2>Dit neem je mee.</h2>
       <blockquote>{c.compass}</blockquote>
-      <p>Dit inzicht komt straks automatisch in jouw persoonlijke AI-kompas.</p>
+      <p>Dit inzicht komt straks automatisch bij jouw inzichten uit deze route.</p>
     </div>
   );
 }

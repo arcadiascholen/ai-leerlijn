@@ -1,31 +1,31 @@
 {
   "1": {
     "id": "1",
-    "title": "Waar kom je AI tegen?",
-    "body": "Welke twee toepassingen gebruiken AI?",
+    "title": "Waarom veranderen aanbevelingen?",
+    "body": "Spotify kan andere muziek voorstellen als je luistergedrag verandert. Welke twee uitspraken helpen dat te verklaren?",
     "options": [
       {
         "id": "A",
-        "text": "Spotify stelt muziek voor op basis van wat je graag beluistert."
+        "text": "Het systeem kan patronen in luistergedrag gebruiken om muziek voor te stellen."
       },
       {
         "id": "B",
-        "text": "Een webshop sorteert producten van goedkoop naar duur."
+        "text": "De aanbevelingen liggen voor altijd vast, ongeacht wat je beluistert."
       },
       {
         "id": "C",
-        "text": "Je gsm herkent een hond op een foto."
+        "text": "Nieuwe luisterkeuzes kunnen mee bepalen welke voorstellen je later ziet."
       },
       {
         "id": "D",
-        "text": "Een rekenmachine berekent hoeveel korting je krijgt."
+        "text": "Een aanbeveling bewijst dat iedereen dezelfde muziek mooi vindt."
       }
     ],
     "correct": [
       "A",
       "C"
     ],
-    "feedback": "Spotify gebruikt patronen in luistergedrag om muziek voor te stellen. Fotoherkenning kan patronen in beelden herkennen. Gewoon sorteren op prijs of een korting uitrekenen kan met vaste regels, zonder AI. Niet elk computerprogramma is AI.",
+    "feedback": "Aanbevelingen kunnen rekening houden met patronen en nieuw luistergedrag. Hoe een aanbeveling precies tot stand komt, verschilt per systeem.",
     "branches": {},
     "count": 2
   },
@@ -315,7 +315,7 @@
     "correct": [
       "D"
     ],
-    "feedback": "Je stagebegeleider kan helpen om het incident correct aan te pakken. Snel melden is belangrijk, zodat de organisatie kan onderzoeken welke maatregelen nodig zijn.",
+    "feedback": "Meld het meteen aan je stagebegeleider of de afgesproken contactpersoon en volg de afspraken van je school of stageplaats. Samen kunnen jullie onderzoeken welke maatregelen nodig zijn. Het gesprek verwijderen lost niet altijd alles op.",
     "branches": {},
     "count": 1
   },
@@ -640,9 +640,9 @@
     "correct": [],
     "feedback": "",
     "branches": {
-      "A": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
-      "B": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
-      "C": "Bekijk ook de belangen van het bedrijf én de gebruiker. Een abonnement, een prettig gesprek of een eigen keuze vertelt nog niet het hele verhaal. Het is belangrijk om ook te onderzoeken hoe de chatbot ontworpen is en of het bedrijf bewust afhankelijkheid stimuleert.",
+      "A": "Een betaald abonnement op zichzelf bewijst nog niet dat iemand wordt beïnvloed. Onderzoek ook hoe de berichten en de app ontworpen zijn.",
+      "B": "Gebruikers maken keuzes, maar ook een bedrijf heeft verantwoordelijkheid voor hoe de chatbot is ontworpen en welke gevolgen dat kan hebben.",
+      "C": "Een prettig gevoel is belangrijk, maar kijk ook of de chatbot druk uitoefent om vaker te praten of meer te betalen.",
       "D": "Goed afgewogen! Een AI-chatbot aanbieden tegen betaling is niet automatisch verkeerd. Maar als het systeem inspeelt op gevoelens om mensen langer te laten chatten of meer te laten betalen, ontstaan er belangrijke ethische vragen."
     },
     "count": 1
@@ -708,7 +708,7 @@
   "26b": {
     "id": "26b",
     "title": "Wat verrast jou?",
-    "body": "Als je alleen de voorbeeldcijfers voor Netflix en een eenvoudige AI-tekstvraag vergelijkt, hoeveel AI-vragen komen dan ongeveer overeen met één uur Netflix kijken?",
+    "body": "De voorbeelden tonen 77 Wh voor een uur streamen en 0,24 Wh voor een eenvoudige tekstvraag. Hoe vaak past 0,24 ongeveer in 77? Kijk daarna waarom de cijfers niet zomaar een eerlijke vergelijking zijn.",
     "options": [
       {
         "id": "A",
@@ -730,14 +730,14 @@
     "correct": [
       "B"
     ],
-    "feedback": "Met deze voorbeeldcijfers kom je uit op ongeveer 300 eenvoudige tekstvragen.\n\nMaar opgelet: bij Netflix tellen het scherm en de internetverbinding mee, bij het AI-cijfer niet het toestel van de gebruiker. Bovendien kunnen ingewikkelde AI-opdrachten veel meer energie verbruiken.\n\nDaarom mag je hieruit niet besluiten dat AI altijd milieuvriendelijker is dan Netflix.",
+    "feedback": "77 gedeeld door 0,24 is ongeveer 321, dus ongeveer 300. Maar de twee cijfers komen uit verschillende jaren en meten niet dezelfde onderdelen. Hieruit kun je niet besluiten welke activiteit milieuvriendelijker is.",
     "branches": {},
     "count": 1
   },
   "27": {
     "id": "27",
     "title": "Welk datacenter zou jij kiezen?",
-    "body": "Welk datacenter zou jij kiezen als je rekening houdt met het milieu?",
+    "body": "Welk datacenter zou jij voorlopig kiezen? We weten nog niet alles over stroom, water en materialen. Je mag ook aangeven dat je meer informatie nodig hebt.",
     "options": [
       {
         "id": "A",
@@ -859,7 +859,7 @@
   "31": {
     "id": "31",
     "title": "Wie moet uitleg geven?",
-    "body": "Je onderzoekt hoe deze fout kon gebeuren. Bij wie zou jij als eerste informatie zoeken?",
+    "body": "Stel: het systeem duidt een gewone drone verkeerd aan als dreiging en er wordt ingegrepen. Je onderzoekt hoe deze verzonnen fout kon gebeuren. Bij wie zou jij als eerste informatie zoeken?",
     "options": [
       {
         "id": "A",
@@ -918,11 +918,11 @@
   "33": {
     "id": "33",
     "title": "Hoe had Jason dit kunnen voorkomen?",
-    "body": "Stel dat jij een AI-agent gebruikt om een app te bouwen. Je wilt dat de AI kan experimenteren, maar absoluut niet aan de echte klantgegevens raakt.\n\nWelke maatregel zou de echte gegevens het best beschermen?",
+    "body": "Stel dat jij een AI-agent gebruikt om een app te bouwen. Je wilt dat de AI kan experimenteren, maar geen toegang krijgt tot echte klantgegevens. Welke maatregel beschermt die gegevens het best?",
     "options": [
       {
         "id": "A",
-        "text": "Ik geef de AI alleen toegang tot een kopie van de gegevens, niet tot de echte gegevens."
+        "text": "Ik gebruik verzonnen testgegevens in een aparte testomgeving. De AI heeft geen toegang tot de echte klantgegevens."
       },
       {
         "id": "B",
@@ -940,7 +940,7 @@
     "correct": [
       "A"
     ],
-    "feedback": "Als de AI geen toegang heeft tot de echte gegevens, kan ze die ook niet rechtstreeks verwijderen. Je beperkt dus wat de AI daadwerkelijk mag doen, in plaats van alleen te vertrouwen op haar instructies.",
+    "feedback": "Met verzonnen testgegevens in een aparte omgeving beperk je wat de AI kan doen. Zonder toegang tot echte klantgegevens kan de agent die niet rechtstreeks wijzigen of verwijderen.",
     "branches": {},
     "count": 1
   },
