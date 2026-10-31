@@ -211,6 +211,59 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
   );
 }
 
+const leerprocesStappen = [
+  "Verzamel veel foto’s van honden en katten met het juiste antwoord erbij.",
+  "Laat het programma voorspellen of er een hond of een kat op een foto staat.",
+  "Vergelijk de voorspelling met het juiste antwoord en pas het programma aan. Herhaal dit vaak.",
+  "Laat het programma proberen een nieuwe foto te herkennen.",
+];
+
+export function Leerproces({ onAnswer, onCheck, checked }: Actions) {
+  const [order, setOrder] = useState([2, 0, 3, 1]);
+  const [result, setResult] = useState<boolean | null>(null);
+  const [dragged, setDragged] = useState<number | null>(null);
+  function move(from: number, to: number) {
+    if (from === to || to < 0 || to >= order.length) return;
+    setOrder((old) => { const next = [...old]; const [item] = next.splice(from, 1); next.splice(to, 0, item!); return next; });
+    setResult(null);
+    if (checked) onAnswer(["0"]);
+  }
+  const imageBase = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/images/ai-onder-de-loep`;
+  return (
+    <div className="loep-learning">
+      <div className="loep-learning-intro">
+        <span className="loep-eyebrow">Zelf proberen</span>
+        <h2>Hoe leert AI?</h2>
+        <p>In het filmpje zag je hoe een computer honden en katten kan leren herkennen. Zet de stappen in de juiste volgorde.</p>
+        <p>Sleep de kaarten of gebruik de pijltjes. Bekijk daarna de uitleg.</p>
+        <div className="loep-learning-photos" aria-label="Voorbeelden van foto’s van een hond en een kat">
+          <figure><img src={`${imageBase}/hond-leren.webp`} alt="Een hond" /><figcaption>Hond</figcaption></figure>
+          <figure><img src={`${imageBase}/kat-leren.webp`} alt="Een kat" /><figcaption>Kat</figcaption></figure>
+        </div>
+        <p className="loep-small">Om te oefenen heeft de computer veel voorbeelden nodig.</p>
+      </div>
+      <div className="loep-learning-task">
+        <h3>Wat gebeurt eerst?</h3>
+        <ol className="loep-learning-list">
+          {order.map((item, index) => (
+            <li key={item} draggable onDragStart={(event) => { setDragged(index); event.dataTransfer.effectAllowed = "move"; }} onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); if (dragged !== null) move(dragged, index); setDragged(null); }} onDragEnd={() => setDragged(null)}>
+              <span className="loep-learning-number" aria-hidden="true">{index + 1}</span>
+              <span className="loep-learning-text">{leerprocesStappen[item]}</span>
+              <span className="loep-learning-controls">
+                <button type="button" aria-label={`Verplaats stap ${index + 1} omhoog`} disabled={index === 0} onClick={() => move(index, index - 1)}>↑</button>
+                <button type="button" aria-label={`Verplaats stap ${index + 1} omlaag`} disabled={index === order.length - 1} onClick={() => move(index, index + 1)}>↓</button>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <button className="loep-button" type="button" onClick={() => { setResult(order.every((item, index) => item === index)); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>
+        {result !== null && <div className={`loep-feedback ${result ? "correct" : ""}`} role="status"><strong>{result ? "✓ Goed gedaan!" : "Kijk nog eens naar de volgorde."}</strong><p>{result ? "Tijdens het oefenen vergelijkt het programma zijn voorspellingen met de juiste antwoorden en past het zich telkens aan. Ook daarna kan het zich bij een nieuwe foto vergissen." : "Begin met de voorbeelden. Wat doet het programma daarmee, en hoe kan het van fouten leren? Je kunt de kaarten opnieuw verplaatsen."}</p></div>}
+        {checked && result === null && <p className="loep-small">Je deed deze oefening eerder. Je kunt ze opnieuw proberen.</p>}
+      </div>
+    </div>
+  );
+}
+
 const builderParts = [
   {
     label: "Vraag naar voor- én nadelen",

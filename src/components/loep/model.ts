@@ -133,6 +133,7 @@ export type Step = {
     | "summary"
     | "video-intro"
     | "sorteren"
+    | "leerproces"
     | "promptbuilder"
     | "privacy-editor"
     | "perspectieven"
@@ -169,13 +170,7 @@ export const introduction: Step[] = [
   q("video1", 0),
   q("video2", 0),
   special("sorteren-v2", 0, "sorteren", "Waar zit AI in?"),
-  story(
-    "patronen",
-    0,
-    "Hoe leert AI?",
-    "Een AI-model kan patronen leren herkennen uit veel gegevens, zoals foto's of tekst. Het gebruikt die patronen om iets te herkennen, te voorspellen of te maken.",
-    "Dat kan nuttig zijn, maar de uitkomst kan ook fout zijn. Sommige AI-toepassingen kunnen informatie opzoeken op internet. Ook dan blijft controleren nodig.",
-  ),
+  special("patronen", 0, "leerproces", "Hoe leert AI?"),
   q("2", 0),
   q("3", 0),
 ];
@@ -384,6 +379,7 @@ export const observationIds = [
   "beeldexperiment",
   "video-ai",
   "sorteren-v2",
+  "patronen",
   "privacy-editor",
   "agent-sim",
 ];

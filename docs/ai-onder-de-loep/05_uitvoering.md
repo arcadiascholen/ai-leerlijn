@@ -89,3 +89,7 @@ De startvraag en de observatie bij het AI-experiment zijn inhoudelijk gewijzigd.
 Een passend kort Pano-fragment met gecontroleerde tijdcodes en de definitieve formulierlink zijn nog niet beschikbaar. De tijdsduur en toegankelijkheid moeten met leerlingen en op schooltoestellen worden getest.
 
 De kennismaking start met het filmpje van Karrewiet, gevolgd door twee kijkvragen en zes voorbeelden met schuifregelaars. De video kan in de module of via de videolink worden geopend. De miniatuur is afkomstig van YouTube en wordt al bij het tonen van het videoscherm geladen; de videospeler zelf wordt pas na een klik geladen.
+
+### Beelden bij de ordenoefening ‘Hoe leert AI?’
+
+De afbeeldingen van een hond en een kat zijn illustratieve voorbeelden; ze worden niet voorgesteld als echte trainingsdata. De bestanden `hond-leren.webp` en `kat-leren.webp` zijn uitsneden van foto's via Unsplash: [hond](https://unsplash.com/photos/Sg3XwuEpybU) en [kat, Manja Vitolic](https://unsplash.com/photos/gKXKBY-C-Dk). Gebruik onder de [Unsplash-licentie](https://unsplash.com/license).
