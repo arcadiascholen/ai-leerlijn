@@ -1027,7 +1027,7 @@
     "correct": [
       "B"
     ],
-    "feedback": "Volgens Lieven Scheire lijkt AI op sommige manieren op de werking van hersenen, maar zijn er ook grote verschillen. AI denkt niet gewoon zoals een mens.",
+    "feedback": "Mensen leren door wat ze meemaken, voelen en doen. Een AI-chatbot leert patronen uit veel tekst en voorspelt welke woorden passen. Hij kan overtuigend antwoorden, maar ook fouten maken. Zo werkt hij anders dan een mens.",
     "branches": {},
     "count": 1
   },
@@ -1038,25 +1038,25 @@
     "options": [
       {
         "id": "A",
-        "text": "De computer krijgt duizenden voorbeelden en past zich aan wanneer hij fouten maakt."
+        "text": "Het programma krijgt veel voorbeelden met de juiste antwoorden en past zich aan op basis van fouten."
       },
       {
         "id": "B",
-        "text": "De computer bekijkt één foto en kent meteen alle dieren."
+        "text": "Het programma vergelijkt een nieuwe foto met opgeslagen foto’s en herkent alleen exacte kopieën."
       },
       {
         "id": "C",
-        "text": "De computer kiest willekeurig een antwoord zonder voorbeelden."
+        "text": "Een programmeur legt vooraf vaste kenmerken vast, zoals de vorm van oren en snuit."
       },
       {
         "id": "D",
-        "text": "Iemand schrijft voor elke mogelijke foto apart het antwoord op."
+        "text": "Het programma krijgt veel foto’s te zien, maar krijgt nooit te horen welke antwoorden juist zijn."
       }
     ],
     "correct": [
       "A"
     ],
-    "feedback": "In het filmpje krijgt het programma veel voorbeelden van honden en katten. Het past zich aan om de dieren beter te herkennen. Ook na het leren kan een AI-systeem fouten maken.",
+    "feedback": "In het filmpje krijgt het programma veel foto’s van honden en katten met de juiste antwoorden. Het past zich aan wanneer het fouten maakt, zodat het ook nieuwe foto’s beter kan herkennen. Dat lukt niet altijd zonder fouten.",
     "branches": {},
     "count": 1
   }

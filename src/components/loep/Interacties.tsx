@@ -6,7 +6,7 @@ type Actions = {
   checked?: boolean;
 };
 
-export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
+export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake"; compact?: boolean }) {
   const [playing, setPlaying] = useState(false);
   const v =
     kind === "intro"
@@ -27,7 +27,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
             "Een video kan echt lijken en toch met AI gemaakt of aangepast zijn. Aan het beeld alleen zie je dat niet altijd. Controleer wie het bericht verspreidt, zoek de oorspronkelijke bron en vergelijk met andere betrouwbare informatie. Soms blijf je onzeker.",
         };
   return (
-    <section className="loep-video-card" aria-label={v.title}>
+    <section className={compact ? "loep-video-card loep-video-compact" : "loep-video-card"} aria-label={v.title}>
       {!playing ? (
         <button className="loep-video-poster" onClick={() => setPlaying(true)}>
           <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" />
@@ -37,7 +37,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
           <span>
             <small>{v.source}</small>
             <strong>{v.title}</strong>
-            <small>Bekijk de video</small>
+            <small>{compact ? "Bekijk het filmpje opnieuw" : "Bekijk de video"}</small>
           </span>
         </button>
       ) : (
@@ -50,7 +50,7 @@ export function VideoCard({ kind }: { kind: "intro" | "deepfake" }) {
         />
       )}
       <div className="loep-video-foot">
-        <span>De video opent via YouTube.</span>
+        {!compact && <span>De video opent via YouTube.</span>}
         <a href={v.url} target="_blank" rel="noreferrer">
           Open video ↗
         </a>

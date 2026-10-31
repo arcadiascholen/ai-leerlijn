@@ -149,7 +149,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: id === "1" ? "q1-aanbevelingen" : "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,

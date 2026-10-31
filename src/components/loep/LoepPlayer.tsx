@@ -117,6 +117,7 @@ function Knowledge({
             <Paragraphs text={q.body} />
           </div>
         )}
+        {q.id.startsWith("video") && <VideoCard kind="intro" compact />}
         {checked && q.body && (
           <details className="loep-question-reread">
             <summary>Lees de situatie opnieuw</summary>

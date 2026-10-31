@@ -2200,3 +2200,43 @@
 @media (max-width: 650px) {
   .loep-sort-grid { grid-template-columns: 1fr; }
 }
+
+/* Het filmpje blijft bij de kijkvragen beschikbaar. */
+.loep-question-context .loep-video-compact {
+  height: auto;
+  width: min(185px, 100%);
+  padding: 0;
+  margin: 6px 0 0;
+  background: transparent;
+}
+.loep-video-compact .loep-video-poster {
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  padding: 12px;
+  gap: 10px;
+}
+.loep-video-compact .loep-video-play {
+  width: 36px;
+  height: 36px;
+}
+.loep-video-compact .loep-video-poster strong {
+  font-size: 15px;
+}
+.loep-video-compact .loep-video-poster small {
+  font-size: 10px;
+}
+.loep-video-compact .loep-video-poster span:last-child {
+  gap: 4px;
+}
+.loep-video-compact iframe {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+.loep-video-compact .loep-video-foot {
+  justify-content: flex-end;
+  margin-top: 3px;
+}
+.loep-question-context:has(.loep-video-compact) .loep-question-reread {
+  margin-top: 6px;
+}
