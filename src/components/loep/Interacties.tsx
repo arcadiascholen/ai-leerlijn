@@ -177,15 +177,10 @@ const examples = [
   { text: "Een leerlingenlijst wordt op achternaam van A tot Z gesorteerd.", ai: false, explain: "Alfabetisch sorteren volgt een vaste regel en heeft geen AI nodig." },
 ];
 export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
-  const [choices, setChoices] = useState<Record<number, number>>({});
+  const [choices, setChoices] = useState<boolean[]>(() => examples.map(() => false));
   const [result, setResult] = useState(false);
-  const all = examples.every((_, i) => choices[i] !== undefined);
-  function set(i: number, value: number) {
-    setChoices((old) => {
-      const next = { ...old };
-      if (value === 1) delete next[i]; else next[i] = value;
-      return next;
-    });
+  function toggle(i: number) {
+    setChoices((old) => old.map((value, index) => index === i ? !value : value));
     setResult(false);
     if (checked) onAnswer(["0"]);
   }
@@ -193,24 +188,24 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
     <div className="loep-sort-screen">
       <span className="loep-eyebrow">Zelf onderzoeken</span>
       <h2>Wordt hier AI gebruikt?</h2>
-      <p>AI kan leren uit veel voorbeelden, zoals in het filmpje. Andere programma’s volgen stappen die mensen vooraf vastleggen. Schuif voor elk voorbeeld naar links voor <strong>geen AI</strong> of naar rechts voor <strong>AI</strong>.</p>
+      <p>AI kan leren uit veel voorbeelden, zoals in het filmpje. Andere programma’s volgen stappen die mensen vooraf vastleggen. Alle schakelaars staan op <strong>geen AI</strong>. Zet de schakelaar aan als jij denkt dat er AI wordt gebruikt.</p>
       <div className="loep-sort-grid">
         {examples.map((e, i) => (
           <div className="loep-sort-item" key={e.text}>
-            <label htmlFor={`loep-ai-slider-${i}`}>{e.text}</label>
+            <p className="loep-sort-example" id={`loep-ai-example-${i}`}>{e.text}</p>
             <div className="loep-sort-control">
-              <span>Geen AI</span>
-              <input id={`loep-ai-slider-${i}`} type="range" min="0" max="2" step="1" value={choices[i] ?? 1}
-                aria-valuetext={choices[i] === undefined ? "Nog geen keuze" : choices[i] === 0 ? "Geen AI" : "AI"}
-                onChange={(event) => set(i, Number(event.target.value))} />
-              <span>AI</span>
+              <button type="button" role="switch" aria-checked={choices[i]}
+                aria-labelledby={`loep-ai-example-${i}`} onClick={() => toggle(i)}
+                className="loep-ai-switch">
+                <span aria-hidden="true" />
+              </button>
+              <span>{choices[i] ? "AI" : "Geen AI"}</span>
             </div>
-            {!result && <small>{choices[i] === undefined ? "Nog geen keuze" : choices[i] === 0 ? "Jouw keuze: geen AI" : "Jouw keuze: AI"}</small>}
-            {result && <p className="loep-sort-feedback" role="status"><strong>{(choices[i] === 2) === e.ai ? "✓ Goed gezien." : "↻ Kijk nog eens."}</strong> {e.explain}</p>}
+            {result && <p className="loep-sort-feedback" role="status"><strong>{choices[i] === e.ai ? "✓ Goed gezien." : "↻ Kijk nog eens."}</strong> {e.explain}</p>}
           </div>
         ))}
       </div>
-      {!result && <button className="loep-button" disabled={!all} onClick={() => { setResult(true); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>}
+      {!result && <button className="loep-button" onClick={() => { setResult(true); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>}
       {checked && !result && <p className="loep-small">Je deed deze oefening eerder. Je keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>}
     </div>
   );

@@ -2240,3 +2240,38 @@
 .loep-question-context:has(.loep-video-compact) .loep-question-reread {
   margin-top: 6px;
 }
+
+.loep-sort-item .loep-sort-example {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+}
+.loep-sort-control .loep-ai-switch {
+  width: 42px;
+  height: 24px;
+  flex: none;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  background: var(--line-strong);
+  cursor: pointer;
+}
+.loep-ai-switch > span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+.loep-sort-control .loep-ai-switch[aria-checked="true"] {
+  justify-content: flex-end;
+  background: var(--ai);
+  border-color: var(--ai);
+}
+.loep-sort-control > span {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
