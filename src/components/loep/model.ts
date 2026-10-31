@@ -169,7 +169,6 @@ export const introduction: Step[] = [
   q("video1", 0),
   q("video2", 0),
   special("sorteren-v2", 0, "sorteren", "Waar zit AI in?"),
-  q("1", 0),
   story(
     "patronen",
     0,
@@ -477,7 +476,8 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const wanted = route.findIndex((s) => s.id === v.current);
+    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current;
+    const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),
     );
