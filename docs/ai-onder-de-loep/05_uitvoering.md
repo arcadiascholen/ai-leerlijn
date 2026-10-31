@@ -15,17 +15,19 @@ Verbindende schermteksten zijn voor de webweergave geredigeerd. De onzekerheidsm
 - Twee kopieerbare sociale-mediaprompts en een observatie zonder score. Zonder AI-toegang zijn twee duidelijk als redactionele demonstratie geschreven antwoorden beschikbaar. Dat zijn geen verzonnen echte chatbotresultaten en geen bewijs over een specifiek model.
 - Een fictieve klaschat met acht berichten, stapsgewijs leesbaar. Vraag 14 toont de gekozen reactie van de leerling als eigen chatbericht. Geen kwetsende video is opgenomen.
 - Een galerij met vier verpleegkundigen en vier chirurgen. Elk beeld is apart gegenereerd met dezelfde neutrale beroepsopdracht. Alle acht resultaten zijn behouden, zonder selectie op gewenste uitkomst. Vergroten werkt ook met toetsenbord en Escape.
-- Een interactieve elektriciteitsgrafiek met 1–500 tekstvragen. De historische voorbeeldcijfers zijn 0,24 Wh (Gemini-mediaan 2025), 77 Wh (IEA-streamingraming voor 2019) en circa 115 Wh (GPU-energie van een zes seconden durende video in de IEA-test uit 2025). Klikken op een balk toont de meetgrens. Dit is geen gelijkwaardige vergelijking van volledige milieukosten en geen universele actuele waarde voor alle AI.
+- Een interactieve elektriciteitsgrafiek met schuifregelaars voor tekstvragen, Netflixuren en AI-video’s, plus een oefenvraag met feedback. De historische voorbeeldcijfers zijn 0,24 Wh (Gemini-mediaan 2025), 77 Wh (IEA-streamingraming voor 2019) en circa 115 Wh (GPU-energie van een zes seconden durende video in de IEA-test uit 2025). Klikken op een balk toont de meetgrens. Dit is geen gelijkwaardige vergelijking van volledige milieukosten en geen universele actuele waarde voor alle AI.
 - Twee fictieve datacenters, vergelijkbaar op elektriciteit, water en grondstoffen. Geen goed/foutstandpunt bij het dilemma.
 - Een fictieve betalingsbevestiging (€ 475, zonder treinkosten), een museumwebsite met zichtbaar te onderzoeken promptinjectie en vier instelbare bevoegdheden voor een agent.
 
 ## Beelden en herkomst
 
-Alle beelden worden lokaal aangeboden als WebP; de twaalf beelden samen zijn minder dan 0,7 MB. Er worden geen externe trackers of beeldverzoeken aan de leerling opgelegd. Foto’s zijn sfeerbeelden en tonen geen personen uit de beschreven incidenten.
+Alle beelden worden lokaal aangeboden als WebP; de beelden worden gecomprimeerd aangeboden. Er worden geen externe trackers of beeldverzoeken aan de leerling opgelegd. Foto’s zijn sfeerbeelden en tonen geen personen uit de beschreven incidenten.
 
 | Bestand onder public/images/ai-onder-de-loep | Herkomst | Licentie / context |
 | --- | --- | --- |
 | phone.webp | [Jonas Leupe — Unsplash](https://unsplash.com/photos/person-holding-black-android-smartphone-QQ2d5naZee0) | [Unsplash License](https://unsplash.com/license); handen met smartphone bij bureau |
+| privacy.webp | [Sasun Bughdaryan — Unsplash](https://unsplash.com/photos/a-padlock-rests-on-a-computer-keyboard-QP7RBa5r8HM) | Unsplash License; hangslot op toetsenbord |
+| wind.webp | [Skyler Smith — Unsplash](https://unsplash.com/photos/wind-turbines-on-a-grassy-hill-under-a-cloudy-sky-JINZq4tun2o) | Unsplash License; windmolens |
 | servers.webp | [Taylor Vick — Unsplash](https://unsplash.com/photos/cable-network-M5tzZtFCOfs) | Unsplash License; datacenterfoto |
 | drone.webp | [adriaan venner scheepers — Unsplash](https://unsplash.com/photos/a-drone-flying-in-the-sky-Iz9u6T3VMIk) | Unsplash License; civiele drone, geen wapensysteem |
 | station.webp | [Dev Benjamin — Unsplash](https://unsplash.com/photos/people-in-train-station-Q9drIcS80mo) | Unsplash License; Auckland, geen foto van Brussel |

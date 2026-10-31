@@ -223,6 +223,69 @@ function Welcome() {
     </div>
   );
 }
+const storyVisuals: Record<string, { heading: string; items: string[] }> = {
+  vriendelijk: {
+    heading: "Vriendelijk én kritisch?",
+    items: [
+      "Een antwoord kan prettig aanvoelen.",
+      "Maar mis je daardoor belangrijke tegenargumenten?",
+    ],
+  },
+  testen: {
+    heading: "Waar let je op bij een test?",
+    items: [
+      "Reageren gebruikers positief?",
+      "Geeft de chatbot ook eerlijke tegenspraak?",
+    ],
+  },
+  onderzoek: {
+    heading: "Van voorbeelden naar een vraag",
+    items: [
+      "Bekijk meerdere beelden met dezelfde opdracht.",
+      "Welk patroon zie je? Wat kun je nog niet besluiten?",
+    ],
+  },
+  relatie: {
+    heading: "Een mens en een chatbot",
+    items: [
+      "Een gesprek kan betekenis hebben voor een mens.",
+      "Welke rol speelt de chatbot in die relatie?",
+    ],
+  },
+  gevoelens: {
+    heading: "Woorden en gevoelens",
+    items: [
+      "De gevoelens van de gebruiker kunnen echt zijn.",
+      "Liefdevolle woorden bewijzen niet dat AI gevoelens heeft.",
+    ],
+  },
+  verantwoordelijkheid: {
+    heading: "Wie speelde welke rol?",
+    items: [
+      "De ontwikkelaar testte het systeem.",
+      "De commandant zette het in.",
+      "De militair hield toezicht.",
+    ],
+  },
+};
+function StoryVisual({ stepId }: { stepId: string }) {
+  const item = storyVisuals[stepId]!;
+  return (
+    <div className="loep-topic-visual">
+      <span className="loep-topic-mark">
+        <Icon name="spark" size={28} />
+      </span>
+      <h3>{item.heading}</h3>
+      {item.items.map((t, i) => (
+        <div key={t}>
+          <span>{String(i + 1).padStart(2, "0")}</span>
+          <p>{t}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Story({ step }: { step: Step }) {
   const chapter = chapters.find((c) => c.id === step.chapter);
   return (
@@ -259,14 +322,23 @@ function Story({ step }: { step: Step }) {
       </div>
       <figure className="loep-story-visual">
         {chapter ? (
-          <>
-            <Photo name={chapter.image} alt={chapter.alt} />
-            <figcaption>
-              {chapter.id === 4
-                ? "AI-gegenereerd voorbeeld · ImageGen"
-                : "Sfeerbeeld · geen afbeelding van het beschreven incident"}
-            </figcaption>
-          </>
+          [
+            "vriendelijk",
+            "testen",
+            "onderzoek",
+            "relatie",
+            "gevoelens",
+            "verantwoordelijkheid",
+          ].includes(step.id) ? (
+            <StoryVisual stepId={step.id} />
+          ) : (
+            <Photo
+              name={step.id === "agent" ? "servers" : chapter.image}
+              alt={
+                step.id === "agent" ? "Servers en netwerkkabels" : chapter.alt
+              }
+            />
+          )
         ) : (
           <div className="loep-pattern-visual">
             <span>Voorbeelden</span>
@@ -320,14 +392,25 @@ function Choices({
             aria-pressed={choices.includes(c.id)}
             disabled={choices.length === 2 && !choices.includes(c.id)}
           >
-            <Photo name={c.image} alt={c.alt} />
+            {c.id === 5 ? (
+              <div className="loep-choice-art" aria-hidden="true">
+                <Icon name="chat" size={31} />
+                <Icon name="spark" size={24} />
+              </div>
+            ) : (
+              <Photo name={c.image} alt={c.alt} />
+            )}
             <div>
               <span className="loep-eyebrow">Uitdaging {c.id}</span>
               <h3>{c.title}</h3>
               <p>{c.subtitle}</p>
             </div>
             <span className="loep-choice-indicator" aria-hidden="true">
-              {choices.includes(c.id) ? "✓" : "+"}
+              {choices.includes(c.id) ? (
+                <Icon name="check" size={18} />
+              ) : (
+                <span>+</span>
+              )}
             </span>
           </button>
         ))}
@@ -478,6 +561,24 @@ function Credits({ close }: { close: () => void }) {
           beschreven incidenten.
         </p>
         <ul>
+          <li>
+            <a
+              href="https://unsplash.com/photos/a-padlock-rests-on-a-computer-keyboard-QP7RBa5r8HM"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Privacy · Sasun Bughdaryan / Unsplash
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://unsplash.com/photos/wind-turbines-on-a-grassy-hill-under-a-cloudy-sky-JINZq4tun2o"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Windmolens · Skyler Smith / Unsplash
+            </a>
+          </li>
           <li>
             <a
               href="https://unsplash.com/photos/person-holding-black-android-smartphone-QQ2d5naZee0"

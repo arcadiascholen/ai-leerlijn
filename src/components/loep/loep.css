@@ -1560,3 +1560,175 @@
 .loep-welcome-copy h1 {
   color: var(--on-primary);
 }
+/* De observatie gebruikt dezelfde antwoordkaarten als de andere vragen. */
+.loep-observation > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.loep-observation label {
+  font-size: 12px;
+  padding: 9px 11px;
+  min-height: 42px;
+}
+.loep-choice-indicator {
+  width: 30px;
+  height: 30px;
+  top: 9px;
+  right: 9px;
+  border: 2px solid var(--surface);
+  box-shadow: var(--shadow-card);
+  color: var(--forest);
+  font-size: 20px;
+  line-height: 1;
+}
+.loep-choice-indicator > span {
+  line-height: 1;
+  transform: translateY(-1px);
+}
+.loep-choice-card.selected .loep-choice-indicator {
+  border-color: var(--surface);
+}
+.loep-choice-art {
+  height: 79px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  color: var(--ai-text);
+  background: var(--ai-soft);
+}
+.loep-topic-visual {
+  height: 100%;
+  padding: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 15px;
+  background: var(--surface-sunken);
+}
+.loep-topic-mark {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ai);
+}
+.loep-topic-visual h3 {
+  margin: 4px 0 6px;
+  font-size: 24px;
+  color: var(--forest);
+}
+.loep-topic-visual > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.loep-topic-visual > div > span {
+  color: var(--ai);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.loep-topic-visual > div > p {
+  font-size: 14px;
+  margin: 0;
+}
+.loep-energy {
+  align-items: start;
+}
+.loep-energy h2 {
+  margin: 7px 0 10px;
+  font-size: 28px;
+}
+.loep-energy > div > p {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.loep-energy-sliders {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+}
+.loep-energy-sliders label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.loep-energy-sliders label strong {
+  color: var(--ai-text);
+  font-family: var(--font-mono);
+  font-size: 15px;
+}
+.loep-energy-sliders input {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+}
+.loep-energy .loep-chart {
+  gap: 8px;
+}
+.loep-energy .loep-measure {
+  min-height: 72px;
+}
+.loep-app .loep-energy-feedback {
+  margin: 9px 0 0;
+  font-size: 12px;
+  color: var(--ai-text);
+}
+.loep-app .loep-energy-caveat {
+  margin: 0;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+@media (max-height: 700px) and (min-width: 900px) {
+  .loep-choice-art {
+    height: 68px;
+  }
+  .loep-energy-sliders {
+    gap: 6px;
+    margin: 9px 0;
+  }
+  .loep-energy h2 {
+    font-size: 25px;
+  }
+  .loep-energy .loep-chart {
+    gap: 5px;
+  }
+  .loep-topic-visual {
+    padding: 25px;
+    gap: 10px;
+  }
+}
+@media (max-width: 650px) {
+  .loep-choice-art {
+    height: 95px;
+  }
+  .loep-observation > div {
+    grid-template-columns: 1fr;
+  }
+  .loep-topic-visual {
+    padding: 25px;
+  }
+}
+.loep-app img[src$="/wind.webp"] {
+  object-position: center 85%;
+}
+@media (max-height: 700px) and (min-width: 900px) {
+  .loep-experiment:has(.loep-demo) .loep-prompt-stack { gap: 5px; }
+  .loep-experiment:has(.loep-demo) .loep-prompt { padding: 7px 10px; }
+  .loep-experiment:has(.loep-demo) .loep-demo { margin-top: 4px; padding-top: 4px; }
+  .loep-experiment:has(.loep-demo) .loep-observation { margin: 7px 0 4px; }
+  .loep-experiment:has(.loep-demo) .loep-observation label { padding: 5px 9px; min-height: 34px; }
+  .loep-experiment:has(.loep-demo) .loep-note { padding: 6px 9px; font-size: 11px !important; }
+}

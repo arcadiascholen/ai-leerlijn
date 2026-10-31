@@ -125,11 +125,41 @@ export function Experiment({
   const [example, setExample] = useState(false);
   const [copy, setCopy] = useState("");
   async function copyPrompt(i: number) {
+    const value = prompts[i]!;
     try {
-      await navigator.clipboard.writeText(prompts[i]!);
+      if (!navigator.clipboard?.writeText)
+        throw new Error("clipboard unavailable");
+      await navigator.clipboard.writeText(value);
       setCopy(String(i));
+      return;
     } catch {
-      setCopy("Selecteer de tekst en kopieer hem zelf.");
+      // The local HTTP preview is not a secure context. Older browsers can
+      // still copy during a user click using a temporary, selected textarea.
+      const input = document.createElement("textarea");
+      input.value = value;
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.focus();
+      input.select();
+      let copied = false;
+      try {
+        copied = document.execCommand("copy");
+      } catch {
+        /* use selectable text below */
+      }
+      input.remove();
+      setCopy(copied ? String(i) : `failed-${i}`);
+      if (!copied) {
+        const node = document.getElementById(`loep-prompt-${i}`);
+        const selection = window.getSelection();
+        if (node && selection) {
+          const range = document.createRange();
+          range.selectNodeContents(node);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
     }
   }
   return (
@@ -173,10 +203,14 @@ export function Experiment({
                   aria-label={`Kopieer vraag ${i + 1}`}
                   onClick={() => copyPrompt(i)}
                 >
-                  {copy === String(i) ? "Gekopieerd" : "Kopieer"}
+                  {copy === String(i)
+                    ? "Gekopieerd"
+                    : copy === `failed-${i}`
+                      ? "Tekst geselecteerd"
+                      : "Kopieer"}
                 </button>
               </div>
-              <p>{p}</p>
+              <p id={`loep-prompt-${i}`}>{p}</p>
               {example && (
                 <div className="loep-demo">
                   <strong>Redactioneel demonstratieantwoord</strong>
@@ -191,18 +225,24 @@ export function Experiment({
           ))}
         </div>
       </div>
-      <fieldset className="loep-observation">
+      <fieldset className="loep-observation loep-options">
         <legend>Wat merkte je in jouw antwoorden of in het voorbeeld?</legend>
         <div>
           {observations.map((t, i) => (
-            <label key={t}>
+            <label
+              key={t}
+              className={answer?.values[0] === String(i) ? "selected" : ""}
+            >
               <input
                 type="radio"
                 name="experiment"
                 checked={answer?.values[0] === String(i)}
                 onChange={() => onAnswer([String(i)])}
               />
-              {t}
+              <span className="loep-option-letter">
+                {String.fromCharCode(65 + i)}
+              </span>
+              <span>{t}</span>
             </label>
           ))}
         </div>
@@ -221,7 +261,6 @@ export function Experiment({
           Bewaar mijn observatie
         </button>
       )}
-      {copy.length > 2 && <span role="status">{copy}</span>}
     </div>
   );
 }
@@ -370,58 +409,105 @@ export function Gallery({
 }
 export function Energy() {
   const [amount, setAmount] = useState(1);
+  const [hours, setHours] = useState(1);
+  const [videos, setVideos] = useState(1);
   const [selected, setSelected] = useState(0);
+  const [feedback, setFeedback] = useState("");
+  const number = (value: number) =>
+    Number(value.toFixed(2)).toLocaleString("nl-BE");
   const entries = [
     {
-      title: "Eenvoudige tekstvraag",
+      title: "Eenvoudige tekstvragen",
       value: 0.24 * amount,
-      tag: `${amount} × 0,24 Wh`,
+      tag: `${number(0.24 * amount)} Wh`,
       boundary:
         "Mediaan voor Gemini Apps, Google 2025. Operationele dienst; jouw toestel telt niet mee.",
     },
     {
-      title: "Eén uur Netflix",
-      value: 77,
-      tag: "77 Wh",
+      title: "Netflix streamen",
+      value: 77 * hours,
+      tag: `${number(77 * hours)} Wh`,
       boundary:
         "IEA-raming voor 2019. Datacenters, netwerk én gewogen eindtoestellen tellen mee.",
     },
     {
-      title: "Zes seconden AI-video",
-      value: 115,
-      tag: "circa 115 Wh",
+      title: "AI-video’s van zes seconden",
+      value: 115 * videos,
+      tag: `circa ${number(115 * videos)} Wh`,
       boundary:
         "GPU-energie in de IEA-test van 2025, bij acht beelden per seconde. Niet het volledige systeem.",
     },
   ];
-  const max = Math.max(115, 0.24 * amount);
+  const max = Math.max(1, ...entries.map((e) => e.value));
+  const change = (setter: (n: number) => void, value: number) => {
+    setter(value);
+    setFeedback("");
+  };
+  function check() {
+    if (hours !== 1)
+      setFeedback("Zet Netflix eerst op één uur en vergelijk opnieuw.");
+    else if (Math.abs(amount * 0.24 - 77) <= 5)
+      setFeedback(
+        "Dat komt in de buurt: met deze voorbeeldcijfers is dat ongeveer 300 vragen. Let op de verschillende meetgrenzen.",
+      );
+    else if (amount * 0.24 < 72)
+      setFeedback(
+        "Probeer meer tekstvragen. Kijk wanneer de eerste balk bijna even lang is als de tweede.",
+      );
+    else
+      setFeedback(
+        "Probeer minder tekstvragen. Kijk wanneer de eerste balk bijna even lang is als de tweede.",
+      );
+  }
   return (
-    <div className="loep-split">
+    <div className="loep-split loep-energy">
       <div>
         <span className="loep-eyebrow">Onderzoek de grootteorde</span>
-        <h2>
-          Hoeveel is
-          <br />
-          een AI-vraag?
-        </h2>
+        <h2>Vergelijk en probeer uit</h2>
         <p>
-          Vergelijk historische voorbeeldcijfers. Verander het aantal
-          tekstvragen en klik op een balk om te zien wat er meetelt.
+          Hoeveel tekstvragen komen ongeveer overeen met één uur Netflix?
+          Verschuif de aantallen en vergelijk de balken.
         </p>
-        <label className="loep-slider">
-          Aantal eenvoudige tekstvragen <strong>{amount}</strong>
-          <input
-            type="range"
-            min="1"
-            max="500"
-            value={amount}
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
-        </label>
-        <p className="loep-note">
-          Verschillende jaren, modellen en meetgrenzen. Hieruit kun je niet
-          besluiten welke toepassing altijd milieuvriendelijker is.
-        </p>
+        <div className="loep-energy-sliders">
+          <label>
+            Aantal tekstvragen <strong>{amount}</strong>
+            <input
+              type="range"
+              min="1"
+              max="500"
+              value={amount}
+              onChange={(e) => change(setAmount, Number(e.target.value))}
+            />
+          </label>
+          <label>
+            Netflix (uren) <strong>{hours}</strong>
+            <input
+              type="range"
+              min="0"
+              max="3"
+              value={hours}
+              onChange={(e) => change(setHours, Number(e.target.value))}
+            />
+          </label>
+          <label>
+            AI-video’s van zes seconden <strong>{videos}</strong>
+            <input
+              type="range"
+              min="0"
+              max="3"
+              value={videos}
+              onChange={(e) => change(setVideos, Number(e.target.value))}
+            />
+          </label>
+        </div>
+        <button className="loep-button" onClick={check}>
+          Controleer mijn vergelijking
+        </button>
+        {feedback && (
+          <p className="loep-energy-feedback" role="status">
+            {feedback}
+          </p>
+        )}
       </div>
       <div className="loep-chart">
         {entries.map((e, i) => (
@@ -435,9 +521,7 @@ export function Energy() {
               <strong>{e.tag}</strong>
             </span>
             <span className="loep-bar-track">
-              <span
-                style={{ width: (e.value / max) * 100 + "%" }}
-              />
+              <span style={{ width: (e.value / max) * 100 + "%" }} />
             </span>
           </button>
         ))}
@@ -445,6 +529,11 @@ export function Energy() {
           <span className="loep-eyebrow">Wat telt mee?</span>
           <p>{entries[selected]!.boundary}</p>
         </div>
+        <p className="loep-energy-caveat">
+          Historische voorbeeldcijfers uit verschillende jaren en met
+          verschillende meetgrenzen. Dit bewijst niet welke toepassing altijd
+          milieuvriendelijker is.
+        </p>
         <div className="loep-small loep-source-links">
           <a
             href="https://services.google.com/fh/files/misc/measuring_the_environmental_impact_of_delivering_ai_at_google_scale.pdf"

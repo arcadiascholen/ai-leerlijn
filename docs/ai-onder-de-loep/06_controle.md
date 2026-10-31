@@ -23,3 +23,13 @@ Controle uitgevoerd op 30 oktober 2026.
 ## Reikwijdte
 
 Dit is een functionele en inhoudelijke controle door de ontwikkelaar, geen gebruikersonderzoek met leerlingen. De raming van de werktijd en afspeelbaarheid van nog te kiezen videofragmenten zijn niet met leerlingen gevalideerd. De definitieve formulierlink ontbreekt. Het PDF is niet beschermd tegen handmatige vervalsing; dat werk is uitgesteld.
+
+## Gebruikersfeedback verwerkt — 31 oktober 2026
+
+- Beide kopieerknoppen op de lokale HTTP-voorvertoning gecontroleerd: de bijbehorende prompt stond daadwerkelijk op het klembord. Wanneer automatisch kopiëren door de browser wordt geweigerd, wordt de prompt geselecteerd en blijft de terugkoppeling bij de knop.
+- De observatie gebruikt dezelfde antwoordkaarten als de meerkeuzevragen. De overbodige melding naast de knop is verwijderd; de afweging blijft zonder score.
+- Het bijschrift over sfeerbeelden is uit de verhalende schermen gehaald. De bronvermelding blijft bereikbaar via Beelden en bronnen.
+- Privacy en milieu kregen eigen, relevante foto's; herhaalde foto's op opeenvolgende inhoudsschermen zijn vervangen door inhoudelijke visuals. De twee extra foto's en hun licenties zijn in 05_uitvoering.md en in de website vermeld.
+- De keuzekaarten hebben grotere, gelijkvormige selectie-iconen.
+- De milieuvergelijking heeft drie afzonderlijke schuifregelaars voor tekstvragen, uren streamen en AI-video's. De oefening geeft een gerichte tip of bevestiging; de weergegeven meetgrenzen blijven behouden. De drie schuifregelaars, rekenwaarden en feedback zijn in de browser gecontroleerd.
+- De uitgeklapte voorbeeldantwoorden, antwoordkaarten en milieuoefening passen op 1366 × 640 zonder overlap met de navigatie.

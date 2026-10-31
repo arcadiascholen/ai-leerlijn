@@ -37,8 +37,8 @@ export const chapters: Chapter[] = [
     id: 2,
     title: "AI en privacy",
     subtitle: "Hoeveel vertel je aan een chatbot?",
-    image: "servers",
-    alt: "Rijen servers en netwerkkabels in een datacenter.",
+    image: "privacy",
+    alt: "Een hangslot op een computertoetsenbord.",
     compass:
       "Ik deel geen onnodige persoonlijke gegevens met AI. Gaat het toch mis, dan meld ik dat.",
     source:
@@ -82,8 +82,8 @@ export const chapters: Chapter[] = [
     id: 6,
     title: "AI en milieu",
     subtitle: "Stroom, water en grondstoffen: kijk naar het hele plaatje.",
-    image: "servers",
-    alt: "Een datacenter met servers en netwerkkabels.",
+    image: "wind",
+    alt: "Windmolens op een heuvel.",
     compass:
       "Ik weet dat AI elektriciteit, water en grondstoffen gebruikt. Ik gebruik AI bewust en denk na of het een meerwaarde biedt.",
     source: "https://www.iea.org/reports/energy-and-ai",
