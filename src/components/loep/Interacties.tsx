@@ -267,23 +267,26 @@ export function Leerproces({ onAnswer, onCheck, checked }: Actions) {
 const startPrompt = "Ik vind dat sociale media verboden moeten worden voor jongeren onder de 16 jaar. Dat zou toch veel beter zijn voor iedereen?";
 export function PromptBuilder() {
   const [prompt, setPrompt] = useState(startPrompt);
-  const [evaluated, setEvaluated] = useState(false);
   const [copy, setCopy] = useState("");
-  const lower = prompt.toLocaleLowerCase("nl-BE");
-  const mentionsSides = /voor-? ?en nadelen|voordelen|nadelen|voor- en tegen|voor én tegen|voor en tegen|verschillende (kanten|perspectieven)|tegenargument/.test(lower);
-  const leading = /geef (me|mij) gelijk|alleen argumenten (voor|tegen)|laat tegenargumenten weg|veel beter zijn voor iedereen/.test(lower);
+  const changed = !!prompt.trim() && prompt.trim() !== startPrompt;
+  const feedbackRequest = `Geef feedback op mijn vraag. Onderzoek of ze neutraal is en ruimte laat voor verschillende standpunten. Leg uit wat ik kan verbeteren, maar herschrijf ze nog niet.\n\nMijn vraag:\n${prompt.trim()}`;
   async function copyText() {
     try {
       if (!navigator.clipboard?.writeText) throw Error();
-      await navigator.clipboard.writeText(prompt);
-      setCopy("Gekopieerd");
+      await navigator.clipboard.writeText(feedbackRequest);
+      setCopy("Gekopieerd! Plak de opdracht in je AI-toepassing.");
     } catch {
-      const input = document.getElementById("loep-builder-prompt") as HTMLTextAreaElement | null;
-      input?.focus();
-      input?.select();
+      const result = document.getElementById("loep-feedback-request");
+      if (result) {
+        const range = document.createRange();
+        range.selectNodeContents(result);
+        const selection = window.getSelection();
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
       let ok = false;
       try { ok = document.execCommand("copy"); } catch {}
-      setCopy(ok ? "Gekopieerd" : "Tekst geselecteerd: kopieer met je toetsenbord");
+      setCopy(ok ? "Gekopieerd! Plak de opdracht in je AI-toepassing." : "De opdracht is geselecteerd. Kopieer ze met je toetsenbord.");
     }
   }
   return (
@@ -293,26 +296,27 @@ export function PromptBuilder() {
         <h2>Maak de vraag beter</h2>
         <p>De vraag hieronder stuurt AI al naar één antwoord. Herschrijf ze zodat je verschillende kanten van het onderwerp kunt onderzoeken.</p>
         <label htmlFor="loep-builder-prompt"><strong>Jouw aangepaste vraag</strong></label>
-        <textarea id="loep-builder-prompt" value={prompt} rows={7} maxLength={1500}
-          onChange={(event) => { setPrompt(event.target.value); setEvaluated(false); setCopy(""); }} />
-        <button className="loep-button" type="button" disabled={!prompt.trim() || prompt.trim() === startPrompt} onClick={() => setEvaluated(true)}>Bekijk de feedback</button>
-        <p className="loep-small">Je tekst blijft op dit scherm. Kopieer je vraag als je ze wilt bewaren of zelf wilt uitproberen.</p>
+        <textarea id="loep-builder-prompt" value={prompt} rows={6} maxLength={1500}
+          onChange={(event) => { setPrompt(event.target.value); setCopy(""); }} />
+        <p className="loep-small">Je tekst blijft op dit scherm. Kopieer de opdracht als je je vraag wilt bewaren of feedback wilt vragen.</p>
       </div>
       <div>
-        {evaluated ? <div className="loep-builder-result" role="status">
-          <span className="loep-eyebrow">Kijk nog eens naar je vraag</span>
-          <h3>Aandachtspunten</h3>
-          {leading ? <p>Je vraag bevat nog woorden die naar één antwoord sturen. Kun je die neutraler formuleren?</p> : <p>Lees je vraag opnieuw: stuur je AI al naar jouw mening, of laat je ruimte voor een ander antwoord?</p>}
-          {mentionsSides ? <p>Je noemt woorden die op verschillende kanten kunnen wijzen. Lees na of je ook echt ruimte laat voor verschillende argumenten.</p> : <p>Vraag je ook naar andere kanten of mogelijke nadelen? Dat kan bijvoorbeeld met een vraag naar tegenargumenten.</p>}
-          <p>Welke informatie of bronnen zou je zelf nog willen controleren?</p>
-          <p className="loep-small">Deze tips kijken naar enkele woorden, niet naar de volledige betekenis. Jij beoordeelt zelf of je vraag helpt; er zijn meerdere goede formuleringen.</p>
-          <button className="loep-text-button" type="button" onClick={copyText}>{copy || "Kopieer mijn vraag"}</button>
-        </div> : <div className="loep-builder-result">
-          <span className="loep-eyebrow">Tips</span>
-          <h3>Hoe maak je je vraag opener?</h3>
-          <p>Laat merken dat je verschillende kanten wilt onderzoeken, zonder zelf al te beslissen wat het antwoord moet zijn.</p>
-          <p>Je kunt ook vragen wat onzeker is of welke informatie nog ontbreekt.</p>
-        </div>}
+        <div className="loep-builder-result">
+          <span className="loep-eyebrow">Vraag feedback</span>
+          <h3>Wat vindt AI van jouw vraag?</h3>
+          <p>1. Kopieer de opdracht hieronder. Plak ze in een toegelaten AI-toepassing.</p>
+          <p>2. Lees de feedback kritisch. Wat helpt jou om je vraag te verbeteren? Pas je vraag eventueel aan.</p>
+          {changed ? <><p id="loep-feedback-request" className="loep-feedback-request">{feedbackRequest}</p>
+            <button className="loep-button" type="button" onClick={copyText}>Kopieer de feedbackopdracht</button>
+            {copy && <p role="status">{copy}</p>}
+          </> : <p><strong>Pas eerst de vraag links aan.</strong> Dan verschijnt hier je feedbackopdracht.</p>}
+          <p className="loep-small">De app verstuurt niets automatisch. Kijk zelf na wat je deelt met een AI-toepassing.</p>
+        </div>
+        <details className="loep-builder-example">
+          <summary>Geen AI-toegang? Vergelijk met een voorbeeld</summary>
+          <p>Een opener vraag kan zijn: “Welke voordelen en nadelen heeft een verbod op sociale media voor jongeren onder de 16 jaar?”</p>
+          <p>Vergelijk: geef jij AI ook ruimte om verschillende kanten te onderzoeken, zonder het antwoord vooraf in te vullen? Pas je vraag eventueel aan.</p>
+        </details>
       </div>
     </div>
   );
