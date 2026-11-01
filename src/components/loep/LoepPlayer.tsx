@@ -322,22 +322,40 @@ function CompareAnswers() {
 }
 
 function TestChatbot() {
-  const [active, setActive] = useState<number | null>(null);
-  const checks = [
-    { title: "Vinden gebruikers het antwoord prettig?", explanation: "Dat vertelt je of gebruikers tevreden zijn. Maar een prettig antwoord kan toch een belangrijk risico verzwijgen." },
-    { title: "Benoemt AI ook mogelijke nadelen?", explanation: "Zo merk je of AI verder kijkt dan alleen jouw idee bevestigen. Controleer ook of die nadelen echt bij de situatie passen." },
-    { title: "Klopt de informatie?", explanation: "Controleer belangrijke beweringen bij betrouwbare bronnen. Een overtuigend antwoord is niet automatisch juist." },
+  const [selected, setSelected] = useState<number[]>([]);
+  const [tested, setTested] = useState(false);
+  const [decision, setDecision] = useState<"release" | "improve" | null>(null);
+  const tests = [
+    { label: "Vraag gebruikers of ze het antwoord prettig vinden", result: "De testgebruikers vinden de chatbot vriendelijk. Dat zegt nog niet of het advies goed is." },
+    { label: "Controleer of AI ook risico’s benoemt", result: "Bij een haastig plan geeft de chatbot meteen gelijk. Hij noemt geen risico’s of alternatieven." },
+    { label: "Controleer belangrijke feiten bij betrouwbare bronnen", result: "Sommige beweringen blijken niet te kloppen. Ze moeten worden nagekeken." },
   ];
+  function toggle(index: number) {
+    setSelected((old) => old.includes(index) ? old.filter((item) => item !== index) : [...old, index]);
+    setTested(false);
+    setDecision(null);
+  }
   return <div className="loep-compare loep-chatbot-test">
-    <span className="loep-eyebrow">Jij test de chatbot</span>
-    <h3>Waar let jij op?</h3>
-    <p>Een chatbot geeft antwoord op een vraag. Hoe onderzoek je of dat antwoord helpt? Klik op de drie controles.</p>
-    {checks.map((check, index) => <div key={check.title}>
-      <button type="button" className={active === index ? "selected" : ""} aria-expanded={active === index} onClick={() => setActive(active === index ? null : index)}>
-        <strong>{check.title}</strong><span>{active === index ? "Sluit uitleg −" : "Bekijk uitleg +"}</span>
-      </button>
-      {active === index && <div className="loep-compare-feedback" role="status">{check.explanation}</div>}
-    </div>)}
+    <span className="loep-eyebrow">Jij bent de ontwikkelaar</span>
+    <h3>Test jouw chatbot</h3>
+    <p>Je maakt een chatbot die leerlingen helpt bij hun plannen. Je wilt dat hij vriendelijk én behulpzaam is.</p>
+    <p><strong>1. Wat wil je testen?</strong> Kies één of meer controles.</p>
+    {tests.map((test, index) => <button key={test.label} type="button" className={selected.includes(index) ? "selected" : ""} aria-pressed={selected.includes(index)} onClick={() => toggle(index)}>
+      <strong>{selected.includes(index) ? "✓ " : "+ "}{test.label}</strong>
+    </button>)}
+    <button type="button" disabled={!selected.length} onClick={() => { setTested(true); setDecision(null); }}>Bekijk de testresultaten</button>
+    {tested && <div className="loep-compare-feedback" role="status">
+      <strong>Resultaten van jouw test</strong>
+      {selected.map((index) => <p key={index}>{tests[index]!.result}</p>)}
+      {selected.length < tests.length && <p>Je koos {selected.length} van de 3 controles. Wat zou je met een andere test nog kunnen ontdekken?</p>}
+      <p className="loep-small">Dit zijn verzonnen testresultaten om te oefenen.</p>
+    </div>}
+    {tested && <div>
+      <p><strong>2. Wat doe je nu?</strong></p>
+      <button type="button" className={decision === "release" ? "selected" : ""} aria-pressed={decision === "release"} onClick={() => setDecision("release")}>De chatbot meteen aan iedereen geven</button>
+      <button type="button" className={decision === "improve" ? "selected" : ""} aria-pressed={decision === "improve"} onClick={() => setDecision("improve")}>Verder testen en problemen verbeteren</button>
+      {decision && <div className="loep-compare-feedback" role="status">{decision === "release" ? "Als je nu stopt met testen, kunnen belangrijke fouten of risico’s verborgen blijven. Kijk welke controles je nog kunt uitvoeren." : "Goed plan. Gebruik verschillende tests, verbeter wat misloopt en controleer daarna opnieuw. Zo kijk je verder dan alleen tevreden reacties."}</div>}
+    </div>}
   </div>;
 }
 
