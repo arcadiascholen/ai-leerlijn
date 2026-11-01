@@ -39,15 +39,111 @@
 .vibe[data-pane=pakket] .v-material {max-height:125px}
 .vibe[data-pane=overleg] .v-prompt {max-height:125px}
 .vibe[data-pane=situatie] details p {font-size:var(--text-small-size);line-height:var(--text-small-line)}
-.v-phase {font-size:var(--text-label-size);line-height:var(--text-label-line);color:var(--ink-muted);margin-bottom:var(--space-2)}
 .vibe[data-pane=overleg] > p {font-size:var(--text-small-size);line-height:var(--text-small-line)}
 .vibe[data-pane=overleg] .v-prompt {max-height:100px}
 .vibe[data-pane=voorbeeld] p {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:var(--space-2)}
 .vibe[data-pane=voorbeeld] .v-demo {padding:var(--space-3);margin:var(--space-2) 0}
-.vibe .v-phase {margin-bottom:var(--space-2)}
 .vibe[data-pane=overleg] .v-prompt {max-height:80px}
 .vibe[data-pane=voorbeeld] .v-demo {padding:var(--space-2)}
 .vibe[data-pane=voorbeeld] .v-demo h3 {font-size:var(--text-body-size);line-height:var(--text-body-line);margin-bottom:var(--space-1)}
 .vibe[data-pane=voorbeeld] .v-demo .v-options {margin-bottom:var(--space-1)}
 .vibe[data-pane=voorbeeld] .v-demo p {margin-bottom:var(--space-1)}
 .vibe[data-pane=voorbeeld] details {padding:var(--space-2)}
+.v-example[open] {border-color:var(--brand-text)}
+.v-example .v-callout {border-left:4px solid var(--brand-text);margin-bottom:0}
+.vibe[data-pane=verbeteren] .v-options button {font-size:var(--text-small-size);padding:var(--space-1) var(--space-2)}
+.vibe[data-pane=verbeteren] .v-example p {font-size:var(--text-small-size);margin-bottom:var(--space-2)}
+
+.vibe[data-pane=verbeteren] details {padding:var(--space-2)}
+.vibe[data-pane=verbeteren] .v-options {margin-bottom:var(--space-1)}
+.vibe[data-pane=verbeteren] ul {margin-top:var(--space-1);margin-bottom:0}
+.vibe[data-pane=verbeteren] > p {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:0}
+.vibe[data-pane=spectrum] .v-callout {padding:var(--space-2);margin:var(--space-2) 0}
+.vibe[data-pane=spectrum] .v-callout p {margin-bottom:var(--space-2)}
+.vibe[data-pane=spectrum] .v-callout p:last-child {margin-bottom:0}
+.vibe[data-pane=spectrum] p {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+
+.v-process {display:flex;justify-content:flex-end;margin:0 0 var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line);color:var(--ink-muted)}
+.v-process > strong {padding:var(--space-1) var(--space-2);background:var(--surface-sunken);border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--forest)}
+.v-process ol {display:flex;flex-wrap:wrap;gap:var(--space-2);list-style:none;padding:var(--space-1) var(--space-2);margin:0;max-width:none;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface)}
+.v-process li {margin:0;white-space:nowrap}
+.v-process li[aria-current=step] {font-weight:700;color:var(--forest);background:var(--surface-sunken);border-radius:var(--radius-sm)}
+.v-process-number {display:inline-block;font-weight:700}
+.v-process li + li::before {content:'→';margin-right:var(--space-2);font-weight:400;color:var(--ink-muted)}
+
+[data-step]:has(.v-process) > .step-title {margin-bottom:var(--space-2)}
+.v-process {font-size:var(--text-label-size);line-height:var(--text-label-line);margin-bottom:var(--space-2)}
+
+.v-writing-help .v-callout {font-size:var(--text-small-size);line-height:var(--text-small-line);max-height:160px;overflow:auto}
+.v-writing-help .v-callout p {margin-bottom:var(--space-2)}
+.v-writing-help .v-callout p:last-child {margin-bottom:0}
+
+.v-solution-choice {gap:var(--space-4);margin:var(--space-4) 0 var(--space-5)}
+.vibe .v-solution-help .v-callout {max-height:none;overflow:visible;padding:var(--space-2)}
+.vibe .v-solution-help .v-callout p {margin:0 0 var(--space-2)}
+.vibe .v-solution-help .v-callout p:last-child {margin-bottom:0}
+.v-solution-next {margin-top:var(--space-3)}
+.vibe .v-solution-next p {font-size:var(--text-small-size);margin-bottom:var(--space-2)}
+.v-solution-next button {font-size:var(--text-small-size)}
+
+.v-sentence-starters {display:flex;flex-wrap:wrap;gap:var(--space-3)}
+.v-solution-choice {margin:var(--space-3) 0 var(--space-4)}
+.vibe .v-solution-help {padding:var(--space-2)}
+
+.vibe[data-pane=helpen] .v-solution-choice {margin:var(--space-2) 0 var(--space-3)}
+.vibe[data-pane=helpen] .v-callout {margin:var(--space-2) 0;padding:var(--space-2)}
+.v-solution-next {display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2)}
+.vibe .v-solution-next p,.v-solution-next .v-options {margin-bottom:0}
+.v-solution-next button {padding:var(--space-1) var(--space-2)}
+
+.v-solution-scope {font-size:var(--text-small-size);line-height:var(--text-small-line);border-left:3px solid var(--ai);padding-left:var(--space-2);margin-bottom:var(--space-2)}
+.vibe .v-solution-scope p {margin-bottom:var(--space-1)}
+
+.vibe .v-solution-info {border:0;padding:0;margin-bottom:var(--space-2);font-size:var(--text-small-size)}
+.v-solution-info .v-solution-scope {margin-top:var(--space-2)}
+
+.v-feasibility {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:var(--space-3)}
+.v-feasibility ul {margin:var(--space-1) 0 0;padding-left:var(--space-4)}
+
+/* Keep introductory body copy consistent across all module steps. */
+.vibe[data-pane] > p:not(.v-small) {
+  font-size:var(--text-body-size);
+  line-height:var(--text-body-line);
+}
+
+.v-feedback {border-left:3px solid var(--ai);padding:var(--space-2);background:var(--ai-soft);color:var(--ai-text);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-working-demo label {font-size:var(--text-small-size);font-weight:700}
+.v-working-demo > div {display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-1)}
+.v-working-demo input {font:inherit;min-width:0;flex:1;padding:var(--space-1) var(--space-2);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink)}
+.v-working-demo input:focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+.vibe .v-demo-feedback {margin:var(--space-1) 0 0;font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-scope-question {padding:var(--space-2);border:1px solid var(--line);border-radius:var(--radius-md);margin-bottom:var(--space-2)}
+.vibe .v-scope-question p {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:var(--space-2)}
+.v-scope-question .v-options {margin-bottom:var(--space-1)}
+.vibe[data-pane=idee] .v-options button {padding:var(--space-1) var(--space-2);font-size:var(--text-small-size)}
+
+.vibe[data-pane=spectrum] .v-spectrum button {font-size:var(--text-small-size);padding:var(--space-1) var(--space-2)}
+.vibe[data-pane=spectrum] .v-callout {margin:var(--space-1) 0;padding:var(--space-2)}
+.v-working-demo {display:flex;align-items:center;gap:var(--space-2)}
+.v-working-demo > div {flex:1;min-width:0}
+
+.v-feedback-correct {background:var(--success-soft);color:var(--success);border-color:var(--success)}
+.v-feedback-wrong {background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+
+.v-checks {display:grid;gap:var(--space-2);margin:var(--space-2) 0}
+.v-checks label {display:flex;align-items:flex-start;gap:var(--space-2);cursor:pointer}
+.v-checks input {margin-top:var(--space-1);accent-color:var(--forest)}
+.v-checks small {display:block;color:var(--ink-muted);font-size:inherit}
+.vibe textarea:disabled {background:var(--surface-sunken);color:var(--ink-muted);cursor:not-allowed}
+
+.v-solution-types {display:flex;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3)}
+.v-solution-types button {font-size:var(--text-small-size);padding:var(--space-1) var(--space-2);text-align:left}
+
+.v-inspiration-toggle {margin-bottom:var(--space-3)}
+
+.v-package-category {background:var(--surface-sunken);border:1px solid var(--line);border-radius:var(--radius-md);padding:var(--space-2);margin-bottom:var(--space-3)}
+.v-package-category h3,.v-package-list h3 {font-size:var(--text-body-size);line-height:var(--text-body-line);margin:0 0 var(--space-2)}
+.v-package-category .v-options {margin:var(--space-2) 0 0}
+.v-package-list {padding-left:var(--space-3);border-left:3px solid var(--ai);margin-bottom:var(--space-3)}
+.v-package-list .v-options {margin-bottom:0}
+.v-package-list button {border-style:dashed}

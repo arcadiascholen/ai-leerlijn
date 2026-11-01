@@ -1043,14 +1043,9 @@ iets.
   startpagina controleert beide links, de samenvatting het eindformulier.
 
 
-### Aanvulling vibecoding — Canva Code en eigen lesbestanden
+### Aanvulling vibecoding — eigen lesbestanden
 
-De vibecodingmodule biedt naast de geteste Copilot-HTML-route een Canva Code-route,
-met het schoolaccount als Code voor de klas is ingeschakeld. Die route test in
-Voorbeeld/Preview en vereist geen HTML-download of openbare publicatie. De
-beschikbaarheid en limieten hangen van het account af. Dit is een inhoudelijke
-instructieroute, geen claim dat ze op alle leerlingaccounts praktisch getest is.
-Bron: https://www.canva.com/en_gb/help/canva-code/ (nagekeken 28 oktober 2026).
+De basismodule gebruikt één HTML-downloadroute, met bijvoorbeeld Copilot.
 
 Eigen leerstof heeft voorrang: PDF-cursus, PowerPoint-presentatie, Excel-woordenlijst
 of notities. De leerling beschrijft hier alleen het bestand en het afgebakende
