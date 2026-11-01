@@ -810,7 +810,7 @@ export default function LoepPlayer({
                   </>
                 ) : <p>{chapter.subtitle}</p>}
               </div>
-              <Photo name={chapter.image} alt={chapter.alt} />
+              <Photo name={chapter.id === 3 ? "deepfake-video" : chapter.image} alt={chapter.id === 3 ? "Iemand bewerkt een video op een computerscherm." : chapter.alt} />
             </div>
           ) : step.kind === "story" ? (
             <Story step={step} />

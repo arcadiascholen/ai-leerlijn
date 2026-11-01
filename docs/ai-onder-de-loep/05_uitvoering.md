@@ -31,6 +31,7 @@ Alle beelden worden lokaal aangeboden als WebP; de beelden worden gecomprimeerd 
 | phone.webp | [Jonas Leupe — Unsplash](https://unsplash.com/photos/person-holding-black-android-smartphone-QQ2d5naZee0) | [Unsplash License](https://unsplash.com/license); handen met smartphone bij bureau |
 | chatbot-gesprek.webp | [Sanket Mishra — Unsplash](https://unsplash.com/photos/a-person-holding-a-cell-phone-with-a-chat-app-on-the-screen-qAKPcrIcRG8) | Unsplash License; telefoon met chatbot, keuzekaart uitdaging 5 |
 | ai-assistent.webp | [Swello — Unsplash](https://unsplash.com/photos/woman-typing-on-a-laptop-with-a-vase-nearby-4Ya_nyKge5k) | Unsplash License; AI-assistent op laptop, keuzekaart uitdaging 8 |
+| deepfake-video.webp | [André Eusébio — Unsplash](https://unsplash.com/photos/a-person-edits-video-on-a-computer-25OWIrAtGMM) | Unsplash License; illustratie van videobewerking, geen afbeelding van een deepfake-incident | 
 | privacy.webp | [Sasun Bughdaryan — Unsplash](https://unsplash.com/photos/a-padlock-rests-on-a-computer-keyboard-QP7RBa5r8HM) | Unsplash License; hangslot op toetsenbord |
 | wind.webp | [Skyler Smith — Unsplash](https://unsplash.com/photos/wind-turbines-on-a-grassy-hill-under-a-cloudy-sky-JINZq4tun2o) | Unsplash License; windmolens |
 | servers.webp | [Taylor Vick — Unsplash](https://unsplash.com/photos/cable-network-M5tzZtFCOfs) | Unsplash License; datacenterfoto |
