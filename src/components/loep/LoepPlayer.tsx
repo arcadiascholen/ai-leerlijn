@@ -765,7 +765,16 @@ export default function LoepPlayer({
             <Welcome />
           ) : step.kind === "chapter-intro" && chapter ? (
             <div className="loep-chapter-intro">
-              <div><span className="loep-eyebrow">Nieuwe uitdaging · {chapter.id}</span><h2>{chapter.title}</h2><p>{chapter.subtitle}</p><p>Ontdek het onderwerp en ga daarna zelf aan de slag.</p></div>
+              <div>
+                <span className="loep-eyebrow">Uitdaging {chapter.id}</span>
+                <h2>{chapter.title}</h2>
+                {chapter.id === 1 ? (
+                  <>
+                    <p>AI geeft vaak vlotte en vriendelijke antwoorden. Maar betekent dat ook dat je die antwoorden kunt vertrouwen?</p>
+                    <p>Wat als AI iets verzint, een bron verkeerd vermeldt of jou te snel gelijk geeft? Hoe ontdek je wat klopt?</p>
+                  </>
+                ) : <p>{chapter.subtitle}</p>}
+              </div>
               <Photo name={chapter.image} alt={chapter.alt} />
             </div>
           ) : step.kind === "story" ? (
