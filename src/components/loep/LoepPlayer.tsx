@@ -321,6 +321,26 @@ function CompareAnswers() {
   </div>;
 }
 
+function TestChatbot() {
+  const [active, setActive] = useState<number | null>(null);
+  const checks = [
+    { title: "Vinden gebruikers het antwoord prettig?", explanation: "Dat vertelt je of gebruikers tevreden zijn. Maar een prettig antwoord kan toch een belangrijk risico verzwijgen." },
+    { title: "Benoemt AI ook mogelijke nadelen?", explanation: "Zo merk je of AI verder kijkt dan alleen jouw idee bevestigen. Controleer ook of die nadelen echt bij de situatie passen." },
+    { title: "Klopt de informatie?", explanation: "Controleer belangrijke beweringen bij betrouwbare bronnen. Een overtuigend antwoord is niet automatisch juist." },
+  ];
+  return <div className="loep-compare loep-chatbot-test">
+    <span className="loep-eyebrow">Jij test de chatbot</span>
+    <h3>Waar let jij op?</h3>
+    <p>Een chatbot geeft antwoord op een vraag. Hoe onderzoek je of dat antwoord helpt? Klik op de drie controles.</p>
+    {checks.map((check, index) => <div key={check.title}>
+      <button type="button" className={active === index ? "selected" : ""} aria-expanded={active === index} onClick={() => setActive(active === index ? null : index)}>
+        <strong>{check.title}</strong><span>{active === index ? "Sluit uitleg −" : "Bekijk uitleg +"}</span>
+      </button>
+      {active === index && <div className="loep-compare-feedback" role="status">{check.explanation}</div>}
+    </div>)}
+  </div>;
+}
+
 function Story({ step }: { step: Step }) {
   const chapter = chapters.find((c) => c.id === step.chapter);
   return (
@@ -349,9 +369,11 @@ function Story({ step }: { step: Step }) {
           </p>
         )}
       </div>
-      <figure className={"loep-story-visual" + (step.id === "vriendelijk" ? " loep-compare-wrap" : "")}>
+      <figure className={"loep-story-visual" + (["vriendelijk", "testen"].includes(step.id) ? " loep-compare-wrap" : "")}>
         {step.id === "vriendelijk" ? (
           <CompareAnswers />
+        ) : step.id === "testen" ? (
+          <TestChatbot />
         ) : step.id === "nepvideo" ? (
           <VideoCard kind="deepfake" />
         ) : chapter ? (
