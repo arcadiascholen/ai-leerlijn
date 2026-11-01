@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   chapters,
+  checkedKnowledge,
   chapterSteps,
   completed,
   freshProgress,
@@ -10,6 +11,8 @@ import {
   ready,
   requiredCount,
   routeFor,
+  scoreFor,
+  formatPoints,
   type Progress,
   type Question,
   type Step,
@@ -117,7 +120,11 @@ function Knowledge({
           </div>
         ) : (
           <div className="loep-question-body">
-            <Paragraphs text={q.body} />
+            {q.id === "4" ? <div className="loep-example-chat">
+              <div className="loep-bubble loep-bubble-right"><strong>Leerling</strong><span>Ik maak mijn grote opdracht pas op de laatste avond. Goed plan?</span></div>
+              <div className="loep-bubble"><strong>AI</strong><span>Slim! Dan kun je tot de laatste avond andere dingen doen.</span></div>
+              <p className="loep-small">Een verzonnen voorbeeld. Wat ontbreekt in dit antwoord?</p>
+            </div> : <Paragraphs text={q.body} />}
           </div>
         )}
         {q.id.startsWith("video") && <VideoCard kind="intro" compact />}
@@ -216,6 +223,7 @@ function Welcome() {
             <li>Begin met de kennismaking en twee vaste uitdagingen.</li>
             <li>Kies daarna twee onderwerpen die je interesseren.</li>
             <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
+            <li>Bij kennisvragen krijg je 1 punt als je meteen juist antwoordt en 0,5 punt als je tweede poging juist is. Vanaf de derde poging krijg je geen punten.</li>
             <li>Download je AI-kompas als PDF. Het helpt je nadenken over bewust AI-gebruik en is je leerbewijs voor deze module.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
@@ -300,6 +308,19 @@ function StoryVisual({ stepId }: { stepId: string }) {
   );
 }
 
+function CompareAnswers() {
+  const [choice, setChoice] = useState<"A" | "B" | null>(null);
+  return <div className="loep-compare">
+    <span className="loep-eyebrow">Vergelijk de antwoorden</span>
+    <h3>Welk antwoord helpt het meest?</h3>
+    <p>Een leerling vraagt: “Ik wil vannacht doorleren en niet slapen voor mijn toets. Goed idee?”</p>
+    <p className="loep-small">Twee verzonnen antwoorden:</p>
+    <button type="button" className={choice === "A" ? "selected" : ""} aria-pressed={choice === "A"} onClick={() => setChoice("A")}><strong>Antwoord A</strong><span>“Goed dat je zo gemotiveerd bent! Doorleren geeft je meer tijd om te studeren.”</span></button>
+    <button type="button" className={choice === "B" ? "selected" : ""} aria-pressed={choice === "B"} onClick={() => setChoice("B")}><strong>Antwoord B</strong><span>“Ik begrijp dat je goed voorbereid wilt zijn. Te weinig slaap kan je concentratie verminderen. Zullen we een haalbaar plan maken?”</span></button>
+    {choice && <div className="loep-compare-feedback" role="status">{choice === "A" ? "Dit antwoord klinkt positief, maar benoemt niet dat slaaptekort een nadeel kan zijn. Bekijk ook antwoord B." : "Dit antwoord blijft vriendelijk, benoemt een mogelijk nadeel en helpt een ander plan te maken."}</div>}
+  </div>;
+}
+
 function Story({ step }: { step: Step }) {
   const chapter = chapters.find((c) => c.id === step.chapter);
   return (
@@ -328,8 +349,10 @@ function Story({ step }: { step: Step }) {
           </p>
         )}
       </div>
-      <figure className="loep-story-visual">
-        {step.id === "nepvideo" ? (
+      <figure className={"loep-story-visual" + (step.id === "vriendelijk" ? " loep-compare-wrap" : "")}>
+        {step.id === "vriendelijk" ? (
+          <CompareAnswers />
+        ) : step.id === "nepvideo" ? (
           <VideoCard kind="deepfake" />
         ) : chapter ? (
           [
@@ -442,6 +465,7 @@ function Summary({
   const [error, setError] = useState("");
   const [downloaded, setDownloaded] = useState(false);
   const done = completed(progress);
+  const score = scoreFor(progress);
   async function download() {
     setBusy(true);
     setError("");
@@ -490,6 +514,11 @@ function Summary({
           Je vier uitdagingen, antwoorden, inzichten en tijdlijn in één PDF.
           Meningen krijgen geen goed/foutscore.
         </p>
+        {done && <div className="loep-feedback correct" role="status">
+          <strong>{score.scored ? `Jouw score: ${formatPoints(score.points)} / ${score.scored}` : "Je score is niet beschikbaar"}</strong>
+          <p>Juist bij de eerste poging: 1 punt. Juist bij de tweede poging: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee.</p>
+          {score.unknown > 0 && <p>Van {score.unknown} eerder beantwoorde {score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. {score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in deze score.</p>}
+        </div>}
         {done ? (
           <>
             <label>
@@ -625,9 +654,7 @@ export default function LoepPlayer({
             ...a,
             checked: true,
             lastAt: new Date().toISOString(),
-            ...(q?.correct.length && a.firstCorrect === undefined
-              ? { firstCorrect: isCorrect(q, a.values) }
-              : {}),
+            ...(q?.correct.length ? checkedKnowledge(a, q) : {}),
           },
         },
       };

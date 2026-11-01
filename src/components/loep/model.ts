@@ -151,7 +151,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "4" ? "q4-concreet" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,
@@ -340,6 +340,8 @@ export interface Answer {
   firstAt: string;
   lastAt: string;
   firstCorrect?: boolean;
+  attempts?: number;
+  points?: number;
 }
 export interface Progress {
   version: 1;
@@ -390,6 +392,36 @@ export function isCorrect(question: Question, values: string[]): boolean {
     values.length === question.correct.length &&
     question.correct.every((v) => values.includes(v))
   );
+}
+export function checkedKnowledge(answer: Answer, question: Question): Partial<Answer> {
+  const correct = isCorrect(question, answer.values);
+  const known = answer.attempts !== undefined || answer.firstCorrect === undefined;
+  const attempts = known ? (answer.attempts ?? 0) + 1 : undefined;
+  return {
+    ...(answer.firstCorrect === undefined ? { firstCorrect: correct } : {}),
+    ...(attempts !== undefined ? { attempts } : {}),
+    ...(answer.points === undefined && correct && attempts !== undefined
+      ? { points: attempts === 1 ? 1 : attempts === 2 ? 0.5 : 0 }
+      : {}),
+  };
+}
+export function scoreFor(progress: Progress) {
+  const knowledge = routeFor(progress.choices).filter((step) => step.question && questions[step.question]!.correct.length > 0);
+  let points = 0;
+  let scored = 0;
+  let unknown = 0;
+  for (const step of knowledge) {
+    const answer = progress.answers[step.id];
+    if (!answer) continue;
+    const value = answer.points ?? (answer.firstCorrect === true ? 1 : undefined);
+    if (value === undefined) { if (answer.checked) unknown++; continue; }
+    points += value;
+    scored++;
+  }
+  return { points, scored, unknown, total: knowledge.length };
+}
+export function formatPoints(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(".", ",");
 }
 export function requiredCount(step: Step): number {
   return step.kind === "permissions"
@@ -478,7 +510,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : v.current;
+    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : v.current === "q4" ? "q4-concreet" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),

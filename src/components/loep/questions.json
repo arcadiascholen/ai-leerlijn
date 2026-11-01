@@ -89,30 +89,30 @@
   },
   "4": {
     "id": "4",
-    "title": "Waarom kan het een probleem zijn als AI je altijd gelijk geeft?",
-    "body": "",
+    "title": "Wat mist dit antwoord?",
+    "body": "Leerling: “Ik maak mijn grote opdracht pas op de laatste avond. Goed plan?”\n\nAI: “Slim! Dan kun je tot de laatste avond andere dingen doen.”\n\nWat ontbreekt in het antwoord van AI?",
     "options": [
       {
         "id": "A",
-        "text": "Omdat AI altijd neutraal moet antwoorden, zonder vriendelijk te zijn."
+        "text": "Een compliment over hoe snel de leerling kan werken."
       },
       {
         "id": "B",
-        "text": "Omdat AI helemaal geen advies zou mogen geven."
+        "text": "Een belofte dat de opdracht op tijd klaar zal zijn."
       },
       {
         "id": "C",
-        "text": "Omdat AI alleen nuttig is wanneer het kritiek geeft."
+        "text": "Een uitleg dat de leerling nooit hulp mag vragen."
       },
       {
         "id": "D",
-        "text": "Omdat AI je mening kan versterken, ook wanneer je belangrijke zaken over het hoofd ziet."
+        "text": "Een waarschuwing dat er te weinig tijd kan overblijven bij problemen."
       }
     ],
     "correct": [
       "D"
     ],
-    "feedback": "Een goede AI-assistent mag vriendelijk zijn, maar moet ook eerlijk en kritisch blijven. Soms helpt AI je meer door een andere kijk op de situatie te geven dan door je zomaar gelijk te geven.",
+    "feedback": "Het antwoord klinkt positief, maar benoemt niet dat er iets kan mislopen of meer tijd nodig kan zijn. Een behulpzame chatbot kan vriendelijk zijn én risico’s of andere mogelijkheden aangeven.",
     "branches": {},
     "count": 1
   },
