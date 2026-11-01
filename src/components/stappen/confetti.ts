@@ -171,3 +171,16 @@ export function initConfetti(marker: HTMLElement): void {
   });
   observer.observe(step);
 }
+
+// An explicitly named milestone can celebrate independently of <Confetti />.
+// Existing module-wide behaviour above is unchanged.
+export function celebrateMilestone(marker: HTMLElement, milestone: string): void {
+  const moduleId = moduleIdOf(marker);
+  const step = marker.closest<HTMLElement>('[data-step]');
+  const card = marker.closest('[data-player]')?.querySelector<HTMLElement>('[data-card]');
+  const key = `confetti:${milestone}`;
+  if (moduleId === null || step === null || card == null || step.hidden || !mayMove()) return;
+  if (readStored(moduleId, key) !== null) return;
+  writeStored(moduleId, key, '1');
+  play(step, card);
+}

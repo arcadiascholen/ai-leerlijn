@@ -147,3 +147,8 @@
 .v-package-list {padding-left:var(--space-3);border-left:3px solid var(--ai);margin-bottom:var(--space-3)}
 .v-package-list .v-options {margin-bottom:0}
 .v-package-list button {border-style:dashed}
+
+.vibe .v-choice-cards {margin-bottom:var(--space-3)}
+.vibe .v-choice-cards legend {font-size:var(--text-body-size);line-height:var(--text-body-line);padding-bottom:var(--space-2)}
+.vibe .v-choice-cards label {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2);gap:var(--space-2)}
+.vibe[data-pane=openen] > button {margin-bottom:var(--space-3)}
