@@ -89,30 +89,30 @@
   },
   "4": {
     "id": "4",
-    "title": "Wat mist dit antwoord?",
-    "body": "Leerling: “Ik maak mijn grote opdracht pas op de laatste avond. Goed plan?”\n\nAI: “Slim! Dan kun je tot de laatste avond andere dingen doen.”\n\nWat ontbreekt in het antwoord van AI?",
+    "title": "Wat zou jij vragen?",
+    "body": "AI zegt over jouw plan: “Goed idee, dat zal zeker lukken!”\n\nWelke vraag helpt je om je plan kritischer te bekijken?",
     "options": [
       {
         "id": "A",
-        "text": "Een compliment over hoe snel de leerling kan werken."
+        "text": "Waarom is mijn plan zo goed?"
       },
       {
         "id": "B",
-        "text": "Een belofte dat de opdracht op tijd klaar zal zijn."
+        "text": "Welke nadelen of problemen zie je bij mijn plan?"
       },
       {
         "id": "C",
-        "text": "Een uitleg dat de leerling nooit hulp mag vragen."
+        "text": "Kun je nog eens zeggen dat mijn plan goed is?"
       },
       {
         "id": "D",
-        "text": "Een waarschuwing dat er te weinig tijd kan overblijven bij problemen."
+        "text": "Kun je je antwoord korter maken?"
       }
     ],
     "correct": [
-      "D"
+      "B"
     ],
-    "feedback": "Het antwoord klinkt positief, maar benoemt niet dat er iets kan mislopen of meer tijd nodig kan zijn. Een behulpzame chatbot kan vriendelijk zijn én risico’s of andere mogelijkheden aangeven.",
+    "feedback": "Door naar mogelijke nadelen en problemen te vragen, krijg je een andere kijk op je plan. Controleer ook zelf of de genoemde punten kloppen.",
     "branches": {},
     "count": 1
   },

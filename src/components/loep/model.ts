@@ -151,7 +151,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "4" ? "q4-concreet" : "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "4" ? "q4-kritische-vraag" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,
@@ -510,7 +510,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : v.current === "q4" ? "q4-concreet" : v.current;
+    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),
