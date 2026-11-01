@@ -15,10 +15,16 @@ interface Props {
 
 export default function Reflectie({ id, question }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLTextAreaElement>(null);
   const moduleIdRef = useRef<string | null>(null);
   const [answer, setAnswer] = useState('');
 
   const baseId = `vraag-${id}`;
+
+  function save(nextAnswer: string): void {
+    if (moduleIdRef.current === null) return;
+    writeAnswer(moduleIdRef.current, id, { kind: 'reflection', question, answer: nextAnswer });
+  }
 
   // Restore after hydration, not during render: the server renders an empty
   // field, and the first client render has to match it.
@@ -27,8 +33,18 @@ export default function Reflectie({ id, question }: Props) {
     moduleIdRef.current = moduleId;
     if (moduleId === null) return;
     const stored = readAnswer(moduleId, id);
-    if (stored?.kind !== 'reflection') return;
-    setAnswer(stored.answer);
+    if (stored?.kind === 'reflection') {
+      setAnswer(stored.answer);
+      return;
+    }
+    // What the student typed before hydration stays in the field, but not
+    // in the state: it would not be stored until the next keystroke. Take
+    // it over. The field has autocomplete="off", so the browser does not
+    // restore old text into it on Back or a reload.
+    const typed = fieldRef.current?.value ?? '';
+    if (typed === '') return;
+    setAnswer(typed);
+    save(typed);
   }, [id]);
 
   return (
@@ -43,16 +59,16 @@ export default function Reflectie({ id, question }: Props) {
         {question}
       </label>
       <textarea
+        ref={fieldRef}
         id={`${baseId}-antwoord`}
         className={styles.field}
         rows={6}
         placeholder="Typ hier je antwoord"
+        autoComplete="off"
         value={answer}
         onChange={(event) => {
           setAnswer(event.target.value);
-          if (moduleIdRef.current !== null) {
-            writeAnswer(moduleIdRef.current, id, { kind: 'reflection', question, answer: event.target.value });
-          }
+          save(event.target.value);
         }}
         aria-describedby={`${baseId}-hint`}
       />

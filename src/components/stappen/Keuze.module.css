@@ -47,6 +47,7 @@
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-md);
   background: var(--surface);
+  box-shadow: inset 0 0 0 1px transparent;
   color: var(--ink);
   cursor: pointer;
 }
@@ -57,11 +58,25 @@
 
 /* The chosen option: a border twice as thick in the colour of the primary
    button. The filled radio button says the same, so it never rests on
-   colour alone. Not the colours of right and wrong: a choice is neither. */
+   colour alone. Not the colours of right and wrong: a choice is neither.
+   The inner line is always there, transparent until chosen, so that
+   choosing only changes colours. */
 .option:has(.radio:checked) {
   border-color: var(--primary);
   box-shadow: inset 0 0 0 1px var(--primary);
   background: var(--surface-sunken);
+}
+
+/* 120ms on hover and on choosing (docs/DESIGN.md, "Beweging"); only once the
+   island shows its restored choice (`data-motion`, settle in
+   src/lib/motion.ts), so that a restored choice does not move. */
+@media (prefers-reduced-motion: no-preference) {
+  .root[data-motion] .option {
+    transition:
+      background-color var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out),
+      box-shadow var(--motion-fast) var(--ease-out);
+  }
 }
 
 /* The focus ring goes around the whole card, not the small radio button. */

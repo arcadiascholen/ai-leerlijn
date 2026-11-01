@@ -4,8 +4,9 @@
 // The steps (<Stap>) render statically as <section>s in the default slot.
 // The client script below shows one step at a time and handles navigation
 // (buttons, arrow keys, `#stap-n` in the URL), the progress bar, saving the
-// step in localStorage and "Opnieuw beginnen". Without JavaScript the steps
-// stay one below the other and the controls stay hidden.
+// step and the start of the module in localStorage and "Opnieuw beginnen".
+// Without JavaScript the steps stay one below the other and the controls
+// stay hidden.
 //
 // With a branching <Keuze> the student follows a route: the shared steps
 // plus the steps of the chosen branch (routeOf in choices.ts). Every step
@@ -26,6 +27,9 @@ interface Props {
 
 const { moduleId, title } = Astro.props;
 const dialogTitleId = `${moduleId}-opnieuw-titel`;
+// The start page, where the last step of a module leads: step 3 there is the
+// end form (BRIEFING § 4).
+const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 ---
 
 <div class="player" data-player data-module={moduleId}>
@@ -42,7 +46,8 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     <div class="player-fill" data-fill></div>
   </div>
 
-  <div class="player-card">
+  {/* `data-card`: the confetti falls over it (confetti.ts). */}
+  <div class="player-card" data-card>
     <div class="player-steps" data-steps>
       <slot />
     </div>
@@ -62,6 +67,12 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
           Volgende
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
         </button>
+        {/* Takes the place of "Volgende" on the last step of a complete
+            route. A link, not a button: it leaves the module. */}
+        <a class="button button-primary" href={homeHref} data-home hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"></path></svg>
+          Naar de startpagina
+        </a>
       </div>
     </nav>
   </div>
@@ -158,17 +169,15 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     background: var(--line);
   }
 
+  /* As wide as the bar, and moved left by the part still to go: the script
+     sets the transform, so the bar moves without changing a width. The bar
+     clips the part outside it, and rounds its left end. */
   .player-fill {
-    width: 0;
+    width: 100%;
     height: 100%;
     border-radius: inherit;
     background: var(--brand);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .player-fill {
-      transition: width 0.2s ease-out;
-    }
+    transform: translateX(-100%);
   }
 
   :global(.js) .player-card {
@@ -184,22 +193,29 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     box-shadow: var(--shadow-card);
   }
 
+  /* Positioned: the build-up layer of a step lies over it (buildUp in
+     src/lib/motion.ts), and during a flip the old step does too. */
   :global(.js) .player-steps {
     display: block;
+    position: relative;
     flex: 1 1 auto;
     min-height: 0;
     padding: var(--space-5);
     overflow-y: auto;
   }
 
+  /* Over the steps, with the card's colour: while the steps turn, their
+     near edge grows past the bottom of their box and goes behind it. */
   :global(.js) .player-nav {
     display: flex;
+    position: relative;
     flex: none;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
     padding: var(--space-3) var(--space-5);
     border-top: 1px solid var(--line);
+    background: var(--surface);
   }
 
   .player-hint {
@@ -231,7 +247,12 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     font: inherit;
     font-weight: var(--text-label-weight);
     line-height: var(--text-body-line);
+    text-decoration: none;
     cursor: pointer;
+  }
+
+  .button[hidden] {
+    display: none;
   }
 
   .button svg {
@@ -278,6 +299,109 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     opacity: 0.4;
   }
 
+  /* Motion (docs/DESIGN.md, "Beweging"). The bar only moves once the step
+     player shows its first step (`data-motion`, set by `settle`): at load it
+     is already where it belongs.
+
+     The step change is a flip of the steps box around its vertical axis;
+     the head, the bar and the navigation stand still. The script sets
+     `data-flip` on the box: the first half turns it away to edge-on, the
+     second half turns it in from the other side. With "Volgende" it turns
+     to the left, like a page; with "Vorige" to the right. The old step
+     stays in place over the new one (`data-flip-leave`) and goes at the
+     middle; the new one (`data-flip-arrive`), and the layer that builds it
+     up, come at the middle. Both halves are one animation each, so both
+     start at the click and the script only cleans up when they end. */
+  @media (prefers-reduced-motion: no-preference) {
+    .player[data-motion] .player-fill {
+      transition: transform var(--motion-base) var(--ease-out);
+    }
+
+    .button {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        border-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+
+    :global(.js) .player-card {
+      perspective: var(--motion-perspective);
+    }
+
+    /* Later in the list wins: the turn away covers the first half, the turn
+       in waits for it. */
+    .player-steps[data-flip='next'] {
+      animation:
+        flip-in-from-right calc(var(--motion-flip) / 2) var(--ease-out) calc(var(--motion-flip) / 2),
+        flip-out-to-left calc(var(--motion-flip) / 2) var(--ease-in);
+    }
+
+    .player-steps[data-flip='prev'] {
+      animation:
+        flip-in-from-left calc(var(--motion-flip) / 2) var(--ease-out) calc(var(--motion-flip) / 2),
+        flip-out-to-right calc(var(--motion-flip) / 2) var(--ease-in);
+    }
+
+    /* Where it stood, out of the flow, so that the new step takes its place
+       underneath. It takes no clicks: those go to the new step. */
+    .player-steps :global([data-step][data-flip-leave]) {
+      position: absolute;
+      top: var(--space-5);
+      right: var(--space-5);
+      left: var(--space-5);
+      pointer-events: none;
+      animation: flip-leave var(--motion-flip) step-end forwards;
+    }
+
+    .player-steps :global([data-step][data-flip-arrive]),
+    .player-steps[data-flip] > :global(.build-layer) {
+      animation: flip-arrive var(--motion-flip) step-end;
+    }
+
+    /* Seen from the front, a positive turn moves the right edge away. */
+    @keyframes flip-out-to-left {
+      to {
+        transform: rotateY(-90deg);
+      }
+    }
+
+    @keyframes flip-in-from-right {
+      from {
+        transform: rotateY(90deg);
+      }
+    }
+
+    @keyframes flip-out-to-right {
+      to {
+        transform: rotateY(90deg);
+      }
+    }
+
+    @keyframes flip-in-from-left {
+      from {
+        transform: rotateY(-90deg);
+      }
+    }
+
+    /* With `step-end`: all there until the middle, then gone. */
+    @keyframes flip-leave {
+      50%,
+      to {
+        opacity: 0;
+      }
+    }
+
+    /* With `step-end`: not there until the middle. */
+    @keyframes flip-arrive {
+      from {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+  }
+
   /* Confirmation for "Opnieuw beginnen" */
   .player-dialog {
     width: min(30rem, calc(100vw - 2 * var(--space-5)));
@@ -302,13 +426,20 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
 </style>
 
 <script>
+  import { buildUp, mayMove, settle, stopBuild } from '../../lib/motion';
   import { hasOpenChoice, onChoice, routeOf, type Route } from './choices';
-  import { clearModule, readStored, writeStored } from './storage';
+  import { clearModule, readStored, START_KEY, writeStored } from './storage';
 
   // localStorage key of the current step: `ai-leerlijn:<module-id>:stap`.
   const STEP_KEY = 'stap';
   const HASH_PATTERN = /^#stap-(\d+)$/;
   const OPEN_CHOICE_HINT = 'Kies eerst een antwoord om verder te gaan.';
+
+  // How the student reached a step, for the way the card turns: one step
+  // forward, one back, or a jump (a link to `#stap-n`, or a choice that
+  // moved the step), which turns the way it goes. Null at load: then the
+  // step only builds itself up.
+  type Entry = 'next' | 'prev' | 'jump';
 
   function part<T extends Element>(root: Element, selector: string): T {
     const element = root.querySelector<T>(selector);
@@ -349,11 +480,15 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     const hint = part<HTMLElement>(root, '[data-hint]');
     const prevButton = part<HTMLButtonElement>(root, '[data-prev]');
     const nextButton = part<HTMLButtonElement>(root, '[data-next]');
+    const homeLink = part<HTMLAnchorElement>(root, '[data-home]');
     const restartButton = part<HTMLButtonElement>(root, '[data-restart]');
     const dialog = part<HTMLDialogElement>(root, '[data-restart-dialog]');
 
     let route: Route = routeOf(root, moduleId);
     let current = 1;
+    // The section on screen. Not route.steps[current - 1]: a choice can
+    // change the route before the step is shown again.
+    let shownSection: HTMLElement | undefined;
 
     // Within 1..limit: past an open branching choice there is nothing to
     // show yet, and a student could otherwise skip it through the shared end.
@@ -369,19 +504,69 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
       const section = route.steps[current - 1];
       const open = section !== undefined && hasOpenChoice(section, moduleId);
       countText.textContent = `Stap ${current} van ${count}`;
-      fill.style.width = `${(current / count) * 100}%`;
+      fill.style.transform = `translateX(${(current / count) * 100 - 100}%)`;
       prevButton.disabled = current === 1;
       const incomplete = Boolean(section?.querySelector('[data-step-complete="false"]'));
       nextButton.disabled = current >= route.limit || open || incomplete;
+      const end = current === count && route.limit === count && !open && !incomplete;
+      nextButton.hidden = end;
+      homeLink.hidden = !end;
       const text = open ? OPEN_CHOICE_HINT : incomplete ? (section?.querySelector<HTMLElement>('[data-step-complete="false"]')?.dataset.stepHint || 'Kies het juiste antwoord om verder te gaan.') : '';
       if (hint.textContent !== text) hint.textContent = text;
     }
 
-    function show(step: number, moveFocus: boolean): void {
+    // Counts the flips, so that the end of one that was cut short does not
+    // end the next.
+    let flips = 0;
+
+    // Ends a flip at once: the old step goes, the new one stands straight.
+    function endFlip(): void {
+      stepsBox.removeAttribute('data-flip');
+      sections.forEach((section) => {
+        if (section.hasAttribute('data-flip-leave')) {
+          section.hidden = true;
+          section.inert = false;
+          section.removeAttribute('data-flip-leave');
+        }
+        section.removeAttribute('data-flip-arrive');
+      });
+    }
+
+    // Turns the card from `leaving` to `arriving` (see the styles), and builds
+    // `arriving` up from the middle of the flip. Both sections are shown; the
+    // focus and the counter are already on `arriving`.
+    function flip(leaving: HTMLElement, arriving: HTMLElement, turn: 'next' | 'prev'): void {
+      const id = ++flips;
+      // Out of the flow first, so that the new step is measured in its place.
+      leaving.inert = true;
+      leaving.setAttribute('data-flip-leave', '');
+      arriving.setAttribute('data-flip-arrive', '');
+      buildUp(arriving, true);
+      stepsBox.dataset.flip = turn;
+      const animations = [stepsBox, leaving, arriving].flatMap((element) => element.getAnimations());
+      const done = (): void => {
+        if (id === flips) endFlip();
+      };
+      if (animations.length === 0) done();
+      else Promise.all(animations.map((animation) => animation.finished)).then(done, done);
+    }
+
+    function show(step: number, moveFocus: boolean, entry: Entry | null): void {
+      const before = current;
       current = clamp(step);
       const shown = route.steps[current - 1];
+      const previous = shownSection;
+      shownSection = shown;
+      // No queue: a flip that is still going on ends at once, and its step
+      // stands complete before the next flip turns it away.
+      flips += 1;
+      endFlip();
+      sections.forEach(stopBuild);
+      const turn = entry === 'jump' ? (current < before ? 'prev' : 'next') : entry;
+      const flipping =
+        turn !== null && shown !== undefined && previous !== undefined && shown !== previous && mayMove();
       sections.forEach((section) => {
-        section.hidden = section !== shown;
+        section.hidden = section !== shown && !(flipping && section === previous);
       });
       update();
       stepsBox.scrollTop = 0;
@@ -392,14 +577,18 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
       if (window.location.hash !== hash) window.history.replaceState(window.history.state, '', hash);
       writeStored(moduleId, STEP_KEY, String(current));
 
+      // Focus, the counter and clicks do not wait for the flip.
       if (moveFocus) shown?.querySelector<HTMLElement>('[data-step-title]')?.focus({ preventScroll: true });
+
+      if (flipping) flip(previous, shown, turn);
+      else if (entry === null && shown !== undefined) buildUp(shown, false);
     }
 
     // One step back or forward, as far as the buttons allow. False if not.
     function move(direction: -1 | 1): boolean {
       const button = direction === 1 ? nextButton : prevButton;
       if (button.disabled) return false;
-      show(current + direction, true);
+      show(current + direction, true, direction === 1 ? 'next' : 'prev');
       return true;
     }
 
@@ -408,7 +597,13 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     }
 
     // Order at load: a `#stap-n` in the URL, then localStorage, then step 1.
-    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false);
+    show(stepFromHash() ?? parseStep(readStored(moduleId, STEP_KEY)) ?? 1, false, null);
+    // From here on, the bar moves with the student (see the styles).
+    settle(root);
+    // When the student first saw the module, for the timeline in the PDF of
+    // the summary: once, so a reload or a later visit keeps the first time.
+    // "Opnieuw beginnen" clears it with the rest.
+    if (readStored(moduleId, START_KEY) === null) writeStored(moduleId, START_KEY, new Date().toISOString());
 
     document.addEventListener('step-validity-change', update);
     prevButton.addEventListener('click', () => move(-1));
@@ -418,7 +613,7 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
     // summary. Other hashes (footnotes) are not ours.
     window.addEventListener('hashchange', () => {
       const step = stepFromHash();
-      if (step !== null) show(step, clamp(step) !== current);
+      if (step !== null) show(step, clamp(step) !== current, 'jump');
     });
 
     document.addEventListener('keydown', (event) => {
@@ -440,7 +635,7 @@ const dialogTitleId = `${moduleId}-opnieuw-titel`;
       route = routeOf(root, moduleId);
       const position = section === undefined ? -1 : route.steps.indexOf(section) + 1;
       if (position === current) update();
-      else show(position > 0 ? position : current, false);
+      else show(position > 0 ? position : current, false, 'jump');
     });
 
     restartButton.addEventListener('click', () => {

@@ -7,10 +7,11 @@ import Chat from '../../components/inhoud/Chat.astro';
 import Jij from '../../components/inhoud/Jij.astro';
 import Prompt from '../../components/inhoud/Prompt.astro';
 import ChosenTool from '../../components/stappen/ChosenTool.astro';
+import Confetti from '../../components/stappen/Confetti.astro';
 import Keuze from '../../components/stappen/Keuze.astro';
 import Stap from '../../components/stappen/Stap.astro';
 import Samenvatting from '../../components/stappen/Samenvatting.astro';
-import { checkModuleBody, type SourceChoice } from '../../components/stappen/checks';
+import { checkModuleBody, type ModuleOutline, type SourceChoice } from '../../components/stappen/checks';
 import StepPlayer from '../../components/stappen/StepPlayer.astro';
 import Tool from '../../components/stappen/Tool.astro';
 import DenkEerst from '../../components/vragen/DenkEerst.astro';
@@ -24,8 +25,8 @@ import Vibe from '../../components/vibecoding/Vibe.astro';
 export async function getStaticPaths() {
   const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
   return entries.map((entry) => {
-    const { branching, tool } = checkModuleBody(entry.id, entry.body ?? '');
-    return { params: { id: entry.id }, props: { entry, branching, tool } };
+    const { branching, tool, promptSteps } = checkModuleBody(entry.id, entry.body ?? '');
+    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps } };
   });
 }
 
@@ -33,23 +34,44 @@ interface Props {
   entry: CollectionEntry<'modules'>;
   branching: SourceChoice | null;
   tool: SourceChoice | null;
+  promptSteps: Readonly<Record<string, string>>;
 }
 
-const { entry, branching, tool } = Astro.props;
+const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+// In dev, <Content> follows a saved module file at once, but the content
+// store behind `entry.body`, and with it the props above, catches up about
+// half a second later. A page rendered in between would hand the new
+// components the old outline, and they fail on it. So dev reads the outline
+// from the file itself; the build has one source and keeps the props.
+let outline: ModuleOutline = Astro.props;
+if (import.meta.env.DEV) {
+  const sources = import.meta.glob<string>('/src/content/modules/**/*.mdx', { query: '?raw', import: 'default' });
+  const load = sources[`/${entry.filePath ?? ''}`];
+  if (load !== undefined) {
+    // The body as the MDX loader reads it: without frontmatter, trimmed.
+    const body = (await load()).replace(/^(?:\uFEFF|\s*\n)?---[\s\S]*?\n---/, '').trim();
+    outline = checkModuleBody(entry.id, body);
+  }
+}
+const { branching, tool, promptSteps } = outline;
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
 // <Keuze> need the branching choice as read from the source, <Tool> and
-// <Keuze> the tool choice.
+// <Keuze> the tool choice, and a <Prompt> with `velden` the title of its
+// step.
 const locals = Astro.locals as {
   moduleTitle?: string;
   branching?: SourceChoice | null;
   tool?: SourceChoice | null;
+  promptSteps?: Readonly<Record<string, string>>;
 };
 locals.moduleTitle = entry.data.title;
 locals.branching = branching;
 locals.tool = tool;
+locals.promptSteps = promptSteps;
 
 // The page about which AI tools are allowed, linked next to the sentence about
 // AI use when the student uses AI (BRIEFING § 7).
@@ -71,6 +93,7 @@ const components = {
   Reflectie,
   Samenvatting,
   Vibe,
+  Confetti,
 };
 ---
 

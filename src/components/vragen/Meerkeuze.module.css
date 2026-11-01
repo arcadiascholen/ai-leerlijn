@@ -62,6 +62,18 @@
   background: var(--danger-soft);
 }
 
+/* 120ms on hover and on choosing (docs/DESIGN.md, "Beweging"); only once the
+   island shows its restored choices (`data-motion`, settle in
+   src/lib/motion.ts), so that they do not move. The feedback fades in with
+   `appear` from the same file. */
+@media (prefers-reduced-motion: no-preference) {
+  .root[data-motion] .option {
+    transition:
+      background-color var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out);
+  }
+}
+
 /* The focus ring goes around the whole option, feedback included. */
 .option:has(.choice:focus-visible) {
   outline: 2px solid var(--focus);

@@ -85,6 +85,14 @@
   opacity: 0.4;
 }
 
+/* Hover only (docs/DESIGN.md, "Beweging"). The example answer fades in with
+   `appear` from src/lib/motion.ts, after "Toon" only. */
+@media (prefers-reduced-motion: no-preference) {
+  .show {
+    transition: background-color var(--motion-fast) var(--ease-out);
+  }
+}
+
 .hint {
   flex: 1 1 14rem;
   max-width: none;

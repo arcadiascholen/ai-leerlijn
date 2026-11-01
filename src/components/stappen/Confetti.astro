@@ -1,0 +1,31 @@
+---
+// Confetti, once per module (docs/BRIEFING.md § 12, "Confetti"):
+//
+//   <Stap titel="Wat werkte?">
+//   <Confetti />
+//   …
+//   </Stap>
+//
+// A short break at a turning point of the module. The first time its step is
+// shown, confetti falls over the step card; the script is in confetti.ts.
+// At most one per module; the module route checks that when it builds.
+// Authors write no import and no props.
+//
+// It renders an empty, hidden marker: no box, so the step keeps its height.
+if (Astro.slots.has('default')) {
+  throw new Error('<Confetti /> takes no content between its tags: write <Confetti />.');
+}
+---
+
+<div data-confetti hidden></div>
+
+<script>
+  import { initConfetti } from './confetti';
+
+  // This script comes before the step player's in the page, and until that
+  // one ran every step is on screen. Module scripts all run before
+  // DOMContentLoaded, so by then the player shows one step.
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll<HTMLElement>('[data-confetti]').forEach(initConfetti);
+  });
+</script>

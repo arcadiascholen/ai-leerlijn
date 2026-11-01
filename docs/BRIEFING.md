@@ -90,11 +90,17 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    graad; een link met `?graad=1` opent ze meteen gefilterd.
 4. **Module.** Ongeveer 70 minuten, in korte stappen (§ 6).
 5. **Eindformulier.** **Eén Smartschool-formulier voor alle modules**, met de
-   gekozen module als eerste vraag. Het bevat een korte reflectie en
-   optioneel een bestand (screenshot, chatverslag, eigen werk). De resultaten
-   komen in het LVS, zodat klastitularissen zien wie heeft ingediend. De
-   startpagina (stap 3) en de samenvatting aan het einde van een module
-   linken ernaar.
+   gekozen module als eerste vraag. Het bevat een korte reflectie en een
+   bestand: de pdf met de samenvatting die de leerling aan het einde van de
+   module downloadt (§ 6). Die pdf bevat ook tijdstippen: wanneer de
+   leerling aan de module en aan elke vraag begon (§ 12, *De samenvatting*).
+   Zo kan het team achteraf zien waar leerlingen veel tijd voor nodig
+   hadden. De site zelf verwerkt die tijden niet en stuurt ze nergens heen:
+   ze staan in de browser van de leerling en in de pdf die de leerling zelf
+   oplaadt. Dat het formulier een bestand aanvaardt, wordt in Smartschool
+   geregeld, buiten deze repo. De resultaten komen in het LVS,
+   zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
+   en de samenvatting aan het einde van een module linken ernaar.
 
 De vier scholen werken op **één Smartschool-platform**: er is geen
 schoolkeuze, en elke link is voor iedereen dezelfde. De links naar de
@@ -113,7 +119,7 @@ en geen cookies.
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
 | Wat is AI? AI herkennen en begrijpen | 2e, met differentiatie | wordt aangeleverd | `wat-is-ai` |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat of presentatie en examenplanning; de 2e graad in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat, presentatie en examenplanning; de 2e graad in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
 | AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
@@ -221,10 +227,11 @@ houden een leerling die alleen thuis zit bij de les.
   - twee prompts of twee AI-antwoorden vergelijken;
   - sorteren of indelen (bijvoorbeeld: is dit AI of niet?);
   - een korte reflectie typen.
-- **Samenvatting aan het einde.** De laatste stap toont wat de leerling
-  onderweg schreef, met een knop *kopieer*. Die tekst plakt de leerling in
+- **Samenvatting aan het einde.** De laatste stap zegt hoeveel vragen de
+  leerling invulde en welke nog leeg zijn, en maakt van alles wat de leerling
+  onderweg schreef een pdf om te downloaden. Die pdf laadt de leerling op in
   het eindformulier. Zo levert de site het bewijsstuk aan zonder zelf
-  gegevens te verwerken.
+  gegevens te verwerken: de pdf ontstaat in de browser van de leerling.
 
 Auteurs schrijven een module als **één MDX-bestand** waarin de stappen
 `<Stap>`-blokken zijn. Eén bestand per module houdt het integreren
@@ -245,16 +252,29 @@ het, tenzij de auteur een andere opbouw voorziet.
 - **Eén tool, één chat.** In een module waarin de leerling zelf AI gebruikt,
   kiest die in de start een tool (`<Keuze naam="tool">`), zet die de tool
   klaar (training, denkmodus, opladen) en werkt die daarna in één chat in een
-  tweede tabblad. De werkvormen zijn voor elke tool dezelfde; alleen de
+  tweede tabblad. Die chat begint waar de leerling de cursus voor het eerst
+  oplaadt, zodat die maar één keer opgeladen wordt; in
+  `ai-als-coach-3e-graad` is dat chat 3 van het contextexperiment, waarin de
+  takken toets en mondeling verder werken. Copilot start daar toch een nieuwe
+  chat (in tak toets in *Studeren en leren*); opladen heeft er geen
+  daglimiet. De werkvormen zijn voor elke tool dezelfde; alleen de
   handelingen verschillen, in `<Tool>`-blokken. Die volgen de stand van de
   tools (§ 7). Waar de bron onzeker is over een knop of menu, staat er *kan
   bij jou anders heten*.
 - **Per werkvorm één prompt.** De leerling kopieert een `<Prompt>` met
   invulplaatsen (`[vak]`, `[datum]`) en vult die aan in de tool. Een prompt
   geeft context (wie ben je, wat is je bron, wat wil je), geen rolprompt.
+- **De eigen inbreng staat in de prompt.** Moet de leerling naast de prompt
+  iets in de chat zetten (een eigen tekst, een antwoord, verwachte vragen),
+  dan staat dat als invulplaats in de prompt zelf, bijvoorbeeld
+  `[schrijf hier je antwoord]`: zo gaat het mee op het klembord en ziet de
+  leerling in de chat wat nog ontbreekt. De tekst boven de prompt zegt het
+  als handelingen in volgorde. Moet het in de samenvatting komen, dan wordt
+  het een veld van de prompt (`velden`, § 12), zoals in *Uitleg op twee
+  niveaus* en *Voorspel je toets* in `ai-als-coach-3e-graad`.
 - **Wat de leerling schrijft, staat in de module.** Een score, een
   voorspelling of een reflectie gaat in een `<Reflectie>` of `<DenkEerst>`,
-  zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
+  of in een veld van een prompt, zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
   niet in; daarvoor is er het bewijsstuk (een link of een stuk van het
   gesprek, per tool).
 - **Hoogte per combinatie** (gemeten op 1366 × 640): een `<Reflectie>` met
@@ -302,8 +322,10 @@ betekenis en worden nergens anders in de vormgeving gebruikt.
 
 **Toepassingen.** Voor de tweede en derde graad zijn ChatGPT en Gemini, met
 Gemini Notebook (tot juli 2026 NotebookLM), de gangbare tools. Wie geen
-persoonlijk account heeft of er geen mag gebruiken, gebruikt Copilot Chat met
-het schoolaccount. Claude komt in de modules niet voor: de
+persoonlijk account heeft, of van de ouders geen ChatGPT of Gemini mag
+gebruiken, gebruikt Copilot Chat met het schoolaccount. Copilot is geen
+uitzondering op de regel van de affiche: staat er bij een opdracht geen
+AI-niveau, dan gebruikt de leerling geen AI, ook Copilot niet. Claude komt in de modules niet voor: de
 consumentenvoorwaarden vragen 18 jaar. De school vroeg bij de start van het
 schooljaar aan de ouders toestemming voor het gebruik van AI-tools, waaronder
 ChatGPT. Dat dekt de toestemming van de ouders die ChatGPT vraagt voor wie
@@ -496,6 +518,9 @@ Tekst, een beeld of een vraagcomponent.
 - `titel` is verplicht en wordt de kop van de stap. Binnen een stap werkt
   Markdown zoals overal: alinea's, lijsten, vet. Een gewoon `<textarea>`
   krijgt een eenvoudige standaardopmaak.
+- Een link naar een andere site opent vanzelf in een nieuw tabblad, met een
+  icoon achter de linktekst: de auteur schrijft gewone Markdown, zoals
+  `[chatgpt.com](https://chatgpt.com)`.
 
 ### De speler
 
@@ -517,6 +542,12 @@ Tekst, een beeld of een vraagcomponent.
   pijltjestoets naar rechts uitgeschakeld. Een korte zin naast de knop zegt
   waarom (*Kies eerst een antwoord om verder te gaan.*), in een
   `aria-live`-gebied.
+- Op de laatste stap van de route staat in plaats van *Volgende* een link
+  *Naar de startpagina*, naar `/ai-leerlijn/` in hetzelfde tabblad: een
+  primaire knop met een huisje, op dezelfde plek. De startpagina toont stap
+  3, het eindformulier (§ 4). Zolang de vertakkende keuze open is, is de
+  route niet volledig en verschijnt de link niet. De pijltjestoets naar
+  rechts doet op de laatste stap niets: een toets verlaat de module niet.
 - Bij het wisselen gaat de focus naar de kop van de nieuwe stap. "Stap n van
   m" staat als tekst in een `aria-live`-gebied, zodat een schermlezer de
   voortgang voorleest.
@@ -541,10 +572,15 @@ Tekst, een beeld of een vraagcomponent.
 
 - Elke sleutel in `localStorage` heeft de vorm
   `ai-leerlijn:<module-id>:<sleutel>`. De speler bewaart de stap onder
-  `stap`. Een vraag bewaart haar antwoord onder `vraag:<id>`, met de `id`
-  die de auteur schrijft (zie *Antwoorden bewaren* hieronder). Een
-  `<Keuze>` bewaart de gekozen optie onder `keuze:<naam>` (zie *Keuzes en
-  takken*).
+  `stap`, en onder `start` het moment waarop hij de eerste stap van de
+  module toonde (ISO 8601). `start` wordt één keer gezet, als de sleutel er
+  nog niet is: herladen of later terugkomen verandert het niet. Het is de
+  eerste regel van de tijdlijn in de pdf (zie *De samenvatting*). Een vraag,
+  en een `<Prompt>` met invulvelden, bewaart haar antwoord onder
+  `vraag:<id>`, met de `id` die de auteur schrijft (zie
+  *Antwoorden bewaren* hieronder). Een `<Keuze>` bewaart de gekozen optie
+  onder `keuze:<naam>` (zie *Keuzes en takken*). `<Confetti />` bewaart
+  onder `confetti` dat ze speelde (zie *Confetti*).
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -567,6 +603,11 @@ Tekst, een beeld of een vraagcomponent.
   directive.
 - Gebruik `client:visible`: een island in een verborgen stap hydrateert pas
   als die stap getoond wordt, en leest dan zijn antwoord uit `localStorage`.
+- Invoer van vóór de hydratatie gaat niet verloren. Is er nog niets bewaard,
+  dan neemt een component na de hydratatie over wat al in het veld staat: een
+  aangevinkt keuzerondje of getypte tekst, en bewaart het meteen. Die velden
+  hebben `autocomplete="off"`, zodat de browser bij *Terug* of herladen geen
+  oude waarde terugzet die het component dan als nieuwe invoer zou bewaren.
 - Een component vindt de id van zijn module met `moduleIdOf(element)`.
 - Een component dat zelf de pijltjestoetsen gebruikt, roept
   `event.preventDefault()` aan; dan wisselt de speler niet van stap.
@@ -581,9 +622,10 @@ Tekst, een beeld of een vraagcomponent.
 - Een vergissing van de auteur laat de build falen met een duidelijke
   melding, in plaats van een kapotte vraag bij de leerling te zetten: een
   ontbrekende of dubbele `id`, een `<Meerkeuze>` zonder juiste optie, een
-  optie zonder feedback, tekst tussen de tags van `<Reflectie>` of
-  `<Samenvatting />`, een `<Samenvatting />` buiten de laatste stap of meer
-  dan één, een link in `src/config/smartschool.ts` die geen geldig
+  optie zonder feedback, tekst tussen de tags van `<Reflectie>`,
+  `<Samenvatting />` of `<Confetti />`, een `<Samenvatting />` buiten de
+  laatste stap, meer dan één `<Samenvatting />` of `<Confetti />` in een
+  module, een link in `src/config/smartschool.ts` die geen geldig
   `https://`-adres is, een fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*) of in
   een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*).
@@ -677,14 +719,33 @@ steunt.
 - `<Reflectie>` bewaart
   `{ "kind": "reflection", "question": "…", "answer": "…" }`: de vraag zoals
   de leerling ze zag en het antwoord.
-- Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `StoredAnswer`
+- `<Prompt>` met `velden` bewaart
+  `{ "kind": "prompt-fields", "question": "…", "fields": { "begrip": "…", "mijn uitleg": "…" } }`:
+  de titel van de stap zoals de leerling ze zag, en per veld, onder de naam
+  van zijn invulplaats, wat de leerling schreef, zoals getypt (zie *Prompts
+  en gesprekken*).
+- Elk antwoord, van elk `kind`, heeft ook twee tijden:
+  `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
+  `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
+  het laatst bewaarde. `writeAnswer` zet ze, niet de componenten: het leest
+  het bewaarde antwoord, neemt `firstAt` daarvan over, of zet het op nu als
+  er nog geen is, en zet `lastAt` op nu. Zo blijft `firstAt` het moment
+  waarop de leerling aan de vraag begon, ook al bewaart `<Reflectie>` bij
+  elke toets. Een component geeft `writeAnswer` dus alleen de inhoud.
+- Een antwoord zonder tijden (bewaard vóór de site ze bijhield) is geldig.
+  Een tijd die geen geldige ISO 8601-tijd is (`"firstAt": "gisteren"`)
+  telt als geen tijd: `readAnswer` laat ze weg, het antwoord blijft.
+- Een nieuw vraagtype krijgt een eigen `kind`. Het komt bij `AnswerContent`
   in `answers.ts`, met een eigen controle in `isStoredAnswer`, zodat
-  `readAnswer` een onvolledige waarde weigert.
+  `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
-  `data-question="<kind>"` (`multiple-choice`, `think-first` of
-  `reflection`) en `data-question-id="<id>"`. Een vraag die in de
+  `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`
+  of `prompt-fields`) en `data-question-id="<id>"`. Een vraag die in de
   samenvatting komt, draagt ook `data-question-text` met de vraag zoals ze
-  nu in de module staat. Dat geldt ook voor vragen in verborgen stappen die
+  nu in de module staat. Bij een prompt met velden is dat element het kader
+  met de velden, en draagt het ook `data-prompt-fields`: per veld de naam
+  en het label, in de volgorde van `velden`, als JSON
+  (`[["begrip", "Begrip"], …]`). Dat geldt ook voor vragen in verborgen stappen die
   nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in de
   volgorde van het document, dus van de module, en leest per `id` het
   antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
@@ -708,7 +769,7 @@ steunt.
 …
 </Stap>
 
-<Stap titel="Klaar! Kopieer wat je schreef">
+<Stap titel="Klaar! Download je samenvatting">
 <Samenvatting />
 </Stap>
 ```
@@ -882,8 +943,8 @@ Stel me vijf vragen, één per keer.
 </Stap>
 ```
 
-De componenten staan in `src/components/inhoud/`. Geen van beide bewaart
-iets.
+De componenten staan in `src/components/inhoud/`. `<Chat>` bewaart niets,
+`<Prompt>` alleen met invulvelden.
 
 **Een prompt om te kopiëren**
 
@@ -919,6 +980,72 @@ iets.
 - Eén script in `Prompt.astro` doet dat voor alle prompts op de pagina; het
   luistert op het document.
 - Zonder JavaScript staat het blok er, zonder knop.
+
+**Een prompt met invulvelden**
+
+```mdx
+<Stap titel="Leg eerst zelf een begrip uit je cursus uit">
+<Prompt id="uitleg-begrip" velden={{ begrip: 'Begrip', 'mijn uitleg': 'Mijn uitleg' }}>
+Mijn uitleg van [begrip]: [mijn uitleg]
+
+Klopt mijn uitleg? Zeg wat ontbreekt, en leg [begrip] daarna eenvoudig uit
+voor het [jaar en richting].
+</Prompt>
+</Stap>
+```
+
+- Soms schrijft de leerling eerst zelf iets, zoals een eigen uitleg of
+  verwachte toetsvragen. Met `velden` doet die dat op de stap, en gaat het
+  mee in de gekopieerde prompt: *eerst jij, dan AI* staat zo in de prompt
+  zelf.
+- `velden` koppelt de naam van een invulplaats, de tekst tussen `[` en `]`,
+  aan het label van haar veld. Een label is een zelfstandig naamwoord: het
+  staat ook in de samenvatting. Andere invulplaatsen blijven invulplaatsen
+  voor in de tool, zoals `[jaar en richting]` hierboven. Staat dezelfde naam
+  twee keer in de prompt, dan vult één veld beide plaatsen in.
+- Een prompt met `velden` heeft een verplichte `id`, met de regels van een
+  vraag-`id` (zie *Vraagtypes*): uniek onder de vragen van de module, en
+  niet meer te wijzigen na publicatie.
+- **Vorm.** De velden staan boven het promptblok, naast elkaar, samen zo
+  breed als het blok; wat niet past, schuift naar een volgende regel. Elk
+  veld heeft een echt `<label>` erboven, in `brand-text`: groen is de
+  leerling. Een veld is een tekstveld van één regel dat meegroeit tot drie
+  regels en daarna scrolt.
+- **Live.** Bij elke toets vult de prompt zich aan. Een ingevulde
+  invulplaats toont de tekst van de leerling zonder haken, in `brand-text`
+  op `surface-sunken` (4.8:1), met een lijn in `brand` eronder; een lege
+  blijft `[begrip]` op wit. Een regeleinde in een veld blijft een regeleinde,
+  in het blok en op het klembord.
+- **Kopiëren.** *Kopieer* kopieert de ingevulde prompt, met dezelfde regels
+  voor alinea's als elke prompt. Naast `data-prompt-text` zet de build
+  `data-prompt-template`: dezelfde tekst, gesneden bij de invulplaatsen van
+  de velden. Het script vult die in; een leeg veld blijft `[begrip]`. Met
+  alle velden leeg is dat exact `data-prompt-text`, en dat controleert de
+  build. De knop werkt ook met lege velden.
+- Zolang er een veld leeg is, staat links van de knop *Nog leeg: Mijn
+  uitleg*, met de labels van de lege velden, zoals de lijst *Nog leeg* van
+  de samenvatting. Een schermlezer leest die zin bij de knop
+  (`aria-describedby`). Na het kopiëren maakt ze plaats voor ✓
+  *Gekopieerd*; wie daarna verder typt, ziet de bevestiging verdwijnen, want
+  het klembord klopt dan niet meer. De knop verspringt in geen van die
+  gevallen.
+- **Bewaren.** Wat de leerling in de velden schrijft, wordt bij elke toets
+  bewaard onder `vraag:<id>` (zie *Antwoorden bewaren*). Het staat er weer
+  na herladen en komt in de samenvatting; *Opnieuw beginnen* wist het mee.
+  Het kader met de velden is in de statische HTML de vraag voor de
+  samenvatting (`data-question="prompt-fields"`); `data-question-text` is
+  de titel van de stap. Die titel leest de build uit de bron (`checks.ts`,
+  via `Astro.locals`), zoals bij de takken: een component kan de titel van
+  zijn stap niet lezen.
+- De pijltjestoetsen wisselen niet van stap terwijl de focus in een veld
+  staat (zie *De speler*). Tab gaat van veld naar veld, en dan naar
+  *Kopieer*.
+- Geen island: hetzelfde script in `Prompt.astro` doet ook dit. De velden
+  staan in de statische HTML, net vóór hun blok, en het script werkt ook in
+  een verborgen stap: de samenvatting en het kopiëren wachten op niets.
+- Zonder JavaScript zijn de velden verborgen en staat de prompt er met haar
+  invulplaatsen, zoals een prompt zonder velden.
+- Een prompt zonder `velden` verandert niet, ook niet in de HTML.
 
 **Een gesprek**
 
@@ -956,11 +1083,31 @@ iets.
 - Een `<Prompt>` van drie regels met daaronder een `<Meerkeuze>` van vier
   korte opties past zolang de feedback dicht is (379 px), maar niet meer
   als alle vier de opties aangeklikt zijn (453 px): dan scrolt de kaart.
+- De velden van een `<Prompt>` met `velden` zijn 70 px hoog (label 22 px,
+  veld 44 px), plus 12 px tot het blok. Een veld van drie regels maakt ze
+  122 px; langer scrolt binnen het veld. Twee velden staan naast elkaar,
+  elk ± 350 px breed: een uitleg van twee zinnen is er al drie regels.
+- Wat de leerling schrijft, laat het blok groeien met 24 px per regel; daar
+  is geen bovengrens. In `voorbeeld` is de stap met titel, twee velden en
+  een prompt van twee alinea's (één en twee regels) leeg 272 px, ook met
+  het eerste veld ingevuld, en met een uitleg van drie regels in het tweede
+  veld 371 px van de 390 px. Een eerste versie van die stap, met twee regels
+  tekst boven de velden en een tweede alinea van drie regels, was ingevuld
+  463 px: dan scrolt de kaart. Zet dus geen tekst boven een prompt met
+  velden (de titel en de labels zeggen wat de leerling doet), en houd de
+  prompt zelf op drie regels.
 
 **Buildchecks**, elk met een duidelijke melding:
 
 - een lege `<Prompt>`, en een `<Prompt>` met iets anders dan alinea's
   (een lijst, een kop, een beeld, een component);
+- bij een `<Prompt>` met `velden`: geen `id` (`checks.ts` leest dat uit de
+  bron, met de titel van de stap in de melding), een `id` in een verkeerde
+  vorm of die al bij een andere vraag van de module hoort, `velden` die geen
+  object van gewone teksten is, een leeg label, een naam in `velden` die
+  niet als invulplaats in de prompt staat (de melding noemt de
+  invulplaatsen die er wel staan), en een `<Stap>` waarvan de `titel` geen
+  gewone tekst is; en een `id` op een `<Prompt>` zonder `velden`;
 - een lege `<Chat>`, een `<Chat>` zonder beurten, en iets anders dan
   `<Jij>` en `<AI>` in een `<Chat>`, zoals tekst buiten een beurt;
   `<Chat>` rendert zijn kinderen en leest ze terug, zoals `<Meerkeuze>`
@@ -974,7 +1121,7 @@ iets.
 ### De samenvatting
 
 ```mdx
-<Stap titel="Klaar! Kopieer wat je schreef">
+<Stap titel="Klaar! Download je samenvatting">
 <Samenvatting />
 </Stap>
 ```
@@ -983,48 +1130,159 @@ iets.
   module; de build controleert beide. Ze heeft geen attributen: de naam van
   de module geeft de route mee via `Astro.locals`, de link naar het
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
-  `src/components/stappen/`.
-- Ze toont de naam van de module en, in de volgorde van de module, elke
-  `<DenkEerst>` en `<Reflectie>` met de vraag en het antwoord. **Meerkeuze
-  komt er niet in**: alleen wat de leerling zelf schreef. Een vraag zonder
-  antwoord toont *(nog niet ingevuld)* met een link naar haar stap
-  (`#stap-n`). Staan er lege vragen in, dan zegt de inleiding hoeveel.
-- Bovenaan staan de keuzes, één per regel en in de volgorde van de module:
-  *Doel: Een schriftelijke toets*, met de `naam` van de keuze met een
-  hoofdletter vooraan. Een keuze die nog open is, toont *(nog niet gekozen)*
-  met een link naar haar stap.
+  `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
+- Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`
+  en `<Prompt>` met `velden` mee. **Meerkeuze komt er niet in**: alleen wat
+  de leerling zelf schreef. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
+  *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
+  als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
+  niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
+  twee *beide vragen*, zonder antwoord *nog geen van de 14 vragen*, en
+  zonder vragen *zijn er geen vragen waarop je zelf iets schrijft*. Heeft
+  de route minstens één vraag (meerkeuze telt mee), dan volgt in dezelfde
+  alinea *In je pdf staat ook wanneer je aan elke vraag begon.*
+- Is er iets leeg, dan staat eronder *Nog leeg:* met elke lege vraag en
+  elke keuze die nog open is (*Tool: (nog niet gekozen)*), elk met *Ga naar
+  stap n* (`#stap-n`). Is alles ingevuld, dan staat er geen lijst. De
+  antwoorden zelf staan niet op de stap, wel in de pdf.
+- **Een prompt met velden** is één vraag. De vraag is de titel van haar
+  stap (`data-question-text`), met eronder één regel per veld, in de
+  volgorde van `velden`: *Mijn uitleg: …*, of *Mijn uitleg: (niet
+  ingevuld)*. Ze telt als ingevuld als alle velden ingevuld zijn; anders
+  staat de titel van de stap onder *Nog leeg*, met *Ga naar stap n*.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
-  koos, staat er dus niet in, ook niet als *(nog niet ingevuld)*.
+  koos, telt dus niet mee en staat niet in de pdf.
 - De samenvatting leest de antwoorden telkens opnieuw wanneer haar stap
   zichtbaar wordt (een `IntersectionObserver`: de speler verbergt de andere
   stappen met `hidden`), terwijl de leerling typt in een vraag op dezelfde
   stap, en na elke keuze. Een leerling die terugkeert en een antwoord
-  aanpast, ziet dus altijd de actuele tekst. Ze wacht niet op `hashchange`:
+  aanpast, ziet dus altijd de actuele stand. Ze wacht niet op `hashchange`:
   de speler wisselt van stap met `replaceState`, en dat stuurt geen
   `hashchange`.
-- *Kopieer alles* zet platte tekst op het klembord met
-  `navigator.clipboard.writeText`: bovenaan `Module: <naam>`, meteen
-  daaronder per keuze een regel (`Doel: Een schriftelijke toets`, of
-  `Doel: (niet gekozen)`), daarna per vraag de vraag op één regel en het
-  antwoord eronder, gescheiden door een lege regel. Een lege vraag krijgt `(niet ingevuld)`. Lege regels binnen
-  een antwoord vallen weg, zodat een lege regel altijd een nieuwe vraag
-  betekent. Zo past de tekst netjes in een tekstveld van Smartschool.
-- Na het kopiëren verschijnt een bevestiging (`role="status"`, dus
-  voorgelezen) en de knop *Open het eindformulier*, die Smartschool in een
-  nieuw tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
-  bevestiging en de knop, en kopieert de leerling opnieuw.
-- **Als het kopiëren mislukt** (geen veilige context, of de browser
-  weigert), verschijnt zonder foutmelding de terugvaloptie: de tekst staat
-  geselecteerd in een tekstveld op de plaats van de lijst, met de vraag om
-  Ctrl+C te gebruiken. Kopieert de leerling uit dat veld, dan volgt dezelfde
-  bevestiging.
-- **Hoogte.** De lijst scrolt binnen haar eigen kader (hoogstens 13.5rem),
-  zodat de knoppen altijd zichtbaar blijven, ook bij veel of lange
-  antwoorden. Het terugvalveld heeft dezelfde hoogte.
+- **De pdf.** *Download als pdf* (de primaire knop) maakt in de browser een
+  pdf met jsPDF (MIT), A4 staand, en biedt die aan als download:
+  `ai-leerpad-<module-id>.pdf`. jsPDF (± 125 kB gzip) wordt pas bij de klik
+  geladen, met een dynamische `import('jspdf')`: de modulepagina betaalt er
+  niets voor tot dan. Alleen de tekst-API (`text`, `splitTextToSize`,
+  `addPage`), nooit `.html()`: dat sleept html2canvas en DOMPurify mee.
+- In de pdf staat, in deze volgorde: *AI-leerpad Arcadia Scholen*, de naam
+  van de module, *gedownload op 10 november 2026 om 14:38*, de keuzes, één
+  per regel (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met
+  de `naam` van de keuze met een hoofdletter vooraan), dan per vraag de
+  vraag in het vet met het antwoord eronder, of *(niet ingevuld)*; bij een
+  prompt met velden staat er één regel per veld. Als laatste de *Tijdlijn*
+  (zie hieronder). Onderaan elke pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
+  volgende pagina; een vraag staat nooit alleen onderaan een pagina. Lege
+  regels binnen een antwoord vallen weg. Er staat geen naam of ander
+  persoonsgegeven in: de site kent de leerling niet, Smartschool koppelt het
+  bestand aan de leerling.
+- **De tijdlijn.** Achteraan de pdf staat het blok *Tijdlijn*: één regel
+  per moment, in de volgorde van de module, in een vast formaat:
+
+  ```
+  13:05  Begonnen
+  13:12  Noteer je taak
+  13:41  Hoe ging de startquiz?
+  14:38  Pdf gemaakt
+  ```
+
+  Eerst *Begonnen* (`start`, zie *Lokaal bewaren*), dan elke vraag van de
+  route van de leerling, ook `<Meerkeuze>`, die verder niet in de pdf
+  staat, met de titel van de stap waarin ze staat, en als laatste *Pdf
+  gemaakt*, het moment van de download. Per vraag staat `firstAt`, het
+  moment waarop de leerling eraan begon. Een vraag zonder geldige tijd
+  (nooit beantwoord, of bewaard vóór de site tijden bijhield) heeft geen
+  regel; een antwoord zonder tijd staat wel gewoon in de pdf. De tijd staat als
+  `HH:MM` in de tijdzone van de laptop, met twee spaties voor de tekst;
+  op een andere dag dan de download staat de datum ervoor (`9/11 20:14`).
+  Een tekstextractie zoals `pdftotext` geeft die twee spaties als één
+  terug; een script herkent de regel aan de vorm van de tijd vooraan.
+- `pdf.ts` krijgt gewone gegevens: de module, de keuzes, per vraag een
+  blok met een `kind` (`answer`, of `fields` voor een prompt met velden) en
+  de momenten van de tijdlijn. Een nieuw soort blok komt daar bij.
+- **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
+  er gaat geen lettertypebestand mee, maar het kent alleen de tekens van
+  WinAnsi (Windows-1252). Voor een teken daarbuiten schrijft jsPDF zonder
+  foutmelding verkeerde tekens (→ wordt `!’`). Daarom gaat alle tekst eerst
+  door `forPdf`: → wordt `->`, − wordt `-`, ≤ wordt `<=`, een letter
+  buiten WinAnsi verliest haar accent (ş wordt s), emoji vallen weg, en wat
+  dan nog overblijft wordt `?`. De accenten van het Nederlands en het Frans,
+  ’ “ ” – — € en ½ staan er gewoon. Figtree insluiten lost dat niet op: het
+  heeft geen pijlen en geen emoji, en het weegt meer. Een woord dat langer
+  is dan een regel, wordt afgebroken.
+- Na de download verschijnt een bevestiging (`role="status"`, dus
+  voorgelezen): ✓ *Gedownload. Laad de pdf op in het eindformulier.* Daarna
+  staat de knop *Open het eindformulier* er, die Smartschool in een nieuw
+  tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
+  bevestiging en de knop, en downloadt de leerling opnieuw.
+- **Als de pdf mislukt** (jsPDF laadt niet, bijvoorbeeld op een haperende
+  verbinding, of het maken gooit een fout), verschijnt zonder foutmelding:
+  *Downloaden lukte niet. Klik op **Afdrukken** en kies bij Bestemming
+  **Opslaan als PDF**.*, met de knop *Afdrukken* (`window.print()`). Na het
+  afdrukvenster (`afterprint`) verschijnt *Open het eindformulier*. Of de
+  leerling opsloeg of annuleerde, zegt de browser niet.
+- **Op papier.** De volledige samenvatting, met dezelfde inhoud als de pdf
+  (*afgedrukt op* in plaats van *gedownload op*, en *Afgedrukt* in plaats
+  van *Pdf gemaakt* als laatste regel van de tijdlijn), staat ook in de
+  pagina, op het scherm verborgen. De printstijl (`@media print`) toont op papier
+  alleen die: de header, de voortgang, de navigatie, de andere stappen, de
+  titel van de stap en de knoppen zijn verborgen. Dat geldt zolang de stap
+  met de samenvatting getoond wordt; een andere stap wordt afgedrukt zoals
+  de browser hem toont. De regels hangen niet af van de klassen van de
+  speler of de layout: met `:has()` verliest elke voorouder van de
+  samenvatting zijn vaste hoogte en scrollvak, en verdwijnt alles wat ernaast
+  staat.
+- **Hoogte.** De lijst *Nog leeg* scrolt binnen haar eigen kader (hoogstens
+  13.5rem), zodat de knoppen altijd zichtbaar blijven, ook bij veel of lange
+  vragen.
 - Zonder JavaScript wordt niets bewaard; de samenvatting zegt dan dat ze
   JavaScript nodig heeft.
+
+### Confetti
+
+```mdx
+<Stap titel="Wat werkte?">
+<Confetti />
+
+Denk terug aan je sessie. Er is geen fout antwoord.
+…
+</Stap>
+```
+
+- Een korte mentale pauze op een scharniermoment van een module. Er valt
+  niets te leren. In *AI als coach* (3e graad) staat ze in *Wat werkte?*,
+  na de vier vragen *Wat ging hier mis?* en vóór de reflectie.
+- `<Confetti />` heeft geen attributen en geen inhoud: tekst tussen de tags
+  laat de build falen. Hoogstens één per module; ook dat controleert de
+  build. Het component zelf is onzichtbaar en neemt geen plaats in; zet het
+  bovenaan de stap. Het staat in `src/components/stappen/`, het script
+  ernaast in `confetti.ts`.
+- De eerste keer dat de stap verschijnt, valt er 1,5 seconde confetti over
+  de stapkaart: 80 stukjes die op het einde vervagen. Daarna verdwijnt het
+  canvas uit de pagina. Verlaat de leerling de stap eerder, dan stopt de
+  confetti meteen; ook dan telt ze als gespeeld.
+- **Eén keer per module.** Na het afspelen staat er een sleutel
+  `ai-leerlijn:<module-id>:confetti`. Wie terugkeert naar de stap of de
+  pagina herlaadt, ziet niets meer. *Opnieuw beginnen* wist de sleutel mee.
+  Is opslag geblokkeerd, dan speelt ze hoogstens één keer per keer dat de
+  pagina geladen wordt.
+- **Kleuren:** alleen merkkleuren, gelezen uit de tokens bij het afspelen:
+  `brand`, `brand-text`, `forest` en `ai`. `ai-soft` valt weg op de witte
+  kaart. Nooit rood, oranje of geel: die horen bij de AI-barometer
+  (`docs/DESIGN.md`, *Kleur*).
+- **Nooit in de weg.** Het canvas ligt vast over de kaart, buiten de
+  layout: de stap blijft even hoog en er scrolt niets. Het is
+  `aria-hidden`, vangt geen klikken op en krijgt geen focus. De leerling
+  typt en klikt meteen verder. Geen geluid.
+- Bij `prefers-reduced-motion: reduce` is er geen confetti, en wordt er ook
+  niets bewaard.
+- Zelf gemaakt, zonder bibliotheek: ± 2 kB script dat op een `<canvas>`
+  tekent. Het start, zoals de samenvatting, met een `IntersectionObserver`
+  op de stap. Het begint pas te kijken na `DOMContentLoaded`: tot het script
+  van de speler gelopen heeft, staan alle stappen op het scherm.
+- Zonder JavaScript is er geen confetti.
 
 ### Links naar Smartschool
 

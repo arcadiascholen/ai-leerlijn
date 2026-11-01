@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { appear, settle } from '../../lib/motion';
 import { moduleIdOf } from '../stappen/storage';
 import { readAnswer, writeAnswer } from './answers';
 import type { ChoiceOption } from './authoring';
@@ -49,6 +50,14 @@ export default function Meerkeuze({ id, question, options }: Props) {
   // Read out by a screen reader after every choice; the same feedback is
   // visible in the option itself.
   const [announcement, setAnnouncement] = useState('');
+  // True from the render that shows the restored choices, if any.
+  const [restored, setRestored] = useState(false);
+  // Set by the student's first choice: feedback that mounts after it fades
+  // in. Restored feedback simply stands there (docs/DESIGN.md, "Beweging").
+  const choseRef = useRef(false);
+  const appearIfChosen = useCallback((element: HTMLElement | null) => {
+    if (element !== null && choseRef.current) appear(element);
+  }, []);
 
   const rightCount = options.filter((option) => option.correct).length;
   const found = chosen.filter((index) => options[index]?.correct === true).length;
@@ -57,6 +66,7 @@ export default function Meerkeuze({ id, question, options }: Props) {
   // Restore after hydration, not during render: the server renders the
   // question unanswered, and the first client render has to match it.
   useEffect(() => {
+    setRestored(true);
     const moduleId = rootRef.current === null ? null : moduleIdOf(rootRef.current);
     moduleIdRef.current = moduleId;
     if (moduleId === null) return;
@@ -69,9 +79,16 @@ export default function Meerkeuze({ id, question, options }: Props) {
     );
   }, [id, options.length]);
 
+  // The options change colour when the student chooses, not when the
+  // restored choices appear.
+  useEffect(() => {
+    if (restored && rootRef.current !== null) settle(rootRef.current);
+  }, [restored]);
+
   function choose(index: number): void {
     const option = options[index];
     if (option === undefined || chosen.includes(index)) return;
+    choseRef.current = true;
     const next = [...chosen, index];
     setChosen(next);
 
@@ -110,7 +127,7 @@ export default function Meerkeuze({ id, question, options }: Props) {
                 dangerouslySetInnerHTML={{ __html: option.html }}
               />
               {isChosen && (
-                <p id={feedbackId} className={styles.feedback}>
+                <p ref={appearIfChosen} id={feedbackId} className={styles.feedback}>
                   <span className={styles.verdict}>
                     {option.correct ? <CheckIcon /> : <CrossIcon />}
                     {option.correct ? 'Juist' : 'Niet juist'}

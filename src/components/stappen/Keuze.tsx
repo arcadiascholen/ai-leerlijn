@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { settle } from '../../lib/motion';
 import type { KeuzeOption } from '../vragen/authoring';
 import { readChoice, writeChoice } from './choices';
 import { moduleIdOf } from './storage';
@@ -26,20 +27,45 @@ export default function Keuze({ name, question, options, branching }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const moduleIdRef = useRef<string | null>(null);
   const [chosen, setChosen] = useState<string | null>(null);
+  // True from the render that shows the restored choice, if any.
+  const [restored, setRestored] = useState(false);
 
   // Restore after hydration, not during render: the server renders the
   // choice open, and the first client render has to match it.
   useEffect(() => {
-    const moduleId = rootRef.current === null ? null : moduleIdOf(rootRef.current);
+    setRestored(true);
+    const root = rootRef.current;
+    const moduleId = root === null ? null : moduleIdOf(root);
     moduleIdRef.current = moduleId;
-    if (moduleId === null) return;
+    if (root === null || moduleId === null) return;
     const stored = readChoice(moduleId, name);
-    if (stored !== null && options.some((option) => option.key === stored)) setChosen(stored);
+    if (stored !== null && options.some((option) => option.key === stored)) {
+      setChosen(stored);
+      return;
+    }
+    // A click before hydration checks its radio in the DOM, without
+    // onChange, and hydration leaves that radio checked. Nothing would be
+    // stored, "Volgende" would stay disabled, and a second click on the same
+    // radio changes nothing, so it fires no onChange either. Take that click
+    // as the choice. The radios have autocomplete="off", so the browser does
+    // not check one itself when it restores the page on Back or a reload.
+    const checked = root.querySelector<HTMLInputElement>('input[type="radio"]:checked');
+    if (checked !== null && options.some((option) => option.key === checked.value)) choose(checked.value);
   }, [name, options]);
 
+  // The cards change colour when the student chooses, but a restored choice
+  // simply stands there (docs/DESIGN.md, "Beweging").
+  useEffect(() => {
+    if (restored && rootRef.current !== null) settle(rootRef.current);
+  }, [restored]);
+
+  // From onChange and from onClick: a click on a radio that is checked but
+  // not stored (see above) fires no change. A choice that is already stored
+  // is not written again, so a click on the chosen option announces nothing.
   function choose(key: string): void {
     setChosen(key);
-    if (moduleIdRef.current !== null) writeChoice(moduleIdRef.current, name, key);
+    const moduleId = moduleIdRef.current;
+    if (moduleId !== null && readChoice(moduleId, name) !== key) writeChoice(moduleId, name, key);
   }
 
   const labels = JSON.stringify(Object.fromEntries(options.map((option) => [option.key, option.label])));
@@ -62,8 +88,12 @@ export default function Keuze({ name, question, options, branching }: Props) {
                 className={styles.radio}
                 name={`keuze-${name}`}
                 value={option.key}
+                // Not restored by the browser on Back or a reload: only the
+                // student's own click may count as a choice.
+                autoComplete="off"
                 checked={chosen === option.key}
                 onChange={() => choose(option.key)}
+                onClick={() => choose(option.key)}
               />
               <span>{option.label}</span>
             </label>
