@@ -83,7 +83,7 @@ function Knowledge({
               {correct === true
                 ? "✓ Dat klopt."
                 : correct === false
-                  ? "↻ Bekijk de uitleg."
+                  ? "↻ Nog niet juist."
                   : "◉ Een afweging om over na te denken."}
             </strong>
             {q.id === "14" && (
@@ -108,6 +108,9 @@ function Knowledge({
               </div>
             )}
             <Paragraphs text={feedback} />
+            {correct === false && (
+              <p><strong>Klik op ‘Probeer opnieuw’, duid {q.count > 1 ? "de juiste antwoorden" : "het juiste antwoord"} aan en klik op ‘Bekijk de uitleg’. Daarna kun je verder.</strong></p>
+            )}
             <button className="loep-text-button" onClick={onRetry}>
               {q.correct.length ? "Probeer opnieuw" : "Maak een andere keuze"}
             </button>
@@ -181,7 +184,7 @@ function Knowledge({
         ) : (
           <p className="loep-small">
             {q.correct.length
-              ? (correct ? "Goed gedaan. Je kunt verdergaan." : "Bekijk de uitleg en probeer opnieuw om verder te gaan.")
+              ? (correct ? "Goed gedaan. Je kunt verdergaan." : "Duid na ‘Probeer opnieuw’ het juiste antwoord aan om verder te gaan.")
               : "Je standpunt krijgt geen goed/foutscore. Lees de reactie en ga verder."}
           </p>
         )}
@@ -814,7 +817,7 @@ export default function LoepPlayer({
               : step.kind === "choice"
                 ? "Kies precies twee onderwerpen"
                 : !allowNext
-                  ? (step.question && progress.answers[step.id]?.checked ? "Probeer opnieuw om verder te gaan" : "Maak eerst de opdracht af en bekijk de feedback")
+                  ? (step.question && progress.answers[step.id]?.checked ? "Duid eerst het juiste antwoord aan" : "Maak eerst de opdracht af en bekijk de feedback")
                   : "Je voortgang blijft in deze browser op dit toestel"}
           </span>
           {step.kind !== "summary" && (
