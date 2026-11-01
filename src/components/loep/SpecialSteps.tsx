@@ -281,7 +281,7 @@ export function Gallery({
   onAnswer: (v: string[]) => void;
   onCheck: () => void;
 }) {
-  const [group, setGroup] = useState(2);
+  const [group, setGroup] = useState(0);
   const [detail, setDetail] = useState<string | null>(null);
   const [instructions, setInstructions] = useState(false);
   const [diverse, setDiverse] = useState(false);
@@ -310,20 +310,18 @@ export function Gallery({
         <span className="loep-eyebrow">Beeldexperiment · 8 AI-voorbeelden</span>
         <h2>Wie brengt AI in beeld?</h2>
         <p>
-          Onderzoek deze galerij. Vergelijk kleding, rollen en omgeving. Je
-          mag ook zelf beelden maken met een door school toegelaten toepassing;
-          de galerij is voldoende en kost niets.
+          Bekijk eerst de vier afbeeldingen van verpleegkundigen en daarna de vier afbeeldingen van chirurgen. Welke overeenkomsten en verschillen vallen je op? Denk na of AI bepaalde beelden van die beroepen herhaalt. Je kunt de prompts ook zelf testen met een door school toegelaten beeldgenerator.
         </p>
         <button
           className="loep-text-button"
           onClick={() => setInstructions(!instructions)}
           aria-expanded={instructions}
         >
-          Bekijk de opdrachten <Icon name="arrow" size={16} />
+          Bekijk de prompts voor AI <Icon name="arrow" size={16} />
         </button>
         {instructions && (
           <div className="loep-note">
-            <strong>Oorspronkelijke opdrachten</strong>
+            <strong>Deze prompts kregen de beeldgenerator</strong>
             {(["verpleegkundige", "chirurg"] as const).map((job) => (
               <div key={job}>
                 <p id={`loep-beeld-${job}`}>
@@ -344,10 +342,6 @@ export function Gallery({
             {galleryCopy && <p role="status">{galleryCopy}</p>}
           </div>
         )}
-        <p className="loep-small">
-          De app maakt zelf geen nieuwe beelden. Elke opdracht werd vier keer uitgevoerd met ImageGen, op 30 oktober
-          2026. Alle acht resultaten zijn bewaard. Dit vertelt niet hoe alle AI werkt.
-        </p>
         <p className="loep-small">
           Je kunt genderidentiteit of afkomst niet met zekerheid uit uiterlijk
           afleiden.
@@ -386,7 +380,7 @@ export function Gallery({
       </div>
       <div>
         <div className="loep-tabs" role="group" aria-label="Beroep bekijken">
-          {["Verpleegkundigen", "Chirurgen", "Alles"].map((t, i) => (
+          {["Verpleegkundigen", "Chirurgen"].map((t, i) => (
             <button
               key={t}
               aria-pressed={group === i}
@@ -397,11 +391,9 @@ export function Gallery({
           ))}
         </div>
         <div
-          className={
-            group === 2 ? "loep-gallery loep-gallery-all" : "loep-gallery"
-          }
+          className="loep-gallery"
         >
-          {(group === 2 ? ["verpleegkundige", "chirurg"] : [profession])
+          {[profession]
             .flatMap((job) => [1, 2, 3, 4].map((n) => ({ job, n })))
             .map(({ job, n }) => (
               <button
@@ -414,11 +406,7 @@ export function Gallery({
                   alt={`AI-beeld ${n}: ${job} aan het werk.`}
                 />
                 <span>
-                  {group === 2
-                    ? job === "chirurg"
-                      ? "Chirurg "
-                      : "Verpleegkundige "
-                    : "AI-beeld "}
+                  {"AI-beeld "}
                   {n} <Icon name="search" size={15} />
                 </span>
               </button>
@@ -426,7 +414,7 @@ export function Gallery({
         </div>
         <p className="loep-small">
           Klik op een beeld om het groter te bekijken. Dit zijn gegenereerde
-          beelden van verzonnen mensen.
+          beelden van verzonnen mensen. Per beroep werd dezelfde prompt vier keer gebruikt met ImageGen.
         </p>
       </div>
       {detail !== null && (
@@ -718,7 +706,7 @@ export function Centers() {
     </div>
   );
 }
-const messages = [
+export const messages = [
   ["Sam", "wtf 💀 — video · 0:12"],
   ["Noor", "wa is dit"],
   ["Younes", "is da echt??"],

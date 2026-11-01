@@ -18,9 +18,10 @@ import {
   type Step,
 } from "./model";
 import { clearModule, readStored, writeStored } from "../stappen/storage";
-import { Icon, Photo, Special, useModalFocus } from "./SpecialSteps";
+import { Icon, Photo, Special, useModalFocus, messages } from "./SpecialSteps";
 import { SourceCard, VideoCard } from "./Interacties";
 import "./loep.css";
+import "./verduidelijkingen.css";
 const MODULE = "verantwoord-gebruik";
 const STORAGE = "loep:v1";
 function Paragraphs({ text }: { text: string }) {
@@ -34,6 +35,25 @@ function Paragraphs({ text }: { text: string }) {
         ))}
     </>
   );
+}
+function ClassChat({ selected, showReply, followup }: { selected?: string; showReply: boolean; followup: boolean }) {
+  const chatRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight; }, [selected, showReply, followup]);
+  const text = questions["14"]!.options.find((o) => o.id === selected)?.text;
+  const reaction = selected === "A" ? "dan gaat het filmpje nog verder rond"
+    : selected === "B" ? "tis wel over een echte persoon he"
+    : selected === "C" ? "ja, laten we stoppen met doorsturen"
+    : "wat kunnen we doen om te helpen?";
+  const later = [["Sam", "ja ok ma iedereen heeft da toch al gezien"], ["Younes", "en tis fake ook"], ["Noor", "ja maar daarom moet ge da toch ni blijven sturen"]];
+  return <div className="loep-chat loep-chat-in-question">
+    <header><span className="loep-avatar"><Icon name="chat" /></span><div><strong>Klasgroep</strong><small>Verzonnen gesprek</small></div></header>
+    <div className="loep-chat-messages" aria-live="polite" ref={chatRef}>
+      {messages.map(([who, msg], i) => <div className="loep-bubble" key={i}><strong>{who}</strong><span>{msg}</span></div>)}
+      {selected && (selected === "D" ? <p className="loep-small">Jij reageert niet.</p> : <div className="loep-bubble loep-bubble-right"><strong>Jij</strong><span>{text}</span></div>)}
+      {selected && showReply && <div className="loep-bubble"><strong>Noor</strong><span>{reaction}</span></div>}
+      {followup && later.map(([who, msg], i) => <div className="loep-bubble" key={"later" + i}><strong>{who}</strong><span>{msg}</span></div>)}
+    </div>
+  </div>;
 }
 function Knowledge({
   step,
@@ -89,27 +109,6 @@ function Knowledge({
                   ? "↻ Nog niet juist."
                   : "◉ Een afweging om over na te denken."}
             </strong>
-            {q.id === "14" && (
-              <div className="loep-branch-chat">
-                <div className="loep-bubble loep-bubble-right">
-                  <strong>Jij</strong>
-                  <span>{q.options.find((o) => o.id === values[0])?.text}</span>
-                </div>
-                <div className="loep-bubble">
-                  <strong>Noor</strong>
-                  <span>
-                    {values[0] === "A"
-                      ? "dan gaat het filmpje nog verder rond"
-                      : values[0] === "B"
-                        ? "tis wel over een echte persoon he"
-                        : values[0] === "C"
-                          ? "ja, laten we stoppen met doorsturen"
-                          : "wat kunnen we doen om te helpen?"}
-                  </span>
-                </div>
-                <small>Zo zou de verzonnen klasgroep kunnen reageren.</small>
-              </div>
-            )}
             <Paragraphs text={feedback} />
             {correct === false && (
               <p><strong>Klik op ‘Probeer opnieuw’, duid {q.count > 1 ? "de juiste antwoorden" : "het juiste antwoord"} aan en klik op ‘Bekijk de uitleg’. Daarna kun je verder.</strong></p>
@@ -124,9 +123,14 @@ function Knowledge({
               <div className="loep-bubble loep-bubble-right"><strong>Jij</strong><span>Ik wil met mijn klas een feest in het park organiseren. Is dat een goed plan?</span></div>
               <div className="loep-bubble"><strong>AI</strong><span>Goed idee, dat zal zeker lukken!</span></div>
               <p>Welke vraag helpt je om je plan kritischer te bekijken?</p>
-            </div> : <Paragraphs text={q.body} />}
+            </div> : q.id === "15" ? <p>Maakt het nog uit of iemand het filmpje verder verspreidt?</p> : <Paragraphs text={q.body} />}
           </div>
         )}
+        {q.id === "13" && <figure className="loep-case-photo">
+          <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
+          <figcaption>Illustratie van videobewerking · <a href="https://www.vrt.be/nwsnwsnws/nl/post/2026/02/17/deepfakereactie/" target="_blank" rel="noreferrer">Lees het bericht over Berchem ↗</a></figcaption>
+        </figure>}
+        {(q.id === "14" || q.id === "15") && <ClassChat selected={q.id === "14" ? values[0] : progress.answers.q14?.values[0]} showReply={q.id === "15" ? !!progress.answers.q14?.checked : checked} followup={q.id === "15"} />}
         {q.id.startsWith("video") && <VideoCard kind="intro" compact />}
         {checked && q.body && (
           <details className="loep-question-reread">
@@ -779,7 +783,7 @@ export default function LoepPlayer({
             </span>
             <span>
               {progress.choices.length === 2
-                ? `${index + 1} / ${route.length}`
+                ? `Stap ${index + 1} van ${route.length}`
                 : `Stap ${index + 1}`}
             </span>
           </div>
@@ -807,6 +811,11 @@ export default function LoepPlayer({
                   <>
                     <p>Met AI kun je beelden en stemmen aanpassen. Zo kan het lijken alsof iemand iets zegt of doet wat nooit is gebeurd. Zo'n beeld of filmpje noemen we een deepfake.</p>
                     <p>Wat als iemand zonder jouw toestemming zo'n filmpje van jou maakt? Welke gevolgen kan dat hebben en wat kun je doen?</p>
+                  </>
+                ) : chapter.id === 4 ? (
+                  <>
+                    <p>Als je AI vraagt om een verpleegkundige of chirurg af te beelden, wie verschijnt er dan? Krijg je telkens ongeveer dezelfde soort mensen te zien?</p>
+                    <p>Vergelijk de beelden en ontdek hoe vooroordelen in AI-afbeeldingen kunnen opduiken.</p>
                   </>
                 ) : <p>{chapter.subtitle}</p>}
               </div>

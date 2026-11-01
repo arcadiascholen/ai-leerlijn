@@ -322,7 +322,7 @@
   "13": {
     "id": "13",
     "title": "Wanneer gaat een grap te ver?",
-    "body": "Stel dat het filmpje inderdaad nooit openbaar op sociale media werd geplaatst.\n\nWaarom kan het maken van zo'n deepfake dan toch problematisch zijn?",
+    "body": "In februari 2026 maakten leerlingen in Berchem een kwetsende deepfakevideo van een leerkracht. De leerkracht diende klacht in.\n\nDenk nu aan dezelfde situatie, maar stel dat het filmpje alleen in een kleine groep wordt bekeken. Waarom kan het ook dan problematisch zijn?",
     "options": [
       {
         "id": "A",
@@ -374,7 +374,7 @@
     "feedback": "",
     "branches": {
       "A": "Je vraagt om verdere verspreiding. Dat kan het bereik en de schade vergroten.",
-      "B": "Een lachreactie kan de groep aanmoedigen om door te gaan, ook als je zelf niets doorstuurt.",
+      "B": "Met deze emoji’s reageren kan de groep aanmoedigen om door te gaan, ook als je zelf niets doorstuurt.",
       "C": "Je helpt de verspreiding afremmen. Stuur het filmpje niet verder en meld de situatie discreet aan een leerkracht of leerlingenbegeleider.",
       "D": "Je verspreidt zelf niets, maar de groep kan doorgaan. Niet doorsturen en discreet hulp inschakelen zijn concrete manieren om schade te beperken."
     },
@@ -445,7 +445,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Dat kan wijzen op een vast beeld van deze beroepen. We moeten meer afbeeldingen onderzoeken om te weten of er een patroon is."
+        "text": "Dat kan wijzen op een stereotiep beeld van deze beroepen. We moeten meer afbeeldingen onderzoeken om te weten of er een patroon is."
       },
       {
         "id": "B",
@@ -463,7 +463,7 @@
     "correct": [
       "A"
     ],
-    "feedback": "Dat kan wijzen op een vast beeld van deze beroepen. Een paar afbeeldingen zijn niet genoeg om te weten of er echt een patroon is. Onderzoek meer beelden met dezelfde opdracht en hetzelfde systeem.",
+    "feedback": "Dat kan wijzen op een stereotiep beeld van deze beroepen. Een paar afbeeldingen zijn niet genoeg om te weten of er echt een patroon is. Onderzoek meer beelden met dezelfde opdracht en hetzelfde systeem.",
     "branches": {},
     "count": 1
   },

@@ -221,7 +221,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "nepvideo",
       3,
       "Wanneer gaat een grap te ver?",
-      "In februari 2026 berichtte VRT NWS over leerlingen in Berchem die kwetsende AI-video’s van leerkrachten maakten.",
+      "In februari 2026 maakten leerlingen in Berchem een kwetsende deepfakevideo van een leerkracht. De leerkracht diende klacht in.",
       "Een deepfake kan iemand iets laten lijken te zeggen of doen wat nooit gebeurd is. Ook een nepvideo kan echte schade veroorzaken.",
     ),
     q("13", 3),

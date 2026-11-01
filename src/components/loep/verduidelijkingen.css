@@ -1,0 +1,6 @@
+
+.loep-chat-in-question { max-height: 235px; margin-top: 14px; }
+.loep-chat-in-question .loep-chat-messages { min-height: 110px; }
+.loep-case-photo { margin: 12px 0 0; }
+.loep-case-photo img { display: block; width: min(100%, 300px); height: 115px; object-fit: cover; border-radius: 10px; }
+.loep-case-photo figcaption { font-size: 11px; margin-top: 5px; }
