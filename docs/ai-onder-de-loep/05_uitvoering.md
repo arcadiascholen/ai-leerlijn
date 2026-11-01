@@ -93,3 +93,9 @@ De kennismaking start met het filmpje van Karrewiet, gevolgd door twee kijkvrage
 ### Beelden bij de ordenoefening ‘Hoe leert AI?’
 
 De afbeeldingen van een hond en een kat zijn illustratieve voorbeelden; ze worden niet voorgesteld als echte trainingsdata. De bestanden `hond-leren.webp` en `kat-leren.webp` zijn uitsneden van foto's via Unsplash: [hond](https://unsplash.com/photos/Sg3XwuEpybU) en [kat, Manja Vitolic](https://unsplash.com/photos/gKXKBY-C-Dk). Gebruik onder de [Unsplash-licentie](https://unsplash.com/license).
+
+### Privacy: vergelijking van schoolaccount en persoonlijk account
+
+Geraadpleegd op 1 november 2026: [Microsoft Copilot Chat FAQ](https://learn.microsoft.com/en-us/copilot/faq) vermeldt dat vragen en antwoorden onder enterprise data protection niet voor het trainen van basismodellen worden gebruikt en wel kunnen worden bewaard voor controle. Deze bescherming is gekoppeld aan een in aanmerking komend werk- of schoolaccount; controleer de inrichting van de schoolomgeving. [OpenAI: gegevensinstellingen in ChatGPT](https://help.openai.com/en/articles/7730893-data-controls-in-chatgpt) beschrijft dat verbetering bij persoonlijke Free-, Plus- en Pro-accounts standaard aan kan staan en kan worden uitgezet. Een persoonlijk betaald abonnement is geen automatisch alternatief voor een beheerd schoolaccount. Instellingen en voorwaarden kunnen wijzigen; dit is niet bedoeld als vergelijking van alle AI-diensten of zakelijke ChatGPT-accounts.
+
+De schoolafspraken komen uit het Arcadia AI-beleid 2026–2027, pagina 13: geen herkenbare persoonsgegevens of gevoelige informatie in publieke AI-tools; ook bij een schoolaccount voorzichtig blijven. De gebruikte kopie is een lokaal projectbestand; controleer bij beleidswijzigingen de meest recente versie.

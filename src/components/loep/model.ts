@@ -151,7 +151,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "8" ? "q8-gegevens" : id === "4" ? "q4-kritische-vraag" : "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "8" ? "q8-accounts" : id === "4" ? "q4-kritische-vraag" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,
@@ -202,9 +202,10 @@ export const chapterSteps: Record<number, Step[]> = {
       "delen",
       2,
       "Wat gebeurt er met wat je aan AI vertelt?",
-      "AI kan helpen bij een moeilijke situatie of een tekst. Om te antwoorden verwerkt de toepassing wat je invoert. Gesprekken kunnen ook worden bewaard of, afhankelijk van de toepassing en instellingen, gebruikt om AI te verbeteren.",
-      "Wat er precies gebeurt, verschilt per toepassing en account. Bij Copilot Chat mét bedrijfsgegevensbescherming zegt Microsoft bijvoorbeeld dat vragen en antwoorden bewaard kunnen worden, maar niet gebruikt worden om de basismodellen te trainen. Controleer welke bescherming voor jouw account geldt.",
-      "Volgens het Arcadia AI-beleid geef je in publieke AI-tools geen herkenbare persoonsgegevens of gevoelige informatie in. Ook met een schoolaccount blijf je voorzichtig. Gebruik bij schoolopdrachten bij voorkeur een tool die de school aanbiedt.",
+      "Je kunt AI hulp vragen bij een opdracht of een tekst. Maar wat gebeurt er met wat je intypt? Dat hangt af van de toepassing en het account dat je gebruikt.",
+      "Gebruik je Copilot Chat met je beschermde schoolaccount? Dan gelden de afspraken van de school. Microsoft zegt dat je vragen en antwoorden bewaard kunnen worden, maar niet gebruikt worden om de AI-basismodellen te trainen. Blijf ook hier voorzichtig met persoonlijke informatie.",
+      "Gebruik je een persoonlijk ChatGPT-account, gratis of betalend? Dan kunnen je gesprekken standaard gebruikt worden om AI te verbeteren. Je kunt dat uitzetten in de gegevensinstellingen. Een betalend persoonlijk account doet dat niet automatisch voor jou.",
+      "Volgens het Arcadia AI-beleid voer je in publieke AI-tools geen herkenbare persoonsgegevens of gevoelige informatie in. Gebruik voor schoolopdrachten bij voorkeur een tool van de school.",
     ),
     q("8", 2),
     special("privacy-editor", 2, "privacy-editor", "Wat laat je weg?"),
@@ -510,7 +511,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "q8" ? "q8-gegevens" : v.current === "promptbuilder" ? "kompas1" : v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
+    const resumeId = (v.current === "q8" || v.current === "q8-gegevens") ? "q8-accounts" : v.current === "promptbuilder" ? "kompas1" : v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),

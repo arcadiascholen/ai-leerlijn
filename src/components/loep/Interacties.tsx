@@ -141,6 +141,7 @@ export function SourceCard({ chapter }: { chapter: number }) {
         <br />
         {info.why}
       </p>
+      {chapter === 2 && <p><a href="https://help.openai.com/en/articles/7730893-data-controls-in-chatgpt" target="_blank" rel="noreferrer">OpenAI · gegevensinstellingen voor persoonlijke ChatGPT-accounts ↗</a></p>}
       <p className="loep-small">Denkvraag: {questions[chapter]}</p>
       <a href={info.url} target="_blank" rel="noreferrer">
         Bekijk de bron ↗

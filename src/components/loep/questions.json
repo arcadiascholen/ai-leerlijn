@@ -205,30 +205,30 @@
   },
   "8": {
     "id": "8",
-    "title": "Wat gebeurt er met je gegevens?",
-    "body": "Je vraagt een AI-toepassing om hulp. Je typt een vraag en krijgt antwoord.\n\nWat kun je zeggen over wat er met jouw vraag gebeurt?",
+    "title": "Schoolaccount of persoonlijk account?",
+    "body": "Je vergelijkt Copilot Chat met je beschermde schoolaccount en een persoonlijk ChatGPT-account, zoals Free of Plus.\n\nWelke uitspraak klopt?",
     "options": [
       {
         "id": "A",
-        "text": "Elke AI-toepassing publiceert je gesprek automatisch op internet."
+        "text": "Een betalend persoonlijk ChatGPT-account gebruikt gesprekken nooit om AI te verbeteren."
       },
       {
         "id": "B",
-        "text": "Je vraag kan nooit worden bewaard of gebruikt nadat je antwoord is verschenen."
+        "text": "Bij Copilot Chat met schoolbescherming worden vragen en antwoorden niet gebruikt om basismodellen te trainen. Bij persoonlijke ChatGPT-accounts kun je gebruik voor verbetering uitzetten."
       },
       {
         "id": "C",
-        "text": "Alle AI-toepassingen gebruiken alle gesprekken op precies dezelfde manier."
+        "text": "Met een schoolaccount wordt je gesprek nooit bewaard, dus hoef je niet voorzichtig te zijn."
       },
       {
         "id": "D",
-        "text": "Dat hangt af van de toepassing, het account en de instellingen. Je vraag kan bijvoorbeeld worden bewaard."
+        "text": "Een gratis persoonlijk ChatGPT-account heeft automatisch dezelfde afspraken als het beschermde schoolaccount."
       }
     ],
     "correct": [
-      "D"
+      "B"
     ],
-    "feedback": "Wat er met je vraag gebeurt, verschilt per toepassing, account en instellingen. Een dienst kan gesprekken bijvoorbeeld bewaren of onder bepaalde voorwaarden gebruiken om de AI te verbeteren. Kijk daarom welke afspraken en instellingen gelden.",
+    "feedback": "Bij Copilot Chat met schoolbescherming worden vragen en antwoorden volgens Microsoft niet gebruikt om basismodellen te trainen. Ze kunnen wel bewaard worden. Bij persoonlijke ChatGPT Free- en Plus-accounts kunnen gesprekken standaard worden gebruikt om AI te verbeteren; je kunt dat uitzetten. Blijf in beide gevallen voorzichtig met persoonlijke gegevens.",
     "branches": {},
     "count": 1
   },
