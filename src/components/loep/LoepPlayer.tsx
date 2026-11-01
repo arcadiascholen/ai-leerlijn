@@ -414,8 +414,8 @@ function Choices({
           </p>
         </div>
         <span className="loep-choice-count">
-          {choices.length}
-          <small>/ 2 gekozen</small>
+          {choices.length} / 2
+          <small>gekozen</small>
         </span>
       </div>
       <div className="loep-choice-grid">
@@ -429,14 +429,10 @@ function Choices({
             aria-pressed={choices.includes(c.id)}
             disabled={choices.length === 2 && !choices.includes(c.id)}
           >
-            {c.id === 5 ? (
-              <div className="loep-choice-art" aria-hidden="true">
-                <Icon name="chat" size={31} />
-                <Icon name="spark" size={24} />
-              </div>
-            ) : (
-              <Photo name={c.image} alt={c.alt} />
-            )}
+            <Photo
+              name={c.id === 5 ? "chatbot-gesprek" : c.id === 8 ? "ai-assistent" : c.image}
+              alt={c.id === 5 ? "Een hand houdt een telefoon met een chatbot vast." : c.id === 8 ? "Iemand gebruikt een AI-assistent op een laptop." : c.alt}
+            />
             <div>
               <span className="loep-eyebrow">Uitdaging {c.id}</span>
               <h3>{c.title}</h3>

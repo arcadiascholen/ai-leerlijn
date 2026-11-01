@@ -641,7 +641,7 @@
 .loep-choice-card > img {
   display: block;
   width: 100%;
-  height: 79px;
+  height: 110px;
   object-fit: cover;
 }
 .loep-choice-card > div {
@@ -1414,7 +1414,7 @@
     font-size: 14px;
   }
   .loep-choice-card > img {
-    height: 68px;
+    height: 92px;
   }
   .loep-choice-card > div {
     padding: 8px 10px;
@@ -1529,7 +1529,7 @@
     display: block;
   }
   .loep-choice-card > img {
-    height: 95px;
+    height: 110px;
   }
   .loep-observation > div {
     grid-template-columns: 1fr 1fr;
