@@ -1,11 +1,13 @@
 import {
   chapters,
   completed,
+  formatPoints,
   isCorrect,
   permissions,
   permissionLabels,
   questions,
   routeFor,
+  scoreFor,
   type Progress,
 } from "./model";
 // Called only by an explicit download. The name never enters stored progress.
@@ -48,6 +50,12 @@ export async function createEvidence(name: string, progress: Progress) {
   text(
     "Een leerbewijs van deelname; geen schoolcijfer of garantie van beheersing. De antwoorden en tijdstippen zijn lokaal op dit toestel vastgelegd.",
   );
+  const score = scoreFor(progress);
+  text("Jouw score", 17, true);
+  text(score.scored ? `${formatPoints(score.points)} / ${score.scored} punten` : "Je score is niet beschikbaar.", 13, true);
+  text("Eerste poging juist: 1 punt. Tweede poging juist: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee.");
+  if (score.unknown > 0)
+    text(`Van ${score.unknown} eerder beantwoorde ${score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. ${score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in deze score.`);
   const ids = [1, 2, ...progress.choices];
   text("Jouw vier uitdagingen", 17, true);
   for (const id of ids) {
@@ -58,7 +66,7 @@ export async function createEvidence(name: string, progress: Progress) {
   pdf.addPage();
   y = 26;
   text("Jouw antwoorden", 17, true);
-  text("Hieronder staan je laatste antwoorden en observaties. Je persoonlijke score staat niet in dit leerbewijs.");
+  text("Hieronder staan je laatste antwoorden en observaties.");
   const route = routeFor(progress.choices);
   for (const step of route) {
     const a = progress.answers[step.id];

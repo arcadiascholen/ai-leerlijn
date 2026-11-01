@@ -224,7 +224,7 @@ function Welcome() {
             <li>Kies daarna twee onderwerpen die je interesseren.</li>
             <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
             <li>Bij kennisvragen kun je verder zodra je het juiste antwoord hebt gekozen. Probeer opnieuw als het nog niet klopt.</li>
-            <li>Je ziet je eigen score: 1 punt voor een juist antwoord bij de eerste poging, 0,5 bij de tweede, daarna 0. Je score blijft op dit toestel en staat niet in je PDF. Je antwoorden staan daar wel in.</li>
+            <li>Je ziet je eigen score: 1 punt voor een juist antwoord bij de eerste poging, 0,5 bij de tweede, daarna 0. Je score en antwoorden komen ook in je PDF. Als je de PDF deelt, zijn ze daarin zichtbaar.</li>
             <li>Download je AI-kompas als PDF. Het helpt je nadenken over bewust AI-gebruik en is je leerbewijs voor deze module.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
@@ -511,12 +511,11 @@ function Summary({
         <Icon name="download" size={32} />
         <h3>Je persoonlijke leerbewijs</h3>
         <p>
-          Je vier uitdagingen, antwoorden, inzichten en tijdlijn in één PDF.
-          Je persoonlijke score staat niet in het leerbewijs.
+          Je vier uitdagingen, antwoorden, score, inzichten en tijdlijn in één PDF.
         </p>
         {done && <div className="loep-feedback correct" role="status">
           <strong>{score.scored ? `Jouw score: ${formatPoints(score.points)} / ${score.scored}` : "Je score is niet beschikbaar"}</strong>
-          <p>Juist bij de eerste poging: 1 punt. Juist bij de tweede poging: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee. Deze score staat niet in je PDF.</p>
+          <p>Juist bij de eerste poging: 1 punt. Juist bij de tweede poging: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee. Je score staat ook in je PDF.</p>
           {score.unknown > 0 && <p>Van {score.unknown} eerder beantwoorde {score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. {score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in deze score.</p>}
         </div>}
         {done ? (
