@@ -54,7 +54,7 @@ function Knowledge({
   const checked = !!a?.checked;
   const correct = q.correct.length ? isCorrect(q, values) : null;
   const feedback = q.correct.length
-    ? q.feedback
+    ? (correct ? q.feedback : "Lees de situatie opnieuw en vergelijk de antwoordmogelijkheden. Probeer daarna een andere keuze.")
     : (q.branches[values[0] ?? ""] ?? "");
   return (
     <div
@@ -143,7 +143,7 @@ function Knowledge({
         </legend>
         {q.options.map((o) => {
           const selected = values.includes(o.id);
-          const reveal = checked && q.correct.includes(o.id);
+          const reveal = checked && correct === true && q.correct.includes(o.id);
           return (
             <label
               key={o.id}
@@ -223,7 +223,8 @@ function Welcome() {
             <li>Begin met de kennismaking en twee vaste uitdagingen.</li>
             <li>Kies daarna twee onderwerpen die je interesseren.</li>
             <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
-            <li>Bij kennisvragen krijg je 1 punt als je meteen juist antwoordt en 0,5 punt als je tweede poging juist is. Vanaf de derde poging krijg je geen punten.</li>
+            <li>Bij kennisvragen kun je verder zodra je het juiste antwoord hebt gekozen. Probeer opnieuw als het nog niet klopt.</li>
+            <li>Je ziet je eigen score: 1 punt voor een juist antwoord bij de eerste poging, 0,5 bij de tweede, daarna 0. Je score blijft op dit toestel en staat niet in je PDF. Je antwoorden staan daar wel in.</li>
             <li>Download je AI-kompas als PDF. Het helpt je nadenken over bewust AI-gebruik en is je leerbewijs voor deze module.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
@@ -515,11 +516,11 @@ function Summary({
         <h3>Je persoonlijke leerbewijs</h3>
         <p>
           Je vier uitdagingen, antwoorden, inzichten en tijdlijn in één PDF.
-          Meningen krijgen geen goed/foutscore.
+          Je persoonlijke score staat niet in het leerbewijs.
         </p>
         {done && <div className="loep-feedback correct" role="status">
           <strong>{score.scored ? `Jouw score: ${formatPoints(score.points)} / ${score.scored}` : "Je score is niet beschikbaar"}</strong>
-          <p>Juist bij de eerste poging: 1 punt. Juist bij de tweede poging: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee.</p>
+          <p>Juist bij de eerste poging: 1 punt. Juist bij de tweede poging: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee. Deze score staat niet in je PDF.</p>
           {score.unknown > 0 && <p>Van {score.unknown} eerder beantwoorde {score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. {score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in deze score.</p>}
         </div>}
         {done ? (
@@ -708,6 +709,7 @@ export default function LoepPlayer({
     progress.choices.length === 2
       ? route.length - 1
       : routeFor([]).length - 1 + longestChoices + 2;
+  const liveScore = scoreFor(progress);
   const doneSteps = route.filter(
     (s) => progress.visited.includes(s.id) && ready(s, progress),
   ).length;
@@ -777,6 +779,9 @@ export default function LoepPlayer({
                   : "Start · Wat is AI?"}
           </span>
           <div>
+            <span className="loep-live-score" aria-live="polite" aria-label={`Mijn persoonlijke score: ${formatPoints(liveScore.points)} van ${liveScore.scored} punten op kennisvragen met een bekende score`}>
+              Mijn score: {formatPoints(liveScore.points)} / {liveScore.scored}
+            </span>
             <span>
               {progress.choices.length === 2
                 ? `${index + 1} / ${route.length}`

@@ -325,97 +325,52 @@ export function PromptBuilder() {
 
 const pieces = [
   { id: "naam", label: "Mila Janssens", sensitive: true },
-  {
-    id: "bericht",
-    label: "deze screenshot van ons privégesprek",
-    sensitive: true,
-  },
-  { id: "telefoon", label: "haar telefoonnummer", sensitive: true },
-  {
-    id: "probleem",
-    label: "een afspraak niet werd nagekomen",
-    sensitive: false,
-  },
+  { id: "rol", label: "de enige leerling die de leerlingenraad voorzit", sensitive: true },
+  { id: "plaats", label: "na de prijsuitreiking op onze school", sensitive: true },
+  { id: "bericht", label: "een screenshot van ons privégesprek", sensitive: true },
+  { id: "probleem", label: "ik een afspraak niet ben nagekomen", sensitive: false },
 ];
 export function PrivacyEdit({ onAnswer, onCheck, checked }: Actions) {
   const [removed, setRemoved] = useState<string[]>([]);
   const [result, setResult] = useState(false);
   function toggle(id: string) {
-    setRemoved(
-      removed.includes(id) ? removed.filter((x) => x !== id) : [...removed, id],
-    );
+    setRemoved((old) => old.includes(id) ? old.filter((x) => x !== id) : [...old, id]);
     setResult(false);
     if (checked) onAnswer(["0"]);
   }
-  function check() {
-    setResult(true);
-    onAnswer(["0"]);
-    onCheck();
+  function check() { setResult(true); onAnswer(["0"]); onCheck(); }
+  function part(id: string) {
+    const piece = pieces.find((p) => p.id === id)!;
+    return <button type="button" className={removed.includes(id) ? "removed" : ""} aria-pressed={removed.includes(id)} onClick={() => toggle(id)}>{piece.label}</button>;
   }
   return (
     <div className="loep-discover">
       <div>
         <span className="loep-eyebrow">Privacy · maak het veilig</span>
         <h2>Wat laat je weg?</h2>
-        <p>
-          Je wilt hulp vragen na ruzie. Klik op de onderdelen die je uit dit
-          verzonnen bericht zou halen. Controleer daarna je aangepaste vraag.
-        </p>
+        <p>Je vraagt AI om hulp na ruzie. Klik op de delen die iemand herkenbaar kunnen maken of die je niet hoeft te delen. Laat genoeg uitleg over om advies te krijgen.</p>
         <div className="loep-message">
-          Ik heb ruzie met{" "}
-          {pieces.map((p, i) => (
-            <span key={p.id}>
-              {i === 1
-                ? " Ik wil "
-                : i === 2
-                  ? " en "
-                  : i === 3
-                    ? ". Het gaat erom dat "
-                    : ""}
-              <button
-                className={removed.includes(p.id) ? "removed" : ""}
-                aria-pressed={removed.includes(p.id)}
-                onClick={() => toggle(p.id)}
-              >
-                {p.label}
-              </button>
-              {i === 1 ? " meesturen" : ""}
-            </span>
-          ))}
-          . Hoe maak ik het weer goed?
+          Ik heb ruzie met {part("naam")}, {part("rol")}. Het gebeurde {part("plaats")}. Ik wil {part("bericht")} meesturen. Het gaat erom dat {part("probleem")}. Hoe maak ik het weer goed?
         </div>
-        <button className="loep-button" onClick={check}>
-          Bekijk mijn bericht
-        </button>
-        {checked && !result && (
-          <p className="loep-small">Je hebt deze oefening eerder afgerond. Je eerdere keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>
-        )}
+        <button className="loep-button" type="button" onClick={check}>Bekijk mijn bericht</button>
+        {checked && !result && <p className="loep-small">Je deed deze oefening eerder. Je eerdere keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>}
       </div>
       <div className="loep-explore-panel">
         <h3>Zo ziet je vraag eruit</h3>
-        <p>
-          {[
-            `Ik heb ruzie met ${removed.includes("naam") ? "een klasgenoot" : "Mila Janssens"}.`,
-            !removed.includes("bericht") ? "Ik stuur een screenshot van ons privégesprek mee." : "",
-            !removed.includes("telefoon") ? "Ik geef haar telefoonnummer mee." : "",
-            !removed.includes("probleem") ? "Een afspraak werd niet nagekomen." : "",
-            "Hoe maak ik het weer goed?",
-          ].filter(Boolean).join(" ")}
-        </p>
-        {result && (
-          <div className="loep-note" role="status">
-            {pieces.filter((p) => p.sensitive && !removed.includes(p.id)).length
-              ? "Kijk nog eens naar de naam, het privégesprek en het telefoonnummer. Zijn die nodig?"
-              : "Goed: je laat de naam, het privégesprek en telefoonnummer weg."}{" "}
-            {removed.includes("probleem")
-              ? "Het probleem zelf mag je algemeen uitleggen; zo kan AI beter helpen."
-              : "De algemene uitleg over de afspraak geeft nuttige context."}{" "}
-            Ook details zonder naam kunnen iemand herkenbaar maken.
-          </div>
-        )}
-        <p className="loep-small">
-          De gegevens in dit voorbeeld zijn verzonnen.
-        </p>
+        <p>{[
+          `Ik heb ruzie met ${removed.includes("naam") ? "een klasgenoot" : "Mila Janssens"}${removed.includes("rol") ? "" : ", de enige leerling die de leerlingenraad voorzit"}.`,
+          !removed.includes("plaats") ? "Het gebeurde na de prijsuitreiking op onze school." : "",
+          !removed.includes("bericht") ? "Ik stuur een screenshot van ons privégesprek mee." : "",
+          !removed.includes("probleem") ? "Ik ben een afspraak niet nagekomen." : "",
+          "Hoe maak ik het weer goed?",
+        ].filter(Boolean).join(" ")}</p>
+        {result && <div className="loep-note" role="status">
+          {pieces.some((p) => p.sensitive && !removed.includes(p.id))
+            ? "Kijk nog eens: ook iemands unieke rol of een herkenbare gebeurtenis kan verraden over wie het gaat. Is een screenshot nodig?"
+            : "Goed: je laat de naam, herkenbare details en het privégesprek weg."}{" "}
+          {removed.includes("probleem") ? "Zonder de algemene uitleg over de afspraak is het moeilijker om gericht advies te krijgen." : "De algemene uitleg over de afspraak helpt om gericht advies te krijgen."}
+        </div>}
+        <p className="loep-small">Dit bericht en de naam zijn verzonnen.</p>
       </div>
     </div>
   );

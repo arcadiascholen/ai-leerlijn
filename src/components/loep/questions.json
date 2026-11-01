@@ -214,7 +214,7 @@
       },
       {
         "id": "B",
-        "text": "Bij Copilot Chat met je schoolaccount worden vragen en antwoorden niet gebruikt om basismodellen te trainen."
+        "text": "Bij Copilot Chat met je schoolaccount worden vragen en antwoorden niet gebruikt om AI-modellen te trainen."
       },
       {
         "id": "C",
@@ -228,7 +228,7 @@
     "correct": [
       "B"
     ],
-    "feedback": "Bij Copilot Chat met schoolbescherming worden vragen en antwoorden volgens Microsoft niet gebruikt om basismodellen te trainen. Ze kunnen wel bewaard worden. Bij persoonlijke ChatGPT Free- en Plus-accounts kunnen gesprekken standaard worden gebruikt om AI te verbeteren; je kunt dat uitzetten. Blijf in beide gevallen voorzichtig met persoonlijke gegevens.",
+    "feedback": "Bij Copilot Chat met je schoolaccount worden vragen en antwoorden volgens Microsoft niet gebruikt om AI-modellen te trainen. Ze kunnen wel bewaard worden. Bij persoonlijke ChatGPT Free- en Plus-accounts kunnen gesprekken standaard worden gebruikt om AI te verbeteren; je kunt dat uitzetten. Blijf in beide gevallen voorzichtig met persoonlijke gegevens.",
     "branches": {},
     "count": 1
   },

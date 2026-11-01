@@ -2329,3 +2329,4 @@
 .loep-privacy-card p { margin: 0; line-height: 1.4; font-size: .95rem; }
 .loep-privacy-overview > .loep-small { margin-top: .8rem; }
 @media (max-width: 650px) { .loep-privacy-cards { grid-template-columns: 1fr; } }
+.loep-live-score { font-weight: 700; color: #193c20; white-space: nowrap; }

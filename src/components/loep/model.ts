@@ -417,7 +417,7 @@ export function scoreFor(progress: Progress) {
     const answer = progress.answers[step.id];
     if (!answer) continue;
     const value = answer.points ?? (answer.firstCorrect === true ? 1 : undefined);
-    if (value === undefined) { if (answer.checked) unknown++; continue; }
+    if (value === undefined) { if (answer.checked && isCorrect(questions[step.question!]!, answer.values)) unknown++; continue; }
     points += value;
     scored++;
   }

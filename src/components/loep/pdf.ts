@@ -6,8 +6,6 @@ import {
   permissionLabels,
   questions,
   routeFor,
-  scoreFor,
-  formatPoints,
   type Progress,
 } from "./model";
 // Called only by an explicit download. The name never enters stored progress.
@@ -59,11 +57,8 @@ export async function createEvidence(name: string, progress: Progress) {
   }
   pdf.addPage();
   y = 26;
-  text("Resultaten van de inzichtsvragen", 17, true);
-  const score = scoreFor(progress);
-  text(score.scored ? "Jouw score: " + formatPoints(score.points) + " / " + score.scored : "Je score is niet beschikbaar", 14, true);
-  text("Eerste poging juist: 1 punt. Tweede poging juist: 0,5 punt. Vanaf de derde poging: 0 punten. Meningen en afwegingen tellen niet mee.");
-  if (score.unknown) text("Van " + score.unknown + " eerder beantwoorde vraag of vragen is het aantal pogingen niet bekend. Die tellen niet mee in de score.");
+  text("Jouw antwoorden", 17, true);
+  text("Hieronder staan je laatste antwoorden en observaties. Je persoonlijke score staat niet in dit leerbewijs.");
   const route = routeFor(progress.choices);
   for (const step of route) {
     const a = progress.answers[step.id];
@@ -80,13 +75,6 @@ export async function createEvidence(name: string, progress: Progress) {
       ).length;
       keep(30 + blockLines * 6.3);
       text((q.id.startsWith("video") ? "Kijkvraag " + q.id.slice(5) : "Vraag " + q.id) + ": " + q.title, 11, true);
-      text(
-        q.correct.length
-          ? a.points !== undefined || a.firstCorrect === true
-            ? "Score: " + formatPoints(a.points ?? 1) + " / 1" + (a.attempts !== undefined ? " (" + a.attempts + " gecontroleerde poging(en))." : ".")
-            : "Score onbekend: eerdere pogingen zijn niet bewaard."
-          : "Afweging ingevuld; geen goed/foutscore.",
-      );
       text(
         "Laatste keuze: " +
           a.values
