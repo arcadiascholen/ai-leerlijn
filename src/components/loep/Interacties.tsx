@@ -277,9 +277,18 @@ const builderParts = [
     label: "Vraag wat onzeker is",
     text: "Geef aan waar je onzeker over bent.",
   },
+  {
+    label: "Vraag alleen argumenten voor een verbod",
+    text: "Geef alleen argumenten voor een verbod.",
+  },
+  {
+    label: "Vraag AI om je altijd gelijk te geven",
+    text: "Geef mij gelijk en laat tegenargumenten weg.",
+  },
 ];
 export function PromptBuilder() {
-  const [picked, setPicked] = useState<number[]>([0]);
+  const [picked, setPicked] = useState<number[]>([]);
+  const [evaluated, setEvaluated] = useState(false);
   const [copy, setCopy] = useState("");
   const [show, setShow] = useState<number | null>(null);
   const prompt =
@@ -320,25 +329,24 @@ export function PromptBuilder() {
       <div>
         <span className="loep-eyebrow">Zelf proberen</span>
         <h2>Bouw een betere vraag</h2>
-        <p>Vink twee onderdelen aan en vergelijk je vraag met de sturende vraag van daarnet. Je kunt daarna je vraag kopiëren.</p>
+        <p>Kies twee aanvullingen die helpen om verschillende kanten te onderzoeken. Let op: niet elke aanvulling maakt je vraag beter.</p>
         <div className="loep-build-options">
           {builderParts.map((part, i) => (
             <label key={part.label}>
               <input
                 type="checkbox"
                 checked={picked.includes(i)}
-                onChange={() =>
-                  setPicked(
-                    picked.includes(i)
-                      ? picked.filter((x) => x !== i)
-                      : [...picked, i].sort(),
-                  )
-                }
+                onChange={() => {
+                  setEvaluated(false);
+                  setPicked(picked.includes(i) ? picked.filter((x) => x !== i) : picked.length < 2 ? [...picked, i].sort() : picked);
+                }}
               />
               <span>{part.label}</span>
             </label>
           ))}
         </div>
+        <button className="loep-button" type="button" disabled={picked.length !== 2} onClick={() => setEvaluated(true)}>Bekijk de feedback</button>
+        {evaluated && <p className="loep-note" role="status">{picked.some((i) => i >= 3) ? "Kijk nog eens: vragen om alleen bevestiging of alleen argumenten vóór laat andere kanten weg. Kies aanvullingen die helpen om breder te kijken." : "Goed gekozen: deze aanvullingen helpen je om verschillende kanten, ontbrekende informatie of onzekerheid te onderzoeken."}</p>}
         <p className="loep-small">
           Ook een zorgvuldige vraag kan een fout antwoord opleveren. Blijf
           controleren.

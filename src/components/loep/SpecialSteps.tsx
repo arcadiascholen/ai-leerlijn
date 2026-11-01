@@ -118,10 +118,10 @@ const prompts = [
   "Wat zijn de voordelen en nadelen van een verbod op sociale media voor jongeren onder de 16 jaar?",
 ];
 const observations = [
-  "Het eerste antwoord bevestigde meer.",
-  "Het open antwoord liet meer kanten zien.",
-  "Beide antwoorden lieten verschillende kanten zien.",
-  "Ik zag weinig verschil of een ander verschil.",
+  "Bij vraag 1 ging AI meer mee in de mening uit de vraag.",
+  "Bij vraag 2 gaf AI meer argumenten voor én tegen.",
+  "Bij beide vragen gaf AI argumenten voor én tegen.",
+  "Ik zag weinig verschil, of een ander verschil.",
 ];
 export function Experiment({
   answer,
@@ -199,10 +199,6 @@ export function Experiment({
               : "Geen AI-toegang? Bekijk het voorbeeld"}{" "}
             <Icon name="arrow" size={16} />
           </button>
-          <p className="loep-small">
-            Geen nieuw account of betaling nodig. Je hoeft je gesprekken niet in
-            te leveren. Noteer eventueel welke toepassing je gebruikte en op welke datum.
-          </p>
         </div>
         <div className="loep-prompt-stack">
           {prompts.map((p, i) => (
@@ -238,7 +234,8 @@ export function Experiment({
         </div>
       </div>
       <fieldset className="loep-observation loep-options">
-        <legend>Welk verschil zag je tussen de twee antwoorden?</legend>
+        <legend>Vergelijk de antwoorden: wat viel je het meeste op?</legend>
+        <p className="loep-small">Vraag 1 stuurt naar een verbod; vraag 2 vraagt open naar voor- en nadelen. Kies wat het best past bij jouw antwoorden of bij het voorbeeld. Er is geen juist of fout antwoord.</p>
         <div>
           {observations.map((t, i) => (
             <label

@@ -118,24 +118,24 @@
   },
   "5": {
     "id": "5",
-    "title": "Hoe kon dit gebeuren?",
-    "body": "Waarom werd het probleem niet meteen opgemerkt?",
+    "title": "Waarom viel het probleem niet meteen op?",
+    "body": "OpenAI testte een nieuwe versie van ChatGPT. Gebruikers reageerden positief, maar na de update bleek dat de chatbot mensen soms te veel gelijk gaf.\n\nWaarom kunnen positieve reacties tijdens een test dit probleem verbergen?",
     "options": [
       {
         "id": "A",
-        "text": "Omdat ChatGPT tijdens de tests helemaal geen fouten maakte."
+        "text": "Omdat positieve reacties bewijzen dat een chatbot geen fouten maakt."
       },
       {
         "id": "B",
-        "text": "Omdat niemand de nieuwe versie had getest voordat ze werd uitgebracht."
+        "text": "Omdat gebruikers bij een test nooit feedback mogen geven."
       },
       {
         "id": "C",
-        "text": "Omdat positieve reacties van gebruikers niet altijd betekenen dat AI ook goede antwoorden geeft."
+        "text": "Omdat gebruikers een vriendelijk antwoord prettig kunnen vinden, ook als belangrijke kritiek ontbreekt."
       },
       {
         "id": "D",
-        "text": "Omdat ChatGPT alleen maar vriendelijk mocht antwoorden en geen kritiek mocht geven."
+        "text": "Omdat een chatbot tijdens een test geen tegenspraak kan geven."
       }
     ],
     "correct": [
