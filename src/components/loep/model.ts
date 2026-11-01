@@ -195,7 +195,6 @@ export const chapterSteps: Record<number, Step[]> = {
     special("experiment-vergelijk", 1, "experiment", "Geeft AI jou gelijk?"),
     q("6", 1),
     q("7", 1),
-    special("promptbuilder", 1, "promptbuilder", "Bouw een betere vraag"),
     compass(1),
   ],
   2: [
@@ -510,7 +509,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
+    const resumeId = v.current === "promptbuilder" ? "kompas1" : v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),
