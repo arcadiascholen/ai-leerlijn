@@ -264,125 +264,55 @@ export function Leerproces({ onAnswer, onCheck, checked }: Actions) {
   );
 }
 
-const builderParts = [
-  {
-    label: "Vraag naar voor- én nadelen",
-    text: "Geef sterke argumenten voor en tegen.",
-  },
-  {
-    label: "Vraag wat nog ontbreekt",
-    text: "Welke informatie ontbreekt om een goed oordeel te vormen?",
-  },
-  {
-    label: "Vraag wat onzeker is",
-    text: "Geef aan waar je onzeker over bent.",
-  },
-  {
-    label: "Vraag alleen argumenten voor een verbod",
-    text: "Geef alleen argumenten voor een verbod.",
-  },
-  {
-    label: "Vraag AI om je altijd gelijk te geven",
-    text: "Geef mij gelijk en laat tegenargumenten weg.",
-  },
-];
+const startPrompt = "Ik vind dat sociale media verboden moeten worden voor jongeren onder de 16 jaar. Dat zou toch veel beter zijn voor iedereen?";
 export function PromptBuilder() {
-  const [picked, setPicked] = useState<number[]>([]);
+  const [prompt, setPrompt] = useState(startPrompt);
   const [evaluated, setEvaluated] = useState(false);
   const [copy, setCopy] = useState("");
-  const [show, setShow] = useState<number | null>(null);
-  const prompt =
-    "Wat zijn de gevolgen van een verbod op sociale media voor jongeren onder de 16 jaar? " +
-    picked.map((i) => builderParts[i]!.text).join(" ");
+  const lower = prompt.toLocaleLowerCase("nl-BE");
+  const mentionsSides = /voor-? ?en nadelen|voordelen|nadelen|voor- en tegen|voor én tegen|voor en tegen|verschillende (kanten|perspectieven)|tegenargument/.test(lower);
+  const leading = /geef (me|mij) gelijk|alleen argumenten (voor|tegen)|laat tegenargumenten weg|veel beter zijn voor iedereen/.test(lower);
   async function copyText() {
     try {
       if (!navigator.clipboard?.writeText) throw Error();
       await navigator.clipboard.writeText(prompt);
       setCopy("Gekopieerd");
     } catch {
-      const t = document.createElement("textarea");
-      t.value = prompt;
-      t.style.position = "fixed";
-      t.style.left = "-9999px";
-      document.body.appendChild(t);
-      t.select();
+      const input = document.getElementById("loep-builder-prompt") as HTMLTextAreaElement | null;
+      input?.focus();
+      input?.select();
       let ok = false;
-      try {
-        ok = document.execCommand("copy");
-      } catch {}
-      t.remove();
-      if (!ok) {
-        const result = document.getElementById("loep-builder-prompt");
-        if (result) {
-          const range = document.createRange();
-          range.selectNodeContents(result);
-          const selection = window.getSelection();
-          selection?.removeAllRanges();
-          selection?.addRange(range);
-        }
-      }
-      setCopy(ok ? "Gekopieerd" : "Tekst geselecteerd");
+      try { ok = document.execCommand("copy"); } catch {}
+      setCopy(ok ? "Gekopieerd" : "Tekst geselecteerd: kopieer met je toetsenbord");
     }
   }
   return (
-    <div className="loep-discover">
+    <div className="loep-discover loep-open-prompt">
       <div>
         <span className="loep-eyebrow">Zelf proberen</span>
-        <h2>Bouw een betere vraag</h2>
-        <p>Kies twee aanvullingen die helpen om verschillende kanten te onderzoeken. Let op: niet elke aanvulling maakt je vraag beter.</p>
-        <div className="loep-build-options">
-          {builderParts.map((part, i) => (
-            <label key={part.label}>
-              <input
-                type="checkbox"
-                checked={picked.includes(i)}
-                onChange={() => {
-                  setEvaluated(false);
-                  setPicked(picked.includes(i) ? picked.filter((x) => x !== i) : picked.length < 2 ? [...picked, i].sort() : picked);
-                }}
-              />
-              <span>{part.label}</span>
-            </label>
-          ))}
-        </div>
-        <button className="loep-button" type="button" disabled={picked.length !== 2} onClick={() => setEvaluated(true)}>Bekijk de feedback</button>
-        {evaluated && <p className="loep-note" role="status">{picked.some((i) => i >= 3) ? "Kijk nog eens: vragen om alleen bevestiging of alleen argumenten vóór laat andere kanten weg. Kies aanvullingen die helpen om breder te kijken." : "Goed gekozen: deze aanvullingen helpen je om verschillende kanten, ontbrekende informatie of onzekerheid te onderzoeken."}</p>}
-        <p className="loep-small">
-          Ook een zorgvuldige vraag kan een fout antwoord opleveren. Blijf
-          controleren.
-        </p>
+        <h2>Maak de vraag beter</h2>
+        <p>De vraag hieronder stuurt AI al naar één antwoord. Herschrijf ze zodat je verschillende kanten van het onderwerp kunt onderzoeken.</p>
+        <label htmlFor="loep-builder-prompt"><strong>Jouw aangepaste vraag</strong></label>
+        <textarea id="loep-builder-prompt" value={prompt} rows={7} maxLength={1500}
+          onChange={(event) => { setPrompt(event.target.value); setEvaluated(false); setCopy(""); }} />
+        <button className="loep-button" type="button" disabled={!prompt.trim() || prompt.trim() === startPrompt} onClick={() => setEvaluated(true)}>Bekijk de feedback</button>
+        <p className="loep-small">Je tekst blijft op dit scherm. Kopieer je vraag als je ze wilt bewaren of zelf wilt uitproberen.</p>
       </div>
       <div>
-        <section className="loep-builder-result">
-          <span className="loep-eyebrow">Jouw vraag</span>
-          <p id="loep-builder-prompt">{prompt}</p>
-          <button className="loep-text-button" onClick={copyText}>
-            {copy || "Kopieer mijn vraag"}
-          </button>
-        </section>
-        <p className="loep-small">Klik op een voorbeeldzin.</p>
-        <div className="loep-example-lines">
-          {[
-            "Een verbod kan jongeren beschermen tegen risico’s.",
-            "Er zijn ook nadelen, zoals minder contact met vrienden.",
-          ].map((line, i) => (
-            <button
-              key={line}
-              aria-pressed={show === i}
-              onClick={() => setShow(show === i ? null : i)}
-            >
-              {line}
-            </button>
-          ))}
-        </div>
-        {show !== null && (
-          <p className="loep-note" role="status">
-            {show === 0
-              ? "Dit noemt een mogelijk voordeel."
-              : "Dit voegt een andere kant toe."}{" "}
-            Dit zijn verzonnen voorbeelden; een echt antwoord kan anders zijn.
-          </p>
-        )}
+        {evaluated ? <div className="loep-builder-result" role="status">
+          <span className="loep-eyebrow">Kijk nog eens naar je vraag</span>
+          <h3>Aandachtspunten</h3>
+          {leading ? <p>Je vraag bevat nog woorden die naar één antwoord sturen. Kun je die neutraler formuleren?</p> : <p>Lees je vraag opnieuw: stuur je AI al naar jouw mening, of laat je ruimte voor een ander antwoord?</p>}
+          {mentionsSides ? <p>Je noemt woorden die op verschillende kanten kunnen wijzen. Lees na of je ook echt ruimte laat voor verschillende argumenten.</p> : <p>Vraag je ook naar andere kanten of mogelijke nadelen? Dat kan bijvoorbeeld met een vraag naar tegenargumenten.</p>}
+          <p>Welke informatie of bronnen zou je zelf nog willen controleren?</p>
+          <p className="loep-small">Deze tips kijken naar enkele woorden, niet naar de volledige betekenis. Jij beoordeelt zelf of je vraag helpt; er zijn meerdere goede formuleringen.</p>
+          <button className="loep-text-button" type="button" onClick={copyText}>{copy || "Kopieer mijn vraag"}</button>
+        </div> : <div className="loep-builder-result">
+          <span className="loep-eyebrow">Tips</span>
+          <h3>Hoe maak je je vraag opener?</h3>
+          <p>Laat merken dat je verschillende kanten wilt onderzoeken, zonder zelf al te beslissen wat het antwoord moet zijn.</p>
+          <p>Je kunt ook vragen wat onzeker is of welke informatie nog ontbreekt.</p>
+        </div>}
       </div>
     </div>
   );
