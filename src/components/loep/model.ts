@@ -40,10 +40,10 @@ export const chapters: Chapter[] = [
     image: "privacy",
     alt: "Een hangslot op een computertoetsenbord.",
     compass:
-      "Ik deel geen onnodige persoonlijke gegevens met AI. Gaat het toch mis, dan meld ik dat.",
+      "Ik denk na over wat ik deel. In publieke AI-tools gebruik ik geen herkenbare persoonsgegevens of gevoelige informatie. Ook bij een schoolaccount blijf ik voorzichtig. Gaat het mis, dan meld ik dat.",
     source:
-      "https://tweakers.net/nieuws/237718/chatgpt-stopt-met-optie-om-chats-door-zoekmachines-te-laten-indexeren.html",
-    sourceLabel: "Achtergrond · gedeelde gesprekslinks",
+      "https://learn.microsoft.com/en-us/copilot/faq",
+    sourceLabel: "Microsoft · gegevens en Copilot Chat",
   },
   {
     id: 3,
@@ -151,7 +151,7 @@ const story = (
   ...text: string[]
 ): Step => ({ id, chapter, kind: "story", title, text });
 const q = (id: string, chapter: number): Step => ({
-  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "4" ? "q4-kritische-vraag" : "q" + id,
+  id: id === "1" ? "q1-aanbevelingen" : id === "video2" ? "qvideo2-herzien" : id === "8" ? "q8-gegevens" : id === "4" ? "q4-kritische-vraag" : "q" + id,
   chapter,
   kind: "question",
   title: questions[id]?.title ?? id,
@@ -201,9 +201,10 @@ export const chapterSteps: Record<number, Step[]> = {
     story(
       "delen",
       2,
-      "Oeps, mijn gesprek staat op Google!",
-      "In 2025 konden sommige gedeelde ChatGPT-gesprekken op Google verschijnen. Eerst maakte iemand een deellink. Daarna kon die persoon ook kiezen om de link vindbaar te maken via zoekmachines.",
-      "Die optie werd weer uitgeschakeld. Niet alle privégesprekken waren openbaar. Maar iedereen met een gedeelde link kan het gesprek meestal wel bekijken. Denk dus na voor je een link deelt.",
+      "Wat gebeurt er met wat je aan AI vertelt?",
+      "AI kan helpen bij een moeilijke situatie of een tekst. Om te antwoorden verwerkt de toepassing wat je invoert. Gesprekken kunnen ook worden bewaard of, afhankelijk van de toepassing en instellingen, gebruikt om AI te verbeteren.",
+      "Wat er precies gebeurt, verschilt per toepassing en account. Bij Copilot Chat mét bedrijfsgegevensbescherming zegt Microsoft bijvoorbeeld dat vragen en antwoorden bewaard kunnen worden, maar niet gebruikt worden om de basismodellen te trainen. Controleer welke bescherming voor jouw account geldt.",
+      "Volgens het Arcadia AI-beleid geef je in publieke AI-tools geen herkenbare persoonsgegevens of gevoelige informatie in. Ook met een schoolaccount blijf je voorzichtig. Gebruik bij schoolopdrachten bij voorkeur een tool die de school aanbiedt.",
     ),
     q("8", 2),
     special("privacy-editor", 2, "privacy-editor", "Wat laat je weg?"),
@@ -509,7 +510,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "promptbuilder" ? "kompas1" : v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
+    const resumeId = v.current === "q8" ? "q8-gegevens" : v.current === "promptbuilder" ? "kompas1" : v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : (v.current === "q4" || v.current === "q4-concreet") ? "q4-kritische-vraag" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),

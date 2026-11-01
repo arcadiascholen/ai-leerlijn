@@ -77,10 +77,10 @@ export function SourceCard({ chapter }: { chapter: number }) {
       url: "https://openai.com/index/expanding-on-sycophancy/",
     },
     2: {
-      source: "Tweakers",
-      date: "2025",
-      why: "Het artikel legt uit hoe gedeelde gesprekken in zoekmachines konden verschijnen.",
-      url: "https://tweakers.net/nieuws/237718/chatgpt-stopt-met-optie-om-chats-door-zoekmachines-te-laten-indexeren.html",
+      source: "Microsoft",
+      date: "Copilot Chat",
+      why: "Microsoft legt uit hoe Copilot Chat omgaat met vragen, antwoorden en gegevensbescherming. De instellingen hangen af van je schoolaccount.",
+      url: "https://learn.microsoft.com/en-us/copilot/faq",
     },
     3: {
       source: "VRT NWS",
@@ -121,7 +121,7 @@ export function SourceCard({ chapter }: { chapter: number }) {
   };
   const questions: Record<number, string> = {
     1: "Wat vertelt de maker zelf, en welke andere bron kun je raadplegen?",
-    2: "Wat is het verschil tussen een link delen en vindbaar maken?",
+    2: "Welke afspraken gelden voor jouw account en wat mag je wel of niet invoeren?",
     3: "Wie geeft informatie en hoe kun je die controleren?",
     4: "Wat onderzochten de onderzoekers precies?",
     5: "Welk perspectief laat de reportage zien?",

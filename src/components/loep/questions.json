@@ -205,30 +205,30 @@
   },
   "8": {
     "id": "8",
-    "title": "Hoe kon dit gebeuren?",
-    "body": "",
+    "title": "Wat gebeurt er met je gegevens?",
+    "body": "Je vraagt een AI-toepassing om hulp. Je typt een vraag en krijgt antwoord.\n\nWat kun je zeggen over wat er met jouw vraag gebeurt?",
     "options": [
       {
         "id": "A",
-        "text": "Gebruikers hadden gesprekken gedeeld en een optie aangezet waardoor Google ze kon vinden."
+        "text": "Elke AI-toepassing publiceert je gesprek automatisch op internet."
       },
       {
         "id": "B",
-        "text": "ChatGPT plaatste automatisch alle gesprekken op Google."
+        "text": "Je vraag kan nooit worden bewaard of gebruikt nadat je antwoord is verschenen."
       },
       {
         "id": "C",
-        "text": "Hackers hadden ingebroken en alle gesprekken gestolen."
+        "text": "Alle AI-toepassingen gebruiken alle gesprekken op precies dezelfde manier."
       },
       {
         "id": "D",
-        "text": "Google kon alle privégesprekken van ChatGPT lezen."
+        "text": "Dat hangt af van de toepassing, het account en de instellingen. Je vraag kan bijvoorbeeld worden bewaard."
       }
     ],
     "correct": [
-      "A"
+      "D"
     ],
-    "feedback": "Niet alle ChatGPT-gesprekken waren openbaar. Het ging om gesprekken waarvoor gebruikers zelf een deellink hadden gemaakt én de mogelijkheid hadden ingeschakeld om ze vindbaar te maken via zoekmachines. Sommige gebruikers beseften mogelijk onvoldoende wat dat betekende.",
+    "feedback": "Wat er met je vraag gebeurt, verschilt per toepassing, account en instellingen. Een dienst kan gesprekken bijvoorbeeld bewaren of onder bepaalde voorwaarden gebruiken om de AI te verbeteren. Kijk daarom welke afspraken en instellingen gelden.",
     "branches": {},
     "count": 1
   },
