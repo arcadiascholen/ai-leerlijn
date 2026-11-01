@@ -137,6 +137,7 @@ export type Step = {
     | "chapter-intro"
     | "promptbuilder"
     | "privacy-editor"
+    | "privacy-overzicht"
     | "perspectieven"
     | "afwegen"
     | "agent-sim";
@@ -208,6 +209,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "Volgens het Arcadia AI-beleid voer je in publieke AI-tools geen herkenbare persoonsgegevens of gevoelige informatie in. Gebruik voor schoolopdrachten bij voorkeur een tool van de school.",
     ),
     q("8", 2),
+    special("privacy-afspraken", 2, "privacy-overzicht", "Privacy: de afspraken"),
     special("privacy-editor", 2, "privacy-editor", "Wat laat je weg?"),
     q("10", 2),
     q("11", 2),
@@ -476,6 +478,10 @@ export function parseProgress(raw: string | null): Progress {
     p.visited = v.visited.filter((s): s is string => typeof s === "string");
     for (const chapter of chapters) {
       if (chapterSteps[chapter.id]?.some((step) => p.visited.includes(step.id))) p.visited.push(`hoofdstuk-${chapter.id}`);
+    }
+    // Leerlingen die al voorbij dit punt waren, behouden hun voortgang.
+    if (["privacy-editor", "q10", "q11", "q12", "kompas2"].some((id) => p.visited.includes(id) || v.current === id)) {
+      p.visited = [...new Set([...p.visited, "privacy-afspraken"])];
     }
     p.started =
       typeof v.started === "string" && !Number.isNaN(Date.parse(v.started))

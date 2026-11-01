@@ -2314,3 +2314,18 @@
 .loep-feedback-request { white-space: pre-wrap; padding: .8rem; border: 1px solid #bbd5cf; border-radius: .6rem; background: white; }
 .loep-builder-example { margin-top: 1rem; }
 .loep-builder-example summary { cursor: pointer; font-weight: 700; color: #075766; }
+
+.loep-privacy-overview { width: 100%; padding: .5rem 0; }
+.loep-privacy-heading { margin-bottom: 1rem; }
+.loep-privacy-heading h2 { margin: .4rem 0; }
+.loep-privacy-heading p { margin: 0; }
+.loep-privacy-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.loep-privacy-card { border-radius: 1rem; padding: 1rem 1.15rem; background: #eff5e9; border: 1px solid #d5e2cb; }
+.loep-privacy-personal { background: #e5f2f3; border-color: #c5dedd; }
+.loep-privacy-keep { background: #f8f3e7; border-color: #eadfc6; }
+.loep-privacy-help { background: #f0f3ed; border-color: #d5dfd1; }
+.loep-privacy-icon { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: .7rem; background: #fff; color: #0e6d75; }
+.loep-privacy-card h3 { margin: .45rem 0 .25rem; font-size: 1.05rem; }
+.loep-privacy-card p { margin: 0; line-height: 1.4; font-size: .95rem; }
+.loep-privacy-overview > .loep-small { margin-top: .8rem; }
+@media (max-width: 650px) { .loep-privacy-cards { grid-template-columns: 1fr; } }

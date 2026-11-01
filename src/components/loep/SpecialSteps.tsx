@@ -963,6 +963,41 @@ export function Compass({ chapter }: { chapter: number }) {
     </div>
   );
 }
+function PrivacyOverview() {
+  return (
+    <div className="loep-privacy-overview">
+      <div className="loep-privacy-heading">
+        <span className="loep-eyebrow">AI en privacy · de afspraken</span>
+        <h2>Wat deel je met AI?</h2>
+        <p>AI kan helpen. Jij kiest wat je vertelt.</p>
+      </div>
+      <div className="loep-privacy-cards">
+        <section className="loep-privacy-card loep-privacy-school">
+          <span className="loep-privacy-icon"><Icon name="lock" size={23} /></span>
+          <h3>Voor school: je schoolaccount</h3>
+          <p>Gebruik bij voorkeur de AI-tool die je school aanbiedt, zoals Copilot met je schoolaccount. Ook daar blijf je voorzichtig met persoonlijke informatie.</p>
+        </section>
+        <section className="loep-privacy-card loep-privacy-personal">
+          <span className="loep-privacy-icon"><Icon name="chat" size={23} /></span>
+          <h3>Persoonlijke AI-tool</h3>
+          <p>In een publieke AI-tool geef je geen herkenbare persoonsgegevens of gevoelige informatie in. Dat geldt ook als je een betalend account hebt.</p>
+        </section>
+        <section className="loep-privacy-card loep-privacy-keep">
+          <span className="loep-privacy-icon"><Icon name="search" size={23} /></span>
+          <h3>Vertel alleen wat nodig is</h3>
+          <p>Laat bijvoorbeeld namen, telefoonnummers, foto’s en privégesprekken weg. Ook zonder naam kunnen details iemand herkenbaar maken.</p>
+        </section>
+        <section className="loep-privacy-card loep-privacy-help">
+          <span className="loep-privacy-icon"><Icon name="check" size={23} /></span>
+          <h3>Toch te veel gedeeld?</h3>
+          <p>Meld het aan je leerkracht of begeleider. Samen bekijken jullie wat nodig is.</p>
+        </section>
+      </div>
+      <p className="loep-small">Gebaseerd op het Arcadia AI-beleid: volg ook de afspraken van je school en de AI-barometer bij opdrachten.</p>
+    </div>
+  );
+}
+
 export function Special({
   step,
   answer,
@@ -989,6 +1024,8 @@ export function Special({
       );
     case "promptbuilder":
       return <PromptBuilder />;
+    case "privacy-overzicht":
+      return <PrivacyOverview />;
     case "privacy-editor":
       return (
         <PrivacyEdit
