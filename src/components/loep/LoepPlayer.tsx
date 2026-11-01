@@ -803,6 +803,11 @@ export default function LoepPlayer({
                     <p>AI geeft vaak vlotte en vriendelijke antwoorden. Maar betekent dat ook dat je die antwoorden kunt vertrouwen?</p>
                     <p>Wat als AI iets verzint, een bron verkeerd vermeldt of jou te snel gelijk geeft? Hoe ontdek je wat klopt?</p>
                   </>
+                ) : chapter.id === 3 ? (
+                  <>
+                    <p>Met AI kun je beelden en stemmen aanpassen. Zo kan het lijken alsof iemand iets zegt of doet wat nooit is gebeurd. Zo'n beeld of filmpje noemen we een deepfake.</p>
+                    <p>Wat als iemand zonder jouw toestemming zo'n filmpje van jou maakt? Welke gevolgen kan dat hebben en wat kun je doen?</p>
+                  </>
                 ) : <p>{chapter.subtitle}</p>}
               </div>
               <Photo name={chapter.image} alt={chapter.alt} />
