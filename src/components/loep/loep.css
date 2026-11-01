@@ -2294,3 +2294,9 @@
 .loep-learning-controls button:disabled { opacity: .35; cursor: default; }
 .loep-learning-task .loep-feedback { margin-top: 1rem; }
 @media (max-width: 760px) { .loep-learning { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+.loep-chapter-intro { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; }
+.loep-chapter-intro h2 { font-size: clamp(2.3rem, 4vw, 4rem); margin: .7rem 0; }
+.loep-chapter-intro p { font-size: 1.2rem; }
+.loep-chapter-intro img { width: 100%; aspect-ratio: 1.25; object-fit: cover; border-radius: 1.4rem; }
+@media (max-width: 760px) { .loep-chapter-intro { grid-template-columns: 1fr; } .loep-chapter-intro img { aspect-ratio: 1.8; } }

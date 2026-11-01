@@ -61,7 +61,7 @@ function Knowledge({
     >
       <div className="loep-question-context">
         <span className="loep-eyebrow">
-          {q.id.startsWith("video") ? `Kijkvraag ${q.id.slice(5)}` : `Vraag ${q.id}`} ·{" "}
+          {q.id.startsWith("video") ? `Kijkvraag ${q.id.slice(5)}` : "Vraag"} ·{" "}
           {q.correct.length
             ? "Kies je antwoord"
             : "Jouw afweging · zonder score"}
@@ -181,7 +181,7 @@ function Knowledge({
         ) : (
           <p className="loep-small">
             {q.correct.length
-              ? "De juiste keuze is aangeduid met ✓. Je kunt herlezen, opnieuw proberen of verdergaan."
+              ? (correct ? "Goed gedaan. Je kunt verdergaan." : "Bekijk de uitleg en probeer opnieuw om verder te gaan.")
               : "Je standpunt krijgt geen goed/foutscore. Lees de reactie en ga verder."}
           </p>
         )}
@@ -654,13 +654,13 @@ export default function LoepPlayer({
     { title: "Even kennismaken", id: "welkom", chapter: 0 },
     ...chapters.slice(0, 2).map((c) => ({
       title: c.title,
-      id: chapterSteps[c.id]![0]!.id,
+      id: `hoofdstuk-${c.id}`,
       chapter: c.id,
     })),
     { title: "Kies je vervolg", id: "keuze", chapter: 0 },
     ...progress.choices.map((n) => ({
       title: chapters[n - 1]!.title,
-      id: chapterSteps[n]![0]!.id,
+      id: `hoofdstuk-${n}`,
       chapter: n,
     })),
     { title: "Jouw AI-kompas", id: "leerbewijs", chapter: 0 },
@@ -674,7 +674,7 @@ export default function LoepPlayer({
   const total =
     progress.choices.length === 2
       ? route.length - 1
-      : routeFor([]).length - 1 + longestChoices;
+      : routeFor([]).length - 1 + longestChoices + 2;
   const doneSteps = route.filter(
     (s) => progress.visited.includes(s.id) && ready(s, progress),
   ).length;
@@ -760,6 +760,11 @@ export default function LoepPlayer({
         >
           {step.kind === "welcome" ? (
             <Welcome />
+          ) : step.kind === "chapter-intro" && chapter ? (
+            <div className="loep-chapter-intro">
+              <div><span className="loep-eyebrow">Nieuwe uitdaging · {chapter.id}</span><h2>{chapter.title}</h2><p>{chapter.subtitle}</p><p>Ontdek het onderwerp en ga daarna zelf aan de slag.</p></div>
+              <Photo name={chapter.image} alt={chapter.alt} />
+            </div>
           ) : step.kind === "story" ? (
             <Story step={step} />
           ) : step.kind === "question" ? (
@@ -809,7 +814,7 @@ export default function LoepPlayer({
               : step.kind === "choice"
                 ? "Kies precies twee onderwerpen"
                 : !allowNext
-                  ? "Maak eerst de opdracht af en bekijk de feedback"
+                  ? (step.question && progress.answers[step.id]?.checked ? "Probeer opnieuw om verder te gaan" : "Maak eerst de opdracht af en bekijk de feedback")
                   : "Je voortgang blijft in deze browser op dit toestel"}
           </span>
           {step.kind !== "summary" && (

@@ -134,6 +134,7 @@ export type Step = {
     | "video-intro"
     | "sorteren"
     | "leerproces"
+    | "chapter-intro"
     | "promptbuilder"
     | "privacy-editor"
     | "perspectieven"
@@ -171,11 +172,10 @@ export const introduction: Step[] = [
   q("video2", 0),
   special("sorteren-v2", 0, "sorteren", "Waar zit AI in?"),
   special("patronen", 0, "leerproces", "Hoe leert AI?"),
-  q("2", 0),
-  q("3", 0),
 ];
 export const chapterSteps: Record<number, Step[]> = {
   1: [
+    q("3", 1),
     story(
       "vriendelijk",
       1,
@@ -365,11 +365,13 @@ export function routeFor(choices: number[]): Step[] {
     .slice(0, 2);
   return [
     ...introduction,
+    special("hoofdstuk-1", 1, "chapter-intro", chapters[0]!.title),
     ...chapterSteps[1]!,
+    special("hoofdstuk-2", 2, "chapter-intro", chapters[1]!.title),
     ...chapterSteps[2]!,
     choiceStep,
     ...(picked.length === 2
-      ? picked.flatMap((n) => chapterSteps[n] ?? [])
+      ? picked.flatMap((n) => [special(`hoofdstuk-${n}`, n, "chapter-intro", chapters[n - 1]!.title), ...(chapterSteps[n] ?? [])])
       : []),
     summaryStep,
   ];
@@ -406,7 +408,8 @@ export function ready(step: Step, p: Progress): boolean {
   ) {
     const a = p.answers[step.id];
     return (
-      !!a?.checked && a.values.filter(Boolean).length === requiredCount(step)
+      !!a?.checked && a.values.filter(Boolean).length === requiredCount(step) &&
+      (!step.question || !questions[step.question]!.correct.length || isCorrect(questions[step.question]!, a.values))
     );
   }
   return true;
@@ -438,6 +441,9 @@ export function parseProgress(raw: string | null): Progress {
       .filter((n) => Number.isInteger(n) && n >= 3 && n <= 8)
       .slice(0, 2);
     p.visited = v.visited.filter((s): s is string => typeof s === "string");
+    for (const chapter of chapters) {
+      if (chapterSteps[chapter.id]?.some((step) => p.visited.includes(step.id))) p.visited.push(`hoofdstuk-${chapter.id}`);
+    }
     p.started =
       typeof v.started === "string" && !Number.isNaN(Date.parse(v.started))
         ? v.started
@@ -472,7 +478,7 @@ export function parseProgress(raw: string | null): Progress {
       }
     }
     const route = routeFor(p.choices);
-    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current;
+    const resumeId = v.current === "q1-aanbevelingen" ? "patronen" : v.current === "q2" ? "hoofdstuk-1" : v.current;
     const wanted = route.findIndex((s) => s.id === resumeId);
     const barrier = route.findIndex(
       (s) => s.kind === "summary" || !p.visited.includes(s.id) || !ready(s, p),
