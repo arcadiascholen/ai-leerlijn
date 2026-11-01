@@ -990,7 +990,7 @@ function PrivacyOverview() {
         <section className="loep-privacy-card loep-privacy-help">
           <span className="loep-privacy-icon"><Icon name="check" size={23} /></span>
           <h3>Toch te veel gedeeld?</h3>
-          <p>Meld het aan je leerkracht of begeleider. Samen bekijken jullie wat nodig is.</p>
+          <p>Meld het aan je leerkracht of begeleider. Samen bekijken jullie hoe je verdere verspreiding kunt beperken en wie je nog moet verwittigen.</p>
         </section>
       </div>
       <p className="loep-small">Gebaseerd op het Arcadia AI-beleid: volg ook de afspraken van je school en de AI-barometer bij opdrachten.</p>
