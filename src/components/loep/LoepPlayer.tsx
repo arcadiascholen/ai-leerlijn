@@ -121,8 +121,9 @@ function Knowledge({
         ) : (
           <div className="loep-question-body">
             {q.id === "4" ? <div className="loep-example-chat">
+              <div className="loep-bubble loep-bubble-right"><strong>Jij</strong><span>Ik wil met mijn klas een feest in het park organiseren. Is dat een goed plan?</span></div>
               <div className="loep-bubble"><strong>AI</strong><span>Goed idee, dat zal zeker lukken!</span></div>
-              <p>AI zegt dit over jouw plan. Welke vraag helpt je om je plan kritischer te bekijken?</p>
+              <p>Welke vraag helpt je om je plan kritischer te bekijken?</p>
             </div> : <Paragraphs text={q.body} />}
           </div>
         )}
