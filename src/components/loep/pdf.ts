@@ -11,9 +11,9 @@ import {
   type Progress,
 } from "./model";
 // Called only by an explicit download. The name never enters stored progress.
-export async function createEvidence(name: string, progress: Progress) {
-  if (!name.trim() || !completed(progress))
-    throw new Error("Rond eerst de volledige route af en vul je naam in.");
+export async function createEvidence(name: string, school: string, klas: string, progress: Progress) {
+  if (!name.trim() || !school.trim() || !klas.trim() || !completed(progress))
+    throw new Error("Rond eerst de volledige route af en vul je naam, school en klas in.");
   const { jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
   let y = 26;
@@ -46,6 +46,7 @@ export async function createEvidence(name: string, progress: Progress) {
   text("AI onder de loep", 25, true);
   text("Persoonlijk leerbewijs en AI-kompas", 13);
   text(name.trim(), 15, true);
+  text("School: " + school + " | Klas: " + klas.trim());
   text("Gemaakt: " + now.toLocaleString("nl-BE"));
   text(
     "Een leerbewijs van deelname; geen schoolcijfer of garantie van beheersing. De antwoorden en tijdstippen zijn lokaal op dit toestel vastgelegd.",

@@ -12,3 +12,8 @@
 .loep-chat .loep-bubble-right { background: #dcf8c6; border-radius: 12px 5px 12px 12px; }
 .loep-split > .loep-chat { max-height: none; height: auto; }
 .loep-split > .loep-chat .loep-chat-messages { overflow: visible; }
+
+.loep-bias-examples { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: center; height: 100%; padding: 16px; background: #edf5e7; }
+.loep-bias-examples img { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; }
+.loep-bias-examples p { grid-column: 1 / -1; margin: 0; font-size: 13px; }
+.loep-evidence-card select { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #879c81; border-radius: 7px; background: white; font: inherit; }

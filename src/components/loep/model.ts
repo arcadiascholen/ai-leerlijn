@@ -252,7 +252,6 @@ export const chapterSteps: Record<number, Step[]> = {
       4,
       "Eén beeld is nog geen bewijs",
       "Onderzoekers vonden dat beeldgeneratoren bestaande stereotypen kunnen overnemen. Dat betekent niet dat elk model of elke opdracht dezelfde resultaten geeft.",
-      "Bekijk patronen over meerdere beelden. Noteer de opdracht, het model en de datum. Je kunt iemands genderidentiteit of afkomst niet met zekerheid afleiden uit uiterlijk.",
     ),
     q("19", 4),
     q("20", 4),

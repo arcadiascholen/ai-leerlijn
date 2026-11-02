@@ -361,6 +361,8 @@ function Story({ step }: { step: Step }) {
           <VideoCard kind="deepfake" />
         ) : step.id === "nepvideo" ? (
           <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
+        ) : step.id === "onderzoek" ? (
+          <div className="loep-bias-examples"><Photo name="verpleegkundige-1" alt="AI-beeld van een verpleegkundige." /><Photo name="chirurg-1" alt="AI-beeld van een chirurg." /><p>Twee AI-beelden uit de galerij. Welke beelden en rollen herken je?</p></div>
         ) : chapter ? (
           [
             "vriendelijk",
@@ -464,6 +466,8 @@ function Summary({
   onMissing: () => void;
 }) {
   const [name, setName] = useState("");
+  const [school, setSchool] = useState("");
+  const [klas, setKlas] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [downloaded, setDownloaded] = useState(false);
@@ -474,7 +478,7 @@ function Summary({
     setError("");
     try {
       const { createEvidence } = await import("./pdf");
-      const pdf = await createEvidence(name, progress);
+      const pdf = await createEvidence(name, school, klas, progress);
       pdf.save("AI-onder-de-loep-leerbewijs.pdf");
       setDownloaded(true);
     } catch {
@@ -533,14 +537,20 @@ function Summary({
                 placeholder="Voornaam en naam"
               />
             </label>
-            <small>
-              Je naam blijft alleen tijdelijk in dit scherm en komt in je PDF.
-              Hij wordt niet naar een server verstuurd of in de voortgang
-              bewaard.
-            </small>
+            <label>Je school
+              <select value={school} onChange={(e) => setSchool(e.target.value)} required>
+                <option value="">Kies je school</option>
+                {["SJCA", "DIA", "SMA", "SJIB"].map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+            </label>
+            <label>Je klas
+              <input value={klas} onChange={(e) => setKlas(e.target.value)} maxLength={50} placeholder="Bijvoorbeeld 4A" required />
+            </label>
+            <small>Je naam, school en klas komen in je PDF. Ze worden niet naar een server verstuurd of in je voortgang bewaard.</small>
+            <small>Je browser bewaart de PDF meestal in je map Downloads. Afhankelijk van je browserinstellingen kun je een andere map kiezen.</small>
             <button
               className="loep-button"
-              disabled={!name.trim() || busy}
+              disabled={!name.trim() || !school || !klas.trim() || busy}
               onClick={download}
             >
               {busy ? "PDF wordt gemaakt…" : "Download mijn leerbewijs"}{" "}
@@ -555,13 +565,13 @@ function Summary({
         {error && <p role="alert">{error}</p>}
         {downloaded && (
           <p role="status">
-            ✓ Je PDF is gedownload. Bewaar het en laad het op bij het
-            reflectieformulier.
+            Je download is gestart. Kijk in je map Downloads of in de downloads van je browser.
           </p>
         )}
         <hr />
         <strong>Daarna: reflectie en PDF-upload</strong>
-        <p>Vul het aparte Smartschoolformulier in.</p>
+        <p>Vul het Smartschoolformulier in en beantwoord de korte reflectievragen. Upload op het einde je PDF als leerbewijs. Pas daarna is je opdracht volledig.</p>
+        <p>In het Smartschoolbericht dat je ontving of in de planner staat uitgelegd hoe je het formulier vindt en invult.</p>
         {formHref ? (
           <a
             className="loep-text-button"
@@ -573,7 +583,7 @@ function Summary({
           </a>
         ) : (
           <p className="loep-small">
-            De link naar het formulier volgt via je school.
+            Zoek de link in je Smartschoolbericht of planner.
           </p>
         )}
       </div>
