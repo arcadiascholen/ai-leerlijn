@@ -36,7 +36,7 @@ function Paragraphs({ text }: { text: string }) {
     </>
   );
 }
-function ClassChat({ selected, showReply, followup }: { selected?: string; showReply: boolean; followup: boolean }) {
+function ClassChat({ selected, showReply, followup, latest }: { selected?: string; showReply: boolean; followup: boolean; latest: boolean }) {
   const chatRef = useRef<HTMLDivElement>(null);
   useEffect(() => { if (chatRef.current) chatRef.current.scrollTop = chatRef.current.scrollHeight; }, [selected, showReply, followup]);
   const text = questions["14"]!.options.find((o) => o.id === selected)?.text;
@@ -52,6 +52,7 @@ function ClassChat({ selected, showReply, followup }: { selected?: string; showR
       {selected && (selected === "D" ? <p className="loep-small">Jij reageert niet.</p> : <div className="loep-bubble loep-bubble-right"><strong>Jij</strong><span>{text}</span></div>)}
       {selected && showReply && <div className="loep-bubble"><strong>Noor</strong><span>{reaction}</span></div>}
       {followup && later.map(([who, msg], i) => <div className="loep-bubble" key={"later" + i}><strong>{who}</strong><span>{msg}</span></div>)}
+      {latest && [["Sam", "kheb gehoord dat die leerkracht er zelf mee moest lachen"], ["Noor", "van wie hebt ge da gehoord?"], ["Sam", "ja weet ik ni, iemand zei da"]].map(([who, msg], i) => <div className="loep-bubble" key={"latest" + i}><strong>{who}</strong><span>{msg}</span></div>)}
     </div>
   </div>;
 }
@@ -123,14 +124,10 @@ function Knowledge({
               <div className="loep-bubble loep-bubble-right"><strong>Jij</strong><span>Ik wil met mijn klas een feest in het park organiseren. Is dat een goed plan?</span></div>
               <div className="loep-bubble"><strong>AI</strong><span>Goed idee, dat zal zeker lukken!</span></div>
               <p>Welke vraag helpt je om je plan kritischer te bekijken?</p>
-            </div> : q.id === "15" ? <p>Maakt het nog uit of iemand het filmpje verder verspreidt?</p> : <Paragraphs text={q.body} />}
+            </div> : q.id === "16" ? <p>Wat kun je hieruit besluiten?</p> : q.id === "15" ? <p>Maakt het nog uit of iemand het filmpje verder verspreidt?</p> : <Paragraphs text={q.body} />}
           </div>
         )}
-        {q.id === "13" && <figure className="loep-case-photo">
-          <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
-          <figcaption>Illustratie van videobewerking · <a href="https://www.vrt.be/nwsnwsnws/nl/post/2026/02/17/deepfakereactie/" target="_blank" rel="noreferrer">Lees het bericht over Berchem ↗</a></figcaption>
-        </figure>}
-        {(q.id === "14" || q.id === "15") && <ClassChat selected={q.id === "14" ? values[0] : progress.answers.q14?.values[0]} showReply={q.id === "15" ? !!progress.answers.q14?.checked : checked} followup={q.id === "15"} />}
+        {(q.id === "14" || q.id === "15" || q.id === "16") && <ClassChat selected={q.id === "14" ? values[0] : progress.answers.q14?.values[0]} showReply={q.id !== "14" ? !!progress.answers.q14?.checked : checked} followup={q.id === "15" || q.id === "16"} latest={q.id === "16"} />}
         {q.id.startsWith("video") && <VideoCard kind="intro" compact />}
         {checked && q.body && (
           <details className="loep-question-reread">

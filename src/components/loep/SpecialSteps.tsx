@@ -717,7 +717,6 @@ export const messages = [
   ["Noor", "die gaat da ook zien he"],
 ];
 export function Chat() {
-  const [count, setCount] = useState(3);
   return (
     <div className="loep-split">
       <div>
@@ -735,14 +734,6 @@ export function Chat() {
         <p className="loep-small">
           De 26 deelnemers, namen en berichten zijn verzonnen. Je hoeft geen kwetsende video te bewaren of door te sturen om hulp te vragen.
         </p>
-        <button
-          className="loep-button"
-          onClick={() => setCount(Math.min(count + 1, 8))}
-          disabled={count === 8}
-        >
-          {count === 8 ? "Je hebt alle berichten gelezen" : "Volgend bericht"}{" "}
-          <Icon name="arrow" size={17} />
-        </button>
       </div>
       <div className="loep-chat">
         <header>
@@ -755,7 +746,7 @@ export function Chat() {
           </div>
         </header>
         <div className="loep-chat-messages" aria-live="polite">
-          {messages.slice(0, count).map(([who, msg], i) => (
+          {messages.map(([who, msg], i) => (
             <div
               key={i}
               className={

@@ -4,3 +4,11 @@
 .loep-case-photo { margin: 12px 0 0; }
 .loep-case-photo img { display: block; width: min(100%, 300px); height: 115px; object-fit: cover; border-radius: 10px; }
 .loep-case-photo figcaption { font-size: 11px; margin-top: 5px; }
+
+/* Fictieve groepschat in de stijl van een berichtenapp. */
+.loep-chat { background: #ece5dd; box-shadow: 0 5px 20px #173b2b1a; }
+.loep-chat > header { background: #075e54; }
+.loep-chat .loep-bubble { background: #fff; border-radius: 5px 12px 12px 12px; box-shadow: 0 1px 1px #0002; }
+.loep-chat .loep-bubble-right { background: #dcf8c6; border-radius: 12px 5px 12px 12px; }
+.loep-split > .loep-chat { max-height: none; height: auto; }
+.loep-split > .loep-chat .loep-chat-messages { overflow: visible; }

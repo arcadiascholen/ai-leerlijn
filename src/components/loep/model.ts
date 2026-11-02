@@ -222,7 +222,7 @@ export const chapterSteps: Record<number, Step[]> = {
       3,
       "Kun jij zien wat echt is?",
       "Bekijk het filmpje van NOS Jeugdjournaal over beelden die met AI zijn gemaakt.",
-      "Kijkvraag: kun je altijd aan een filmpje zien of het echt is? Waar kun je nog op letten?",
+      "Kijkvraag: waarop kun je letten om te onderzoeken of een filmpje echt is?",
     ),
     q("deepfakecheck", 3),
     story(
@@ -230,7 +230,7 @@ export const chapterSteps: Record<number, Step[]> = {
       3,
       "Wanneer gaat een grap te ver?",
       "In februari 2026 maakten leerlingen in Berchem een kwetsende deepfakevideo van een leerkracht. De leerkracht diende klacht in.",
-      "De school stelde de 100-dagenviering uit en ging met leerlingen in gesprek. In de geraadpleegde berichtgeving staat niet hoe de klacht uiteindelijk is afgelopen.",
+      "De school stelde de 100-dagenviering uit en ging met leerlingen in gesprek.",
     ),
     q("13", 3),
     special("klaschat", 3, "chat", "Er verschijnt iets in de klasgroep…"),
