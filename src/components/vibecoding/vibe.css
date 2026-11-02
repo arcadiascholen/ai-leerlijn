@@ -273,3 +273,134 @@
 .v-spectrum-shaft::after {content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--forest)}
 .vibe[data-pane=spectrum] .v-spectrum-layout .v-callout {margin:0;padding:var(--space-4)}
 @media(max-width:700px) {.v-spectrum-layout {grid-template-columns:65px minmax(0,1fr);gap:var(--space-3)}.v-spectrum-layout .v-callout {grid-column:1 / -1}}
+
+/* Material-led choices, and a recognizable handoff between the two tabs. */
+.v-scope-note {border-left:3px solid var(--ai);padding:var(--space-2) var(--space-3);background:var(--ai-soft);color:var(--ai-text);border-radius:var(--radius-sm);font-size:var(--text-small-size);line-height:var(--text-small-line);margin:var(--space-3) 0}
+.v-scope-note p {margin:var(--space-2) 0 0}
+.v-tool-example {padding:var(--space-2) 0;font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-tool-example p {margin-bottom:var(--space-2)}
+.vibe[data-pane=helpen] .v-choice-cards > div {grid-template-columns:1fr 1fr;gap:var(--space-2)}
+.vibe[data-pane=helpen] .v-choice-cards label {min-height:48px;padding:var(--space-2)}
+.vibe[data-pane=helpen] .v-example {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2)}
+.vibe[data-pane=helpen] .v-example ul {padding-left:var(--space-4);margin:var(--space-2) 0;max-height:160px;overflow:auto}
+.v-two-tabs {background:var(--warning-soft);border:1px solid var(--warning);border-radius:var(--radius-md);padding:var(--space-4);max-width:1050px;margin:0 auto}
+.vibe .v-attention-label {color:var(--warning);font-weight:700;font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-tab-flow {display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);list-style:none;padding:0;margin:var(--space-4) 0}
+.v-tab-flow li {border-left:3px solid var(--warning);padding-left:var(--space-3);margin:0}
+.v-tab-flow strong,.v-tab-flow span {display:block}
+.v-tab-flow span {margin-top:var(--space-2)}
+.vibe .v-handoff {border-left:3px solid var(--ai);background:var(--ai-soft);color:var(--ai-text);padding:var(--space-3);border-radius:var(--radius-sm);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-handoff strong,.v-handoff span {display:block}
+.v-handoff span {margin-top:var(--space-2)}
+.v-prompt-tips {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-prompt-tips ul {margin:var(--space-2) 0 0;padding-left:var(--space-4)}
+.v-prompt-tips li {margin-bottom:var(--space-1)}
+.v-actions:has(.v-prompt-tips) .v-prompt {height:190px}
+.vibe[data-pane=onthouden] .v-tips-title {font-size:var(--text-body-size);line-height:var(--text-body-line);margin:0 0 var(--space-2)}
+.v-cheatsheet {max-height:300px;overflow:auto;padding:var(--space-1)}
+.v-cheatsheet details {margin-bottom:var(--space-2);padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=onthouden] .v-field textarea {height:60px;min-height:60px}
+.vibe[data-pane=verslag] button:disabled {opacity:.5;cursor:not-allowed}
+@media(max-width:700px) {.v-tab-flow {grid-template-columns:1fr;gap:var(--space-3)}.vibe[data-pane=helpen] .v-choice-cards > div {grid-template-columns:1fr}}
+.vibe[data-pane=helpen] .v-solution-layout {grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}
+.vibe[data-pane=helpen] .v-solution-explanation > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=helpen] .v-scope-note {margin:var(--space-2) 0;padding:var(--space-2)}
+.vibe[data-pane=helpen] .v-solution-explanation > .v-example {margin-bottom:var(--space-2)}
+.vibe[data-pane=wisselen] .v-two-tabs {padding:var(--space-3)}
+.vibe[data-pane=wisselen] .v-tab-flow {margin:var(--space-3) 0;gap:var(--space-3)}
+.vibe[data-pane=ronde1] .v-copy > p,.vibe[data-pane=ronde2] .v-copy > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=ronde1] .v-copy > .v-callout,.vibe[data-pane=ronde2] .v-copy > .v-callout {padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=ronde1] .v-copy > .v-handoff,.vibe[data-pane=ronde2] .v-copy > .v-handoff {padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=onthouden] .v-copy > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=onthouden] .v-copy > .v-small {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=verslag] .v-copy > p {margin-bottom:var(--space-3)}
+@media(max-width:900px) {.vibe[data-pane=helpen] .v-solution-layout {grid-template-columns:1fr}}
+.vibe[data-pane=helpen] .v-chosen-tool {padding:var(--space-1) var(--space-2);margin-bottom:var(--space-2)}
+.vibe[data-pane=helpen] .v-chosen-tool button {padding:var(--space-1) var(--space-2)}
+.vibe[data-pane=helpen] .v-tool-example {padding:var(--space-1) 0}
+.vibe[data-pane=helpen] .v-solution-actions .v-field textarea {min-height:44px;height:44px}
+.vibe[data-pane=helpen] .v-solution-actions > .v-example {padding:var(--space-1) var(--space-2)}
+.vibe[data-pane=helpen] .v-feasibility {margin-bottom:var(--space-1)}
+.vibe[data-pane=helpen] .v-checks {margin:var(--space-1) 0}
+.vibe .v-prompt-tips {padding:var(--space-2)}
+.vibe[data-pane=onthouden] .v-cheatsheet {max-height:280px}
+.vibe[data-pane=bouwen] .v-copy > .v-handoff {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2)}
+.vibe[data-pane=spectrum] .v-spectrum-layout {margin:var(--space-2) 0}
+.vibe[data-pane=spectrum] .v-spectrum-layout .v-spectrum button {padding:var(--space-2)}
+.vibe[data-pane=bouwen] .v-copy > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=spectrum] .v-spectrum-layout {margin:var(--space-1) 0}
+.vibe[data-pane=spectrum] .v-spectrum small {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-further {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2)}
+.vibe[data-pane=spectrum] > .v-small {margin-bottom:0}
+.vibe[data-pane=verslag] .v-missing {max-height:120px}
+
+/* Optional ideation is a dialog, so the main solution step stays quiet. */
+.v-solution-support {display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2);align-items:start;margin:var(--space-2) 0}
+.vibe[data-pane=helpen] .v-solution-support .v-example {margin:0;padding:var(--space-2)}
+.vibe .v-brainstorm-open {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2);text-align:left;color:var(--ai);border-color:var(--ai)}
+.v-solution-support:has(details[open]) {grid-template-columns:1fr}
+.v-brainstorm {width:min(940px,calc(100vw - 48px));max-height:calc(100dvh - 48px);box-sizing:border-box;overflow:auto;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:var(--surface);color:var(--ink);padding:var(--space-4);font:inherit}
+.v-brainstorm::backdrop {background:color-mix(in srgb,var(--ink) 35%,transparent)}
+.v-dialog-header {display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-4)}
+.v-dialog-header h3 {font-size:var(--text-h3-size);line-height:var(--text-h3-line);margin:0}
+.v-dialog-header button {flex:none;font-size:var(--text-small-size);padding:var(--space-1) var(--space-2)}
+.v-brainstorm .v-copy > p:not(.v-handoff) {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:var(--space-3)}
+.v-brainstorm .v-actions .v-prompt {height:190px}
+.vibe[data-pane=helpen] .v-brainstorm .v-handoff {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=overleg] .v-copy > p {margin-bottom:var(--space-3)}
+@media(max-width:700px) {.v-solution-support {grid-template-columns:1fr}.v-brainstorm {width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}}
+
+/* Separate the scope explanation from choosing a solution. */
+.v-scope-examples {display:grid;gap:var(--space-3)}
+.v-scope-examples section {padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-md)}
+.v-scope-examples .v-scope-yes {background:var(--surface-sunken)}
+.v-scope-examples p {font-size:var(--text-body-size);line-height:var(--text-body-line);margin:var(--space-2) 0 0}
+.vibe[data-pane=mogelijk] .v-options {margin-bottom:var(--space-3)}
+.vibe[data-pane=helpen] .v-solution-explanation > .v-brainstorm-open {margin:var(--space-1) 0 var(--space-2)}
+.v-future-cycle {list-style:none;margin:0;padding:0;display:grid;gap:var(--space-3)}
+.v-future-cycle li {padding:var(--space-3);margin:0;border-left:3px solid var(--brand);background:var(--surface-sunken);border-radius:var(--radius-sm)}
+.v-future-cycle strong,.v-future-cycle span {display:block}
+.v-future-cycle span {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-top:var(--space-1)}
+.v-builder-tools {display:grid;gap:var(--space-4)}
+.v-builder-tools section {padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-md)}
+.v-builder-tools h3 {font-size:var(--text-body-size);line-height:var(--text-body-line);margin:0 0 var(--space-2)}
+.v-builder-tools p {font-size:var(--text-body-size);line-height:var(--text-body-line);margin-bottom:var(--space-2)}
+.v-builder-tools a {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=verder] .v-copy > p,.vibe[data-pane=bouwtools] .v-copy > p {margin-bottom:var(--space-3)}
+.vibe[data-pane=spectrum] .v-spectrum-layout .v-callout {padding:var(--space-3)}
+.v-scope-examples {gap:var(--space-2)}
+.v-scope-examples section {padding:var(--space-2)}
+.v-future-cycle li {padding:var(--space-2) var(--space-3)}
+.vibe[data-pane=verder] .v-copy > p,.vibe[data-pane=bouwtools] .v-copy > p {margin-bottom:var(--space-2)}
+.v-two-tabs > .v-small {margin-bottom:0}
+.v-process-picks {padding-right:82px}
+.v-flow-option {position:relative;display:flex;flex-direction:column;align-items:stretch}
+.v-discover-process .v-flow-option button {padding:var(--space-2);font-size:var(--text-body-size);line-height:var(--text-body-line);text-align:left}
+.v-flow-arrow {height:18px;text-align:center;line-height:18px;font-size:22px;color:var(--forest)}
+.v-iteration-loop {position:absolute;left:100%;top:0;width:76px;color:var(--forest);text-align:center}
+.v-iteration-loop svg {display:block;width:76px;height:52px}
+.v-iteration-loop > span {display:block;margin-top:-12px;font-size:var(--text-small-size);line-height:var(--text-small-line);font-weight:700}
+/* Discover, choose and describe each have their own short step. */
+.v-tool-inspiration {gap:var(--space-2)}
+.vibe[data-pane=helpen] .v-tool-inspiration button {text-align:left;padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=helpen] .v-actions .v-callout {margin:var(--space-3) 0 var(--space-2);padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=helpen] .v-actions .v-callout p {margin-bottom:var(--space-2)}
+.vibe[data-pane=helpen] .v-actions .v-callout p:last-child {margin-bottom:0}
+.vibe[data-pane=helpen] .v-copy > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=kiezen] .v-choice-cards > div {grid-template-columns:1fr 1fr;gap:var(--space-2)}
+.vibe[data-pane=kiezen] .v-choice-cards label {padding:var(--space-2);min-height:44px}
+.vibe[data-pane=kiezen] .v-choice-cards {margin-bottom:var(--space-2)}
+.vibe[data-pane=kiezen] .v-feasibility {margin-bottom:0}
+.vibe[data-pane=oplossing] .v-actions .v-field textarea {height:160px;min-height:160px}
+.vibe[data-pane=oplossing] .v-actions .v-example {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+@media(max-width:700px) {.vibe[data-pane=kiezen] .v-choice-cards > div {grid-template-columns:1fr}}
+.vibe[data-pane=helpen] .v-copy > p:last-child {margin-bottom:0}
+
+.v-scope-examples {grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+@media(max-width:700px) {.v-scope-examples {grid-template-columns:1fr}}
+
+/* Keep the chosen example next to the choice that reveals it. */
+.vibe[data-pane="kiezen"] .v-actions > .v-callout { margin: var(--space-2) 0 0; padding: var(--space-2); font-size: 15px; line-height: 22px; }
+.vibe[data-pane="brainstorm"] .v-copy > button { margin-bottom: var(--space-3); }
+
+.vibe[data-pane="brainstorm"] .v-copy > p { margin-bottom: var(--space-2); }

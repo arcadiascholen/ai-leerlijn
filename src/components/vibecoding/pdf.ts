@@ -18,8 +18,17 @@ export async function downloadReport(entries: [string, string][]) {
       ctx.font = `${bold ? 'bold ' : ''}24px sans-serif`;
       for (const paragraph of text.split('\n')) {
         let row = '';
-        for (const character of Array.from(paragraph)) { if (ctx.measureText(row + character).width > width - 2 * margin) { line(row, bold); row = ''; } row += character; }
-        line(row, bold);
+        // Wrap at word boundaries. Split only a word that cannot fit on a full line.
+        for (const token of paragraph.match(/\S+\s*|\s+/gu) || []) {
+          if (row && ctx.measureText(row + token).width > width - 2 * margin) { line(row.trimEnd(), bold); row = ''; }
+          if (ctx.measureText(token).width > width - 2 * margin) {
+            for (const character of Array.from(token)) {
+              if (ctx.measureText(row + character).width > width - 2 * margin) { line(row, bold); row = ''; }
+              row += character;
+            }
+          } else row += token;
+        }
+        line(row.trimEnd(), bold);
       }
     }
     y += 22;
