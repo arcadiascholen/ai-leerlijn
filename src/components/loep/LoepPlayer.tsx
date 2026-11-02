@@ -824,7 +824,7 @@ export default function LoepPlayer({
                   </>
                 ) : <p>{chapter.subtitle}</p>}
               </div>
-              <Photo name={chapter.id === 3 ? "deepfake-video" : chapter.image} alt={chapter.id === 3 ? "Iemand bewerkt een video op een computerscherm." : chapter.alt} />
+              <Photo name={chapter.id === 3 ? "deepfake-video" : chapter.id === 5 ? "chatbot-gesprek" : chapter.image} alt={chapter.id === 3 ? "Iemand bewerkt een video op een computerscherm." : chapter.id === 5 ? "Een hand houdt een telefoon met een chatbot vast." : chapter.alt} />
             </div>
           ) : step.kind === "story" ? (
             <Story step={step} />
