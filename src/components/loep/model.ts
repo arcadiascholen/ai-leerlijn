@@ -263,7 +263,7 @@ export const chapterSteps: Record<number, Step[]> = {
       5,
       "Getrouwd met een chatbot?",
       "In de Pano-reportage Mijn vriend AI (oktober 2025) vertelt de 61-jarige Jacob over zijn relatie met AI-partner Aiva.",
-      "Zijn verhaal roept vragen op over echte gevoelens, steun en het bedrijf achter de chatbot. De volgende situaties helpen je die kanten te onderzoeken.",
+      "Kan een chatbot je echt begrijpen of om je geven? Kan zo'n gesprek steun bieden als je je alleen voelt? En welk belang kan het bedrijf achter de chatbot hebben bij hoe lang je blijft praten?",
     ),
     q("21", 5),
     special("gevoelens", 5, "perspectieven", "Hoe kijk jij hiernaar?"),
