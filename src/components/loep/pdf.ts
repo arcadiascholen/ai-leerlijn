@@ -43,31 +43,80 @@ export async function createEvidence(name: string, school: string, klas: string,
     }
   }
   const now = new Date();
-  text("AI onder de loep", 25, true);
-  text("Persoonlijk leerbewijs en AI-kompas", 13);
-  text(name.trim(), 15, true);
-  text("School: " + school + " | Klas: " + klas.trim());
-  text("Gemaakt: " + now.toLocaleString("nl-BE"));
-  text(
-    "Een leerbewijs van deelname; geen schoolcijfer of garantie van beheersing. De antwoorden en tijdstippen zijn lokaal op dit toestel vastgelegd.",
-  );
+  // De eerste pagina is een compact, persoonlijk AI-kompas.
   const score = scoreFor(progress);
-  text("Jouw score", 17, true);
-  text(score.scored ? `${formatPoints(score.points)} / ${score.scored} punten` : "Je score is niet beschikbaar.", 13, true);
-  text("Eerste poging juist: 1 punt. Tweede poging juist: 0,5 punt. Vanaf de derde poging: 0 punten. Meningsvragen tellen niet mee.");
-  if (score.unknown > 0)
-    text(`Van ${score.unknown} eerder beantwoorde ${score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. ${score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in deze score.`);
   const ids = [1, 2, ...progress.choices];
-  text("Jouw vier uitdagingen", 17, true);
+  pdf.setFillColor(248, 250, 245);
+  pdf.rect(0, 0, 210, 297, "F");
+  pdf.setFillColor(18, 62, 28);
+  pdf.roundedRect(15, 17, 180, 55, 5, 5, "F");
+  pdf.setTextColor(210, 233, 199);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.text("KRITISCH EN ETHISCH MET AI OMGAAN", 23, 28);
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(27);
+  pdf.text("AI onder de loep", 23, 42);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(12);
+  pdf.text("Jouw persoonlijke AI-kompas", 23, 52);
+  pdf.setFillColor(113, 184, 44);
+  pdf.roundedRect(23, 58, 29, 6, 3, 3, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(7);
+  pdf.text("LEERBEWIJS", 27, 62.3);
+
+  pdf.setTextColor(18, 62, 28);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(12);
+  const nameLines = pdf.splitTextToSize(clean(name.trim()), 165) as string[];
+  pdf.text(nameLines.slice(0, 2), 18, 82);
+  let coverY = 82 + nameLines.slice(0, 2).length * 5;
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(9);
+  const details = pdf.splitTextToSize(clean(school + "  |  " + klas.trim() + "  |  " + now.toLocaleDateString("nl-BE")), 170) as string[];
+  pdf.text(details.slice(0, 2), 18, coverY);
+  coverY += details.slice(0, 2).length * 4.5 + 6;
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(13);
+  pdf.text("Dit neem ik mee", 18, coverY);
+  coverY += 5;
   for (const id of ids) {
-    const c = chapters.find((c) => c.id === id)!;
-    text(c.title, 13, true);
-    text(c.compass);
+    const c = chapters.find((chapter) => chapter.id === id)!;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    const lines = pdf.splitTextToSize(clean(c.compass), 157) as string[];
+    const height = 12 + lines.length * 4.2;
+    pdf.setFillColor(235, 243, 227);
+    pdf.roundedRect(15, coverY, 180, height, 3, 3, "F");
+    pdf.setFillColor(15, 111, 121);
+    pdf.roundedRect(20, coverY + 5, 2, height - 10, 1, 1, "F");
+    pdf.setTextColor(18, 62, 28);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.text(clean(c.title), 26, coverY + 7);
+    pdf.setTextColor(31, 48, 39);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.text(lines, 26, coverY + 12);
+    coverY += height + 3;
   }
+  pdf.setFillColor(223, 241, 239);
+  pdf.roundedRect(15, coverY + 2, 180, 20, 3, 3, "F");
+  pdf.setTextColor(4, 91, 102);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(11);
+  pdf.text(clean(score.scored ? `Jouw score: ${formatPoints(score.points)} / ${score.scored}` : "Jouw score is niet beschikbaar"), 21, coverY + 10);
+  pdf.setTextColor(31, 48, 39);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8);
+  pdf.text("1e poging: 1 punt  |  2e poging: 0,5 punt  |  daarna: 0 punten", 21, coverY + 16);
+  pdf.setTextColor(25, 40, 30);
   pdf.addPage();
   y = 26;
   text("Jouw antwoorden", 17, true);
   text("Hieronder staan je laatste antwoorden en observaties.");
+  if (score.unknown > 0) text(`Van ${score.unknown} eerder beantwoorde ${score.unknown === 1 ? "vraag is" : "vragen is"} het aantal pogingen niet bekend. ${score.unknown === 1 ? "Die telt" : "Die tellen"} niet mee in je score.`);
   const route = routeFor(progress.choices);
   for (const step of route) {
     const a = progress.answers[step.id];
@@ -142,6 +191,8 @@ export async function createEvidence(name: string, school: string, klas: string,
     pdf.setDrawColor(16, 62, 24);
     pdf.setLineWidth(0.5);
     pdf.line(20, 15, 190, 15);
+    pdf.setTextColor(70, 88, 75);
+    pdf.setFont("helvetica", "normal");
     pdf.setFontSize(9);
     pdf.text(`AI onder de loep | ${i} / ${pages}`, 20, 287);
   }
