@@ -55,11 +55,6 @@ export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake
           Open video ↗
         </a>
       </div>
-      {kind === "deepfake" && (
-        <>
-          <p className="loep-small">Denk tijdens het kijken na: kun je altijd aan een filmpje zien of het echt is? Waar kun je nog op letten?</p>
-        </>
-      )}
     </section>
   );
 }

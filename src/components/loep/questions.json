@@ -1,4 +1,33 @@
 {
+  "deepfakecheck": {
+    "id": "deepfakecheck",
+    "title": "Kun je dit filmpje vertrouwen?",
+    "body": "Je ziet een opvallend filmpje online. Wat kun je doen voordat je beslist of je het gelooft of doorstuurt?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Nagaan wie het filmpje oorspronkelijk plaatste en betrouwbare bronnen raadplegen."
+      },
+      {
+        "id": "B",
+        "text": "Het filmpje geloven als de beelden er scherp en realistisch uitzien."
+      },
+      {
+        "id": "C",
+        "text": "Het filmpje doorsturen en wachten tot iemand anders zegt of het klopt."
+      },
+      {
+        "id": "D",
+        "text": "Aannemen dat het echt is omdat veel mensen het delen."
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "feedback": "Controleer wie het filmpje als eerste plaatste en of betrouwbare bronnen hetzelfde melden. Aan hoe echt beelden eruitzien, kun je niet altijd zien of ze zijn aangepast. Soms blijft het onzeker.",
+    "branches": {},
+    "count": 1
+  },
   "1": {
     "id": "1",
     "title": "Waarom veranderen aanbevelingen?",

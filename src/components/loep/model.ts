@@ -224,6 +224,7 @@ export const chapterSteps: Record<number, Step[]> = {
       "Bekijk het filmpje van NOS Jeugdjournaal over beelden die met AI zijn gemaakt.",
       "Kijkvraag: kun je altijd aan een filmpje zien of het echt is? Waar kun je nog op letten?",
     ),
+    q("deepfakecheck", 3),
     story(
       "nepvideo",
       3,
