@@ -134,3 +134,14 @@ Er zijn drie startpakketten per hulpmiddeltype, twaalf in totaal, inclusief
 controlepunten. Eerst een pakket openen en nalezen, daarna expliciet bevestigen.
 Een ander pakket openen vraagt opnieuw bevestiging. Pakketkeuze is apart van
 hulpmiddelcategorie. Eigen ideeën kunnen eerst een inhoudscategorie kiezen.
+
+## Rustigere presentatie
+
+De goedgekeurde indeling van stap 2 en 8 is doorgetrokken: uitleg links,
+handelingen en antwoorden rechts, met een gestapelde weergave op smallere
+vensters. Demo en spectrum houden hun eigen passende indeling. De 27 stappen,
+antwoordvelden, verplichte checks, routeafhankelijke voorbeelden, prompts en
+PDF-flow zijn behouden. Extra toelichting staat bij de uitleg. De inhoudscategorie
+bij eigen ideeën gebruikt dezelfde keuzes in een benoemde select. Startpakketten
+blijven afzonderlijk te openen en expliciet te bevestigen. Visuele en functionele
+controle is vastgelegd in `design-qa.md`.

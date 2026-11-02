@@ -152,3 +152,124 @@
 .vibe .v-choice-cards legend {font-size:var(--text-body-size);line-height:var(--text-body-line);padding-bottom:var(--space-2)}
 .vibe .v-choice-cards label {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2);gap:var(--space-2)}
 .vibe[data-pane=openen] > button {margin-bottom:var(--space-3)}
+
+/* Pilot: explanation left, decisions and answer right on step 8 only. */
+.v-solution-layout {display:grid;grid-template-columns:minmax(0, .85fr) minmax(0, 1.4fr);gap:var(--space-5);align-items:start}
+.v-solution-explanation,.v-solution-actions {min-width:0}
+.v-solution-explanation > p {font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.v-solution-explanation > .v-small {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-solution-actions {padding-left:var(--space-4);border-left:1px solid var(--line)}
+.v-solution-actions .v-choice-cards label {padding:var(--space-2);font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-solution-actions .v-feasibility small {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-solution-actions .v-field {margin-bottom:0}
+@media(max-width:900px){.v-solution-layout {grid-template-columns:1fr}.v-solution-actions {padding-left:0;border-left:0}}
+
+.v-chosen-tool {display:flex;justify-content:space-between;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);padding:var(--space-2);background:var(--surface-sunken);border-radius:var(--radius-md)}
+.v-chosen-tool button {font-size:var(--text-small-size);padding:var(--space-1) var(--space-2)}
+
+.v-noor-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--space-5);align-items:start}
+.v-noor-story {padding:var(--space-4);background:var(--surface-sunken);border-radius:var(--radius-md)}
+.v-noor-story p {font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.v-noor-story blockquote {margin:var(--space-4) 0 0;padding-left:var(--space-3);border-left:3px solid var(--brand-text);font-size:var(--text-body-size);line-height:var(--text-body-line);color:var(--forest)}
+.v-noor-question {min-width:0}
+.v-noor-question legend {font-size:var(--text-h3-size);line-height:var(--text-h3-line);padding-bottom:var(--space-3)}
+.v-noor-options {display:grid;gap:var(--space-2)}
+.v-noor-options label {font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.v-noor-feedback {min-height:90px;margin-top:var(--space-3)}
+.v-noor-feedback .v-feedback {margin:0}
+@media(max-width:900px){.v-noor-layout {grid-template-columns:1fr}.v-noor-feedback {min-height:0}}
+
+/* Consistent instructional layout, based on the approved steps 2 and 8. */
+.v-columns {display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:var(--space-5);align-items:start}
+.v-copy,.v-actions {min-width:0}
+.v-actions {border-left:1px solid var(--line);padding-left:var(--space-5)}
+.v-copy > p {font-size:var(--text-body-size);line-height:var(--text-body-line);margin-bottom:var(--space-4)}
+.v-copy > .v-small {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.v-copy .v-callout {margin:var(--space-3) 0}
+.v-actions .v-field:last-child {margin-bottom:0}
+.v-actions .v-field textarea {min-height:140px;max-height:230px}
+.vibe[data-pane=behoefte] .v-actions .v-field textarea {min-height:44px;max-height:120px}
+.vibe[data-pane=behoefte] .v-actions .v-field {margin-bottom:var(--space-3)}
+.v-actions .v-field label {display:block;margin-bottom:var(--space-1)}
+.v-actions .v-prompt {height:230px;max-height:260px;margin-top:0}
+.v-actions > button {margin-top:var(--space-2)}
+.v-actions details {margin-bottom:var(--space-3)}
+.v-columns .v-intro {gap:var(--space-3)}
+.v-columns .v-intro section {background:var(--surface);border-color:var(--line);padding:var(--space-3)}
+.v-columns .v-sort {margin-top:0}
+.v-columns .v-sort li {padding:var(--space-2);margin-bottom:var(--space-2)}
+.v-columns .v-sort button {flex:none}
+.vibe[data-pane=inspiratie] .v-actions .v-grid {gap:var(--space-2)}
+.vibe[data-pane=inspiratie] .v-actions .v-grid button {padding:var(--space-2)}
+.vibe[data-pane=pakket] .v-actions .v-choice-cards > div {grid-template-columns:1fr 1fr}
+.vibe[data-pane=pakket] .v-actions .v-choice-cards label {padding:var(--space-2);gap:var(--space-2)}
+.vibe[data-pane=pakket] .v-actions > p {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=pakket] .v-actions .v-material {max-height:125px}
+.vibe[data-pane=pakket] .v-actions .v-field textarea {min-height:100px;max-height:140px}
+.vibe[data-pane=pakket] .v-actions .v-package-category h3,.vibe[data-pane=pakket] .v-actions .v-package-list h3 {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=pakket] .v-actions .v-options button {font-size:var(--text-small-size);padding:var(--space-1) var(--space-2)}
+.vibe[data-pane=pakket] .v-actions .v-package-category {padding:var(--space-2);margin-bottom:var(--space-2)}
+.vibe[data-pane=pakket] .v-actions .v-package-list {margin-bottom:var(--space-2)}
+.vibe[data-pane=voorbeeld] .v-actions .v-demo {margin:0;padding:var(--space-4)}
+.vibe[data-pane=voorbeeld] .v-actions .v-demo h3 {font-size:var(--text-h3-size);line-height:var(--text-h3-line);margin:var(--space-3) 0}
+.vibe[data-pane=voorbeeld] .v-actions .v-demo p {font-size:var(--text-body-size);line-height:var(--text-body-line);margin:var(--space-3) 0}
+.vibe[data-pane=verbeteren] > .v-grid {gap:var(--space-5);font-size:var(--text-body-size);line-height:var(--text-body-line);margin-bottom:var(--space-4)}
+.vibe[data-pane=verbeteren] .v-grid .v-callout {padding:var(--space-4)}
+.vibe[data-pane=verbeteren] > p {font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.vibe[data-pane=verslag] .v-actions > button {background:var(--primary);border-color:var(--primary);color:var(--on-primary);padding:var(--space-3) var(--space-4)}
+.vibe[data-pane=verslag] .v-actions > button:hover {background:var(--primary-hover)}
+.vibe[data-pane=cyclus] {max-width:850px;margin-inline:auto}
+.vibe[data-pane=bestaat] {max-width:800px;margin-inline:auto}
+@media(max-width:900px){.v-columns {grid-template-columns:1fr;gap:var(--space-4)}.v-actions {border-left:0;padding-left:0}.v-actions .v-prompt {height:180px}}
+.vibe[data-pane=inspiratie] .v-columns,.vibe[data-pane=behoefte] .v-columns {grid-template-columns:minmax(0,.75fr) minmax(0,1.45fr)}
+.vibe[data-pane=inspiratie] .v-grid button strong {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=inspiratie] .v-grid button {padding:var(--space-2)}
+.vibe[data-pane=behoefte] .v-actions .v-field {margin-bottom:var(--space-2)}
+.vibe[data-pane=behoefte] .v-actions .v-field label {margin-bottom:0}
+.vibe[data-pane=behoefte] .v-actions .v-field textarea {height:40px;min-height:40px;padding:var(--space-1);line-height:20px;margin-top:var(--space-1)}
+.vibe[data-pane=volgorde] .v-sort li {padding:var(--space-1) var(--space-2);margin:var(--space-1) 0}
+.vibe[data-pane=bouwen] .v-columns {grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.vibe[data-pane=bouwen] .v-copy > p {margin-bottom:var(--space-3)}
+.vibe[data-pane=pakket] .v-copy .v-choice-cards {margin-top:var(--space-3)}
+.vibe[data-pane=pakket] .v-copy .v-choice-cards > div {gap:var(--space-2)}
+.vibe[data-pane=pakket] .v-copy .v-choice-cards label {font-size:var(--text-small-size);line-height:var(--text-small-line);padding:var(--space-2);gap:var(--space-2)}
+.vibe[data-pane=pakket] .v-copy > p:not(:first-child) {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=pakket] .v-copy .v-package-category {background:var(--surface);border-left:3px solid var(--ai);padding:var(--space-2);margin:var(--space-2) 0 0}
+.vibe[data-pane=pakket] .v-package-category select {display:block;width:100%;margin-top:var(--space-1);font-size:var(--text-small-size)}
+.vibe[data-pane=pakket] .v-package-category h3 {font-size:var(--text-small-size);line-height:var(--text-small-line)}
+.vibe[data-pane=pakket] .v-actions .v-package-list {padding:0;border-left:0}
+@media(max-width:900px){.vibe[data-pane] .v-columns {grid-template-columns:1fr}}
+.vibe[data-pane=pakket] .v-copy > p {margin-bottom:var(--space-2)}
+.vibe[data-pane=pakket] .v-copy .v-choice-cards {margin-bottom:var(--space-1)}
+.vibe[data-pane=pakket] .v-copy .v-choice-cards legend {padding-bottom:var(--space-1)}
+.vibe[data-pane=pakket] .v-actions .v-package-category {padding:0 0 var(--space-2);margin:0 0 var(--space-2);border:0;background:none}
+.vibe[data-pane=pakket] .v-actions .v-package-category label {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.vibe[data-pane=pakket] .v-actions .v-material {max-height:100px}
+.v-solution-actions .v-feasibility {margin-bottom:var(--space-2)}
+.v-solution-actions .v-feasibility > p {font-size:var(--text-small-size);line-height:var(--text-small-line);margin-bottom:var(--space-2)}
+.v-solution-actions .v-field textarea {min-height:70px;height:70px}
+.v-solution-actions .v-field textarea {min-height:52px;height:52px}
+.vibe[data-pane=pakket] .v-actions .v-material {max-height:80px;margin:var(--space-2) 0}
+.vibe[data-pane=pakket] .v-actions > button {padding:var(--space-1) var(--space-3);margin-top:var(--space-1)}
+.vibe[data-pane] .v-copy > p:not(.v-small) {font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.vibe[data-pane=openen] .v-actions details > p {max-height:160px;overflow:auto}
+.vibe[data-pane=bouwen] .v-copy > .v-callout {padding:var(--space-2)}
+.vibe[data-pane=bouwen] .v-copy details {padding:var(--space-2)}
+
+.v-intro h3 {display:flex;align-items:center;gap:var(--space-2)}
+.v-intro-icon {width:24px;height:24px;flex-shrink:0;color:var(--accent, #22552d)}
+
+.v-discover-process {display:grid;grid-template-columns:minmax(240px, 0.8fr) minmax(0, 1.4fr);gap:var(--space-5);align-items:start;margin:var(--space-4) 0;max-width:1000px}
+.v-discover-process .v-options {display:flex;flex-direction:column;flex-wrap:nowrap;margin:0}
+.v-discover-process .v-options button {width:100%;text-align:left}
+.v-discover-process .v-callout {margin:0;padding:var(--space-4);min-height:180px}
+@media(max-width:700px) {.v-discover-process {grid-template-columns:1fr;gap:var(--space-3)}.v-discover-process .v-callout {min-height:0}}
+
+.v-spectrum-layout {display:grid;grid-template-columns:76px minmax(220px, 0.85fr) minmax(0, 1.35fr);gap:var(--space-4);align-items:start;margin:var(--space-4) 0;max-width:1100px}
+.v-spectrum-layout .v-spectrum {display:flex;flex-direction:column;gap:var(--space-2)}
+.vibe[data-pane=spectrum] .v-spectrum-layout .v-spectrum button {text-align:left;padding:var(--space-3);font-size:var(--text-body-size);line-height:var(--text-body-line)}
+.v-spectrum-scale {display:flex;flex-direction:column;align-items:center;align-self:stretch;gap:var(--space-2);color:var(--forest);font-size:var(--text-small-size);font-weight:700}
+.v-spectrum-shaft {position:relative;flex:1;min-height:120px;width:3px;background:var(--forest);margin-bottom:8px}
+.v-spectrum-shaft::after {content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--forest)}
+.vibe[data-pane=spectrum] .v-spectrum-layout .v-callout {margin:0;padding:var(--space-4)}
+@media(max-width:700px) {.v-spectrum-layout {grid-template-columns:65px minmax(0,1fr);gap:var(--space-3)}.v-spectrum-layout .v-callout {grid-column:1 / -1}}
