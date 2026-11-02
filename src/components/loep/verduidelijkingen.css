@@ -37,3 +37,5 @@
 .loep-relatie-video p { margin: 10px 0 4px; font-size: 14px; }
 .loep-relatie-video small { font-size: 11px; }
 @media(max-width: 900px) { .loep-energy-budget { grid-template-columns: 1fr; } }
+
+.loep-explore-panel textarea { display: block; width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #a9bba5; border-radius: 8px; background: white; font: inherit; resize: vertical; }

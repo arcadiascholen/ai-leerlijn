@@ -143,6 +143,12 @@ export async function createEvidence(name: string, school: string, klas: string,
         text(
           "De laatste keuze wijkt nog af van de sleutel. De uitleg is getoond.",
         );
+    } else if (step.kind === "energy-reflect") {
+      const opinions = ["Veel minder dan ik dacht", "Iets minder dan ik dacht", "Ongeveer zoals ik dacht", "Iets meer dan ik dacht", "Veel meer dan ik dacht"];
+      keep(45);
+      text("Wat verraste je aan AI?", 11, true);
+      text("Mijn inschatting: " + (opinions[Number(a.values[0])] ?? "niet ingevuld"));
+      if (a.values[1]?.trim()) text("Mijn toelichting: " + a.values[1].trim());
     } else if (step.kind === "permissions") {
       keep(85);
       text("Vraag 36: agentinstellingen", 11, true);

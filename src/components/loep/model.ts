@@ -516,7 +516,7 @@ export function parseProgress(raw: string | null): Progress {
           : step.kind === "permissions"
             ? ["", "self", "ask", "none"]
             : ["0", "1", "2", "3"];
-        if (a.values.every((y) => valid.includes(y)))
+        if (step.kind === "energy-reflect" ? a.values.length === 2 && ["0", "1", "2", "3", "4"].includes(a.values[0]!) && a.values[1]!.length <= 1000 : a.values.every((y) => valid.includes(y)))
           p.answers[key] = {
             ...a,
             values: [...a.values],

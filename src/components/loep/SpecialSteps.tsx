@@ -444,14 +444,15 @@ export function Gallery({
   );
 }
 export function Energy() {
-  const budget = 25;
-  const [values, setValues] = useState([300, 10, 20, 40, 50]);
+  const budget = 2.4;
+  const [values, setValues] = useState([30, 1, 2, 3, 10, 1]);
   const items = [
-    { label: "Eenvoudige AI-tekstvragen", unit: "vragen", factor: 0.00024, max: 5000, step: 50 },
-    { label: "AI-video’s van 6 seconden", unit: "video’s", factor: 0.115, max: 100, step: 1 },
-    { label: "Video streamen", unit: "uur", factor: 0.077, max: 100, step: 1 },
-    { label: "Ledlamp van 9 watt", unit: "uur", factor: 0.009, max: 300, step: 5 },
-    { label: "Elektrische auto", unit: "km", factor: 0.19, max: 300, step: 5 },
+    { label: "Eenvoudige AI-tekstvragen", unit: "vragen", factor: 0.00024, max: 1500, step: 10 },
+    { label: "AI-video’s van 6 seconden", unit: "video’s", factor: 0.115, max: 20, step: 1 },
+    { label: "Video streamen", unit: "uur", factor: 0.077, max: 12, step: 1 },
+    { label: "Ledlamp van 9 watt", unit: "uur", factor: 0.009, max: 24, step: 1 },
+    { label: "Elektrische fiets", unit: "km", factor: 0.009, max: 100, step: 1 },
+    { label: "Gsm opladen", unit: "keer", factor: 0.015, max: 5, step: 1 },
   ];
   const total = items.reduce((sum, item, i) => sum + values[i]! * item.factor, 0);
   const format = (n: number) => n.toLocaleString("nl-BE", { maximumFractionDigits: 3 });
@@ -461,16 +462,16 @@ export function Energy() {
   };
   return <div className="loep-energy-budget">
     <div>
-      <span className="loep-eyebrow">Jouw maandbudget · voorbeeld</span>
+      <span className="loep-eyebrow">Jouw dagbudget · voorbeeld</span>
       <h2>Waar gaat jouw elektriciteit naartoe?</h2>
-      <p>Je krijgt <strong>25 kWh</strong> voor deze vijf activiteiten in één maand. Kies hoeveel je van elk gebruikt. Kijk wat er met je budget gebeurt.</p>
-      <p className="loep-small">Dit is een verzonnen oefenbudget per leerling, geen volledig huishoudelijk verbruik. Een autorit is een vergelijkingsvoorbeeld, ook als je zelf niet rijdt.</p>
+      <p>Een Belgisch referentiegezin met drie à vier personen gebruikt in dit voorbeeld 3.500 kWh elektriciteit per jaar. Als je dit over vier personen verdeelt, is dat ongeveer <strong>2,4 kWh per persoon per dag</strong>. Vergelijk daarmee hoeveel deze activiteiten op één dag gebruiken.</p>
+      <p className="loep-small">Dit is een berekend voorbeeld, geen vast gemiddelde voor iedere Belg. De oefening toont maar enkele activiteiten: thuis verbruik je ook stroom voor bijvoorbeeld koken en een koelkast. AI gebruikt daarnaast stroom in een datacenter.</p>
       <div className="loep-energy-sliders">
         {items.map((item, i) => <div className="loep-budget-item" key={item.label}>
           <label htmlFor={"budget-" + i}>{item.label} <strong>{format(values[i]!)} {item.unit}</strong></label>
           <div className="loep-budget-controls">
             <input id={"budget-" + i} type="range" min="0" max={item.max} step={item.step} value={values[i]} onChange={(e) => change(i, e.target.value)} />
-            <input type="number" min="0" max={item.max} value={values[i]} onChange={(e) => change(i, e.target.value)} aria-label={item.label + " per maand"} />
+            <input type="number" min="0" max={item.max} value={values[i]} onChange={(e) => change(i, e.target.value)} aria-label={item.label + " per dag"} />
           </div>
         </div>)}
       </div>
@@ -478,7 +479,7 @@ export function Energy() {
     <div className="loep-chart">
       <div className="loep-budget-total" aria-live="polite">
         <span className="loep-eyebrow">Je gebruikt in deze oefening</span>
-        <h3>{format(total)} van {budget} kWh</h3>
+        <h3>{format(total)} van {format(budget)} kWh</h3>
         <div className="loep-bar-track"><span style={{ width: Math.min(100, total / budget * 100) + "%" }} /></div>
         <p>{total <= budget ? `Nog ${format(budget - total)} kWh over.` : `Je zit ${format(total - budget)} kWh boven je budget.`}</p>
       </div>
@@ -491,7 +492,9 @@ export function Energy() {
           <li><a href="https://iea.blob.core.windows.net/assets/34eac603-ecf1-464f-b813-2ecceb8f81c2/EnergyandAI.pdf" target="_blank" rel="noreferrer">IEA, 2025</a>: circa 115 Wh voor één AI-video van zes seconden in een test; alleen de grafische chips zijn meegeteld.</li>
           <li><a href="https://www.iea.org/commentaries/the-carbon-footprint-of-streaming-video-fact-checking-the-headlines" target="_blank" rel="noreferrer">IEA, 2019</a>: ongeveer 77 Wh per uur streamen, inclusief netwerk en toestel.</li>
           <li><a href="https://www.energy.gov/sites/default/files/2021-08/ES-EE%20Lighting_080921_0.pdf" target="_blank" rel="noreferrer">US Department of Energy</a>: voorbeeldlamp van 9 watt. Een uur branden is 9 Wh.</li>
-          <li><a href="https://www.energy.gov/cmei/femp/best-practices-measuring-and-reporting-electricity-use-federal-fleet-electric-vehicles" target="_blank" rel="noreferrer">US Department of Energy</a>: circa 30 kWh per 100 mijl; omgerekend ongeveer 0,19 kWh per km, zonder laadverlies.</li>
+          <li><a href="https://researchportal.ulisboa.pt/en/publications/influence-of-electric-bicycle-usage-on-biker-effort-on-road-monit/" target="_blank" rel="noreferrer">Universiteit van Lissabon</a>: ongeveer 9 Wh per km elektrische fiets in een onderzoek; het opladen kan extra stroom vragen.</li>
+          <li><a href="https://iea.blob.core.windows.net/assets/34eac603-ecf1-464f-b813-2ecceb8f81c2/EnergyandAI.pdf" target="_blank" rel="noreferrer">IEA, 2025</a>: ongeveer 15 Wh voor één gsm-oplaadbeurt, als voorbeeld.</li>
+          <li><a href="https://www.creg.be/sites/default/files/assets/Publications/Studies/F20251023NL.pdf" target="_blank" rel="noreferrer">CREG, 2025</a>: een Belgisch referentieprofiel voor een gezin van 3 à 4 personen gebruikt 3.500 kWh per jaar. Voor dit voorbeeld delen we 3.500 door 365 dagen en vier personen: ongeveer 2,4 kWh per persoon per dag. Werkelijke gezinnen verschillen sterk.</li>
         </ul>
         <p>De cijfers zijn voorbeelden uit verschillende jaren en meten verschillende onderdelen. Verbruik verschilt per datacenter, systeem, model en apparaat. Je kunt hieruit niet besluiten welke activiteit altijd beter is voor het milieu.</p>
       </details>
@@ -499,11 +502,17 @@ export function Energy() {
   </div>;
 }
 
-export function EnergyReflect() {
-  const [opinion, setOpinion] = useState(2);
+export function EnergyReflect({ answer, onAnswer }: { answer?: Answer; onAnswer: (values: string[]) => void }) {
+  const opinion = Math.min(4, Math.max(0, Number(answer?.values[0] ?? 2) || 0));
+  const explanation = answer?.values[1] ?? "";
+  const labels = ["Veel minder dan ik dacht", "Iets minder dan ik dacht", "Ongeveer zoals ik dacht", "Iets meer dan ik dacht", "Veel meer dan ik dacht"];
   return <div className="loep-discover">
-    <div><span className="loep-eyebrow">Even terugkijken · zonder score</span><h2>Wat verraste jou?</h2><p>Denk terug aan de schuivers. Welke activiteit gebruikte meer of minder elektriciteit dan je verwachtte? Waardoor zou dat komen?</p></div>
-    <div className="loep-explore-panel"><h3>Hoe kijk je naar het stroomverbruik?</h3><p>Viel het mee, of schrok je ervan?</p><label className="loep-opinion"><strong>{["Het viel erg mee", "Het viel mee", "Ik twijfel", "Ik schrok ervan", "Ik schrok er erg van"][opinion]}</strong><input type="range" min="0" max="4" value={opinion} onChange={(e) => setOpinion(Number(e.target.value))} aria-label="Hoe kijk je naar het stroomverbruik?" /></label><p>Er is geen goed of fout antwoord. De cijfers zijn voorbeelden en geen volledige vergelijking van de gevolgen voor het milieu.</p></div>
+    <div><span className="loep-eyebrow">Even terugkijken · zonder score</span><h2>Wat verraste je aan AI?</h2><p>Denk terug aan de AI-vragen en de AI-video’s. Verbruikten ze meer of minder elektriciteit dan je vooraf dacht? Wat viel je op?</p></div>
+    <div className="loep-explore-panel"><h3>Verbruikt AI meer of minder elektriciteit dan je dacht?</h3>
+      <label className="loep-opinion"><strong>{labels[opinion]}</strong><input type="range" min="0" max="4" value={opinion} onChange={(e) => onAnswer([e.target.value, explanation])} aria-label="Verbruikt AI meer of minder elektriciteit dan je dacht?" /></label>
+      <label>Waarom denk je dat? <span className="loep-small">(mag, maar hoeft niet)</span><textarea value={explanation} maxLength={1000} rows={3} onChange={(e) => onAnswer([String(opinion), e.target.value])} placeholder="Wat verraste je of wat wil je erbij zeggen?" /></label>
+      <p>Er is geen goed of fout antwoord. Je toelichting wordt op dit toestel bewaard en komt ook in je PDF.</p>
+    </div>
   </div>;
 }
 
@@ -857,7 +866,7 @@ export function Special({
     case "energy":
       return <Energy />;
     case "energy-reflect":
-      return <EnergyReflect />;
+      return <EnergyReflect answer={answer} onAnswer={onAnswer} />;
     case "centers":
       return <Centers />;
     case "chat":
