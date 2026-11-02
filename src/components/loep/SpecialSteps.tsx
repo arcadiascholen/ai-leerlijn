@@ -444,267 +444,90 @@ export function Gallery({
   );
 }
 export function Energy() {
-  const [amount, setAmount] = useState(1);
-  const [hours, setHours] = useState(1);
-  const [videos, setVideos] = useState(1);
-  const [people, setPeople] = useState(1);
-  const [mode, setMode] = useState<"compare" | "people">("compare");
-  const [selected, setSelected] = useState(0);
-  const [feedback, setFeedback] = useState("");
-  const number = (value: number) =>
-    Number(value.toFixed(2)).toLocaleString("nl-BE");
-  const total = amount * (mode === "people" ? people : 1) * 0.24;
-  const entries = [
-    {
-      title: "Tekstvragen · Google 2025 · zonder jouw toestel",
-      value: total,
-      tag: `${number(total)} Wh`,
-      boundary:
-        "Gemini Apps, Google 2025: het middelste gemeten verbruik. Je eigen toestel telt niet mee.",
-    },
-    {
-      title: "Streamen · IEA 2019 · inclusief toestel",
-      value: 77 * hours,
-      tag: `${number(77 * hours)} Wh`,
-      boundary:
-        "Schatting van het IEA voor 2019. Datacenters, internet en toestellen tellen mee.",
-    },
-    {
-      title: "AI-video · IEA 2025 · alleen chips",
-      value: 115 * videos,
-      tag: `circa ${number(115 * videos)} Wh`,
-      boundary:
-        "IEA-test uit 2025. Alleen het verbruik van de gebruikte grafische chips telt mee.",
-    },
+  const budget = 25;
+  const [values, setValues] = useState([300, 10, 20, 40, 50]);
+  const items = [
+    { label: "Eenvoudige AI-tekstvragen", unit: "vragen", factor: 0.00024, max: 5000, step: 50 },
+    { label: "AI-video’s van 6 seconden", unit: "video’s", factor: 0.115, max: 100, step: 1 },
+    { label: "Video streamen", unit: "uur", factor: 0.077, max: 100, step: 1 },
+    { label: "Ledlamp van 9 watt", unit: "uur", factor: 0.009, max: 300, step: 5 },
+    { label: "Elektrische auto", unit: "km", factor: 0.19, max: 300, step: 5 },
   ];
-  const max = Math.max(1, ...entries.map((e) => e.value));
-  const change = (setter: (n: number) => void, value: number) => {
-    setter(value);
-    setFeedback("");
+  const total = items.reduce((sum, item, i) => sum + values[i]! * item.factor, 0);
+  const format = (n: number) => n.toLocaleString("nl-BE", { maximumFractionDigits: 3 });
+  const change = (index: number, raw: string) => {
+    const n = Math.min(items[index]!.max, Math.max(0, Number(raw) || 0));
+    setValues((current) => current.map((v, i) => i === index ? n : v));
   };
-  function check() {
-    if (mode === "people") {
-      setFeedback(
-        amount === 5 && people === 1000
-          ? "Goed! Samen zijn dat 5.000 vragen en ongeveer 1.200 Wh volgens dit voorbeeld."
-          : "Probeer 1.000 mensen en 5 vragen per persoon in te stellen.",
-      );
-      return;
-    }
-    if (hours !== 1)
-      setFeedback("Zet Netflix eerst op één uur en vergelijk opnieuw.");
-    else if (Math.abs(amount * 0.24 - 77) <= 5)
-      setFeedback(
-        "Dat komt in de buurt: volgens dit voorbeeld zijn dat ongeveer 300 vragen. Er worden niet overal dezelfde dingen meegeteld.",
-      );
-    else if (amount * 0.24 < 72)
-      setFeedback(
-        "Probeer meer tekstvragen. Kijk wanneer de eerste balk bijna even lang is als de tweede.",
-      );
-    else
-      setFeedback(
-        "Probeer minder tekstvragen. Kijk wanneer de eerste balk bijna even lang is als de tweede.",
-      );
-  }
-  return (
-    <div className="loep-split loep-energy">
-      <div>
-        <span className="loep-eyebrow">Onderzoek de grootteorde</span>
-        <h2>Vergelijk en probeer uit</h2>
-        <p className="loep-small">Wh is een maat voor gebruikte elektriciteit. Water, materialen en energiebron bepalen mee de milieu-impact.</p>
-        <div className="loep-tabs" role="group" aria-label="Kies een oefening">
-          <button
-            aria-pressed={mode === "compare"}
-            onClick={() => {
-              setMode("compare");
-              setFeedback("");
-            }}
-          >
-            Vergelijk
-          </button>
-          <button
-            aria-pressed={mode === "people"}
-            onClick={() => {
-              setMode("people");
-              setFeedback("");
-            }}
-          >
-            Veel mensen
-          </button>
-        </div>
-        <p>
-          {mode === "compare"
-            ? "Als je de voorbeeldcijfers deelt, hoeveel tekstvragen krijg je voor 77 Wh?"
-            : "Wat als 1.000 mensen elk 5 vragen stellen?"}
-        </p>
-        <div className="loep-energy-sliders">
-          <label>
-            {mode === "people" ? "Vragen per persoon" : "Aantal tekstvragen"}{" "}
-            <strong>{amount}</strong>
-            <input
-              type="range"
-              min="1"
-              max="500"
-              value={amount}
-              onChange={(e) => change(setAmount, Number(e.target.value))}
-            />
-          </label>
-          {mode === "people" ? (
-            <label>
-              Aantal mensen <strong>{people}</strong>
-              <input
-                type="range"
-                min="1"
-                max="1000"
-                value={people}
-                onChange={(e) => change(setPeople, Number(e.target.value))}
-              />
-            </label>
-          ) : (
-            <label>
-              Netflix (uren) <strong>{hours}</strong>
-              <input
-                type="range"
-                min="0"
-                max="3"
-                value={hours}
-                onChange={(e) => change(setHours, Number(e.target.value))}
-              />
-            </label>
-          )}
-          <label>
-            AI-video’s van zes seconden <strong>{videos}</strong>
-            <input
-              type="range"
-              min="0"
-              max="3"
-              value={videos}
-              onChange={(e) => change(setVideos, Number(e.target.value))}
-            />
-          </label>
-        </div>
-        <button className="loep-button" onClick={check}>
-          Controleer mijn vergelijking
-        </button>
-        {feedback && (
-          <p className="loep-energy-feedback" role="status">
-            {feedback}
-          </p>
-        )}
-      </div>
-      <div className="loep-chart">
-        {entries.map((e, i) => (
-          <button
-            key={e.title}
-            onClick={() => setSelected(i)}
-            aria-pressed={selected === i}
-          >
-            <span>
-              {e.title}
-              <strong>{e.tag}</strong>
-            </span>
-            <span className="loep-bar-track">
-              <span style={{ width: (e.value / max) * 100 + "%" }} />
-            </span>
-          </button>
-        ))}
-        <div className="loep-measure" aria-live="polite">
-          <span className="loep-eyebrow">Wat telt mee?</span>
-          <p>{entries[selected]!.boundary}</p>
-        </div>
-        <p className="loep-energy-caveat">
-          {mode === "people" &&
-            "Alleen de tekstvragen worden vermenigvuldigd met het aantal mensen. "}
-          Let op: deze cijfers komen uit verschillende jaren en tellen verschillende onderdelen mee. Vergelijk daarom niet wat beter is voor het milieu. Je kunt hieruit
-          niet besluiten welke toepassing altijd beter is voor het milieu.
-        </p>
-        <div className="loep-small loep-source-links">
-          <a
-            href="https://services.google.com/fh/files/misc/measuring_the_environmental_impact_of_delivering_ai_at_google_scale.pdf"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Google 2025 ↗
-          </a>
-          <a
-            href="https://www.iea.org/commentaries/the-carbon-footprint-of-streaming-video-fact-checking-the-headlines"
-            target="_blank"
-            rel="noreferrer"
-          >
-            IEA streaming ↗
-          </a>
-          <a
-            href="https://www.iea.org/reports/energy-and-ai"
-            target="_blank"
-            rel="noreferrer"
-          >
-            IEA AI ↗
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-const dimensions = [
-  [
-    "Elektriciteit",
-    "Vooral groene stroom en nieuwe, energiezuinige servers.",
-    "Deels fossiele stroom en oudere servers die meer elektriciteit vragen.",
-  ],
-  [
-    "Water",
-    "Veel koelwater, in een gebied met vaak watertekort.",
-    "Weinig water nodig voor koeling.",
-  ],
-  [
-    "Grondstoffen",
-    "Nieuwe servers: ook productie en materialen tellen mee.",
-    "Bestaande servers worden langer gebruikt.",
-  ],
-];
-export function Centers() {
-  const [dimension, setDimension] = useState(0);
-  return (
-    <div className="loep-center-exercise">
-      <span className="loep-eyebrow">
-        Verzonnen voorbeeld · we weten nog niet alles
-      </span>
-      <h2>Welk datacenter is de beste keuze?</h2>
-      <div
-        className="loep-tabs"
-        role="group"
-        aria-label="Milieugevolg bekijken"
-      >
-        {dimensions.map((d, i) => (
-          <button
-            key={d[0]}
-            aria-pressed={dimension === i}
-            onClick={() => setDimension(i)}
-          >
-            {d[0]}
-          </button>
-        ))}
-      </div>
-      <div className="loep-center-cards">
-        {["A", "B"].map((letter, i) => (
-          <div key={letter}>
-            <span className="loep-center-letter">{letter}</span>
-            <h3>Datacenter {letter}</h3>
-            <p aria-live="polite">{dimensions[dimension]![i + 1]}</p>
+  return <div className="loep-energy-budget">
+    <div>
+      <span className="loep-eyebrow">Jouw maandbudget · voorbeeld</span>
+      <h2>Waar gaat jouw elektriciteit naartoe?</h2>
+      <p>Je krijgt <strong>25 kWh</strong> voor deze vijf activiteiten in één maand. Kies hoeveel je van elk gebruikt. Kijk wat er met je budget gebeurt.</p>
+      <p className="loep-small">Dit is een verzonnen oefenbudget per leerling, geen volledig huishoudelijk verbruik. Een autorit is een vergelijkingsvoorbeeld, ook als je zelf niet rijdt.</p>
+      <div className="loep-energy-sliders">
+        {items.map((item, i) => <div className="loep-budget-item" key={item.label}>
+          <label htmlFor={"budget-" + i}>{item.label} <strong>{format(values[i]!)} {item.unit}</strong></label>
+          <div className="loep-budget-controls">
+            <input id={"budget-" + i} type="range" min="0" max={item.max} step={item.step} value={values[i]} onChange={(e) => change(i, e.target.value)} />
+            <input type="number" min="0" max={item.max} value={values[i]} onChange={(e) => change(i, e.target.value)} aria-label={item.label + " per maand"} />
           </div>
-        ))}
+        </div>)}
       </div>
-      <p>
-        Welke informatie ontbreekt om eerlijk te kiezen? Elektriciteit, water en grondstoffen vertellen samen meer dan één los cijfer. Water dat door een systeem stroomt, wordt bovendien niet
-        noodzakelijk allemaal verbruikt.
-      </p>
-      <p className="loep-small">
-        Deze alternatieven zijn verzonnen. Er zijn geen verborgen
-        verbruikscijfers. Eén kleine vraag lijkt weinig, maar miljoenen
-        opdrachten samen vragen veel middelen.
-      </p>
     </div>
-  );
+    <div className="loep-chart">
+      <div className="loep-budget-total" aria-live="polite">
+        <span className="loep-eyebrow">Je gebruikt in deze oefening</span>
+        <h3>{format(total)} van {budget} kWh</h3>
+        <div className="loep-bar-track"><span style={{ width: Math.min(100, total / budget * 100) + "%" }} /></div>
+        <p>{total <= budget ? `Nog ${format(budget - total)} kWh over.` : `Je zit ${format(total - budget)} kWh boven je budget.`}</p>
+      </div>
+      {items.map((item, i) => <div className="loep-budget-result" key={item.label}><span>{item.label}</span><strong>{format(values[i]! * item.factor)} kWh</strong></div>)}
+      <details className="loep-budget-sources">
+        <summary>Hoe rekenen we? Bekijk de bronnen</summary>
+        <p>We vermenigvuldigen het aantal vragen, video’s, uren of kilometers met een voorbeeldcijfer. <strong>1 kWh = 1.000 Wh.</strong></p>
+        <ul>
+          <li><a href="https://cloud.google.com/blog/products/infrastructure/measuring-the-environmental-impact-of-ai-inference" target="_blank" rel="noreferrer">Google, 2025</a>: 0,24 Wh per doorsnee Gemini-tekstvraag; inclusief delen van het datacenter, zonder jouw toestel.</li>
+          <li><a href="https://iea.blob.core.windows.net/assets/34eac603-ecf1-464f-b813-2ecceb8f81c2/EnergyandAI.pdf" target="_blank" rel="noreferrer">IEA, 2025</a>: circa 115 Wh voor één AI-video van zes seconden in een test; alleen de grafische chips zijn meegeteld.</li>
+          <li><a href="https://www.iea.org/commentaries/the-carbon-footprint-of-streaming-video-fact-checking-the-headlines" target="_blank" rel="noreferrer">IEA, 2019</a>: ongeveer 77 Wh per uur streamen, inclusief netwerk en toestel.</li>
+          <li><a href="https://www.energy.gov/sites/default/files/2021-08/ES-EE%20Lighting_080921_0.pdf" target="_blank" rel="noreferrer">US Department of Energy</a>: voorbeeldlamp van 9 watt. Een uur branden is 9 Wh.</li>
+          <li><a href="https://www.energy.gov/cmei/femp/best-practices-measuring-and-reporting-electricity-use-federal-fleet-electric-vehicles" target="_blank" rel="noreferrer">US Department of Energy</a>: circa 30 kWh per 100 mijl; omgerekend ongeveer 0,19 kWh per km, zonder laadverlies.</li>
+        </ul>
+        <p>De cijfers zijn voorbeelden uit verschillende jaren en meten verschillende onderdelen. Verbruik verschilt per datacenter, systeem, model en apparaat. Je kunt hieruit niet besluiten welke activiteit altijd beter is voor het milieu.</p>
+      </details>
+    </div>
+  </div>;
+}
+
+export function EnergyReflect() {
+  const [opinion, setOpinion] = useState(2);
+  return <div className="loep-discover">
+    <div><span className="loep-eyebrow">Even terugkijken · zonder score</span><h2>Wat verraste jou?</h2><p>Denk terug aan de schuivers. Welke activiteit gebruikte meer of minder elektriciteit dan je verwachtte? Waardoor zou dat komen?</p></div>
+    <div className="loep-explore-panel"><h3>Hoe kijk je naar het stroomverbruik?</h3><p>Viel het mee, of schrok je ervan?</p><label className="loep-opinion"><strong>{["Het viel erg mee", "Het viel mee", "Ik twijfel", "Ik schrok ervan", "Ik schrok er erg van"][opinion]}</strong><input type="range" min="0" max="4" value={opinion} onChange={(e) => setOpinion(Number(e.target.value))} aria-label="Hoe kijk je naar het stroomverbruik?" /></label><p>Er is geen goed of fout antwoord. De cijfers zijn voorbeelden en geen volledige vergelijking van de gevolgen voor het milieu.</p></div>
+  </div>;
+}
+
+export function Centers() {
+  const [choice, setChoice] = useState<string | null>(null);
+  const dimensions = [
+    ["Elektriciteit", "Vooral groene stroom en nieuwe, energiezuinige servers.", "Deels fossiele stroom en oudere servers die meer elektriciteit vragen."],
+    ["Water", "Veel koelwater in een gebied met vaak watertekort.", "Weinig water nodig voor koeling."],
+    ["Grondstoffen", "Nieuwe servers: ook productie en materialen tellen mee.", "Bestaande servers worden langer gebruikt."],
+  ];
+  return <div className="loep-center-exercise">
+    <span className="loep-eyebrow">Eerst de context</span>
+    <h2>Wat heeft een datacenter nodig?</h2>
+    <p>Een datacenter is een gebouw met veel krachtige computers. Die verwerken onder meer AI-vragen en gebruiken elektriciteit. Om ze af te koelen kan water nodig zijn. Voor de computers en hun onderdelen zijn ook grondstoffen nodig, zoals metalen.</p>
+    <p>Vergelijk deze twee <strong>verzonnen</strong> datacenters. Bekijk stroom, water en materialen samen. Welke zou jij kiezen, of heb je meer informatie nodig?</p>
+    <div className="loep-center-cards">
+      {["A", "B"].map((letter, i) => <div key={letter}><h3>Datacenter {letter}</h3>{dimensions.map((d) => <p key={d[0]}><strong>{d[0]}:</strong> {d[i + 1]}</p>)}</div>)}
+    </div>
+    <div className="loep-tabs" role="group" aria-label="Jouw voorlopige keuze">
+      {["A", "B", "Meer informatie nodig"].map((item) => <button key={item} aria-pressed={choice === item} onClick={() => setChoice(item)}>{item}</button>)}
+    </div>
+    {choice && <p className="loep-note" role="status">Een verstandige keuze vraagt meer gegevens: hoeveel stroom en water gebruiken ze voor hetzelfde werk, en wat is de impact van de apparatuur? Er is hier geen vast juist antwoord.</p>}
+    <p className="loep-small">Deze voorbeelden zijn verzonnen. Water dat door een koelsysteem stroomt, wordt niet noodzakelijk allemaal verbruikt. <a href="https://www.iea.org/reports/energy-and-ai/energy-demand-from-aI" target="_blank" rel="noreferrer">Wat is een datacenter? · IEA ↗</a></p>
+  </div>;
 }
 export const messages = [
   ["Sam", "wtf 💀 — video · 0:12"],
@@ -1033,6 +856,8 @@ export function Special({
       return <Gallery answer={answer} onAnswer={onAnswer} onCheck={onCheck} />;
     case "energy":
       return <Energy />;
+    case "energy-reflect":
+      return <EnergyReflect />;
     case "centers":
       return <Centers />;
     case "chat":

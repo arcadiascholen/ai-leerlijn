@@ -17,3 +17,23 @@
 .loep-bias-examples img { width: 100%; height: 240px; object-fit: cover; border-radius: 12px; }
 .loep-bias-examples p { grid-column: 1 / -1; margin: 0; font-size: 13px; }
 .loep-evidence-card select { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #879c81; border-radius: 7px; background: white; font: inherit; }
+
+.loep-energy-budget { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; width: 100%; }
+.loep-energy-budget h2 { margin: 10px 0; }
+.loep-energy-budget p { line-height: 1.4; }
+.loep-budget-item { margin: 10px 0; }
+.loep-budget-item label { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 700; }
+.loep-budget-controls { display: flex; align-items: center; gap: 10px; }
+.loep-budget-controls input[type="range"] { flex: 1; min-width: 0; accent-color: #0a7580; }
+.loep-budget-controls input[type="number"] { width: 72px; padding: 6px; border: 1px solid #b7c8ad; border-radius: 7px; font: inherit; }
+.loep-budget-total { padding: 16px; background: #e1f1f0; border-radius: 14px; }
+.loep-budget-total h3 { margin: 8px 0; color: #075e66; }
+.loep-budget-total p { margin: 8px 0 0; }
+.loep-budget-result { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-bottom: 1px solid #d8e3d2; font-size: 12px; }
+.loep-budget-sources { margin-top: 14px; font-size: 12px; line-height: 1.4; }
+.loep-budget-sources summary { cursor: pointer; color: #005c67; font-weight: 700; }
+.loep-budget-sources li { margin: 6px 0; }
+.loep-relatie-video { width: 100%; padding: 20px; background: #e1f1f0; border-radius: 18px; }
+.loep-relatie-video p { margin: 10px 0 4px; font-size: 14px; }
+.loep-relatie-video small { font-size: 11px; }
+@media(max-width: 900px) { .loep-energy-budget { grid-template-columns: 1fr; } }

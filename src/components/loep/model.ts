@@ -123,6 +123,7 @@ export type Step = {
     | "experiment"
     | "gallery"
     | "energy"
+    | "energy-reflect"
     | "centers"
     | "chat"
     | "booking"
@@ -277,16 +278,16 @@ export const chapterSteps: Record<number, Step[]> = {
       "groen",
       6,
       "Hoe groen is AI eigenlijk?",
-      "AI gebruikt elektriciteit, water en grondstoffen. Toch kan een toepassing ook helpen om energie of materialen te besparen.",
-      "Om de milieugevolgen te beoordelen, moet je zowel de kosten als de mogelijke besparing onderzoeken.",
+      "AI gebruikt elektriciteit, water en grondstoffen. Toch kunnen AI-toepassingen ook helpen om energie of materialen te besparen.",
+      "Om de gevolgen voor het milieu te beoordelen, moet je zowel de kosten als de mogelijke besparing onderzoeken.",
     ),
     q("25", 6),
     q("26", 6),
-    special("energie", 6, "energy", "Eén AI-vraag of een uur Netflix?"),
-    q("26b", 6),
     special("datacenters", 6, "centers", "Meer dan elektriciteit"),
     q("27", 6),
     q("28", 6),
+    special("energie", 6, "energy", "Jouw elektriciteitsbudget"),
+    special("q26b", 6, "energy-reflect", "Wat verrast jou?"),
     compass(6),
   ],
   7: [

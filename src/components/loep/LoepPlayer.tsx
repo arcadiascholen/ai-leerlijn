@@ -361,6 +361,8 @@ function Story({ step }: { step: Step }) {
           <VideoCard kind="deepfake" />
         ) : step.id === "nepvideo" ? (
           <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
+        ) : step.id === "relatie" ? (
+          <div className="loep-relatie-video"><VideoCard kind="relatie" /><p>Wat vertelt Jacob over wat Aiva voor hem betekent? Welke voordelen en vragen roept dit bij jou op?</p><small>De volledige reportage duurt ongeveer 36 minuten en bevat ook gevoelige onderwerpen. Overleg met je leerkracht welk deel je bekijkt.</small></div>
         ) : step.id === "onderzoek" ? (
           <div className="loep-bias-examples"><Photo name="verpleegkundige-1" alt="AI-beeld van een verpleegkundige." /><Photo name="chirurg-1" alt="AI-beeld van een chirurg." /><p>Twee AI-beelden uit de galerij. Welke beelden en rollen herken je?</p></div>
         ) : chapter ? (

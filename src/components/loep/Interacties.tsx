@@ -6,7 +6,7 @@ type Actions = {
   checked?: boolean;
 };
 
-export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake"; compact?: boolean }) {
+export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake" | "relatie"; compact?: boolean }) {
   const [playing, setPlaying] = useState(false);
   const v =
     kind === "intro"
@@ -18,7 +18,9 @@ export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake
           summary:
             "AI leert vaak patronen uit veel voorbeelden, zoals tekst of beelden. Die patronen helpen bij voorspellen of nieuwe inhoud maken. Ook een overtuigend resultaat kan fout zijn: blijf controleren.",
         }
-      : {
+      : kind === "relatie"
+        ? { id: "GhARML8xqD4", title: "Jacob en zijn AI-partner Aiva", source: "Pano · VRT NWS", url: "https://www.youtube.com/watch?v=GhARML8xqD4", summary: "" }
+        : {
           id: "uHaJH0ojL8s",
           title: "Kun jij nog zien of een video echt is?",
           source: "NOS Jeugdjournaal",
@@ -412,28 +414,13 @@ export function Perspectives() {
       </div>
       <div>
         <span className="loep-eyebrow">Wat denk jij?</span>
-        <h3>Hoeveel vragen heb jij nog over deze relatie?</h3>
+        <h3>Wat vind jij van deze stelling?</h3>
+        <p>“Als Jacob zich goed voelt bij zijn chatbot, is er niets om je zorgen over te maken.”</p>
         <label className="loep-opinion">
-          {
-            [
-              "Geen",
-              "Weinig",
-              "Enkele",
-              "Veel",
-              "Heel veel",
-            ][opinion]
-          }
-          <input
-            type="range"
-            min="0"
-            max="4"
-            value={opinion}
-            onChange={(e) => setOpinion(Number(e.target.value))}
-          />
+          <strong>{["Helemaal oneens", "Eerder oneens", "Ik twijfel", "Eerder eens", "Helemaal eens"][opinion]}</strong>
+          <input type="range" min="0" max="4" value={opinion} onChange={(e) => setOpinion(Number(e.target.value))} aria-label="Wat vind jij van de stelling?" />
         </label>
-        <p className="loep-note">
-          Je antwoord is niet goed of fout. {seen.length < 3 ? "Bekijk ook de andere kanten." : "Welke vraag wil je als eerste verder onderzoeken?"}
-        </p>
+        <p className="loep-note">Een chatbot kan steun bieden. Denk ook na over afhankelijkheid, privacy en de belangen van het bedrijf. {seen.length < 3 ? "Bekijk ook de andere kanten." : "Welke argumenten wegen voor jou het zwaarst?"} Je mening krijgt geen score.</p>
         <SourceCard chapter={5} />
       </div>
     </div>
