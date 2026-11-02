@@ -218,11 +218,18 @@ export const chapterSteps: Record<number, Step[]> = {
   ],
   3: [
     story(
+      "deepfake-kijken",
+      3,
+      "Kun jij zien wat echt is?",
+      "Bekijk het filmpje van NOS Jeugdjournaal over beelden die met AI zijn gemaakt.",
+      "Kijkvraag: kun je altijd aan een filmpje zien of het echt is? Waar kun je nog op letten?",
+    ),
+    story(
       "nepvideo",
       3,
       "Wanneer gaat een grap te ver?",
       "In februari 2026 maakten leerlingen in Berchem een kwetsende deepfakevideo van een leerkracht. De leerkracht diende klacht in.",
-      "Een deepfake kan iemand iets laten lijken te zeggen of doen wat nooit gebeurd is. Ook een nepvideo kan echte schade veroorzaken.",
+      "De school stelde de 100-dagenviering uit en ging met leerlingen in gesprek. In de geraadpleegde berichtgeving staat niet hoe de klacht uiteindelijk is afgelopen.",
     ),
     q("13", 3),
     special("klaschat", 3, "chat", "Er verschijnt iets in de klasgroep…"),
@@ -476,6 +483,8 @@ export function parseProgress(raw: string | null): Progress {
       .filter((n) => Number.isInteger(n) && n >= 3 && n <= 8)
       .slice(0, 2);
     p.visited = v.visited.filter((s): s is string => typeof s === "string");
+    // Behoud de voortgang van leerlingen die de gecombineerde stap al bekeken.
+    if (p.visited.includes("nepvideo")) p.visited.push("deepfake-kijken");
     for (const chapter of chapters) {
       if (chapterSteps[chapter.id]?.some((step) => p.visited.includes(step.id))) p.visited.push(`hoofdstuk-${chapter.id}`);
     }

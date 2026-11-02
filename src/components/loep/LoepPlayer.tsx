@@ -342,7 +342,7 @@ function Story({ step }: { step: Step }) {
           <p key={p}>{p}</p>
         ))}
         {chapter ? (
-          <SourceCard chapter={chapter.id} />
+          step.id !== "deepfake-kijken" && <SourceCard chapter={chapter.id} />
         ) : (
           <p className="loep-small">
             <a
@@ -360,8 +360,10 @@ function Story({ step }: { step: Step }) {
           <CompareAnswers />
         ) : step.id === "testen" ? (
           <Photo name="phone" alt="Iemand gebruikt een smartphone." />
-        ) : step.id === "nepvideo" ? (
+        ) : step.id === "deepfake-kijken" ? (
           <VideoCard kind="deepfake" />
+        ) : step.id === "nepvideo" ? (
+          <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
         ) : chapter ? (
           [
             "vriendelijk",

@@ -57,7 +57,7 @@ export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake
       </div>
       {kind === "deepfake" && (
         <>
-          <p className="loep-small">Dit filmpje gaat over andere voorbeelden dan de zaak in Berchem. Bekijk hoe moeilijk het kan zijn om echte en gemaakte beelden te onderscheiden.</p>
+          <p className="loep-small">Denk tijdens het kijken na: kun je altijd aan een filmpje zien of het echt is? Waar kun je nog op letten?</p>
         </>
       )}
     </section>
