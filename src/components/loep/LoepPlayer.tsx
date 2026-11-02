@@ -540,7 +540,7 @@ function Summary({
             <label>Je school
               <select value={school} onChange={(e) => setSchool(e.target.value)} required>
                 <option value="">Kies je school</option>
-                {["SJCA", "DIA", "SMA", "SJIB"].map((item) => <option key={item} value={item}>{item}</option>)}
+                {["DIA", "SJCA", "SJIB", "SMA"].map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </label>
             <label>Je klas
@@ -581,11 +581,7 @@ function Summary({
           >
             Open het reflectieformulier ↗
           </a>
-        ) : (
-          <p className="loep-small">
-            Zoek de link in je Smartschoolbericht of planner.
-          </p>
-        )}
+        ) : null}
       </div>
     </div>
   );
