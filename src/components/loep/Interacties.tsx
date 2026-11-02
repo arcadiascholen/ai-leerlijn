@@ -19,7 +19,7 @@ export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake
             "AI leert vaak patronen uit veel voorbeelden, zoals tekst of beelden. Die patronen helpen bij voorspellen of nieuwe inhoud maken. Ook een overtuigend resultaat kan fout zijn: blijf controleren.",
         }
       : kind === "relatie"
-        ? { id: "GhARML8xqD4", title: "Jacob en zijn AI-partner Aiva", source: "Pano · VRT NWS", url: "https://www.youtube.com/watch?v=GhARML8xqD4", summary: "" }
+        ? { id: "GhARML8xqD4", title: "Jacob en zijn AI-partner Aiva", source: "Pano · VRT NWS", url: "https://www.youtube.com/watch?v=GhARML8xqD4&t=332s", summary: "" }
         : {
           id: "uHaJH0ojL8s",
           title: "Kun jij nog zien of een video echt is?",
@@ -45,7 +45,7 @@ export function VideoCard({ kind, compact = false }: { kind: "intro" | "deepfake
       ) : (
         <iframe
           title={v.title}
-          src={`https://www.youtube-nocookie.com/embed/${v.id}`}
+          src={`https://www.youtube-nocookie.com/embed/${v.id}${kind === "relatie" ? "?start=332&end=385" : ""}`}
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
@@ -395,7 +395,7 @@ export function Perspectives() {
       <div>
         <span className="loep-eyebrow">Drie kanten</span>
         <h2>Hoe kijk jij hiernaar?</h2>
-        <p>Bekijk de drie kanten. Welk belang wil je verder onderzoeken?</p>
+        <p>Bekijk de drie kanten. Beantwoord daarna de stelling.</p>
         <div className="loep-tabs" role="group" aria-label="Kies een kant">
           {views.map((v, i) => (
             <button
@@ -413,7 +413,6 @@ export function Perspectives() {
         </div>
       </div>
       <div>
-        <span className="loep-eyebrow">Wat denk jij?</span>
         <h3>Wat vind jij van deze stelling?</h3>
         <p>“Als Jacob zich goed voelt bij zijn chatbot, is er niets om je zorgen over te maken.”</p>
         <label className="loep-opinion">
@@ -436,11 +435,10 @@ export function WarBalance() {
         <span className="loep-eyebrow">Een moeilijke keuze</span>
         <h2>Snel reageren of eerst kijken?</h2>
         <p>
-          Een systeem meldt een mogelijke dreiging. Een mens moet beslissen wat
-          ermee gebeurt.
+          Stel: AI ziet op camerabeelden een voertuig en meldt dat het een bedreiging kan zijn. Een militair moet beslissen of er wordt ingegrepen. Wat vind jij belangrijker: snel beslissen of eerst meer informatie controleren?
         </p>
         <label className="loep-opinion">
-          Kies hoe de beschikbare tijd wordt gebruikt: <strong>{times[time]}</strong>
+          Schuif naar links voor sneller beslissen of naar rechts voor meer tijd om te controleren. <strong>{times[time]}</strong>
           <input
             type="range"
             min="0"
@@ -459,16 +457,11 @@ export function WarBalance() {
             : time === 2 ? "Meer tijd voor controle helpt om informatie te onderzoeken, maar kan een reactie vertragen." : "Een deel van de tijd gaat naar controle; daarna volgt een beslissing."}
         </p>
         <p>
-          Controle vraagt bruikbare informatie, voldoende tijd en de mogelijkheid om te stoppen.
+          De militair moet kunnen zien waarop het voorstel van AI gebaseerd is, tijd hebben om dat te controleren en een aanval kunnen tegenhouden.
         </p>
-        <p className="loep-small">
-          Dit is een verzonnen situatie. De schuiven voorspellen geen echte
-          gevolgen.
-        </p>
-        <h3>Wie heeft een rol?</h3>
+        <h3>Wie is betrokken bij AI-wapensystemen?</h3>
         <p>
-          De ontwikkelaar test het systeem. De commandant zet het in. De
-          militair houdt toezicht.
+          Ontwikkelaars maken en testen het systeem. Commandanten beslissen over de inzet. Militairen gebruiken het en houden toezicht. Zij hebben elk een eigen rol en moeten hun keuzes kunnen uitleggen.
         </p>
         <SourceCard chapter={7} />
       </div>

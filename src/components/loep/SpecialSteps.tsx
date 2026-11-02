@@ -464,11 +464,10 @@ export function Energy() {
     <div>
       <span className="loep-eyebrow">Jouw dagbudget · voorbeeld</span>
       <h2>Waar gaat jouw elektriciteit naartoe?</h2>
-      <p>Een Belgisch referentiegezin met drie à vier personen gebruikt in dit voorbeeld 3.500 kWh elektriciteit per jaar. Als je dit over vier personen verdeelt, is dat ongeveer <strong>2,4 kWh per persoon per dag</strong>. Vergelijk daarmee hoeveel deze activiteiten op één dag gebruiken.</p>
-      <p className="loep-small">Dit is een berekend voorbeeld, geen vast gemiddelde voor iedere Belg. De oefening toont maar enkele activiteiten: thuis verbruik je ook stroom voor bijvoorbeeld koken en een koelkast. AI gebruikt daarnaast stroom in een datacenter.</p>
+      <p>Reken op ongeveer <strong>2,4 kWh elektriciteit per persoon per dag</strong> in een voorbeeldgezin. Vergelijk daarmee deze activiteiten.</p>
       <div className="loep-energy-sliders">
         {items.map((item, i) => <div className="loep-budget-item" key={item.label}>
-          <label htmlFor={"budget-" + i}>{item.label} <strong>{format(values[i]!)} {item.unit}</strong></label>
+          <label htmlFor={"budget-" + i}>{item.label} <span>({(item.factor * 1000).toLocaleString("nl-BE", { maximumFractionDigits: 2 })} Wh per {i === 0 ? "vraag" : i === 1 ? "video" : i === 4 ? "km" : i === 5 ? "oplaadbeurt" : "uur"})</span> <strong>{format(values[i]!)} {item.unit}</strong></label>
           <div className="loep-budget-controls">
             <input id={"budget-" + i} type="range" min="0" max={item.max} step={item.step} value={values[i]} onChange={(e) => change(i, e.target.value)} />
             <input type="number" min="0" max={item.max} value={values[i]} onChange={(e) => change(i, e.target.value)} aria-label={item.label + " per dag"} />

@@ -2330,3 +2330,5 @@
 .loep-privacy-overview > .loep-small { margin-top: .8rem; }
 @media (max-width: 650px) { .loep-privacy-cards { grid-template-columns: 1fr; } }
 .loep-live-score { font-weight: 700; color: #193c20; white-space: nowrap; }
+
+.loep-chapter-intro img.loep-chapter-news-image { object-fit: contain; background: #050c31; aspect-ratio: auto; max-height: 68vh; }

@@ -352,7 +352,7 @@ function Story({ step }: { step: Step }) {
           </p>
         )}
       </div>
-      <figure className={"loep-story-visual" + (step.id === "vriendelijk" ? " loep-compare-wrap" : "")}>
+      <figure className={"loep-story-visual" + (step.id === "vriendelijk" ? " loep-compare-wrap" : step.id === "relatie" ? " loep-story-video" : "")}>
         {step.id === "vriendelijk" ? (
           <CompareAnswers />
         ) : step.id === "testen" ? (
@@ -362,7 +362,7 @@ function Story({ step }: { step: Step }) {
         ) : step.id === "nepvideo" ? (
           <Photo name="deepfake-video" alt="Iemand bewerkt een video op een computerscherm." />
         ) : step.id === "relatie" ? (
-          <div className="loep-relatie-video"><VideoCard kind="relatie" /><p>Wat vertelt Jacob over wat Aiva voor hem betekent? Welke voordelen en vragen roept dit bij jou op?</p><small>De volledige reportage duurt ongeveer 36 minuten en bevat ook gevoelige onderwerpen. Overleg met je leerkracht welk deel je bekijkt.</small></div>
+          <div className="loep-relatie-video"><VideoCard kind="relatie" /><p>Wat vertelt Jacob over wat Aiva voor hem betekent? Welke voordelen en vragen roept dit bij jou op?</p></div>
         ) : step.id === "onderzoek" ? (
           <div className="loep-bias-examples"><Photo name="verpleegkundige-1" alt="AI-beeld van een verpleegkundige." /><Photo name="chirurg-1" alt="AI-beeld van een chirurg." /><p>Twee AI-beelden uit de galerij. Welke beelden en rollen herken je?</p></div>
         ) : chapter ? (
@@ -826,7 +826,7 @@ export default function LoepPlayer({
                   </>
                 ) : <p>{chapter.subtitle}</p>}
               </div>
-              <Photo name={chapter.id === 3 ? "deepfake-video" : chapter.id === 5 ? "chatbot-gesprek" : chapter.image} alt={chapter.id === 3 ? "Iemand bewerkt een video op een computerscherm." : chapter.id === 5 ? "Een hand houdt een telefoon met een chatbot vast." : chapter.alt} />
+              <Photo name={chapter.id === 3 ? "deepfake-video" : chapter.id === 5 ? "chatbot-gesprek" : chapter.id === 8 ? "ai-agenten-nieuws" : chapter.image} className={chapter.id === 8 ? "loep-chapter-news-image" : ""} alt={chapter.id === 3 ? "Iemand bewerkt een video op een computerscherm." : chapter.id === 5 ? "Een hand houdt een telefoon met een chatbot vast." : chapter.id === 8 ? "Nieuwsafbeelding over AI-agenten en Hugging Face." : chapter.alt} />
             </div>
           ) : step.kind === "story" ? (
             <Story step={step} />
