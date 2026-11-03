@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createEvidence } from "./pdf";
 import {
   chapters,
   checkedKnowledge,
@@ -479,7 +480,6 @@ function Summary({
     setBusy(true);
     setError("");
     try {
-      const { createEvidence } = await import("./pdf");
       const pdf = await createEvidence(name, school, klas, progress);
       pdf.save("AI-onder-de-loep-leerbewijs.pdf");
       setDownloaded(true);
