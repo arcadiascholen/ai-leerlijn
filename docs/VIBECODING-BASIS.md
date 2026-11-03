@@ -244,3 +244,6 @@ stap 11. De centrale mapping en tijdlijn volgen alle 34 stappen.
 
 ### Optionele brainstorm apart
 Stap 9 blijft inspiratie. Stap 10 toont een optionele AI-brainstorm met zichtbare prompt en een overslaanknop naar stap 11. Bij de hulpmiddelkeuze verschijnt het voorbeeld direct onder de keuzes rechts. Stap 12 blijft de eigen beschrijving. De 35 stappen delen dezelfde nummering voor voortgang en verslag.
+
+### Geen vooraf klaargezet materiaal
+Planners en eigen ideeën kunnen expliciet kiezen dat vooraf geen materiaal nodig is. Die keuze telt mee voor voortgang en eindverslag. De overleg-, samenvattings- en bouwprompts ondersteunen latere invoer en vragen dan geen leerstof op. Bij eigen ideeën blijft alleen de check op een basisversie zonder ingebouwde AI of diensten verplicht. Elk kopieerbaar promptvak heeft een zichtbaar label.

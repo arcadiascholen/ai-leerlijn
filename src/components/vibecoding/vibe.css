@@ -404,3 +404,7 @@
 .vibe[data-pane="brainstorm"] .v-copy > button { margin-bottom: var(--space-3); }
 
 .vibe[data-pane="brainstorm"] .v-copy > p { margin-bottom: var(--space-2); }
+
+/* Explicit prompt labels share the available action space with the blue field. */
+.vibe .v-actions .v-prompt-label { margin: 0 0 var(--space-2); }
+.vibe .v-actions:has(.v-prompt-label) .v-prompt { height: 150px; }

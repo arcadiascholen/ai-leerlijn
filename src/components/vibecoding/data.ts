@@ -37,7 +37,7 @@ starterPackages.push(
 export const learningSituations = [
   { title: 'Woorden blijven niet hangen', text: 'Bij Frans lees ik mijn woordenlijst en denk ik dat ik alles ken. Zonder de vertalingen lukt het niet.', need: 'Ik wil ontdekken welke woorden ik echt ken, zonder het antwoord te zien.' },
   { title: 'Ik begin te laat', text: 'Ik heb een toets en een paar taken te maken. Ik stel het uit en krijg niet alles op tijd gedaan.', need: 'Ik wil mijn werk verdelen en op tijd beginnen.' },
-  { title: 'Structuur aanbrengen', text: 'Ik haal gebeurtenissen en datums uit geschiedenis door elkaar.', need: 'Ik wil zien wat eerst kwam en wat daarna gebeurde.' },
+  { title: 'Structuur aanbrengen', text: 'Ik haal gebeurtenissen en datums uit geschiedenis door elkaar.', need: 'Ik heb een visueel overzicht nodig van tijd en gebeurtenissen.' },
   { title: 'Ik zit vast bij een oefening', text: 'Bij wiskunde snap ik de oplossing als ik ze lees, maar zelf weet ik niet hoe ik moet beginnen.', need: 'Ik wil zelf proberen en een beetje hulp krijgen als ik vastzit.' },
 ];
 

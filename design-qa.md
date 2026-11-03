@@ -98,3 +98,6 @@ build geslaagd. Screenshot: `../output/feedback-flow/brainstormprompt-altijd-zic
 - De nieuwe MDX-volgorde is vergeleken met alle 34 stappen in de centrale mapping. Pakketten verwijzen naar de keuze op stap 10.
 - Astro check zonder fouten, waarschuwingen of hints. Build geslaagd. Geen browserconsolefouten.
 - Screenshots: `../output/feedback-flow/oplossing-ontdekken.png`, `oplossing-kiezen.png`, `oplossing-beschrijven.png`.
+
+### Materiaalvrije route en promptlabels — 3 november
+Browsercontrole op aparte lokale testversie: eigen idee heeft alleen de basischeck, geen verplichte materiaalcheck. Planner en eigen idee kunnen zonder vooraf klaargezet materiaal verder. Bouwprompt vraagt dan geen upload. Wisselen naar quiz wist de eerdere materiaalvrije keuze en blokkeert Volgende tot een geldige materiaalkeuze. Eigen materiaal vraagt nog correct om inhoud. Stap 10 en materiaalvrije planner passen bij 1366 × 640 zonder scroll. Promptlabel zichtbaar boven het blauwe vak. Astro check: 48 bestanden zonder fouten, waarschuwingen of hints. Build geslaagd.
