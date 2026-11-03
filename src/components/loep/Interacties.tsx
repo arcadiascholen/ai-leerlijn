@@ -2,7 +2,7 @@ import { useState } from "react";
 
 type Actions = {
   onAnswer: (v: string[]) => void;
-  onCheck: () => void;
+  onCheck: (correct?: boolean) => void;
   checked?: boolean;
 };
 
@@ -203,7 +203,8 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
           </div>
         ))}
       </div>
-      {!result && <button className="loep-button" onClick={() => { setResult(true); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>}
+      {!result && <button className="loep-button" onClick={() => { setResult(true); onAnswer(["0"]); onCheck(choices.every((value, i) => value === examples[i]!.ai)); }}>Bekijk de uitleg</button>}
+      {result && choices.some((value, i) => value !== examples[i]!.ai) && <p className="loep-small">Pas je keuzes aan en probeer opnieuw om verder te gaan.</p>}
       {checked && !result && <p className="loep-small">Je deed deze oefening eerder. Je keuzes zijn niet bewaard; je kunt opnieuw oefenen.</p>}
     </div>
   );
@@ -254,7 +255,7 @@ export function Leerproces({ onAnswer, onCheck, checked }: Actions) {
             </li>
           ))}
         </ol>
-        <button className="loep-button" type="button" onClick={() => { setResult(order.every((item, index) => item === index)); onAnswer(["0"]); onCheck(); }}>Bekijk de uitleg</button>
+        <button className="loep-button" type="button" onClick={() => { const correct = order.every((item, index) => item === index); setResult(correct); onAnswer(["0"]); onCheck(correct); }}>Bekijk de uitleg</button>
         {result !== null && <div className={`loep-feedback ${result ? "correct" : ""}`} role="status"><strong>{result ? "✓ Goed gedaan!" : "Kijk nog eens naar de volgorde."}</strong><p>{result ? "Tijdens het oefenen vergelijkt het programma zijn voorspellingen met de juiste antwoorden en past het zich telkens aan. Ook daarna kan het zich bij een nieuwe foto vergissen." : "Begin met de voorbeelden. Wat doet het programma daarmee, en hoe kan het van fouten leren? Je kunt de kaarten opnieuw verplaatsen."}</p></div>}
         {checked && result === null && <p className="loep-small">Je deed deze oefening eerder. Je kunt ze opnieuw proberen.</p>}
       </div>
@@ -335,7 +336,7 @@ export function PrivacyEdit({ onAnswer, onCheck, checked }: Actions) {
     setResult(false);
     if (checked) onAnswer(["0"]);
   }
-  function check() { setResult(true); onAnswer(["0"]); onCheck(); }
+  function check() { setResult(true); onAnswer(["0"]); onCheck(pieces.every((p) => removed.includes(p.id) === p.sensitive)); }
   function part(id: string) {
     const piece = pieces.find((p) => p.id === id)!;
     return <button type="button" className={removed.includes(id) ? "removed" : ""} aria-pressed={removed.includes(id)} onClick={() => toggle(id)}>{piece.label}</button>;
@@ -492,8 +493,10 @@ export function AgentSimulation({ onAnswer, onCheck, checked }: Actions) {
   const [index, setIndex] = useState(0);
   const [response, setResponse] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [hasMistake, setHasMistake] = useState(false);
   const a = actions[index]!;
   function decide(allow: boolean) {
+    if (allow !== a.ok) setHasMistake(true);
     setResponse(
       allow === a.ok
         ? "Dat past bij de opdracht. " + a.explain
@@ -504,7 +507,7 @@ export function AgentSimulation({ onAnswer, onCheck, checked }: Actions) {
     if (index === actions.length - 1) {
       setDone(true);
       onAnswer(["0"]);
-      onCheck();
+      onCheck(!hasMistake);
     } else {
       setIndex(index + 1);
       setResponse(null);
@@ -549,7 +552,10 @@ export function AgentSimulation({ onAnswer, onCheck, checked }: Actions) {
             )}
           </>
         ) : (
-          <p role="status">✓ Je hebt de drie stappen bekeken.</p>
+          <div role="status">
+            <p>{hasMistake ? "Bekijk de stappen opnieuw en kies telkens wat de agent mag doen." : "✓ Je hebt de drie stappen juist beoordeeld."}</p>
+            {hasMistake && <button className="loep-button" onClick={() => { setIndex(0); setResponse(null); setDone(false); setHasMistake(false); onAnswer(["0"]); }}>Probeer opnieuw</button>}
+          </div>
         )}
       </div>
     </div>

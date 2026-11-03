@@ -12,6 +12,8 @@ import {
   requiredCount,
   routeFor,
   scoreFor,
+  checkedResult,
+  scoredExerciseIds,
   formatPoints,
   type Progress,
   type Question,
@@ -223,7 +225,7 @@ function Welcome() {
           <ul>
             <li>Start met de kennismaking en twee vaste uitdagingen. Kies daarna zelf nog twee onderwerpen.</li>
             <li>Maak de opdrachten en bekijk de feedback. Je kunt ook voorbeelden gebruiken.</li>
-            <li>Bij kennisvragen ga je verder zodra je juist antwoordt. Eerste poging juist: 1 punt; tweede: 0,5 punt; daarna: 0 punten.</li>
+            <li>Bij kennisvragen en oefeningen met een juist antwoord ga je verder zodra je juist antwoordt. Eerste poging juist: 1 punt; tweede: 0,5 punt; daarna: 0 punten.</li>
             <li>Download je AI-kompas als leerbewijs. Je score en antwoorden staan in de PDF en zijn zichtbaar als je die deelt.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
@@ -648,7 +650,7 @@ export default function LoepPlayer({
       };
     });
   }
-  function check() {
+  function check(exerciseCorrect?: boolean) {
     setProgress((p) => {
       const a = p.answers[step.id];
       if (!a || a.values.filter(Boolean).length !== requiredCount(step))
@@ -663,6 +665,9 @@ export default function LoepPlayer({
             checked: true,
             lastAt: new Date().toISOString(),
             ...(q?.correct.length ? checkedKnowledge(a, q) : {}),
+            ...(scoredExerciseIds.includes(step.id) && typeof exerciseCorrect === "boolean"
+              ? { ...checkedResult(a, exerciseCorrect), exerciseCorrect }
+              : {}),
           },
         },
       };
@@ -783,7 +788,7 @@ export default function LoepPlayer({
                   : "Start · Wat is AI?"}
           </span>
           <div>
-            <span className="loep-live-score" aria-live="polite" aria-label={`Mijn persoonlijke score: ${formatPoints(liveScore.points)} van ${liveScore.scored} punten op kennisvragen met een bekende score`}>
+            <span className="loep-live-score" aria-live="polite" aria-label={`Mijn persoonlijke score: ${formatPoints(liveScore.points)} van ${liveScore.scored} punten op vragen en oefeningen met een bekende score`}>
               Mijn score: {formatPoints(liveScore.points)} / {liveScore.scored}
             </span>
             <span>

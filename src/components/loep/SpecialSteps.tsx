@@ -817,7 +817,7 @@ export function Special({
   step: Step;
   answer?: Answer;
   onAnswer: (v: string[]) => void;
-  onCheck: () => void;
+  onCheck: (correct?: boolean) => void;
 }) {
   switch (step.kind) {
     case "video-intro":

@@ -353,6 +353,7 @@ export interface Answer {
   firstCorrect?: boolean;
   attempts?: number;
   points?: number;
+  exerciseCorrect?: boolean;
 }
 export interface Progress {
   version: 1;
@@ -404,8 +405,7 @@ export function isCorrect(question: Question, values: string[]): boolean {
     question.correct.every((v) => values.includes(v))
   );
 }
-export function checkedKnowledge(answer: Answer, question: Question): Partial<Answer> {
-  const correct = isCorrect(question, answer.values);
+export function checkedResult(answer: Answer, correct: boolean): Partial<Answer> {
   const known = answer.attempts !== undefined || answer.firstCorrect === undefined;
   const attempts = known ? (answer.attempts ?? 0) + 1 : undefined;
   return {
@@ -416,8 +416,12 @@ export function checkedKnowledge(answer: Answer, question: Question): Partial<An
       : {}),
   };
 }
+export function checkedKnowledge(answer: Answer, question: Question): Partial<Answer> {
+  return checkedResult(answer, isCorrect(question, answer.values));
+}
+export const scoredExerciseIds = ["sorteren-v2", "patronen", "privacy-editor", "agent-sim"];
 export function scoreFor(progress: Progress) {
-  const knowledge = routeFor(progress.choices).filter((step) => step.question && questions[step.question]!.correct.length > 0);
+  const knowledge = routeFor(progress.choices).filter((step) => (step.question && questions[step.question]!.correct.length > 0) || scoredExerciseIds.includes(step.id));
   let points = 0;
   let scored = 0;
   let unknown = 0;
@@ -425,7 +429,7 @@ export function scoreFor(progress: Progress) {
     const answer = progress.answers[step.id];
     if (!answer) continue;
     const value = answer.points ?? (answer.firstCorrect === true ? 1 : undefined);
-    if (value === undefined) { if (answer.checked && isCorrect(questions[step.question!]!, answer.values)) unknown++; continue; }
+    if (value === undefined) { if (answer.checked && (step.question ? isCorrect(questions[step.question]!, answer.values) : answer.exerciseCorrect === undefined)) unknown++; continue; }
     points += value;
     scored++;
   }
@@ -452,7 +456,8 @@ export function ready(step: Step, p: Progress): boolean {
     const a = p.answers[step.id];
     return (
       !!a?.checked && a.values.filter(Boolean).length === requiredCount(step) &&
-      (!step.question || !questions[step.question]!.correct.length || isCorrect(questions[step.question]!, a.values))
+      (!step.question || !questions[step.question]!.correct.length || isCorrect(questions[step.question]!, a.values)) &&
+      (!scoredExerciseIds.includes(step.id) || a.exerciseCorrect !== false)
     );
   }
   return true;
