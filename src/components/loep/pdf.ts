@@ -1,3 +1,4 @@
+import { jsPDF } from "jspdf";
 import {
   chapters,
   completed,
@@ -14,7 +15,6 @@ import {
 export async function createEvidence(name: string, school: string, klas: string, progress: Progress) {
   if (!name.trim() || !school.trim() || !klas.trim() || !completed(progress))
     throw new Error("Rond eerst de volledige route af en vul je naam, school en klas in.");
-  const { jsPDF } = await import("jspdf");
   const pdf = new jsPDF();
   let y = 26;
   const clean = (s: string) =>
