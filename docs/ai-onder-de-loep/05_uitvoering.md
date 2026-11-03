@@ -60,7 +60,7 @@ Reflectie en upload gebeuren uitsluitend in het aparte formulier. De bestaande c
 
 De bestaande modulekaart `verantwoord-gebruik` is beschikbaar gemaakt als AI onder de loep. De URL blijft `/ai-leerlijn/modules/verantwoord-gebruik/`. Deze module heeft een eigen Astro-route en React-speler, omdat de bestaande MDX-speler één tak laat kiezen en hier twee keuzes uit zes nodig zijn. De generieke route sluit daarom alleen dit module-ID uit. Andere modules blijven op de bestaande speler. De Arcadia-tokens, lokale lettertypen, hoofding en kleuren blijven behouden. jsPDF wordt pas bij downloaden geladen.
 
-De site-URL in deze fork is aangepast naar `https://jasper870809.github.io`; het basispad blijft `/ai-leerlijn`. Dat configureert de bouw maar schakelt GitHub Pages niet zelf in. Een online publicatie hangt af van de Pages-instellingen van deze eigen fork. Er is geen publicatie of merge in het oorspronkelijke project uitgevoerd.
+De site-URL in deze fork is aangepast naar `https://jasper870809.github.io`; het basispad blijft `/ai-leerlijn`. Dat configureert de bouw maar schakelt GitHub Pages niet zelf in. Een online publicatie hangt af van de Pages-instellingen van deze eigen fork. Er is geen publicatie of merge in het oorspronkelijke project uitgevoerd. Bij de integratie in het hoofdproject is de site-URL teruggezet naar `https://arcadiascholen.github.io` (#76).
 
 GitHub schakelt Issues standaard uit in deze nieuwe fork. Een poging om het module-issue te maken gaf HTTP 410 (Issues disabled). Daarom wordt de concrete scope en controle in deze uitvoeringsnota en de pull request bewaard. De code wordt op de eigen branch geleverd; geen upstream-issue of upstream-PR is aangemaakt.
 
