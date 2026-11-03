@@ -90,7 +90,7 @@ function Knowledge({
           {q.id.startsWith("video") ? `Kijkvraag ${q.id.slice(5)}` : "Vraag"} ·{" "}
           {q.correct.length
             ? "Kies je antwoord"
-            : "Jouw afweging · zonder score"}
+            : "Jouw mening · zonder score"}
         </span>
         <h2>{q.title}</h2>
         {checked ? (
@@ -110,15 +110,15 @@ function Knowledge({
                 ? "✓ Dat klopt."
                 : correct === false
                   ? "↻ Nog niet juist."
-                  : "◉ Een afweging om over na te denken."}
+                  : "◉ Dit is jouw mening. Er is geen juist of fout antwoord."}
             </strong>
             <Paragraphs text={feedback} />
             {correct === false && (
               <p><strong>Klik op ‘Probeer opnieuw’, duid {q.count > 1 ? "de juiste antwoorden" : "het juiste antwoord"} aan en klik op ‘Bekijk de uitleg’. Daarna kun je verder.</strong></p>
             )}
-            <button className="loep-text-button" onClick={onRetry}>
-              {q.correct.length ? "Probeer opnieuw" : "Maak een andere keuze"}
-            </button>
+            {q.correct.length > 0 && <button className="loep-text-button" onClick={onRetry}>
+              Probeer opnieuw
+            </button>}
           </div>
         ) : (
           <div className="loep-question-body">
@@ -195,7 +195,7 @@ function Knowledge({
           <p className="loep-small">
             {q.correct.length
               ? (correct ? "Goed gedaan. Je kunt verdergaan." : "Duid na ‘Probeer opnieuw’ het juiste antwoord aan om verder te gaan.")
-              : "Je standpunt krijgt geen goed/foutscore. Lees de reactie en ga verder."}
+              : "Dit is een meningsvraag: er zijn meerdere mogelijke antwoorden en je krijgt geen score. Je kunt verdergaan."}
           </p>
         )}
       </fieldset>
