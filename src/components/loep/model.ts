@@ -183,7 +183,7 @@ export const chapterSteps: Record<number, Step[]> = {
       1,
       "ChatGPT werd té vriendelijk",
       "In april 2025 draaide OpenAI een update van ChatGPT terug. De chatbot gaf gebruikers te vaak gelijk, ook wanneer hun ideeën niet zo verstandig waren.",
-      "Wat is er mis met een vriendelijke chatbot? Ontdek het in deze uitdaging.",
+      "Een vriendelijk antwoord kan prettig voelen, maar als AI je te snel gelijk geeft, mis je misschien fouten of belangrijke tegenargumenten. Blijf dus kritisch: vraag bijvoorbeeld ook naar nadelen of een andere kijk op je idee.",
     ),
     q("4", 1),
     story(
