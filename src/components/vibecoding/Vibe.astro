@@ -1,0 +1,7 @@
+---
+import Vibe from './Vibe.tsx';
+interface Props { pane: string }
+const { pane } = Astro.props;
+---
+<Vibe pane={pane} client:load />
+<noscript>Voor de keuzes, het bewaren van antwoorden en de PDF is JavaScript nodig.</noscript>

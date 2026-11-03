@@ -506,17 +506,12 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       countText.textContent = `Stap ${current} van ${count}`;
       fill.style.transform = `translateX(${(current / count) * 100 - 100}%)`;
       prevButton.disabled = current === 1;
-      nextButton.disabled = current >= route.limit || open;
-      // On the last step of a complete route the link to the start page
-      // takes the place of "Volgende". Not `current >= route.limit`: while
-      // the branching choice is open, the limit is that choice's step, and
-      // there "Volgende" waits for it. "Volgende" stays disabled while
-      // hidden, so the right arrow key does nothing: a key never leaves the
-      // module. A last step with an open choice keeps "Volgende" and its hint.
-      const end = current === count && route.limit === count && !open;
+      const incomplete = Boolean(section?.querySelector('[data-step-complete="false"]'));
+      nextButton.disabled = current >= route.limit || open || incomplete;
+      const end = current === count && route.limit === count && !open && !incomplete;
       nextButton.hidden = end;
       homeLink.hidden = !end;
-      const text = open ? OPEN_CHOICE_HINT : '';
+      const text = open ? OPEN_CHOICE_HINT : incomplete ? (section?.querySelector<HTMLElement>('[data-step-complete="false"]')?.dataset.stepHint || 'Kies het juiste antwoord om verder te gaan.') : '';
       if (hint.textContent !== text) hint.textContent = text;
     }
 
@@ -610,6 +605,7 @@ const homeHref = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     // "Opnieuw beginnen" clears it with the rest.
     if (readStored(moduleId, START_KEY) === null) writeStored(moduleId, START_KEY, new Date().toISOString());
 
+    document.addEventListener('step-validity-change', update);
     prevButton.addEventListener('click', () => move(-1));
     nextButton.addEventListener('click', () => move(1));
 

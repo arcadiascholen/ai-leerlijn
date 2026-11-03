@@ -1299,3 +1299,23 @@ Denk terug aan je sessie. Er is geen fout antwoord.
   volledige `https://`-adres in; daarna verschijnt de knop vanzelf. Een
   adres dat geen geldige `https://`-URL is, laat de build falen: de
   startpagina controleert beide links, de samenvatting het eindformulier.
+
+
+### Aanvulling vibecoding — eigen lesbestanden
+
+De basismodule gebruikt één HTML-downloadroute, met bijvoorbeeld Copilot.
+
+Eigen leerstof heeft voorrang: PDF-cursus, PowerPoint-presentatie, Excel-woordenlijst
+of notities. De leerling beschrijft hier alleen het bestand en het afgebakende
+stuk; het bestand gaat rechtstreeks naar de gekozen AI-tool als die het kan lezen.
+De leerling controleert dat het juiste stuk werd gelezen. De modulewebsite verwerkt
+geen uploads. Een startpakket is de terugvaloptie, niet de verplichte route.
+
+### Aanvulling vibecoding — keuzes en succesmomenten
+
+De module gebruikt bij hulpmiddel- en materiaalkeuze de bestaande kaartvormgeving
+met radioknoppen, met inhoudelijke titels. Vier expliciet gevraagde succesmomenten
+hebben eigen, eenmaal bewaarde confetti: juiste leerbehoefte, juiste bouwvolgorde,
+bevestigen dat de eerste versie geopend is, en aankomen op de laatste stap.
+Dit is een uitzondering voor deze module op de ene algemene Confetti-marker.
+De animatie zelf en respect voor verminderde beweging blijven gedeeld.
