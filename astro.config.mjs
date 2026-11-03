@@ -6,7 +6,7 @@ import rehypeExternalLinks from 'rehype-external-links';
 import { externalLinks } from './src/lib/external-links.ts';
 
 export default defineConfig({
-  site: 'https://jasper870809.github.io',
+  site: 'https://arcadiascholen.github.io',
   base: '/ai-leerlijn',
   // Links to another site open in a new tab. On the MDX integration, not on
   // `markdown.rehypePlugins` (deprecated): all content is MDX.
