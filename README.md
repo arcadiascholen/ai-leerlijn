@@ -1,3 +1,5 @@
+> **Deze repository is een eigen fork.** De module **AI onder de loep** wordt hier uitgewerkt op branch `module/ai-onder-de-loep`. De oorspronkelijke repository `arcadiascholen/ai-leerlijn` wordt niet gewijzigd. Zie [uitvoering en controle](docs/ai-onder-de-loep/05_uitvoering.md) voor inhoud, beeldbronnen, installatie en open punten.
+
 # AI-leerpad Arcadia Scholen
 
 Een digitaal leerpad over artificiële intelligentie voor de leerlingen van de
