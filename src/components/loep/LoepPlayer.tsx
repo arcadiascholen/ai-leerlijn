@@ -221,12 +221,10 @@ function Welcome() {
         <div className="loep-welcome-instructions">
           <strong>Zo ga je aan de slag</strong>
           <ul>
-            <li>Begin met de kennismaking en twee vaste uitdagingen.</li>
-            <li>Kies daarna twee onderwerpen die je interesseren.</li>
-            <li>Doe de opdrachten en bekijk de feedback. Voorbeelden zijn beschikbaar als je zelf geen AI gebruikt.</li>
-            <li>Bij kennisvragen kun je verder zodra je het juiste antwoord hebt gekozen. Probeer opnieuw als het nog niet klopt.</li>
-            <li>Je ziet je eigen score: 1 punt voor een juist antwoord bij de eerste poging, 0,5 bij de tweede, daarna 0. Je score en antwoorden komen ook in je PDF. Als je de PDF deelt, zijn ze daarin zichtbaar.</li>
-            <li>Download je AI-kompas als PDF. Het helpt je nadenken over bewust AI-gebruik en is je leerbewijs voor deze module.</li>
+            <li>Start met de kennismaking en twee vaste uitdagingen. Kies daarna zelf nog twee onderwerpen.</li>
+            <li>Maak de opdrachten en bekijk de feedback. Je kunt ook voorbeelden gebruiken.</li>
+            <li>Bij kennisvragen ga je verder zodra je juist antwoordt. Eerste poging juist: 1 punt; tweede: 0,5 punt; daarna: 0 punten.</li>
+            <li>Download je AI-kompas als leerbewijs. Je score en antwoorden staan in de PDF en zijn zichtbaar als je die deelt.</li>
             <li>Je voortgang blijft in deze browser op dit toestel. Wis je de browsergegevens, dan verdwijnt die.</li>
           </ul>
         </div>

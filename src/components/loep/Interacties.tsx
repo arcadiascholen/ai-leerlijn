@@ -185,18 +185,19 @@ export function SortIntro({ onAnswer, onCheck, checked }: Actions) {
     <div className="loep-sort-screen">
       <span className="loep-eyebrow">Zelf onderzoeken</span>
       <h2>Wordt hier AI gebruikt?</h2>
-      <p>AI kan leren uit veel voorbeelden, zoals in het filmpje. Andere programma’s volgen stappen die mensen vooraf vastleggen. Alle schakelaars staan op <strong>geen AI</strong>. Zet de schakelaar aan als jij denkt dat er AI wordt gebruikt.</p>
+      <p>AI kan leren uit veel voorbeelden, zoals in het filmpje. Andere programma’s volgen stappen die mensen vooraf vastleggen. Schuif naar <strong>AI</strong> als je denkt dat er AI wordt gebruikt. Anders laat je de schakelaar op <strong>geen AI</strong> staan.</p>
       <div className="loep-sort-grid">
         {examples.map((e, i) => (
           <div className="loep-sort-item" key={e.text}>
             <p className="loep-sort-example" id={`loep-ai-example-${i}`}>{e.text}</p>
             <div className="loep-sort-control">
+              <span className={!choices[i] ? "loep-switch-active" : ""} aria-hidden="true">Geen AI</span>
               <button type="button" role="switch" aria-checked={choices[i]}
                 aria-labelledby={`loep-ai-example-${i}`} onClick={() => toggle(i)}
                 className="loep-ai-switch">
                 <span aria-hidden="true" />
               </button>
-              <span>{choices[i] ? "AI" : "Geen AI"}</span>
+              <span className={choices[i] ? "loep-switch-active" : ""} aria-hidden="true">AI</span>
             </div>
             {result && <p className="loep-sort-feedback" role="status"><strong>{choices[i] === e.ai ? "✓ Goed gezien." : "↻ Kijk nog eens."}</strong> {e.explain}</p>}
           </div>

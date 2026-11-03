@@ -2332,3 +2332,11 @@
 .loep-live-score { font-weight: 700; color: #193c20; white-space: nowrap; }
 
 .loep-chapter-intro img.loep-chapter-news-image { object-fit: contain; background: #050c31; aspect-ratio: auto; max-height: 68vh; }
+
+/* Laat de kennismaking meegroeien wanneer de tekst meer ruimte nodig heeft. */
+.loep-welcome { flex: 1 0 auto; min-height: max-content; }
+.loep-welcome-copy { justify-content: flex-start; min-height: max-content; }
+.loep-welcome-visual { min-height: 400px; }
+.loep-sort-control > span { color: var(--ink-muted); font-weight: 500; }
+.loep-sort-control > span.loep-switch-active { color: var(--forest); font-weight: 800; }
+@media (max-width: 650px) { .loep-welcome-visual { min-height: 270px; } }
