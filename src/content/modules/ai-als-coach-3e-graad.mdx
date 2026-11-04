@@ -506,13 +506,13 @@ Voor de AI meedenkt, denk je zelf.
 </Stap>
 
 <Stap titel="De tegenstander" tak="debat">
-Test je standpunt tegen de sterkste tegenargumenten.
+Test je standpunt: antwoord telkens zelf, en doe minstens drie rondes.
 
-<Prompt>
+<Prompt overnemen={{ 'mijn argumenten': 'debat-argumenten' }}>
+Mijn argumenten: [mijn argumenten]
+
 Val mijn standpunt aan met het sterkste tegenargument dat je kent. Geef één argument per keer en wacht op mijn antwoord. Zeg daarna hoe sterk mijn antwoord was.
 </Prompt>
-
-Antwoord telkens zelf. Doe minstens drie rondes.
 </Stap>
 
 <Stap titel="Wissel van kant" tak="debat">
@@ -546,11 +546,10 @@ onafhankelijke bron**, niet via de AI.
 </Stap>
 
 <Stap titel="Lastige vragen van de jury" tak="debat">
-Na een debat stelt de jury vragen. Kopieer de prompt, en vervang **[plak hier
-je argumenten]** door je eigen argumenten.
+Na een debat stelt de jury vragen.
 
 <Prompt>
-Dit zijn mijn argumenten: [plak hier je argumenten] Stel me de lastigste vragen die de jury of de tegenpartij na mijn debat kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
+Stel me de lastigste vragen die de jury of de tegenpartij na mijn debat kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe overtuigend het was.
 </Prompt>
 </Stap>
 

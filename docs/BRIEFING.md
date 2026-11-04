@@ -288,7 +288,9 @@ het, tenzij de auteur een andere opbouw voorziet.
   leerling in de chat wat nog ontbreekt. De tekst boven de prompt zegt het
   als handelingen in volgorde. Moet het in de samenvatting komen, dan wordt
   het een veld van de prompt (`velden`, § 12), zoals in *Uitleg op twee
-  niveaus* en *Voorspel je toets* in `ai-als-coach-3e-graad`.
+  niveaus* en *Voorspel je toets* in `ai-als-coach-3e-graad`. Wat de leerling
+  al in een `<Reflectie>` op een eerdere stap schreef, komt in de prompt met
+  `overnemen` (§ 12), zoals in *De tegenstander* in `ai-als-coach-3e-graad`.
 - **Wat de leerling schrijft, staat in de module.** Een score, een
   voorspelling of een reflectie gaat in een `<Reflectie>` of `<DenkEerst>`,
   of in een veld van een prompt, zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
