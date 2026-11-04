@@ -15,11 +15,16 @@
 //     module (confetti.ts).
 // "Opnieuw beginnen" removes every key of one module, and only those.
 //
+// One key belongs to the whole site: `ai-leerlijn:school`, the platform of the
+// student's school (SchoolLink.astro). It has no module id, so "Opnieuw
+// beginnen" leaves it alone.
+//
 // localStorage may be missing or throw (private windows, blocked site data,
 // a full quota). Every access goes through these functions and is wrapped in
 // try/catch, so the site keeps working; progress is then simply not kept.
 
 const PREFIX = 'ai-leerlijn';
+const SCHOOL_KEY = `${PREFIX}:school`;
 
 export const START_KEY = 'start';
 
@@ -40,6 +45,22 @@ export function writeStored(moduleId: string, key: string, value: string): void 
     window.localStorage.setItem(storageKey(moduleId, key), value);
   } catch {
     // Storage blocked or full: keep going without saving.
+  }
+}
+
+export function readSchool(): string | null {
+  try {
+    return window.localStorage.getItem(SCHOOL_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function writeSchool(platform: string): void {
+  try {
+    window.localStorage.setItem(SCHOOL_KEY, platform);
+  } catch {
+    // Storage blocked or full: the student is asked again next time.
   }
 }
 

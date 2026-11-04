@@ -1,0 +1,377 @@
+---
+// A link that exists once per school (docs/BRIEFING.md § 12, "Links naar
+// Smartschool"). `href` is a template with `{school}` where the platform goes:
+//
+//   <SchoolLink href="https://{school}.smartschool.be/forms/…">Open de nulmeting</SchoolLink>
+//
+// The first time, the button asks for the school in a dialog. The four
+// addresses are real links in the HTML, so choosing one is an ordinary click on
+// a link and no popup blocker steps in. After that the button is the link of
+// the chosen school, with a way to change the school next to it. The choice
+// stays in the browser (`readSchool` and `writeSchool` in storage.ts); when
+// storage is blocked, the student is simply asked every time.
+//
+// Without JavaScript the four links are on the page, without a dialog.
+//
+// A bad template fails the build (`schoolLinks` in src/config/smartschool.ts).
+import { schoolLinks } from '../../config/smartschool';
+
+interface Props {
+  href: string;
+}
+
+const links = schoolLinks(Astro.props.href);
+const text = await Astro.slots.render('default');
+const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5';
+---
+
+<div class="school-link" data-school-link>
+  <div class="school-scripted">
+    <p class="school-current" data-school-current hidden>
+      School: <strong data-school-label></strong> ·
+      <button type="button" class="school-change" data-school-change aria-label="Wijzig je school">wijzigen</button>
+    </p>
+
+    {/* Exactly one of these two shows: same look, but asking for the school is
+        a button, going somewhere is a link. */}
+    <button type="button" class="button button-primary" data-school-ask aria-haspopup="dialog">
+      <Fragment set:html={text} />
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={newTabIcon} /></svg>
+      <span class="sr-only">(opent in een nieuw tabblad)</span>
+    </button>
+    <a class="button button-primary" data-school-go target="_blank" rel="noopener noreferrer" hidden>
+      <Fragment set:html={text} />
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d={newTabIcon} /></svg>
+      <span class="sr-only">(opent in een nieuw tabblad)</span>
+    </a>
+
+    <dialog class="school-dialog" data-school-dialog aria-label="Kies je school">
+      <form method="dialog">
+        <h2 data-school-title>Van welke school ben je?</h2>
+        <p data-school-explain>Daarna gaat de link open in een nieuw tabblad. Je keuze blijft bewaard in deze browser.</p>
+        <ul class="school-options" role="list">
+          {links.map(({ label, platform, url }) => (
+            <li>
+              <a
+                class="button button-secondary school-option"
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-platform={platform}
+                data-label={label}
+              >
+                {label}
+                <svg class="school-new-tab" viewBox="0 0 24 24" aria-hidden="true"><path d={newTabIcon} /></svg>
+                <span class="sr-only school-new-tab">(opent in een nieuw tabblad)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="school-dialog-actions">
+          <button type="submit" class="button button-ghost">Annuleren</button>
+        </div>
+      </form>
+    </dialog>
+  </div>
+
+  <div class="school-static">
+    <p class="school-static-text"><Fragment set:html={text} />: kies je school</p>
+    <ul class="school-static-links" role="list">
+      {links.map(({ label, url }) => (
+        <li>
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {label}<span class="sr-only"> (opent in een nieuw tabblad)</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  /* Without JavaScript the static list shows, with JavaScript the button. */
+  .school-scripted {
+    display: none;
+  }
+
+  :global(.js) .school-scripted {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  :global(.js) .school-static {
+    display: none;
+  }
+
+  .school-static-text {
+    margin: 0 0 var(--space-1);
+    font-weight: var(--text-label-weight);
+  }
+
+  .school-static-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .school-current {
+    max-width: none;
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .school-current[hidden] {
+    display: none;
+  }
+
+  .school-current strong {
+    color: var(--ink);
+    font-weight: var(--text-label-weight);
+  }
+
+  /* A button that looks like the links on the page. */
+  .school-change {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--brand-text);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .school-change:hover {
+    color: var(--forest);
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-weight: var(--text-label-weight);
+    line-height: var(--text-body-line);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button[hidden] {
+    display: none;
+  }
+
+  .button svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .button-primary {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .button-primary:hover {
+    background: var(--primary-hover);
+    color: var(--on-primary);
+  }
+
+  .button-secondary {
+    border-color: var(--line-strong);
+    background: var(--surface);
+    color: var(--forest);
+  }
+
+  .button-secondary:hover {
+    background: var(--surface-sunken);
+    color: var(--forest);
+  }
+
+  .button-ghost {
+    background: transparent;
+    color: var(--forest);
+  }
+
+  .button-ghost:hover {
+    background: var(--surface-sunken);
+  }
+
+  /* Hover only (docs/DESIGN.md, "Beweging"). */
+  @media (prefers-reduced-motion: no-preference) {
+    .button {
+      transition:
+        background-color var(--motion-fast) var(--ease-out),
+        border-color var(--motion-fast) var(--ease-out),
+        color var(--motion-fast) var(--ease-out);
+    }
+  }
+
+  .school-dialog {
+    width: min(30rem, calc(100vw - 2 * var(--space-5)));
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--shadow-card);
+  }
+
+  .school-dialog::backdrop {
+    background: color-mix(in srgb, var(--ink) 40%, transparent);
+  }
+
+  .school-dialog h2 {
+    margin: 0 0 var(--space-2);
+  }
+
+  .school-dialog p {
+    max-width: none;
+    margin: 0 0 var(--space-4);
+  }
+
+  .school-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .school-option {
+    width: 100%;
+  }
+
+  /* Changing the school opens nothing, so nothing says it does. */
+  [data-mode='change'] .school-new-tab {
+    display: none;
+  }
+
+  /* The school chosen so far, when changing it: a mark and a colour. */
+  .school-option[aria-current='true'] {
+    border-color: var(--brand);
+    background: var(--surface-sunken);
+  }
+
+  .school-option[aria-current='true']::before {
+    content: '✓';
+  }
+
+  .school-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-4);
+  }
+</style>
+
+<script>
+  import { readSchool, writeSchool } from './storage';
+
+  const EXPLAIN = {
+    ask: 'Daarna gaat de link open in een nieuw tabblad. Je keuze blijft bewaard in deze browser.',
+    change: 'Je keuze blijft bewaard in deze browser.',
+  };
+  const TITLE = { ask: 'Van welke school ben je?', change: 'Wijzig je school' };
+
+  const roots = [...document.querySelectorAll<HTMLElement>('[data-school-link]')];
+  const refreshers: (() => void)[] = [];
+
+  function part<T extends Element>(root: Element, selector: string): T {
+    const found = root.querySelector<T>(selector);
+    if (found === null) throw new Error(`SchoolLink: ${selector} is missing.`);
+    return found;
+  }
+
+  for (const root of roots) {
+    const ask = part<HTMLButtonElement>(root, '[data-school-ask]');
+    const go = part<HTMLAnchorElement>(root, '[data-school-go]');
+    const current = part<HTMLElement>(root, '[data-school-current]');
+    const label = part<HTMLElement>(root, '[data-school-label]');
+    const change = part<HTMLButtonElement>(root, '[data-school-change]');
+    const dialog = part<HTMLDialogElement>(root, '[data-school-dialog]');
+    const title = part<HTMLElement>(root, '[data-school-title]');
+    const explain = part<HTMLElement>(root, '[data-school-explain]');
+    const options = [...dialog.querySelectorAll<HTMLAnchorElement>('[data-platform]')];
+
+    // Shows the stored school, and returns its link. A stored value that is
+    // not one of the schools counts as no choice.
+    function refresh(): HTMLAnchorElement | null {
+      const stored = readSchool();
+      const chosen = options.find((option) => option.dataset.platform === stored) ?? null;
+      ask.hidden = chosen !== null;
+      go.hidden = chosen === null;
+      current.hidden = chosen === null;
+      if (chosen !== null) {
+        go.href = chosen.href;
+        label.textContent = chosen.dataset.label ?? '';
+      }
+      for (const option of options) {
+        if (option === chosen) option.setAttribute('aria-current', 'true');
+        else option.removeAttribute('aria-current');
+      }
+      return chosen;
+    }
+
+    function open(mode: 'ask' | 'change'): void {
+      dialog.dataset.mode = mode;
+      title.textContent = TITLE[mode];
+      explain.textContent = EXPLAIN[mode];
+      dialog.showModal();
+    }
+
+    ask.addEventListener('click', () => open('ask'));
+    change.addEventListener('click', () => open('change'));
+
+    // The school may have changed in another tab since the page loaded: this
+    // reads it again and sets the address before the browser follows the link.
+    go.addEventListener('click', (event) => {
+      if (refresh() === null) {
+        event.preventDefault();
+        open('ask');
+      }
+    });
+
+    for (const option of options) {
+      option.addEventListener('click', (event) => {
+        // Changing the school opens nothing; otherwise the link just goes on.
+        if (dialog.dataset.mode === 'change') event.preventDefault();
+        writeSchool(option.dataset.platform ?? '');
+        dialog.close();
+        for (const other of refreshers) other();
+        // The button that opened the dialog may be hidden by now.
+        (go.hidden ? ask : go).focus();
+      });
+    }
+
+    // The step player switches steps on the arrow keys, unless a component
+    // calls preventDefault() (BRIEFING § 12); behind a dialog nothing moves.
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') event.preventDefault();
+    });
+
+    refreshers.push(refresh);
+    refresh();
+  }
+
+  // Back to this page from the browser's cache, with a school chosen elsewhere.
+  window.addEventListener('pageshow', () => {
+    for (const refresh of refreshers) refresh();
+  });
+</script>

@@ -1,13 +1,13 @@
 ---
 // The start page (docs/BRIEFING.md § 4): a short welcome and the student's
-// route in three numbered steps. Steps 1 and 3 link to Smartschool; while a
-// link is not known yet (`null` in src/config/smartschool.ts) the step shows
+// route in three numbered steps. Steps 1 and 3 link to Smartschool, step 1
+// through <SchoolLink>, which asks for the school; while a link is not known yet (`null` in src/config/smartschool.ts) the step shows
 // a clear, non-clickable note instead of a button. The same goes for the
 // hour by which the final form is due. Fits on 1366 × 640 without scrolling.
 import Base from '../layouts/Base.astro';
+import SchoolLink from '../components/stappen/SchoolLink.astro';
 import { checkLink, eindformulier, eindformulierUur, nulmeting } from '../config/smartschool';
 
-const nulmetingUrl = checkLink('nulmeting', nulmeting);
 const eindformulierUrl = checkLink('eindformulier', eindformulier);
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
@@ -39,14 +39,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         minuten.
       </p>
       <div class="route-action">
-        {nulmetingUrl !== null ? (
-          <a class="button button-primary" href={nulmetingUrl} target="_blank" rel="noopener noreferrer">
-            Open de nulmeting
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
-            </svg>
-            <span class="sr-only">(opent in een nieuw tabblad)</span>
-          </a>
+        {nulmeting !== null ? (
+          <SchoolLink href={nulmeting}>Open de nulmeting</SchoolLink>
         ) : (
           <p class="pending">De link naar de nulmeting volgt nog.</p>
         )}
@@ -112,7 +106,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <style>
   .lead {
     max-width: 65ch;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
     font-size: var(--text-lead-size);
     line-height: var(--text-lead-line);
     font-weight: var(--text-lead-weight);
