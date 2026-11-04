@@ -102,11 +102,13 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
    en de samenvatting aan het einde van een module linken ernaar.
 
-De vier scholen werken op **één Smartschool-platform**: er is geen
-schoolkeuze, en elke link is voor iedereen dezelfde. De links naar de
-nulmeting en het eindformulier, en het uur waarop het eindformulier
-ingediend moet zijn, staan op één plek: `src/config/smartschool.ts` (zie
-§ 12, *Links naar Smartschool*).
+Elk van de vier scholen heeft een **eigen Smartschool-platform**: SMA
+(`sanctamaria-aarschot`), DIA (`dia`), SJIB (`sjib`) en SJCA (`sjca`). Een link
+naar Smartschool, of naar Bookwidgets via Smartschool, bestaat dus vier keer.
+De knop vraagt de leerling de eerste keer van welke school die is en onthoudt
+die keuze in de browser; de leerling kan ze wijzigen. De links en het uur
+waarop het eindformulier ingediend moet zijn, staan op één plek:
+`src/config/smartschool.ts` (zie § 12, *Links naar Smartschool*).
 
 De site zelf verwerkt **geen persoonsgegevens**. Alles wat ingediend wordt,
 gaat via Smartschool. De site heeft geen backend, geen login, geen analytics
@@ -581,6 +583,10 @@ Tekst, een beeld of een vraagcomponent.
   *Antwoorden bewaren* hieronder). Een `<Keuze>` bewaart de gekozen optie
   onder `keuze:<naam>` (zie *Keuzes en takken*). `<Confetti />` bewaart
   onder `confetti` dat ze speelde (zie *Confetti*).
+- Eén sleutel hoort bij de hele site: `ai-leerlijn:school`, het platform van
+  de school van de leerling (zie *Een link per school*). Ze gaat via
+  `readSchool` en `writeSchool` in `storage.ts`. Een waarde die geen school
+  is, telt als geen keuze. *Opnieuw beginnen* wist ze niet.
 - Alle toegang gaat via `src/components/stappen/storage.ts` (`readStored`,
   `writeStored`, `clearModule`, `moduleIdOf`). Elke toegang zit in een
   try/catch, zodat de site ook werkt als opslag geblokkeerd is, zoals in een
@@ -626,7 +632,8 @@ Tekst, een beeld of een vraagcomponent.
   `<Samenvatting />` of `<Confetti />`, een `<Samenvatting />` buiten de
   laatste stap, meer dan één `<Samenvatting />` of `<Confetti />` in een
   module, een link in `src/config/smartschool.ts` die geen geldig
-  `https://`-adres is, een fout in een `<Keuze>`, in de takken (zie
+  `https://`-adres is, een fout in het sjabloon van een `<SchoolLink>`, een
+  fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*) of in
   een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*).
 
@@ -1286,19 +1293,45 @@ Denk terug aan je sessie. Er is geen fout antwoord.
 
 ### Links naar Smartschool
 
-- De vier scholen werken op één Smartschool-platform, dus elke link is voor
-  iedereen dezelfde. De links staan op één plek, in
-  `src/config/smartschool.ts`: `nulmeting` (de vragenlijst vóór de module,
-  stap 1 op de startpagina) en `eindformulier` (één formulier voor alle
-  modules, stap 3 op de startpagina en de samenvatting). Daar staat ook
-  `eindformulierUur`, het uur waarop het eindformulier binnen moet zijn,
-  geschreven zoals de leerling het leest (`'16 uur'`).
+- De links staan op één plek, in `src/config/smartschool.ts`: `nulmeting` (de
+  vragenlijst vóór de module, stap 1 op de startpagina) en `eindformulier`
+  (één formulier voor alle modules, stap 3 op de startpagina en de
+  samenvatting). Daar staat ook `eindformulierUur`, het uur waarop het
+  eindformulier binnen moet zijn, geschreven zoals de leerling het leest
+  (`'16 uur'`), en `schools`, de vier scholen met hun platform.
 - `null` betekent dat de waarde nog niet bekend is. De startpagina en de
   samenvatting tonen dan een duidelijke, niet-klikbare melding, zoals *De
   link naar het eindformulier volgt nog.* Wie de link invult, vult het
   volledige `https://`-adres in; daarna verschijnt de knop vanzelf. Een
   adres dat geen geldige `https://`-URL is, laat de build falen: de
   startpagina controleert beide links, de samenvatting het eindformulier.
+
+### Een link per school
+
+```mdx
+<SchoolLink href="https://{school}.smartschool.be/forms/…">Open de module</SchoolLink>
+```
+
+- Elke school heeft een eigen platform (§ 4), dus een link is een sjabloon met
+  `{school}` op de plaats van het platform: het subdomein op Smartschool, de
+  waarde van `smartschool_platform` op Bookwidgets. `<SchoolLink>` staat in
+  `src/components/stappen/SchoolLink.astro`. Op de startpagina importeert de
+  pagina het; in een module schrijft de auteur geen import.
+- Een sjabloon zonder `{school}`, met een andere plaatshouder, of dat geen
+  geldig `https://`-adres oplevert, laat de build falen (`schoolLinks` in
+  `src/config/smartschool.ts`). `new URL` alleen vangt dat niet op: het aanvaardt
+  `{school}`, ook in de hostnaam.
+- **School nog niet gekend:** de knop opent een dialoog met de afkortingen SMA,
+  DIA, SJIB en SJCA. De vier adressen staan al bij de build in de HTML, als
+  gewone links: een keuze is een klik op een link, dus een popupblokker grijpt
+  niet in. De keuze wordt bewaard, het doel opent in een nieuw tabblad en de
+  dialoog sluit. Escape of *Annuleren* sluit zonder iets te bewaren.
+- **School gekend:** de knop is meteen de link van die school. Erboven staat
+  *School: SJCA · wijzigen*. Wijzigen gebruikt dezelfde dialoog, maar bewaart
+  alleen de keuze en opent niets: zonder die weg zou een leerling die zich
+  misklikt telkens op de verkeerde aanmelding terechtkomen.
+- Zonder JavaScript staan de vier links op de pagina. Is de opslag geblokkeerd,
+  dan werkt de link gewoon en komt de dialoog bij elke klik terug.
 
 
 ### Aanvulling vibecoding — eigen lesbestanden

@@ -1,16 +1,31 @@
 // Links to Smartschool (docs/BRIEFING.md § 4), and the hour by which the
-// final form is due. The four schools work on one Smartschool platform, so
-// every link is the same for every student. Keep them here, in one place, so
-// they are quick to check before 10 November.
+// final form is due. Keep them here, in one place, so they are quick to check
+// before 10 November.
+//
+// Each of the four schools has its own Smartschool platform, so a link can
+// exist four times. Such a link is written as a template with `{school}` where
+// the platform goes; <SchoolLink> asks the student for the school
+// (src/components/stappen/SchoolLink.astro).
 //
 // `null` means the value is not known yet. The site then shows a clear,
 // non-clickable note instead of a button ("De link … volgt nog"). Fill in
 // the full https:// address as soon as it is known; the build fails on an
 // address that is not a valid https URL.
 
-// The questionnaire before the module (the baseline). Step 1 on the start
-// page (src/pages/index.astro).
-export const nulmeting: string | null = null;
+// The schools as the student knows them, and the platform of each: the
+// subdomain on smartschool.be, and the value of `smartschool_platform` on
+// Bookwidgets.
+export const schools = [
+  { label: 'SMA', platform: 'sanctamaria-aarschot' },
+  { label: 'DIA', platform: 'dia' },
+  { label: 'SJIB', platform: 'sjib' },
+  { label: 'SJCA', platform: 'sjca' },
+] as const;
+
+// The questionnaire before the module (the baseline), a template. Step 1 on
+// the start page (src/pages/index.astro).
+export const nulmeting: string | null =
+  'https://{school}.smartschool.be/forms/form/3617/8e7c06b3-f89c-4bfa-8d36-758298a7b329';
 
 // The final form, one for all modules. Step 3 on the start page, and the
 // summary at the end of a module (src/components/stappen/Samenvatting.astro).
@@ -35,4 +50,26 @@ export function checkLink(name: string, value: string | null): string | null {
     throw new Error(`src/config/smartschool.ts: \`${name}\` must start with https://. Got ${JSON.stringify(value)}.`);
   }
   return url.href;
+}
+
+export interface SchoolLinkTarget {
+  label: string;
+  platform: string;
+  url: string;
+}
+
+// The address of a template for each school. `new URL` accepts `{school}`, also
+// in the host name, so a forgotten or misspelled placeholder has to be caught
+// here: it would send students to a page that does not exist, without an error.
+export function schoolLinks(template: string): SchoolLinkTarget[] {
+  if (!template.includes('{school}')) {
+    throw new Error(`A school link needs \`{school}\` where the platform goes. Got ${JSON.stringify(template)}.`);
+  }
+  return schools.map(({ label, platform }) => {
+    const filled = template.replaceAll('{school}', platform);
+    if (/[{}]/.test(filled)) {
+      throw new Error(`A school link may only have \`{school}\` as a placeholder. Got ${JSON.stringify(template)}.`);
+    }
+    return { label, platform, url: checkLink('school link', filled) as string };
+  });
 }
