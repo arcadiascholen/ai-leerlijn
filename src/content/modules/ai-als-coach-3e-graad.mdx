@@ -48,8 +48,7 @@ Leg klaar wat je erover hebt:
 - foto's of screenshots van oefeningen, van het bord of van je handboek.
 
 Heb je niets concreets? Kies dan een vak dat je moeilijk vindt, zoals
-wiskunde, en werk met je handboek of je cursus van dit jaar. Of kies straks
-*Mijn examenperiode plannen*.
+wiskunde, en werk met je handboek of je cursus van dit jaar.
 </Stap>
 
 <Stap titel="Noteer je taak">
@@ -63,7 +62,7 @@ eindformulier.
 Wat wil je vandaag voorbereiden? Daarna zie je alleen de stappen voor jouw
 doel.
 
-<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat', presentatie: 'Een presentatie', planning: 'Mijn examenperiode plannen' }} />
+<Keuze naam="doel" vertakt vraag="Waaraan wil je vandaag werken?" opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen of spreekopdracht', debat: 'Een debat', presentatie: 'Een presentatie' }} />
 </Stap>
 
 <Stap titel="Vier tools">
@@ -661,141 +660,6 @@ Antwoord telkens zelf, zoals je het in de klas zou zeggen.
 Denk terug aan je publiek, de jury en de vragen.
 
 <Reflectie id="presentatie-vragen" vraag="Welke vraag of opmerking had je niet verwacht, en wat doe je ermee?" />
-</Stap>
-
-{/* Branch: examenplanning. */}
-
-<Stap titel="Wat heb je nodig?" tak="planning">
-Een goede planning begint bij context. Leg klaar:
-
-- je **examenrooster**, als foto of screenshot;
-- je **agenda**: andere toetsen en deadlines, en vaste dingen zoals sport,
-  werk of familie.
-
-Heb je geen examens? Plan dan je volgende toetsenweek of een grote opdracht.
-
-Vanaf nu werk je in **één chat**, tot het einde van de module. Open een nieuwe
-chat en laad je rooster op. Verstuur nog niets: de prompt volgt.
-
-<Tool naam="chatgpt">
-Laad je rooster op met **+** → **Foto's & bestanden toevoegen**.
-</Tool>
-<Tool naam="gemini">
-Laad je rooster op met **+**.
-</Tool>
-<Tool naam="notebook">
-Maak een **nieuwe notebook** met je rooster als bron, en werk in het
-gesprek.
-</Tool>
-<Tool naam="copilot">
-Start je chat in **Studeren en leren**? Kies dan de gewone chat (kan bij jou
-anders heten). Laad je rooster op met **+**.
-</Tool>
-</Stap>
-
-<Stap titel="Eerst jij: hoe sta je ervoor?" tak="planning">
-<Prompt id="planning-inschatting" velden={{ 'per vak': 'Hoe ik ervoor sta, per vak' }}>
-Ik zit in het [jaar en richting]. Mijn examens beginnen op [datum]; het rooster zit in de bijlage. Maak nog geen planning: mijn afspraken volgen. Zo sta ik ervoor per vak: [per vak]
-</Prompt>
-</Stap>
-
-<Stap titel="Laat de AI eerst vragen stellen" tak="planning">
-<Prompt id="planning-afspraken" velden={{ afspraken: 'Mijn vaste afspraken' }}>
-Wat moet je nog weten om een planning te maken die bij mij past? Vraag het me, één vraag per keer, hoogstens vijf. Vraag niet wat al in het rooster of in mijn berichten staat. Mijn vaste afspraken: [afspraken]
-</Prompt>
-
-Beantwoord de vragen van de AI in de chat.
-</Stap>
-
-<Stap titel="Spreiden of blokken?" tak="planning">
-<DenkEerst id="planning-spreiden" vraag="Je hebt vier dagen voor twee vakken. Wat werkt beter: eerst twee dagen het ene vak en dan twee dagen het andere, of elke dag een stuk van allebei? En wat helpt meer: herlezen of jezelf overhoren?">
-**Elke dag een stuk van allebei.** Wat je over meer dagen spreidt, onthoud je
-langer dan wat je in één blok leert.
-
-**Jezelf overhoren.** Herlezen en markeren voelen als leren, maar helpen
-weinig. Wie zichzelf overhoort, merkt wat nog niet zit, en net dat ophalen
-doet onthouden.
-
-Zo blijkt uit een groot overzicht van onderzoek naar studeertechnieken
-([Dunlosky e.a., 2013](https://doi.org/10.1177/1529100612453266)).
-</DenkEerst>
-</Stap>
-
-<Stap titel="De planning" tak="planning">
-Beantwoordde je de vragen van de AI? Vraag dan de planning.
-
-<Prompt>
-Maak nu een planning per dag, als tabel. Spreid elk vak over meer dagen, wissel de vakken af, en laat ruimte voor herhaling en uitloop. Zet bij elk blok hoe ik studeer: mezelf overhoren, oefeningen maken of herhalen. Hou rekening met mijn vaste afspraken.
-</Prompt>
-
-Lees de planning rustig. Je kijkt ze in de volgende stappen na.
-</Stap>
-
-<Stap titel="Zoek de fouten" tak="planning">
-Een AI kan in een planning fouten maken die je snel over het hoofd ziet. Leg
-de planning naast je rooster en kijk na:
-
-- Hoort bij elke **datum** de juiste **weekdag**?
-- Staat er een vak gepland **na** het examen ervan?
-- Telt een dag **meer uren** dan je echt kunt studeren?
-- **Ontbreekt** er een vak?
-
-Vind je een fout? Zeg het in de chat, en laat de AI de planning bijsturen.
-</Stap>
-
-<Stap titel="Kijk ze na" tak="planning">
-Doet de planning wat werkt? Leg ze naast je agenda:
-
-- Komt elk vak op **meer dagen** terug, in plaats van in één blok?
-- Staat bij elk blok **hoe** je studeert, met jezelf overhoren erbij?
-- Wisselen de vakken af?
-- Is ze **haalbaar**, ook op een drukke dag?
-- Zijn er pauzes, en een vrije avond?
-
-Zeg in de chat wat niet klopt, bijvoorbeeld: *„Op woensdag heb ik training tot
-20 uur."* Laat de AI de planning bijsturen.
-</Stap>
-
-<Stap titel="Wat paste je aan?" tak="planning">
-Jij beslist over je planning, niet de AI.
-
-<Reflectie id="planning-aangepast" vraag="Welke fout vond je in de planning van de AI, wat veranderde je, en waarom?" />
-</Stap>
-
-<Stap titel="Wat als je achterloopt?" tak="planning">
-Een planning loopt zelden helemaal zoals gepland. Speel het na:
-
-<Prompt>
-Stel: na drie dagen loop ik een dag achter met [vak]. Pas de planning aan.
-</Prompt>
-
-Zou je het zelf zo doen? Schuift alles op, of laat de AI iets vallen?
-</Stap>
-
-<Stap titel="Wanneer kijk je ze opnieuw na?" tak="planning">
-Denk terug aan wat de AI deed toen je achterliep.
-
-<Reflectie id="planning-opvolgen" vraag="Wat deed de AI toen je achterliep, en zou jij het ook zo doen? Wanneer kijk je je planning opnieuw na?" />
-</Stap>
-
-<Stap titel="Bewaar ze buiten de chat" tak="planning">
-Een chat raak je kwijt. Zet je planning waar je ze elke dag ziet: in je
-agenda, in een Word- of Excel-bestand, of op papier.
-
-<Tool naam="chatgpt">
-Kopieer de tabel met het kopieerpictogram onder het antwoord, en plak ze in
-Word of Excel (kan bij jou anders heten).
-</Tool>
-<Tool naam="gemini">
-Kies onder het antwoord **Exporteren naar Documenten**, of kopieer de tabel
-(kan bij jou anders heten).
-</Tool>
-<Tool naam="notebook">
-Klik onder het antwoord op **Opslaan in notitie**, of kopieer de tabel.
-</Tool>
-<Tool naam="copilot">
-Kopieer de tabel, en plak ze in Word of Excel met je schoolaccount.
-</Tool>
 </Stap>
 
 {/* Shared end. */}
