@@ -136,9 +136,9 @@ issue dat een module levert, vult de stappen in, past de metadata aan en zet
 de status op `beschikbaar`. De controles op de inhoud (minstens één
 `<Stap>`, de plaats van de samenvatting; § 12) gelden alleen voor
 beschikbare modules: een plaatshouder heeft nog geen stappen en geen pagina.
-De testmodule `voorbeeld` toont elk component en blijft beschikbaar tot de
-laatste technische controle op maandag 9 november (§ 10); dan verdwijnt ze
-uit het aanbod.
+De testmodule `voorbeeld` toont elk component. Ze heeft `status: verborgen`:
+leerlingen zien ze niet, en ze staat niet op de site. In `npm run dev` blijft
+ze bereikbaar via `/ai-leerlijn/modules/voorbeeld/`, om componenten te testen.
 
 ### Aanleveren zonder sjabloon
 
@@ -175,7 +175,7 @@ worden uit de frontmatter opgebouwd.
 | `duur` | geheel getal in minuten, standaard `70` | Hoe lang de module ongeveer duurt |
 | `aiGebruik` | `zelf`, `voorbeelden` of `geen` | `zelf`: de leerling gebruikt zelf AI; `voorbeelden`: de leerling bekijkt vooraf gemaakte gesprekken; `geen`: geen AI |
 | `doelen` | lijst uit `1` tot `4`, minstens één | Welke van de vier doelen (§ 1) de module dekt |
-| `status` | `binnenkort` of `beschikbaar` | Een module die nog niet klaar is, staat zichtbaar maar niet klikbaar in het overzicht en krijgt geen eigen pagina |
+| `status` | `binnenkort`, `beschikbaar` of `verborgen` | Een module die nog niet klaar is (`binnenkort`), staat zichtbaar maar niet klikbaar in het overzicht en krijgt geen eigen pagina. Een module met `verborgen` staat niet in het overzicht en heeft alleen in `npm run dev` een pagina |
 | `volgorde` | geheel getal | Plaats in het overzicht, oplopend |
 
 Alle velden behalve `duur` zijn verplicht. Het schema staat in
@@ -206,10 +206,11 @@ in het overzicht één kaart per versie.
   gefilterde lijst, en niemand vindt een lijst die gefilterd is door een
   keuze die hij vergeten is. Zonder JavaScript is het filter verborgen en
   staan alle modules er.
-- Met de zeven kaarten van nu past het overzicht op 1366 × 640. Houd `kort`
-  op ongeveer 60 tekens (twee regels op een kaart) en de titel op hoogstens
-  twee regels; wat langer is of meer kaarten vraagt, laat deze pagina
-  scrollen. Dat mag hier: het is geen stap.
+- Het overzicht telt nu zes kaarten, in twee rijen. Houd `kort` op ongeveer 60
+  tekens (twee regels op een kaart) en de titel op hoogstens twee regels; wat
+  langer is of meer kaarten vraagt, laat deze pagina scrollen. Dat mag hier: het
+  is geen stap. Nu scrolt ze een klein beetje op 1366 × 640 (663 px hoog), door
+  de langere `kort` van `verantwoord-gebruik`.
 
 ## 6. Vorm: korte stappen, vragen centraal
 

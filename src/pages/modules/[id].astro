@@ -22,9 +22,13 @@ import Reflectie from '../../components/vragen/Reflectie.astro';
 import Vibe from '../../components/vibecoding/Vibe.astro';
 
 // One page per module that is ready. Modules with `status: binnenkort` are
-// shown in the overview but get no page (BRIEFING § 5).
+// shown in the overview but get no page. A module with `status: verborgen` only
+// has a page in `npm run dev`, for testing (BRIEFING § 5).
 export async function getStaticPaths() {
-  const entries = await getCollection('modules', ({ data }) => data.status === 'beschikbaar');
+  const entries = await getCollection(
+    'modules',
+    ({ data }) => data.status === 'beschikbaar' || (import.meta.env.DEV && data.status === 'verborgen'),
+  );
   // The dedicated route supports two choices from six.
   return entries.filter(entry => entry.id !== 'verantwoord-gebruik').map((entry) => {
     const { branching, tool, promptSteps } = checkModuleBody(entry.id, entry.body ?? '');

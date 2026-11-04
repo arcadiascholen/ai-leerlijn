@@ -28,8 +28,10 @@ const modules = defineCollection({
       aiGebruik: z.enum(['zelf', 'voorbeelden', 'geen']),
       // Which of the four goals (BRIEFING § 1) the module covers.
       doelen: z.array(z.number().int().min(1).max(4)).min(1),
-      // `binnenkort` modules are listed but get no page.
-      status: z.enum(['binnenkort', 'beschikbaar']),
+      // `binnenkort` modules are listed but get no page. `verborgen` modules are
+      // not listed and get no page on the site; in `npm run dev` the page stays
+      // reachable by its address, for testing.
+      status: z.enum(['binnenkort', 'beschikbaar', 'verborgen']),
       // Position in the overview, ascending.
       volgorde: z.number().int(),
     })
