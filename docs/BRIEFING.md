@@ -665,8 +665,9 @@ Tekst, een beeld of een vraagcomponent.
   module, een link in `src/config/smartschool.ts` die geen geldig
   `https://`-adres is, een fout in het sjabloon van een `<SchoolLink>`, een
   fout in een `<Keuze>`, in de takken (zie
-  *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*) of in
-  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*).
+  *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*), in
+  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*) of in een `<Hulp>`
+  (zie *Hulp in een stap*).
 
 ### Vraagtypes
 
@@ -1231,6 +1232,69 @@ Val mijn standpunt aan met het sterkste tegenargument dat je kent.
   controleert `checks.ts` dat in de bron, met de titel van de stap in de
   melding;
 - `naast` met een waarde.
+
+### Hulp in een stap
+
+```mdx
+<Stap titel="Wat maakte het verschil?">
+<Reflectie id="verschil" vraag="Welk antwoord kun jij het best gebruiken, en waarom?" />
+
+<Hulp label="Hulp nodig bij het schrijven?">
+Vul aan: *Antwoord … helpt mij het meest, omdat …*
+</Hulp>
+</Stap>
+```
+
+`<Hulp>` zet steun achter een knop: aanvulzinnen, een voorbeeld, of de uitweg
+*Geen AI-toegang? Bekijk het voorbeeld*. Wie ze nodig heeft, klikt ze open; wie
+ze niet nodig heeft, ziet ze niet. Zo bedient één versie van een module alle
+leerlingen (§ 3). Het component staat in `src/components/inhoud/`.
+
+- `label` is verplicht: de tekst op de knop. De auteur kiest hem, want de knop
+  dekt meer dan hulp. Houd hem op één regel.
+- Tussen de tags staat gewone Markdown: alinea's, lijsten, **vet**, links.
+- Het is een `<details>` met een `<summary>`, in Astro: geen island en geen
+  script. Toetsenbord en schermlezer werken zoals bij elke `<details>`: Tab
+  gaat naar de knop, Enter of spatie klapt ze open of dicht. De
+  pijltjestoetsen blijven van stap wisselen, ook met de focus op de knop. Het
+  werkt ook zonder JavaScript.
+- Dicht bij het laden. Open of dicht wordt niet bewaard: wie binnen de module
+  van stap wisselt, vindt de hulp terug zoals die stond; na herladen is ze
+  dicht.
+- Als rechtstreeks kind van een stap is `<Hulp>` één onderdeel van de opbouw
+  (`docs/DESIGN.md`, *De opbouw*), en naast een `<Chat naast>` staat ze in de
+  rechterkolom.
+- **Vorm.** Dicht: een knopje van 36 px hoog, rand `line-strong`, `radius-md`,
+  met een pijltje en het label in `small` en `brand-text`. Open: de inhoud
+  eronder op `surface-sunken`, in `small`, hoogstens 65ch breed. Geen
+  barometerkleuren.
+- **Beweging.** De inhoud verschijnt met een fade van `motion-base`, puur in CSS
+  (een overgang op `::details-content`), en verdwijnt meteen. Hulp die open
+  bleef, fadet niet opnieuw als de leerling terugkeert naar de stap. Een
+  browser zonder `::details-content` toont de inhoud zonder fade.
+
+**Hoogte op 1366 × 640** (gemeten in `voorbeeld`)
+
+- Dicht is `<Hulp>` 36 px hoog, plus 16 px marge als er nog iets onder staat.
+  Open komt er 12 px bij, plus 22 px per regel, plus 8 px tussen twee blokken.
+  Een regel is ongeveer 75 tekens; rechts van een `<Chat naast>` iets minder.
+- Een `<Reflectie>` met een `<Hulp>`: dicht 354 van de 390 px, open met één
+  regel hulp 388 px. **Twee regels hulp passen daar niet**: 410 px, dan scrolt
+  de kaart. Houd de hulp onder een `<Reflectie>` dus op één regel, of zet het
+  voorbeeld op een eigen stap.
+- Boven zo'n `<Reflectie>` met `<Hulp>` past geen tekst: met één regel is het
+  dicht al 396 px, en de `<Reflectie>` alleen laat die regel wel toe.
+- `<Chat naast>` met twee korte beurten, een `<Meerkeuze>` van vier korte opties
+  en een `<Hulp>` van één regel: dicht 288 px, open 322 px. Met alle vier de
+  opties aangeklikt dicht 384 px, en open 418 px: dan scrolt de kaart.
+- Twee regels tekst met daaronder een `<Hulp>` met een zin, een lijst van drie
+  punten en nog een zin: open 300 px.
+
+**Buildchecks**, elk met een duidelijke melding: een ontbrekende of lege
+`label`, en een leeg blok (ook `<Hulp label="…" />` of alleen een commentaar
+tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
+`status: verborgen` zit niet in de build, dus daar verschijnt de fout alleen in
+`npm run dev`.
 
 ### De samenvatting
 

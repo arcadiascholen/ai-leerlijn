@@ -1,0 +1,138 @@
+---
+// Support a student opens only when needed (docs/BRIEFING.md § 12, "Hulp in
+// een stap"):
+//
+//   <Hulp label="Hulp nodig bij het schrijven?">
+//   Vul aan: *Antwoord … helpt mij het meest, omdat …*
+//   </Hulp>
+//
+// `label` is the text on the button; between the tags goes ordinary Markdown.
+// A <details> and nothing else: no island and no script, so the keyboard, a
+// screen reader and a browser without JavaScript get what a <details> does by
+// itself. Closed at load; open or closed is not stored. The root is the
+// <details>, so that it is one part of the build-up of the step and goes in
+// the right column next to a <Chat naast>. Authors write no import.
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+
+// MDX props are not type-checked, so a missing label would otherwise only show
+// up as a button without text.
+if (typeof label !== 'string' || label.trim() === '') {
+  throw new Error('<Hulp> needs a non-empty `label`: the text on its button, such as <Hulp label="Hulp nodig?">.');
+}
+
+// An empty block would be a button that opens nothing. Rendered once: a
+// question inside it may only register its id one time.
+const content = Astro.slots.has('default') ? (await Astro.slots.render('default')).trim() : '';
+if (content === '') {
+  throw new Error(`<Hulp label="${label}"> needs its help in Markdown between the tags.`);
+}
+---
+
+<details class="hulp">
+  <summary class="hulp-label">
+    <svg class="hulp-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg>
+    {label}
+  </summary>
+  <div class="hulp-body"><Fragment set:html={content} /></div>
+</details>
+
+<style>
+  /* Only design-system tokens (docs/DESIGN.md), no barometer colours. The focus
+     ring on the summary is the site-wide one in src/styles/global.css. Height
+     budget on 1366 × 640: closed 36px plus the margin; open 4px more, plus 8px
+     and 22px per line of help. */
+  .hulp {
+    margin: 0 0 var(--space-4);
+  }
+
+  /* 36px high: one line of `small` (22px), the border and 6px on both sides. */
+  .hulp-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    width: fit-content;
+    padding: calc((var(--space-1) + var(--space-2)) / 2) var(--space-3);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    color: var(--brand-text);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  /* The arrow of the component replaces the browser's own. */
+  .hulp-label::-webkit-details-marker {
+    display: none;
+  }
+
+  .hulp-label:hover {
+    background: var(--surface-sunken);
+  }
+
+  .hulp-icon {
+    flex: none;
+    width: var(--space-4);
+    height: var(--space-4);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hulp[open] .hulp-icon {
+    transform: rotate(90deg);
+  }
+
+  .hulp-body {
+    max-width: 65ch;
+    margin-top: var(--space-1);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    color: var(--ink);
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    font-weight: var(--text-small-weight);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .hulp-body > :global(*) {
+    margin: 0 0 var(--space-2);
+  }
+
+  .hulp-body > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .hulp-body :global(:is(ul, ol)) {
+    padding-left: var(--space-4);
+  }
+
+  /* Motion (docs/DESIGN.md, "Beweging"). A transition and not an animation: it
+     only runs when the state changes, so that help that is still open does not
+     fade again when the student returns to its step, which an animation would
+     do each time the step is shown. Closing has no transition: what disappears
+     within a step disappears at once. A browser without ::details-content
+     drops these rules and shows the help without a fade. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hulp-label {
+      transition: background-color var(--motion-fast) var(--ease-out);
+    }
+
+    .hulp:not([open])::details-content {
+      opacity: 0;
+    }
+
+    .hulp[open]::details-content {
+      transition: opacity var(--motion-base) var(--ease-out);
+    }
+  }
+</style>
