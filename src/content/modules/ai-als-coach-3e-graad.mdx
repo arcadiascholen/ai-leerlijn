@@ -677,13 +677,46 @@ Denk terug aan je publiek, de jury en de vragen.
 <Reflectie id="presentatie-vragen" vraag="Welke vraag of opmerking had je niet verwacht, en wat doe je ermee?" />
 </Stap>
 
-{/* Shared end. */}
+{/* End: shared, except the coach prompt and the four "Wat ging hier mis?" questions, which every branch has in its own version, in the same place in the route. */}
 
-<Stap titel="Je eigen coachprompt">
+<Stap titel="Je eigen coachprompt" tak="toets">
 <DenkEerst id="coachprompt" vraag="Schrijf een coachprompt die je volgende keer meteen kunt gebruiken: wie ben je, wat is je bron, en wat wil je ermee?">
 *„Ik zit in het zesde jaar [richting]. Ik bereid me voor op een toets
 [vak]; mijn cursus zit in de bijlage. Help me leren: stel me vragen, geef
 hints, wijs me op fouten. Geef me niet meteen het antwoord."*
+
+- **Wie je bent**, **je bron** en **wat je wil**.
+- Geen *„gedraag je als …"*: context doet het werk.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Je eigen coachprompt" tak="mondeling">
+<DenkEerst id="coachprompt-mondeling" vraag="Schrijf een coachprompt die je volgende keer meteen kunt gebruiken: wie ben je, wat is je bron, en wat wil je ermee?">
+*„Ik zit in het zesde jaar [richting]. Ik bereid me voor op een mondeling
+examen [vak]; mijn leerstof zit in de bijlage. Stel me vragen zoals op het
+examen, één per keer, en vraag door. Geef me niet meteen het antwoord."*
+
+- **Wie je bent**, **je bron** en **wat je wil**.
+- Geen *„gedraag je als …"*: context doet het werk.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Je eigen coachprompt" tak="debat">
+<DenkEerst id="coachprompt-debat" vraag="Schrijf een coachprompt die je volgende keer meteen kunt gebruiken: wie ben je, wat is je bron, en wat wil je ermee?">
+*„Ik zit in het zesde jaar [richting]. Ik bereid een debat voor over
+[stelling]; de opdracht zit in de bijlage. Daag me uit met tegenargumenten en
+zeg waar mijn redenering zwak is. Schrijf mijn tekst niet."*
+
+- **Wie je bent**, **je bron** en **wat je wil**.
+- Geen *„gedraag je als …"*: context doet het werk.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Je eigen coachprompt" tak="presentatie">
+<DenkEerst id="coachprompt-presentatie" vraag="Schrijf een coachprompt die je volgende keer meteen kunt gebruiken: wie ben je, wat is je bron, en wat wil je ermee?">
+*„Ik zit in het zesde jaar [richting]. Ik bereid een presentatie voor over
+[onderwerp]; de opdracht zit in de bijlage. Stel vragen als iemand uit mijn
+publiek en zeg wat niet duidelijk is. Schrijf mijn tekst en mijn slides niet."*
 
 - **Wie je bent**, **je bron** en **wat je wil**.
 - Geen *„gedraag je als …"*: context doet het werk.
@@ -697,7 +730,7 @@ staat ook in je samenvatting op het einde.
 <Tool naam="chatgpt">
 Klik links op **Nieuw project**, dan op **•••** → **Projectinstellingen**, en
 plak je prompt bij de instructies. De leermodus werkt niet in een project:
-daarom vraagt je prompt zelf om vragen en hints.
+daarom zegt je prompt zelf hoe de AI je moet helpen.
 </Tool>
 <Tool naam="gemini">
 Bewaar je prompt als tekst, bijvoorbeeld in je notities, en plak hem bij het
@@ -715,7 +748,7 @@ deeper** als model. Dat lukt niet met elk schoolaccount.
 </Tool>
 </Stap>
 
-<Stap titel="Wat ging hier mis? (1)">
+<Stap titel="Wat ging hier mis? (1)" tak="toets">
 <Chat naast>
 <Jij>Maak een samenvatting van de Franse Revolutie voor mijn toets.</Jij>
 <AI>De Franse Revolutie (1789–1799) was een periode van grote politieke en maatschappelijke veranderingen in Frankrijk …</AI>
@@ -729,7 +762,7 @@ deeper** als model. Dat lukt niet met elk schoolaccount.
 </Meerkeuze>
 </Stap>
 
-<Stap titel="Wat ging hier mis? (2)">
+<Stap titel="Wat ging hier mis? (2)" tak="toets">
 <Chat naast>
 <Jij>Vergelijk de twee theorieën uit hoofdstuk 4 van mijn cursus, en zeg waar ze elkaar tegenspreken.</Jij>
 <AI>Beide theorieën hebben voor- en nadelen. Ze bekijken het onderwerp elk vanuit een andere invalshoek …</AI>
@@ -743,7 +776,7 @@ deeper** als model. Dat lukt niet met elk schoolaccount.
 </Meerkeuze>
 </Stap>
 
-<Stap titel="Wat ging hier mis? (3)">
+<Stap titel="Wat ging hier mis? (3)" tak="toets">
 <Chat naast>
 <Jij>Geef me de antwoorden op oefening 1 tot 5.</Jij>
 <AI>Natuurlijk! 1. x = 4 · 2. x = −2 · 3. x = 7 · 4. geen oplossing · 5. x = ½</AI>
@@ -757,7 +790,7 @@ deeper** als model. Dat lukt niet met elk schoolaccount.
 </Meerkeuze>
 </Stap>
 
-<Stap titel="Wat ging hier mis? (4)">
+<Stap titel="Wat ging hier mis? (4)" tak="toets">
 <Chat naast>
 <Jij>Ik loste 3(x − 2) = 12 op en kom x = 6 uit. Klopt dat?</Jij>
 <AI>Bijna! 3(x − 2) = 3x − 2, dus 3x − 2 = 12 en x = 14/3.</AI>
@@ -768,6 +801,174 @@ deeper** als model. Dat lukt niet met elk schoolaccount.
   <Optie feedback="Misschien rekent een andere stand beter, maar nakijken moet altijd.">De verkeerde instelling</Optie>
   <Optie feedback="De leerling rekende zelf, en nog juist ook.">Zelf niet nagedacht</Optie>
   <Optie juist feedback="3(x − 2) is 3x − 6, dus x = 6 was juist. De AI rekende fout.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (1)" tak="mondeling">
+<Chat naast>
+<Jij>Stel me vragen voor mijn mondeling.</Jij>
+<AI>Natuurlijk! 1. Stel jezelf eens voor. 2. Wat zijn je hobby's? 3. Wat wil je later doen? …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-mondeling-1" vraag="Op het examen kwamen andere vragen. Wat ging mis?">
+  <Optie juist feedback="De AI kent je leerstof niet, en weet niet hoe je examen verloopt.">Te weinig context</Optie>
+  <Optie feedback="Een andere stand helpt niet: de AI kent je leerstof nog altijd niet.">De verkeerde instelling</Optie>
+  <Optie feedback="Vragen laten stellen mag. Maar de AI weet niet wat jij moet kennen.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Nakijken helpt niet: de vragen gaan niet over jouw leerstof.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (2)" tak="mondeling">
+<Chat naast>
+<Jij>Dit antwoordde ik op de moeilijkste examenvraag uit hoofdstuk 3 van mijn cursus: … Waar redeneer ik fout?</Jij>
+<AI>Je antwoord is goed opgebouwd. Je kunt nog wat meer details toevoegen …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-mondeling-2" vraag="Dit gebeurde in de snelste stand. Wat ging mis?">
+  <Optie feedback="De cursus en de vraag zaten erbij. Aan context ontbrak het niet.">Te weinig context</Optie>
+  <Optie juist feedback="Een moeilijke redenering vraagt de stand waarin de AI eerst nadenkt.">De verkeerde instelling</Optie>
+  <Optie feedback="De leerling antwoordde eerst zelf. Het antwoord is vaag door de stand.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Er valt weinig na te kijken: het antwoord zegt bijna niets.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (3)" tak="mondeling">
+<Chat naast>
+<Jij>Schrijf mijn antwoorden uit, dan leer ik ze van buiten.</Jij>
+<AI>Natuurlijk! 1. De belangrijkste oorzaak was … 2. Dat komt doordat …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-mondeling-3" vraag="Bij doorvragen valt de leerling stil. Wat ging mis?">
+  <Optie feedback="Meer context verandert niets: de AI doet nog altijd het werk.">Te weinig context</Optie>
+  <Optie feedback="Ook in een andere stand schrijft de AI dan je antwoorden.">De verkeerde instelling</Optie>
+  <Optie juist feedback="De AI deed het denkwerk. Wat je niet begrijpt, kun je niet uitleggen.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Eerst had de leerling zelf moeten antwoorden, met de AI als hulp.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (4)" tak="mondeling">
+<Chat naast>
+<Jij>Wie schreef De Leeuw van Vlaanderen?</Jij>
+<AI>De Leeuw van Vlaanderen is een roman van Guido Gezelle uit 1838.</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-mondeling-4" vraag="De leerling zegt dit op het examen. Wat ging mis?">
+  <Optie feedback="De vraag was duidelijk. De fout zit in het antwoord.">Te weinig context</Optie>
+  <Optie feedback="Misschien weet een andere stand het wel, maar nakijken moet altijd.">De verkeerde instelling</Optie>
+  <Optie feedback="Een feit opvragen mag. Het probleem komt pas daarna.">Zelf niet nagedacht</Optie>
+  <Optie juist feedback="De roman is van Hendrik Conscience. Eén opzoeking had dat getoond.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (1)" tak="debat">
+<Chat naast>
+<Jij>Geef me argumenten voor mijn debat.</Jij>
+<AI>Natuurlijk! 1. Het is goed voor de samenleving. 2. Het bespaart op lange termijn geld. 3. Veel mensen zijn ervoor …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-debat-1" vraag="De argumenten passen niet bij de opdracht. Wat ging mis?">
+  <Optie juist feedback="De AI weet niet wat je stelling is, of wat de opdracht vraagt.">Te weinig context</Optie>
+  <Optie feedback="Een andere stand helpt niet: de AI kent je opdracht nog altijd niet.">De verkeerde instelling</Optie>
+  <Optie feedback="Argumenten vragen mag. Maar de AI weet niet waarover je debatteert.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Nakijken helpt niet: de argumenten gaan niet over jouw stelling.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (2)" tak="debat">
+<Chat naast>
+<Jij>Mijn stelling: de school moet gsm's verbieden. Mijn redenering zit in de bijlage. Geef het sterkste tegenargument.</Jij>
+<AI>Sommige mensen vinden dat een gsm ook nuttig kan zijn op school …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-debat-2" vraag="Dit gebeurde in de snelste stand. Wat ging mis?">
+  <Optie feedback="De stelling en de redenering zaten erbij. Aan context ontbrak het niet.">Te weinig context</Optie>
+  <Optie juist feedback="Een sterk tegenargument vraagt de stand waarin de AI eerst nadenkt.">De verkeerde instelling</Optie>
+  <Optie feedback="De vraag was goed. Het tegenargument is zwak door de stand.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Er valt weinig na te kijken: dit argument zegt bijna niets.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (3)" tak="debat">
+<Chat naast>
+<Jij>Schrijf mijn debattekst.</Jij>
+<AI>Natuurlijk! Geachte jury, vandaag wil ik u ervan overtuigen dat …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-debat-3" vraag="In het debat kan de leerling niet reageren. Wat ging mis?">
+  <Optie feedback="Meer context verandert niets: de AI doet nog altijd het werk.">Te weinig context</Optie>
+  <Optie feedback="Ook in een andere stand schrijft de AI dan je tekst.">De verkeerde instelling</Optie>
+  <Optie juist feedback="De AI deed het denkwerk. Op wat niet in je tekst staat, weet je niets.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Eerst had de leerling zelf argumenten moeten zoeken.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (4)" tak="debat">
+<Chat naast>
+<Jij>Hoeveel lidstaten telt de Europese Unie?</Jij>
+<AI>De Europese Unie telt 28 lidstaten.</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-debat-4" vraag="De leerling gebruikt dit in het debat. Wat ging mis?">
+  <Optie feedback="De vraag was duidelijk. De fout zit in het antwoord.">Te weinig context</Optie>
+  <Optie feedback="Misschien weet een andere stand het wel, maar nakijken moet altijd.">De verkeerde instelling</Optie>
+  <Optie feedback="Een cijfer opvragen mag. Het probleem komt pas daarna.">Zelf niet nagedacht</Optie>
+  <Optie juist feedback="Sinds de brexit in 2020 zijn het er 27. Eén opzoeking had dat getoond.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (1)" tak="presentatie">
+<Chat naast>
+<Jij>Geef tips voor mijn presentatie over het klimaat.</Jij>
+<AI>1. Begin met een sterke opening. 2. Gebruik duidelijke slides. 3. Oefen je tekst luidop …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-presentatie-1" vraag="De tips passen niet bij de opdracht. Wat ging mis?">
+  <Optie juist feedback="De AI weet niet voor wie je spreekt, of wat de opdracht vraagt.">Te weinig context</Optie>
+  <Optie feedback="Een andere stand helpt niet: de AI kent je opdracht nog altijd niet.">De verkeerde instelling</Optie>
+  <Optie feedback="Tips vragen mag. Maar de AI weet niet wat jouw presentatie nodig heeft.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Nakijken helpt niet: de tips gelden voor elke presentatie.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (2)" tak="presentatie">
+<Chat naast>
+<Jij>In de bijlage zit de opbouw van mijn presentatie. Waar verliest mijn publiek de draad, en waarom?</Jij>
+<AI>Je opbouw ziet er goed uit. Zorg voor een duidelijke inleiding, een kern en een slot …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-presentatie-2" vraag="Dit gebeurde in de snelste stand. Wat ging mis?">
+  <Optie feedback="De opbouw zat erbij. Aan context ontbrak het niet.">Te weinig context</Optie>
+  <Optie juist feedback="Een opbouw doorlichten vraagt de stand waarin de AI eerst nadenkt.">De verkeerde instelling</Optie>
+  <Optie feedback="De vraag was goed. Het antwoord is algemeen door de stand.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Er valt weinig na te kijken: dit geldt voor elke presentatie.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (3)" tak="presentatie">
+<Chat naast>
+<Jij>Schrijf mijn tekst en mijn slides.</Jij>
+<AI>Natuurlijk! Slide 1: Inleiding. Goedemorgen, vandaag vertel ik jullie over …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-presentatie-3" vraag="De leerling kan geen vraag beantwoorden. Wat ging mis?">
+  <Optie feedback="Meer context verandert niets: de AI doet nog altijd het werk.">Te weinig context</Optie>
+  <Optie feedback="Ook in een andere stand schrijft de AI dan je tekst.">De verkeerde instelling</Optie>
+  <Optie juist feedback="De AI deed het denkwerk. Wat je niet zelf maakte, leg je niet uit.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Eerst had de leerling zelf de opbouw moeten maken.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (4)" tak="presentatie">
+<Chat naast>
+<Jij>Wanneer viel de Berlijnse Muur?</Jij>
+<AI>De Berlijnse Muur viel op 9 november 1991.</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-presentatie-4" vraag="Die datum staat nu op een slide. Wat ging mis?">
+  <Optie feedback="De vraag was duidelijk. De fout zit in het antwoord.">Te weinig context</Optie>
+  <Optie feedback="Misschien weet een andere stand het wel, maar nakijken moet altijd.">De verkeerde instelling</Optie>
+  <Optie feedback="Een datum opvragen mag. Het probleem komt pas daarna.">Zelf niet nagedacht</Optie>
+  <Optie juist feedback="De Muur viel op 9 november 1989. Eén opzoeking had dat getoond.">Niet nagekeken</Optie>
 </Meerkeuze>
 </Stap>
 
