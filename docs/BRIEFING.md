@@ -296,6 +296,13 @@ het, tenzij de auteur een andere opbouw voorziet.
   of in een veld van een prompt, zodat het in de samenvatting komt. Wat de leerling in de chat doet, komt er
   niet in; daarvoor is er het bewijsstuk (een link of een stuk van het
   gesprek, per tool).
+- **Een nieuw component is een gewone stap.** Vraagt een stap om iets wat geen
+  bestaand component kan, dan komt er een nieuw component, in plaats van de
+  stap te plooien naar wat er al is. De voorwaarde: het lokt een andere
+  denkhandeling uit, en is geen versiering. Een nieuw component is generiek
+  (`src/components/vragen/` of `src/components/inhoud/`), met een eigen `kind`
+  in `answers.ts` als het iets bewaart, en wat de leerling schrijft of haalt
+  komt in de samenvatting (§ 12).
 - **Hoogte per combinatie** (gemeten op 1366 × 640): een `<Reflectie>` met
   hoogstens één regel tekst erboven; een `<Prompt>` van drie regels met twee
   regels tekst en één `<Tool>`-blok; een `<DenkEerst>` zonder inleiding; een
@@ -321,6 +328,13 @@ toegelaten is. Daarom toont **elke module bij de start in één duidelijke zin
 of de leerling zelf AI gebruikt** (het veld `aiGebruik`). Of daar een
 barometericoon bij hoort, beslist het team later.
 
+De barometer gaat over wat de leerling indient. De eigen oplossing laten
+nakijken is leren: de leerling mag een oefening of taak met de eigen oplossing
+in een chat zetten en vragen waar het fout gaat en waarom. Wat de leerling
+indient, schrijft die zelf. Een huistaak op punten staat niet op niveau 0:
+thuis valt niet af te dwingen dat er geen AI aan te pas komt. Tijdens een toets
+gebruikt de leerling geen AI, tenzij de leerkracht er een niveau bij vermeldt.
+
 | `aiGebruik` | Zin |
 |---|---|
 | `zelf` | *Je gebruikt zelf AI.* |
@@ -343,8 +357,8 @@ betekenis en worden nergens anders in de vormgeving gebruikt.
 Gemini Notebook (tot juli 2026 NotebookLM), de gangbare tools. Wie geen
 persoonlijk account heeft, of van de ouders geen ChatGPT of Gemini mag
 gebruiken, gebruikt Copilot Chat met het schoolaccount. Copilot is geen
-uitzondering op de regel van de affiche: staat er bij een opdracht geen
-AI-niveau, dan gebruikt de leerling geen AI, ook Copilot niet. Claude komt in de modules niet voor: de
+uitzondering op de regel van de affiche: wat hierboven over de barometer staat,
+geldt ook voor Copilot. Claude komt in de modules niet voor: de
 consumentenvoorwaarden vragen 18 jaar. De school vroeg bij de start van het
 schooljaar aan de ouders toestemming voor het gebruik van AI-tools, waaronder
 ChatGPT. Dat dekt de toestemming van de ouders die ChatGPT vraagt voor wie
