@@ -100,7 +100,10 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    oplaadt. Dat het formulier een bestand aanvaardt, wordt in Smartschool
    geregeld, buiten deze repo. De resultaten komen in het LVS,
    zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
-   en de samenvatting aan het einde van een module linken ernaar.
+   en de samenvatting aan het einde van een module linken ernaar. Wie een
+   module op Bookwidgets volgt, levert daar het werk in en heeft geen pdf, maar
+   vult het eindformulier wel in; het formulier in Smartschool houdt daar
+   rekening mee (§ 5, *Een module op een ander platform*).
 
 Elk van de vier scholen heeft een **eigen Smartschool-platform**: SMA
 (`sanctamaria-aarschot`), DIA (`dia`), SJIB (`sjib`) en SJCA (`sjca`). Een link
@@ -120,7 +123,7 @@ en geen cookies.
 
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
-| Wat is AI? AI herkennen en begrijpen | 2e, met differentiatie | wordt aangeleverd | `wat-is-ai` |
+| Wat is AI? AI herkennen en begrijpen | 1e en 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
 | AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat, presentatie en examenplanning; de 2e graad in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
@@ -146,6 +149,16 @@ omgezet naar korte stappen, krijgt de juiste metadata en gebruikt de
 componenten van de site. Bij dat omzetten blijft de didactische bedoeling van
 de auteur leidend; vragen en oefeningen die de auteur voorzag, vallen niet
 stilzwijgend weg.
+
+### Een module op een ander platform
+
+Een module die al klaar op Bookwidgets of Smartschool staat, wordt niet omgezet
+naar stappen. Ze is een module met **één `<Stap>`**: een korte uitleg en een
+`<SchoolLink>` (§ 12, *Een link per school*), zonder `<Samenvatting />`. Zo
+gelden de kaart, de filters en de zin over AI-gebruik zoals bij elke module, en
+brengt *Naar de startpagina* de leerling terug. Het werk wordt ingediend op het
+andere platform, dus er is geen pdf. De leerling vult daarna wel het
+eindformulier in, en de stap zegt dat. `wat-is-ai` is het eerste voorbeeld.
 
 ### Metadata per module
 
@@ -233,7 +246,8 @@ houden een leerling die alleen thuis zit bij de les.
   leerling invulde en welke nog leeg zijn, en maakt van alles wat de leerling
   onderweg schreef een pdf om te downloaden. Die pdf laadt de leerling op in
   het eindformulier. Zo levert de site het bewijsstuk aan zonder zelf
-  gegevens te verwerken: de pdf ontstaat in de browser van de leerling.
+  gegevens te verwerken: de pdf ontstaat in de browser van de leerling. Een
+  module op een ander platform (§ 5) heeft geen samenvatting en geen pdf.
 
 Auteurs schrijven een module als **één MDX-bestand** waarin de stappen
 `<Stap>`-blokken zijn. Eén bestand per module houdt het integreren
