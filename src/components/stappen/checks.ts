@@ -507,6 +507,18 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     promptSteps[promptId] = title;
   }
 
+  const stepOf = (tag: Tag): Tag | undefined => steps.filter((candidate) => candidate.index < tag.index).at(-1);
+  const describe = (step: Tag | undefined): string => {
+    if (step === undefined) return 'no <Stap>';
+    const tak = textOf(step, 'tak');
+    return `<Stap titel="${textOf(step, 'titel') ?? '…'}"${tak === undefined ? '' : ` tak="${tak}"`}>`;
+  };
+  // Every component that stores an answer under an `id`.
+  const questionTags = (): { component: string; tag: Tag }[] =>
+    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting'].flatMap((component) =>
+      tagsOf(id, body, component).map((tag) => ({ component, tag })),
+    );
+
   // Prompts that take over an answer (BRIEFING § 12, "Prompts en gesprekken"):
   // the source is a <Reflectie> that every student who sees the prompt has
   // already had in front of them. While it is empty, the prompt names the step
@@ -514,15 +526,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   const sourceSteps: Record<string, string> = {};
   const takingOver = tagsOf(id, body, 'Prompt').filter((tag) => tag.attributes.has('overnemen'));
   if (takingOver.length > 0) {
-    const stepOf = (tag: Tag): Tag | undefined => steps.filter((candidate) => candidate.index < tag.index).at(-1);
-    const describe = (step: Tag | undefined): string => {
-      if (step === undefined) return 'no <Stap>';
-      const tak = textOf(step, 'tak');
-      return `<Stap titel="${textOf(step, 'titel') ?? '…'}"${tak === undefined ? '' : ` tak="${tak}"`}>`;
-    };
-    const questions = ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt'].flatMap((component) =>
-      tagsOf(id, body, component).map((tag) => ({ component, tag })),
-    );
+    const questions = questionTags();
     for (const prompt of takingOver) {
       const promptStep = stepOf(prompt);
       const where = `the <Prompt> in ${describe(promptStep)}`;
@@ -566,6 +570,48 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
         }
         sourceSteps[sourceId] = title;
       }
+    }
+  }
+
+  // Measurements (BRIEFING § 12, "Vraagtypes"): `vergelijk` names a <Meting>
+  // that every student who sees this one has already had in front of them.
+  // The rest of a <Meting> is checked by Meting.astro.
+  for (const measure of tagsOf(id, body, 'Meting')) {
+    const attribute = measure.attributes.get('vergelijk');
+    if (attribute === undefined) continue;
+    const measureStep = stepOf(measure);
+    const where = `<Meting id="${textOf(measure, 'id') ?? '…'}"> in ${describe(measureStep)}`;
+    if (attribute.kind !== 'text') {
+      throw new Error(`Module "${id}": write \`vergelijk\` of ${where} as text, such as vergelijk="quiz-start".`);
+    }
+    const start = `Module "${id}": ${where} compares with "${attribute.value}"`;
+    const question = questionTags().find(({ tag }) => textOf(tag, 'id') === attribute.value);
+    if (question === undefined) {
+      throw new Error(
+        `${start}, but no question in this module has that \`id\`. Write the \`id\` of a <Meting> earlier in the module.`,
+      );
+    }
+    if (question.component !== 'Meting') {
+      throw new Error(`${start}, but that is a <${question.component}>. Only a <Meting> can be compared.`);
+    }
+    if (question.tag.index === measure.index) {
+      throw new Error(`${start}, which is the <Meting> itself. Write the \`id\` of a <Meting> earlier in the module.`);
+    }
+    const sourceStep = stepOf(question.tag);
+    const sourceTak = sourceStep === undefined ? undefined : textOf(sourceStep, 'tak');
+    const measureTak = measureStep === undefined ? undefined : textOf(measureStep, 'tak');
+    if (sourceTak !== undefined && sourceTak !== measureTak) {
+      throw new Error(
+        `${start}, but that <Meting> is in ${describe(sourceStep)}, and a student on ` +
+          `${measureTak === undefined ? 'another branch' : `the branch "${measureTak}"`} never sees it. Compare with ` +
+          'a <Meting> from the same branch or from a shared step.',
+      );
+    }
+    if (question.tag.index > measure.index) {
+      throw new Error(
+        `${start}, but that <Meting> comes later in the module, in ${describe(sourceStep)}, so the student has not ` +
+          'filled it in yet. Put it before this one.',
+      );
     }
   }
 

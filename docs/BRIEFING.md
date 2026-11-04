@@ -307,7 +307,8 @@ het, tenzij de auteur een andere opbouw voorziet.
   hoogstens één regel tekst erboven; een `<Prompt>` van drie regels met twee
   regels tekst en één `<Tool>`-blok; een `<DenkEerst>` zonder inleiding; een
   `<Chat naast>` met een `<Meerkeuze>` van vier opties van twee à drie
-  woorden, een vraag van één regel en feedback van hoogstens ± 70 tekens. Een
+  woorden, een vraag van één regel en feedback van hoogstens ± 70 tekens; een
+  `<Meting>` met één regel tekst, ook met de vergelijking. Een
   prompt die de leerling laat antwoorden en een reflectie op dat antwoord
   staan op twee stappen.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
@@ -666,8 +667,8 @@ Tekst, een beeld of een vraagcomponent.
   `https://`-adres is, een fout in het sjabloon van een `<SchoolLink>`, een
   fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*), in
-  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*) of in een `<Hulp>`
-  (zie *Hulp in een stap*).
+  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*), in een `<Hulp>`
+  (zie *Hulp in een stap*) of in een `<Meting>` (zie *Vraagtypes*).
 
 ### Vraagtypes
 
@@ -738,6 +739,64 @@ lijsten.
   Een korte inleidende zin erboven past op 1366 × 640; wat de leerling
   langer schrijft, scrolt binnen het veld.
 
+**Score en zekerheid**
+
+```mdx
+<Meting id="quiz-start" vraag="Hoeveel van de vijf had je juist?" />
+<Meting id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="quiz-start" />
+```
+
+Na een quiz in de chat vult de leerling zijn score in, en hoe zeker die is dat
+die het zonder hulp kan. Een vlotte uitleg van AI voelt als begrijpen; zekerheid
+naast score maakt dat verschil zichtbaar.
+
+- `vraag` is gewone tekst, de vraag boven de score. `max` is de hoogste score,
+  standaard 5, in de vorm `max={10}`. De tag sluit zichzelf (`/>`). Wijzig de
+  `max` van een gepubliceerde meting niet: een score die op een andere schaal
+  bewaard is, telt als niet ingevuld.
+- **Vorm.** Twee rijen knoppen: de score van 0 tot `max`, en *Hoe zeker ben je
+  dat je dit zonder hulp kunt?* van 1 tot 5, met aan de uiteinden *Helemaal niet
+  zeker* en *Heel zeker*. Een rij knoppen en geen schuifregelaar: een schuif
+  heeft altijd een waarde, dus dan is niet te zien of de leerling al antwoordde.
+  De knoppen zijn echte `<input type="radio">` van 44 × 44 px, rand
+  `line-strong`, `radius-md`; gekozen is `primary` met `on-primary`. Er is geen
+  oordeel en er zijn geen barometerkleuren: de site zegt niet of een score goed
+  is.
+- **Toetsenbord.** Elke rij is een radiogroep in een `<fieldset>`: Tab gaat naar
+  de groep, de pijltjestoetsen kiezen. Ze wisselen niet van stap, want de speler
+  laat de pijltjestoetsen met rust in een `input`. Een schermlezer hoort bij 1 en
+  5 ook de betekenis van dat uiteinde.
+- **De vergelijking.** Met `vergelijk` staat er, zodra beide rijen ingevuld zijn,
+  een zin onder (`role="status"`, dus voorgelezen): *Bij de start: 2 van 5,
+  zekerheid 4 van 5. Nu: 4 van 5, zekerheid 3 van 5.* Is de andere meting leeg
+  of half ingevuld, dan staat daar: *Vul ook je meting in „Hoe ging de
+  startquiz?" in, dan zie je hier de vergelijking. Ga naar stap 23*, met een
+  echte link (`#stap-n`, de positie in de route, met `routeOf`). De meting leest
+  die andere meting telkens opnieuw wanneer haar stap zichtbaar wordt (een
+  `IntersectionObserver`, zoals de samenvatting), na elke keuze en na een klik in
+  een meting op dezelfde stap. Zo kloppen de waarden en het stapnummer ook na een
+  wijziging op een andere stap of een andere tak.
+- Half ingevuld wordt ook bewaard (zie *Antwoorden bewaren*). Een klik vóór de
+  hydratatie gaat niet verloren en is nieuwer dan wat bewaard is, dus ze wint van
+  een bewaarde waarde in dezelfde rij; de andere rij blijft.
+- Zonder JavaScript staan de vraag en de knoppen er, zonder vergelijking en
+  zonder bewaren.
+
+**Hoogte op 1366 × 640** (gemeten in `voorbeeld`, `scrollHeight` van de stap,
+van de 390 px): kop, één regel tekst en een meting 268 px, ingevuld of niet. Met
+de vergelijking of de link eronder 322 px. Met een vraag van twee regels en
+`max={10}` 296 px, met de vergelijking 350 px, en met een stap met een lange titel
+in de link, zodat de zin twee regels neemt, 372 px. De knoppen staan op één regel
+tot `max={18}`; meer breekt af op een volgende regel, en dat past niet altijd meer.
+
+**Buildchecks**, elk met een duidelijke melding. `checks.ts` weigert een
+`vergelijk` die niet bestaat of geen `<Meting>` is, die later in de module staat,
+die de meting zelf is, die in een andere tak staat dan de meting, of die geen
+tekst is. `<Meting>` zelf weigert een ontbrekende, ongeldige of dubbele `id`, een
+lege `vraag`, een `max` die geen geheel getal van 1 of meer is, en tekst tussen de
+tags. Ze vallen pas als de pagina gebouwd wordt: test ze in een module met `status:
+beschikbaar`.
+
 ### Antwoorden bewaren
 
 Dit is de afspraak waarop de samenvatting aan het einde van een module
@@ -763,6 +822,12 @@ steunt.
   de titel van de stap zoals de leerling ze zag, en per veld, onder de naam
   van zijn invulplaats, wat de leerling schreef, zoals getypt (zie *Prompts
   en gesprekken*).
+- `<Meting>` bewaart
+  `{ "kind": "measure", "question": "…", "score": 3, "max": 5, "confidence": 4 }`,
+  vanaf de eerste klik: `score` en `confidence` zijn `null` zolang die rij open
+  is. `readAnswer` weigert een `score` of `confidence` die geen geheel getal
+  binnen het bereik is (0 tot `max`, 1 tot 5) en niet `null`, en een `max` die
+  geen geheel getal van 1 of meer is. Een score van 0 is een antwoord.
 - Elk antwoord, van elk `kind`, heeft ook twee tijden:
   `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
   `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
@@ -778,13 +843,14 @@ steunt.
   in `answers.ts`, met een eigen controle in `isStoredAnswer`, zodat
   `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
-  `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`
-  of `prompt-fields`) en `data-question-id="<id>"`. Een vraag die in de
+  `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`,
+  `prompt-fields` of `measure`) en `data-question-id="<id>"`. Een vraag die in de
   samenvatting komt, draagt ook `data-question-text` met de vraag zoals ze
   nu in de module staat. Bij een prompt met velden is dat element het kader
   met de velden, en draagt het ook `data-prompt-fields`: per veld de naam
   en het label, in de volgorde van `velden`, als JSON
-  (`[["begrip", "Begrip"], …]`). Dat geldt ook voor vragen in verborgen stappen die
+  (`[["begrip", "Begrip"], …]`). Een meting draagt ook `data-measure-max`, de
+  hoogste score. Dat geldt ook voor vragen in verborgen stappen die
   nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in de
   volgorde van het document, dus van de module, en leest per `id` het
   antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
@@ -1309,9 +1375,9 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   de module geeft de route mee via `Astro.locals`, de link naar het
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
   `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
-- Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`
-  en `<Prompt>` met `velden` mee. **Meerkeuze komt er niet in**: alleen wat
-  de leerling zelf schreef. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
+- Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`,
+  `<Prompt>` met `velden` en `<Meting>` mee. **Meerkeuze komt er niet in**: alleen
+  wat de leerling zelf schreef of over zichzelf invulde. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
   *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
   niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
@@ -1328,6 +1394,12 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   volgorde van `velden`: *Mijn uitleg: …*, of *Mijn uitleg: (niet
   ingevuld)*. Ze telt als ingevuld als alle velden ingevuld zijn; anders
   staat de titel van de stap onder *Nog leeg*, met *Ga naar stap n*.
+- **Een meting** is één vraag, met `vraag` als vraag en eronder één regel per
+  waarde: *Score: 3 van 5* en *Zekerheid: 4 van 5*, of *Zekerheid: (niet
+  ingevuld)*. Ze telt als ingevuld als beide rijen gekozen zijn; anders staat de
+  vraag onder *Nog leeg*, met *Ga naar stap n*. In de pdf en op papier is ze een
+  blok `fields`, zoals een prompt met velden, en in de tijdlijn staat de titel
+  van haar stap, met de eerste klik.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
@@ -1350,7 +1422,8 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   per regel (*Doel: Een schriftelijke toets*, of *Doel: (niet gekozen)*, met
   de `naam` van de keuze met een hoofdletter vooraan), dan per vraag de
   vraag in het vet met het antwoord eronder, of *(niet ingevuld)*; bij een
-  prompt met velden staat er één regel per veld. Als laatste de *Tijdlijn*
+  prompt met velden staat er één regel per veld, bij een meting één regel per
+  waarde. Als laatste de *Tijdlijn*
   (zie hieronder). Onderaan elke pagina staat *Pagina 1 van 2*. Een lang antwoord loopt door op de
   volgende pagina; een vraag staat nooit alleen onderaan een pagina. Lege
   regels binnen een antwoord vallen weg. Er staat geen naam of ander
@@ -1378,7 +1451,8 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   Een tekstextractie zoals `pdftotext` geeft die twee spaties als één
   terug; een script herkent de regel aan de vorm van de tijd vooraan.
 - `pdf.ts` krijgt gewone gegevens: de module, de keuzes, per vraag een
-  blok met een `kind` (`answer`, of `fields` voor een prompt met velden) en
+  blok met een `kind` (`answer`, of `fields` voor een prompt met velden en een
+  meting) en
   de momenten van de tijdlijn. Een nieuw soort blok komt daar bij.
 - **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
   er gaat geen lettertypebestand mee, maar het kent alleen de tekens van

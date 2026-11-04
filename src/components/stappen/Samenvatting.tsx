@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { appear, appearOnMount } from '../../lib/motion';
-import { isTime, readAnswer, type StoredAnswer } from '../vragen/answers';
+import { CONFIDENCE_MAX, isTime, readAnswer, readMeasure, type StoredAnswer } from '../vragen/answers';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import {
   choiceLine,
@@ -34,7 +34,8 @@ import styles from './Samenvatting.module.css';
 //
 // A prompt with fields (<Prompt velden={…}>) is one question: the title of
 // its step, with a line per field. It counts as filled in when every field
-// is.
+// is. A <Meting> goes the same way, with a line for the score and one for the
+// confidence: filled in when both are chosen.
 //
 // The choices (<Keuze>) come first, one line each. In a module with
 // branches only the steps of the student's route count (routeOf in
@@ -53,7 +54,7 @@ import styles from './Samenvatting.module.css';
 
 // Only what the student wrote: multiple-choice answers are left out. The
 // timeline takes every question.
-const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields'];
+const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure'];
 
 // The last line of the timeline on paper; the PDF has MADE_LABEL there.
 const PRINTED_LABEL = 'Afgedrukt';
@@ -74,7 +75,7 @@ interface Choice {
 
 // A question with what the student wrote by now, as the PDF takes it: an
 // answer (normalised; '' when the student wrote nothing yet), or the fields
-// of a prompt. With its id, and the 1-based step it is in, for a link back to
+// of a prompt or a <Meting>. With its id, and the 1-based step it is in, for a link back to
 // it.
 type Item = PdfItem & {
   readonly id: string;
@@ -113,7 +114,17 @@ function fieldsOf(element: HTMLElement, stored: StoredAnswer | null): PdfField[]
   });
 }
 
-// A prompt with fields is filled in when every field is.
+// A <Meting> as two fields: "Score: 3 van 5" and "Zekerheid: (niet ingevuld)".
+// A score of 0 is an answer; only null is empty.
+function measureFields(element: HTMLElement, moduleId: string): PdfField[] {
+  const { score, max, confidence } = readMeasure(moduleId, element);
+  return [
+    { label: 'Score', value: score === null ? '' : `${score} van ${max}` },
+    { label: 'Zekerheid', value: confidence === null ? '' : `${confidence} van ${CONFIDENCE_MAX}` },
+  ];
+}
+
+// A prompt with fields is filled in when every field is, and so is a <Meting>.
 function isFilled(item: Item): boolean {
   if (item.kind === 'answer') return item.answer !== '';
   return item.fields.length > 0 && item.fields.every((field) => field.value !== '');
@@ -179,6 +190,8 @@ function collect(root: HTMLElement, moduleId: string): Collected {
     }
     if (kind === 'prompt-fields') {
       items.push({ kind: 'fields', id, question, fields: fieldsOf(element, stored), step });
+    } else if (kind === 'measure') {
+      items.push({ kind: 'fields', id, question, fields: measureFields(element, moduleId), step });
     } else if (kind !== undefined && KINDS.includes(kind)) {
       items.push({ kind: 'answer', id, question, answer: answerOf(stored, kind), step });
     }
