@@ -1,7 +1,8 @@
 ---
 // The module choice (docs/BRIEFING.md § 4 and § 5): one card per module in
 // the collection, sorted on `volgorde`, with a filter on grade. Modules with
-// `status: binnenkort` are listed too, dimmed and without a link.
+// `status: binnenkort` are listed too, dimmed and without a link; modules with
+// `status: verborgen` are not listed.
 //
 // The filter keeps its choice in the URL (`?graad=1`), not in localStorage:
 // a link with the filter set can be shared (the first grade gets the same
@@ -12,7 +13,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ModuleKaart from '../../components/modules/ModuleKaart.astro';
 
-const modules = (await getCollection('modules')).sort(
+const modules = (await getCollection('modules', ({ data }) => data.status !== 'verborgen')).sort(
   (a, b) => a.data.volgorde - b.data.volgorde || a.id.localeCompare(b.id),
 );
 
