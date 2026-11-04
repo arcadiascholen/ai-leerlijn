@@ -1067,7 +1067,68 @@ voor het [jaar en richting].
   een verborgen stap: de samenvatting en het kopiëren wachten op niets.
 - Zonder JavaScript zijn de velden verborgen en staat de prompt er met haar
   invulplaatsen, zoals een prompt zonder velden.
-- Een prompt zonder `velden` verandert niet, ook niet in de HTML.
+- Een prompt zonder `velden` en `overnemen` verandert niet, ook niet in de
+  HTML.
+
+**Een prompt die een antwoord overneemt**
+
+```mdx
+<Stap titel="Eerst jij: je argumenten" tak="debat">
+<Reflectie id="debat-argumenten" vraag="Wat zijn je drie sterkste argumenten?" />
+</Stap>
+
+<Stap titel="De tegenstander" tak="debat">
+<Prompt overnemen={{ 'mijn argumenten': 'debat-argumenten' }}>
+Mijn argumenten: [mijn argumenten]
+
+Val mijn standpunt aan met het sterkste tegenargument dat je kent.
+</Prompt>
+</Stap>
+```
+
+- Wat de leerling op een eerdere stap in een `<Reflectie>` schreef, komt zo
+  in de chat zonder knippen en plakken: *eerst jij, dan AI*, ook over de
+  stappen heen. `overnemen` koppelt de naam van een invulplaats aan de `id`
+  van die `<Reflectie>`. Andere invulplaatsen blijven invulplaatsen. Alleen
+  een `<Reflectie>` kan bron zijn; een ander vraagtype komt erbij als een
+  module het vraagt.
+- **Vast.** De overgenomen tekst staat vast in de prompt, zonder eigen veld.
+  Wie iets wil wijzigen, gaat met *Vorige* terug naar de reflectie: zo blijft
+  één plek de bron, en klopt de samenvatting.
+- **Vorm.** Hetzelfde als een ingevuld veld: zonder haken, in `brand-text` op
+  `surface-sunken`, met een lijn in `brand` eronder. Een regeleinde blijft
+  een regeleinde, in het blok en op het klembord. Alleen witruimte telt als
+  leeg, zoals bij velden.
+- **Altijd de huidige tekst.** Het script leest het bewaarde antwoord met
+  `readAnswer` telkens als de stap getoond wordt (een
+  `IntersectionObserver`, zoals bij de samenvatting: de speler wisselt met
+  `hidden`, dus er komt geen `hashchange`), opnieuw bij het kopiëren, en bij
+  elke toets op de stap zelf, voor een bron eerder op dezelfde stap. Het
+  invullen bij het tonen van een stap is geen handeling van de leerling, dus
+  daar beweegt niets. Verandert de tekst terwijl ✓ *Gekopieerd* staat, dan
+  verdwijnt die, zoals bij velden.
+- **Kopiëren.** Als bij velden: de build zet `data-prompt-template`, en het
+  script vult dat in. De bronnen staan in `data-prompt-sources`: per
+  invulplaats de naam, de `id` van de reflectie en de titel van haar stap,
+  als JSON. Die titel leest de build uit de bron (`checks.ts`, via
+  `Astro.locals`). Ook Ctrl+C op een volledig geselecteerde prompt geeft de
+  ingevulde tekst.
+- **Bron leeg.** De invulplaats blijft `[mijn argumenten]`, op het scherm en
+  op het klembord, en de knop blijft werken: de leerling kan het dan in de
+  tool invullen. Links van de knop staat *Nog leeg: ga terug naar „Eerst
+  jij: je argumenten"*. De melding noemt de stap bij naam en niet *de vorige
+  stap*, want de bron staat niet altijd net ervoor. Twee lege bronnen in
+  verschillende stappen: *ga terug naar „A" en „B"*. Samen met velden staan
+  de labels van de lege velden eerst, in één zin: *Nog leeg: Mijn standpunt;
+  ga terug naar „Eerst jij: je argumenten"*. Is de opslag geblokkeerd, dan is
+  de bewaarde reflectie er niet, en dat telt als leeg.
+- **Bewaren.** `overnemen` bewaart niets: de bron is de reflectie. Een `id`
+  is dus niet nodig (zonder `velden` is ze zelfs een fout), het blok draagt
+  geen `data-question`, en de prompt komt niet apart in de samenvatting. *Opnieuw
+  beginnen* wist de reflectie, en de prompt is daarna weer leeg.
+- `overnemen` en `velden` werken samen in één prompt; dan gelden ook de regels
+  van `velden`, met een verplichte `id`, en komen de velden in de samenvatting.
+- Zonder JavaScript blijft de invulplaats staan, zoals bij `velden`.
 
 **Een gesprek**
 
@@ -1118,6 +1179,12 @@ voor het [jaar en richting].
   463 px: dan scrolt de kaart. Zet dus geen tekst boven een prompt met
   velden (de titel en de labels zeggen wat de leerling doet), en houd de
   prompt zelf op drie regels.
+- Een overgenomen antwoord groeit net zo. In `voorbeeld` is de stap met
+  titel, twee regels tekst en een prompt van twee alinea's (één en twee
+  regels) leeg 258 px, en past die tot een antwoord van zes regels (378 px);
+  bij zeven scrolt de kaart. Met daarboven één veld, zonder tekst, en een
+  derde alinea is dat leeg 308 px en past het tot vier regels. Reken op
+  argumenten van meer dan één regel: houd de rest van zo'n stap kort.
 
 **Buildchecks**, elk met een duidelijke melding:
 
@@ -1130,6 +1197,15 @@ voor het [jaar en richting].
   niet als invulplaats in de prompt staat (de melding noemt de
   invulplaatsen die er wel staan), en een `<Stap>` waarvan de `titel` geen
   gewone tekst is; en een `id` op een `<Prompt>` zonder `velden`;
+- bij een `<Prompt>` met `overnemen`: een `id` die niet bestaat in de module
+  of die geen `<Reflectie>` is, een bron later in de module dan de prompt, een
+  bron in een andere tak dan de prompt (een bron in een gedeelde stap mag;
+  een bron in een tak bij een prompt in een gedeelde stap niet), een
+  `overnemen` die geen object van gewone teksten is, een naam twee keer, een
+  naam die niet als invulplaats in de prompt staat of die ook in `velden`
+  staat, en een bron in een `<Stap>` waarvan de `titel` geen gewone tekst is.
+  De controles op de bron doet `checks.ts` in de bron van de module, met de
+  titel van de stap in de melding, de andere `Prompt.astro`;
 - een lege `<Chat>`, een `<Chat>` zonder beurten, en iets anders dan
   `<Jij>` en `<AI>` in een `<Chat>`, zoals tekst buiten een beurt;
   `<Chat>` rendert zijn kinderen en leest ze terug, zoals `<Meerkeuze>`
