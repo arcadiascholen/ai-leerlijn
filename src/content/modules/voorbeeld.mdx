@@ -163,6 +163,33 @@ voor het [jaar en richting].
 </Prompt>
 </Stap>
 
+<Stap titel="Eerst jij: je argumenten">
+Neem een standpunt in waar je echt achter staat.
+
+<Reflectie id="voorbeeld-argumenten" vraag="Wat zijn je drie sterkste argumenten?" />
+</Stap>
+
+<Stap titel="De tegenstander">
+Wat je net schreef, staat al in de prompt. Wil je het wijzigen? Ga dan terug
+naar de vorige stap.
+
+<Prompt overnemen={{ 'mijn argumenten': 'voorbeeld-argumenten' }}>
+Mijn argumenten: [mijn argumenten]
+
+Val mijn standpunt aan met het sterkste tegenargument dat je kent. Geef één argument per keer en wacht op mijn antwoord.
+</Prompt>
+</Stap>
+
+<Stap titel="De jury">
+<Prompt id="voorbeeld-jury" velden={{ standpunt: 'Mijn standpunt' }} overnemen={{ 'mijn argumenten': 'voorbeeld-argumenten' }}>
+Mijn standpunt: [standpunt]
+
+Mijn argumenten: [mijn argumenten]
+
+Beoordeel als jury of mijn argumenten mijn standpunt dragen voor het [jaar en richting].
+</Prompt>
+</Stap>
+
 <Stap titel="Wat ging hier mis?">
 <Chat naast>
 <Jij>Leg fotosynthese uit.</Jij>

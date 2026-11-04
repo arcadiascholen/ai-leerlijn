@@ -33,17 +33,39 @@
 // in the summary under the title of the step: the container of the fields is
 // the question there (`data-question="prompt-fields"`). Without JavaScript
 // the fields are hidden and the prompt stands there with its placeholders.
-// A prompt without `velden` renders exactly as before, byte for byte: that
-// is why the parts that only exist with fields are glued to the next tag in
-// the template (`)}<div`, `}<p`), where a line break would add a space.
+//
+// With `overnemen`, a placeholder shows what the student wrote in a <Reflectie>
+// on an earlier step, so that it reaches the chat without cutting and pasting:
+//
+//   <Prompt overnemen={{ 'mijn argumenten': 'debat-argumenten' }}>
+//   Mijn argumenten: [mijn argumenten] Val mijn standpunt aan …
+//   </Prompt>
+//
+// `overnemen` maps the name of a placeholder to the `id` of that <Reflectie>.
+// The text is fixed here: to change it, the student goes back to the
+// reflection, which stays the one source. So this stores nothing, needs no
+// `id`, and adds nothing to the summary. The script reads the stored answer
+// every time the step is shown and again when copying; an empty answer, or
+// blocked storage, leaves [mijn argumenten] in place, and the note next to
+// "Kopieer" names the step to go back to. The block carries the sources in
+// `data-prompt-sources`, and `data-prompt-template` as with fields. checks.ts
+// checks the sources against the module; `overnemen` and `velden` work together
+// in one prompt. Without JavaScript the placeholder stays, as with fields.
+//
+// A prompt without `velden` and `overnemen` renders exactly as before, byte
+// for byte: that is why the parts that only exist with them are glued to the
+// next tag in the template (`)}<div`, `}<p`), where a line break would add a
+// space.
 import { checkQuestionId } from '../vragen/authoring';
-import { checkPromptFields, readPrompt, type PromptField } from './authoring';
+import { checkPromptFields, checkPromptSources, readPrompt, type PromptField } from './authoring';
 
 interface Props {
   // Only with `velden`: the key under which the fields are stored.
   id?: string;
   // Placeholder name → the label of its field.
   velden?: Record<string, string>;
+  // Placeholder name → the `id` of the <Reflectie> whose answer it shows.
+  overnemen?: Record<string, string>;
 }
 
 const rendered = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
@@ -76,9 +98,28 @@ if (Astro.props.velden !== undefined) {
   );
 }
 
-const { html, text, template } = readPrompt(rendered, id === null || fields === null ? null : { id, fields });
+// Read from the MDX source by the module route, like `promptSteps`.
+const locals = Astro.locals as { sourceSteps?: Readonly<Record<string, string>>; sourcePrompts?: number };
+const sources =
+  Astro.props.overnemen === undefined
+    ? null
+    : checkPromptSources(Astro.props.overnemen, fields ?? [], locals.sourceSteps);
+
+const { html, text, template } = readPrompt(
+  rendered,
+  fields === null && sources === null ? null : { id, fields: fields ?? [], sources: sources ?? [] },
+);
 const baseId = `vraag-${id ?? ''}`;
-const noteId = fields === null ? undefined : `${baseId}-leeg`;
+// The id that the button points to for the note. A prompt with only
+// `overnemen` has no `id` of its own, and several may take over the same
+// answer, so those are numbered per page.
+let noteId: string | undefined;
+if (fields !== null) {
+  noteId = `${baseId}-leeg`;
+} else if (sources !== null) {
+  locals.sourcePrompts = (locals.sourcePrompts ?? 0) + 1;
+  noteId = `prompt-overnemen-${locals.sourcePrompts}-leeg`;
+}
 ---
 
 {fields !== null && (
@@ -102,14 +143,14 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
       </div>
     ))}
   </div>
-)}<div class="prompt" data-prompt data-prompt-text={text} data-prompt-template={template === null ? undefined : JSON.stringify(template)}>
+)}<div class="prompt" data-prompt data-prompt-text={text} data-prompt-template={template === null ? undefined : JSON.stringify(template)} data-prompt-sources={sources === null ? undefined : JSON.stringify(sources.map((source) => [source.name, source.id, source.step]))}>
   <p class="prompt-label">Prompt</p>
   <div class="prompt-text" data-prompt-body id={fields === null ? undefined : `${baseId}-prompt`}><Fragment set:html={html} /></div>
   <div class="prompt-actions">
     {/* Always in the page, also when empty, so that a screen reader reads
-        the confirmation when it appears. With fields, the note before it
-        says which fields are still empty. */}
-    {fields !== null && <p class="prompt-note" id={noteId} data-prompt-note></p>}<p class="prompt-status" role="status" data-prompt-status>
+        the confirmation when it appears. With fields or a taken-over answer,
+        the note before it says what is still empty. */}
+    {noteId !== undefined && <p class="prompt-note" id={noteId} data-prompt-note></p>}<p class="prompt-status" role="status" data-prompt-status>
       <svg class="prompt-icon prompt-check" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M5 12.5l4.5 4.5L19 7.5"></path>
       </svg>
@@ -199,7 +240,8 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     box-decoration-break: clone;
   }
 
-  /* What the student wrote in a field, without brackets. Green is the
+  /* What the student wrote, in a field or in an earlier step, without
+     brackets. Green is the
      student (docs/DESIGN.md): `brand-text` on the ground of an answer field,
      `surface-sunken` (4.8:1), underlined in `brand`. The student's line
      breaks stay, as on the clipboard. */
@@ -307,8 +349,8 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     }
   }
 
-  /* Which fields are still empty, left of the button. It gives way to the
-     status while that shows. */
+  /* What is still empty, left of the button. It gives way to the status while
+     that shows. */
   .prompt-note {
     align-self: center;
     min-width: 0;
@@ -380,7 +422,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
 <script>
   // Copying a <Prompt>: one script for every prompt on the page, listening on
   // the document. Only a prompt with fields stores something: what the
-  // student writes in its fields (see "Prompts with fields" below).
+  // student writes in its fields (see "Prompts that get filled in" below).
   import { appear } from '../../lib/motion';
   import { moduleIdOf } from '../stappen/storage';
   import { readAnswer, writeAnswer } from '../vragen/answers';
@@ -399,7 +441,7 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   let current: HTMLElement | null = null;
   let timer: number | undefined;
 
-  // Left of the button, the note on the empty fields shows while it has text
+  // Left of the button, the note on what is empty shows while it has text
   // and no status takes its place (the styles hide it otherwise).
   function noteShows(block: HTMLElement): boolean {
     const note = block.querySelector('[data-prompt-note]');
@@ -409,8 +451,9 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   // What comes into view left of the button fades in (docs/DESIGN.md,
   // "Beweging"): a new status, or the note it made way for. Always after
   // something the student did: a copy, a selection, typing, or the end of a
-  // confirmation.
-  function render(block: HTMLElement, state: State | null): void {
+  // confirmation. Not when showing a step ends the confirmation (`fades`
+  // false).
+  function render(block: HTMLElement, state: State | null, fades: boolean): void {
     const before = block.dataset.state;
     const noted = noteShows(block);
     if (state === null) block.removeAttribute('data-state');
@@ -420,26 +463,27 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     const status = block.querySelector<HTMLElement>('[data-prompt-status]');
     if (state !== null && state !== before && status !== null) appear(status);
     const note = block.querySelector<HTMLElement>('[data-prompt-note]');
-    if (!noted && note !== null && noteShows(block)) appear(note);
+    if (fades && !noted && note !== null && noteShows(block)) appear(note);
   }
 
-  function show(block: HTMLElement, state: State | null): void {
+  function show(block: HTMLElement, state: State | null, fades = true): void {
     window.clearTimeout(timer);
-    if (current !== null && current !== block) render(current, null);
+    if (current !== null && current !== block) render(current, null, true);
     current = state === null ? null : block;
-    render(block, state);
+    render(block, state, fades);
     // The request to press Ctrl+C stays until the student copies.
     if (state === 'copied') timer = window.setTimeout(() => show(block, null), CONFIRMATION_MS);
   }
 
   // The text that "Kopieer" puts on the clipboard: the build's plain text,
-  // never the text of the block with its label and button. With fields, the
-  // build's text with what the student wrote in place of their placeholders.
+  // never the text of the block with its label and button. With fields or a
+  // taken-over answer, the build's text with what the student wrote in place
+  // of their placeholders, as it is now.
   function textOf(block: HTMLElement): string {
-    const fields = fieldsOfBlock.get(block);
-    if (fields === undefined) return block.dataset.promptText ?? '';
-    const values = valuesOf(fields);
-    return fields.template
+    const filling = fillingOf.get(block);
+    if (filling === undefined) return block.dataset.promptText ?? '';
+    const values = valuesOf(filling);
+    return filling.template
       .map((part) => (typeof part === 'string' ? part : values.get(part.field) || part.empty))
       .join('');
   }
@@ -469,6 +513,10 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
   }
 
   async function copy(block: HTMLElement): Promise<void> {
+    // The clipboard gets what the screen shows, also if another tab changed a
+    // taken-over answer since the step was shown.
+    const filling = fillingOf.get(block);
+    if (filling !== undefined) fill(filling, false);
     try {
       // Throws when there is no Clipboard API (not a secure context) and
       // rejects when the browser refuses.
@@ -503,69 +551,103 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     if (current?.dataset.state === 'fallback' && selectedPrompt() !== current) show(current, null);
   });
 
-  // --- Prompts with fields ---------------------------------------------------
+  // --- Prompts that get filled in --------------------------------------------
   //
-  // The container of the fields stands right before its prompt block; both
-  // are rendered by Prompt.astro, so nothing comes between them. On every
-  // keystroke the placeholders of a field show what the student wrote, the
-  // note next to "Kopieer" says which fields are still empty, and the values
-  // are stored under `vraag:<id>` (../vragen/answers.ts), where the summary
-  // reads them. They come back after a reload; "Opnieuw beginnen" clears
-  // them with the rest of the module.
+  // With fields: the container of the fields stands right before its prompt
+  // block; both are rendered by Prompt.astro, so nothing comes between them. On
+  // every keystroke the placeholders of a field show what the student wrote,
+  // the note next to "Kopieer" says which fields are still empty, and the
+  // values are stored under `vraag:<id>` (../vragen/answers.ts), where the
+  // summary reads them. They come back after a reload; "Opnieuw beginnen"
+  // clears them with the rest of the module.
+  //
+  // With `overnemen`: the same placeholders and the same note, but the value is
+  // the stored answer to a <Reflectie>. Nothing is kept here: it is read when
+  // the step is shown, when the student types on the same step (a source
+  // earlier in the step), and in `textOf` when copying.
 
-  // The build's copied text, cut at the placeholders of the fields
-  // (PromptPart in authoring.ts).
+  // The build's copied text, cut at the placeholders to fill in (PromptPart in
+  // authoring.ts).
   type Part = string | { readonly field: string; readonly empty: string };
 
-  interface Fields {
-    // The container of the fields: the question for the summary.
-    readonly root: HTMLElement;
+  // A placeholder that takes over an answer (PromptSource in authoring.ts).
+  interface Source {
+    readonly name: string;
+    readonly id: string;
+    readonly step: string;
+  }
+
+  interface Filling {
     readonly block: HTMLElement;
     readonly inputs: readonly HTMLTextAreaElement[];
     // Placeholder name → label, in the order of `velden`.
     readonly labels: ReadonlyMap<string, string>;
+    readonly sources: readonly Source[];
     readonly template: readonly Part[];
   }
 
-  const fieldsOfBlock = new WeakMap<HTMLElement, Fields>();
+  const fillingOf = new WeakMap<HTMLElement, Filling>();
 
-  // What a placeholder shows while its field is empty: its text as the
-  // author wrote it, brackets included.
+  // What a placeholder shows while it is empty: its text as the author wrote
+  // it, brackets included.
   const emptyText = new WeakMap<HTMLElement, string>();
 
   // What the student wrote, per placeholder name. Leading and trailing white
-  // space goes; '' is empty.
-  function valuesOf(fields: Fields): Map<string, string> {
-    return new Map(fields.inputs.map((input) => [input.dataset.promptField ?? '', input.value.trim()]));
+  // space goes; '' is empty. Only a <Reflectie> counts as a source; blocked
+  // storage reads as no answer.
+  function valuesOf(filling: Filling): Map<string, string> {
+    const values = new Map(filling.inputs.map((input) => [input.dataset.promptField ?? '', input.value.trim()]));
+    const moduleId = moduleIdOf(filling.block);
+    for (const { name, id } of filling.sources) {
+      const stored = moduleId === null ? null : readAnswer(moduleId, id);
+      values.set(name, stored?.kind === 'reflection' ? stored.answer.trim() : '');
+    }
+    return values;
   }
 
-  // The placeholders of the fields, and the note on the fields still empty.
-  // A note that comes back because the student emptied a field fades in;
-  // not at load (`fromStudent` false).
-  function fill(fields: Fields, fromStudent: boolean): void {
-    const noted = noteShows(fields.block);
-    const values = valuesOf(fields);
-    for (const slot of fields.block.querySelectorAll<HTMLElement>('[data-prompt-slot]')) {
+  // Next to "Kopieer": the labels of the empty fields, then the steps to go back
+  // to for the empty answers, each step once.
+  function noteText(filling: Filling, values: ReadonlyMap<string, string>): string {
+    const labels = Array.from(filling.labels).flatMap(([name, label]) => (values.get(name) ? [] : [label]));
+    const steps = new Set(filling.sources.flatMap(({ name, step }) => (values.get(name) ? [] : [`„${step}"`])));
+    const parts = labels.length === 0 ? [] : [labels.join(', ')];
+    if (steps.size > 0) parts.push(`ga terug naar ${new Intl.ListFormat('nl').format(steps)}`);
+    return parts.length === 0 ? '' : `Nog leeg: ${parts.join('; ')}`;
+  }
+
+  // The placeholders, and the note on what is still empty; true when the text
+  // of the prompt changed. A note that comes back because the student emptied
+  // something fades in; not at load or when a step is shown (`fromStudent`
+  // false).
+  function fill(filling: Filling, fromStudent: boolean): boolean {
+    const noted = noteShows(filling.block);
+    const values = valuesOf(filling);
+    let changed = false;
+    for (const slot of filling.block.querySelectorAll<HTMLElement>('[data-prompt-slot]')) {
       const value = values.get(slot.dataset.promptSlot ?? '') ?? '';
       const text = value === '' ? (emptyText.get(slot) ?? '') : value;
-      if (slot.textContent !== text) slot.textContent = text;
+      if (slot.textContent !== text) {
+        slot.textContent = text;
+        changed = true;
+      }
       slot.toggleAttribute('data-filled', value !== '');
     }
-    const empty = Array.from(fields.labels).flatMap(([name, label]) => (values.get(name) ? [] : [label]));
-    const note = fields.block.querySelector<HTMLElement>('[data-prompt-note]');
-    const text = empty.length === 0 ? '' : `Nog leeg: ${empty.join(', ')}`;
+    const note = filling.block.querySelector<HTMLElement>('[data-prompt-note]');
+    const text = noteText(filling, values);
     if (note !== null && note.textContent !== text) note.textContent = text;
-    if (fromStudent && !noted && note !== null && noteShows(fields.block)) appear(note);
+    if (fromStudent && !noted && note !== null && noteShows(filling.block)) appear(note);
+    return changed;
   }
 
-  function save(fields: Fields): void {
-    const moduleId = moduleIdOf(fields.root);
-    const id = fields.root.dataset.questionId;
+  // `root` is the container of the fields: the question for the summary.
+  function save(root: HTMLElement, inputs: readonly HTMLTextAreaElement[]): void {
+    const moduleId = moduleIdOf(root);
+    const id = root.dataset.questionId;
     if (moduleId === null || id === undefined) return;
     writeAnswer(moduleId, id, {
       kind: 'prompt-fields',
-      question: fields.root.dataset.questionText ?? '',
-      fields: Object.fromEntries(fields.inputs.map((input) => [input.dataset.promptField ?? '', input.value])),
+      question: root.dataset.questionText ?? '',
+      fields: Object.fromEntries(inputs.map((input) => [input.dataset.promptField ?? '', input.value])),
     });
   }
 
@@ -592,32 +674,68 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     }
   });
 
-  function initFields(root: HTMLElement): void {
-    const block = root.nextElementSibling;
-    if (!(block instanceof HTMLElement) || !block.matches('[data-prompt][data-prompt-template]')) return;
-    const fields: Fields = {
-      root,
+  // The prompts with a taken-over answer.
+  const withSources: Filling[] = [];
+
+  // Fills a prompt in again. What was copied is then no longer what it says.
+  function refresh(filling: Filling, fromStudent: boolean): void {
+    if (fill(filling, fromStudent) && current === filling.block) show(filling.block, null, fromStudent);
+  }
+
+  // The player hides the other steps with `hidden`, so a prompt enters the
+  // viewport exactly when its step is shown, as with the summary. That is not
+  // something the student did just now, so nothing fades in.
+  const shown = new IntersectionObserver((entries) => {
+    for (const { target, isIntersecting } of entries) {
+      const filling = target instanceof HTMLElement ? fillingOf.get(target) : undefined;
+      if (isIntersecting && filling !== undefined) refresh(filling, false);
+    }
+  });
+
+  // A source earlier on the same step: it stored the answer before the event
+  // reached the document, as for the summary (Reflectie.tsx saves in the root
+  // listener of its island). A prompt on another step waits until it is shown.
+  document.addEventListener('input', () => {
+    for (const filling of withSources) {
+      if (filling.block.offsetParent !== null) refresh(filling, true);
+    }
+  });
+
+  function init(block: HTMLElement): void {
+    const before = block.previousElementSibling;
+    const root = before instanceof HTMLElement && before.matches('[data-prompt-fields]') ? before : null;
+    const inputs = root === null ? [] : Array.from(root.querySelectorAll<HTMLTextAreaElement>('textarea[data-prompt-field]'));
+    const sources = JSON.parse(block.dataset.promptSources ?? '[]') as [string, string, string][];
+    const filling: Filling = {
       block,
-      inputs: Array.from(root.querySelectorAll<HTMLTextAreaElement>('textarea[data-prompt-field]')),
-      labels: new Map(JSON.parse(root.dataset.promptFields ?? '[]') as [string, string][]),
+      inputs,
+      labels: new Map(JSON.parse(root?.dataset.promptFields ?? '[]') as [string, string][]),
+      sources: sources.map(([name, id, step]) => ({ name, id, step })),
       template: JSON.parse(block.dataset.promptTemplate ?? '[]') as Part[],
     };
-    fieldsOfBlock.set(block, fields);
+    fillingOf.set(block, filling);
     for (const slot of block.querySelectorAll<HTMLElement>('[data-prompt-slot]')) {
       emptyText.set(slot, slot.textContent ?? '');
     }
 
-    const moduleId = moduleIdOf(root);
-    const id = root.dataset.questionId;
-    const stored = moduleId === null || id === undefined ? null : readAnswer(moduleId, id);
-    if (stored?.kind === 'prompt-fields') {
-      for (const input of fields.inputs) {
-        const value = stored.fields[input.dataset.promptField ?? ''];
-        if (typeof value === 'string') input.value = value;
+    if (root !== null) {
+      const moduleId = moduleIdOf(root);
+      const id = root.dataset.questionId;
+      const stored = moduleId === null || id === undefined ? null : readAnswer(moduleId, id);
+      if (stored?.kind === 'prompt-fields') {
+        for (const input of inputs) {
+          const value = stored.fields[input.dataset.promptField ?? ''];
+          if (typeof value === 'string') input.value = value;
+        }
       }
     }
-    fill(fields, false);
-    for (const input of fields.inputs) {
+    fill(filling, false);
+    if (filling.sources.length > 0) {
+      withSources.push(filling);
+      shown.observe(block);
+    }
+    if (root === null) return;
+    for (const input of inputs) {
       fit(input);
       resizes.observe(input);
     }
@@ -627,12 +745,12 @@ const noteId = fields === null ? undefined : `${baseId}-leeg`;
     root.addEventListener('input', (event) => {
       if (!(event.target instanceof HTMLTextAreaElement)) return;
       fit(event.target);
-      fill(fields, true);
-      save(fields);
+      fill(filling, true);
+      save(root, inputs);
       // What was copied is no longer what the prompt says.
       if (current === block) show(block, null);
     });
   }
 
-  document.querySelectorAll<HTMLElement>('[data-prompt-fields]').forEach(initFields);
+  document.querySelectorAll<HTMLElement>('[data-prompt][data-prompt-template]').forEach(init);
 </script>

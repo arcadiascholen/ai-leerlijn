@@ -31,8 +31,8 @@ export async function getStaticPaths() {
   );
   // The dedicated route supports two choices from six.
   return entries.filter(entry => entry.id !== 'verantwoord-gebruik').map((entry) => {
-    const { branching, tool, promptSteps } = checkModuleBody(entry.id, entry.body ?? '');
-    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps } };
+    const { branching, tool, promptSteps, sourceSteps } = checkModuleBody(entry.id, entry.body ?? '');
+    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps, sourceSteps } };
   });
 }
 
@@ -41,6 +41,7 @@ interface Props {
   branching: SourceChoice | null;
   tool: SourceChoice | null;
   promptSteps: Readonly<Record<string, string>>;
+  sourceSteps: Readonly<Record<string, string>>;
 }
 
 const { entry } = Astro.props;
@@ -61,23 +62,25 @@ if (import.meta.env.DEV) {
     outline = checkModuleBody(entry.id, body);
   }
 }
-const { branching, tool, promptSteps } = outline;
+const { branching, tool, promptSteps, sourceSteps } = outline;
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
 // <Keuze> need the branching choice as read from the source, <Tool> and
-// <Keuze> the tool choice, and a <Prompt> with `velden` the title of its
-// step.
+// <Keuze> the tool choice, a <Prompt> with `velden` the title of its step, and
+// a <Prompt> with `overnemen` the titles of the steps of its sources.
 const locals = Astro.locals as {
   moduleTitle?: string;
   branching?: SourceChoice | null;
   tool?: SourceChoice | null;
   promptSteps?: Readonly<Record<string, string>>;
+  sourceSteps?: Readonly<Record<string, string>>;
 };
 locals.moduleTitle = entry.data.title;
 locals.branching = branching;
 locals.tool = tool;
 locals.promptSteps = promptSteps;
+locals.sourceSteps = sourceSteps;
 
 // The page about which AI tools are allowed, linked next to the sentence about
 // AI use when the student uses AI (BRIEFING § 7).

@@ -1,9 +1,9 @@
 // Build-time plumbing for the content components in this folder
 // (docs/BRIEFING.md § 12, "Prompts en gesprekken"): <Prompt>, with or
-// without fields, and <Chat> with its turns <Jij> and <AI>. MDX children and
-// props are not type-checked, so a mistake in a module (an empty prompt, a
-// field without its placeholder, text outside a turn) fails the build with a
-// clear message instead of reaching a student.
+// without fields or a taken-over answer, and <Chat> with its turns <Jij> and
+// <AI>. MDX children and props are not type-checked, so a mistake in a module
+// (an empty prompt, a field without its placeholder, text outside a turn)
+// fails the build with a clear message instead of reaching a student.
 
 // Every tag in rendered HTML, with its name. Astro escapes `<` and `>` in
 // text and in attribute values, so a `>` always ends a tag.
@@ -89,8 +89,9 @@ function escapeAttribute(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-// Every placeholder in its own span. The brackets stay. A placeholder that a
-// field fills in also carries the name of that field.
+// Every placeholder in its own span. The brackets stay. A placeholder that
+// the script fills in, from a field or from an earlier answer, also carries
+// its name.
 function markPlaceholders(html: string, fields: ReadonlySet<string> | null): string {
   return eachPlaceholder(html, (slot) => {
     if (fields !== null) {
@@ -145,15 +146,61 @@ export function checkPromptFields(fields: unknown): PromptField[] {
   });
 }
 
-// The copied text of a prompt with fields, cut at the placeholders of its
-// fields: the plain text in between, and per placeholder the field that
-// fills it in and what stands there while that field is empty.
+// A placeholder of a <Prompt> that takes over an answer from an earlier step:
+// its name, the `id` of the <Reflectie> that holds the answer, and the title
+// of the step that <Reflectie> is in, which the prompt names while the answer
+// is empty.
+export interface PromptSource {
+  readonly name: string;
+  readonly id: string;
+  readonly step: string;
+}
+
+// `overnemen` of a <Prompt>: an object of placeholder name → the `id` of a
+// <Reflectie>. checks.ts has checked each source against the module, and hands
+// the titles of their steps in `steps`; a name that a field also fills in
+// would have two values.
+export function checkPromptSources(
+  sources: unknown,
+  fields: readonly PromptField[],
+  steps: Readonly<Record<string, string>> | undefined,
+): PromptSource[] {
+  if (
+    typeof sources !== 'object' ||
+    sources === null ||
+    Array.isArray(sources) ||
+    Object.getPrototypeOf(sources) !== Object.prototype
+  ) {
+    throw new Error(
+      '<Prompt> needs `overnemen` as an object of placeholder name → the `id` of a <Reflectie>, such as ' +
+        `overnemen={{ 'mijn argumenten': 'debat-argumenten' }}. Got ${JSON.stringify(sources)}.`,
+    );
+  }
+  return Object.entries(sources).map(([name, id]: [string, unknown]) => {
+    if (fields.some((field) => field.name === name)) {
+      throw new Error(
+        `<Prompt>: "${name}" is in \`velden\` and in \`overnemen\`. A placeholder gets its text from a field the ` +
+          'student fills in here, or from an earlier answer, not both: remove it from one of the two.',
+      );
+    }
+    const step = typeof id === 'string' && steps !== undefined && Object.hasOwn(steps, id) ? steps[id] : undefined;
+    if (typeof id !== 'string' || step === undefined) {
+      throw new Error(`<Prompt> with \`overnemen\` only works in a <Stap> of a module (src/content/modules/).`);
+    }
+    return { name, id, step };
+  });
+}
+
+// The copied text of a prompt that gets filled in, cut at the placeholders the
+// script fills in: the plain text in between, and per placeholder its name
+// (`field`, for a field and for a taken-over answer alike) and what stands
+// there while it is empty.
 export type PromptPart = string | { readonly field: string; readonly empty: string };
 
-// The build marks every placeholder of a field with characters that a
-// module does not use, derives the plain text as for any prompt, and cuts it
-// at those marks. So the paragraphs and the white space of the copied text
-// follow the same rules with fields as without.
+// The build marks every placeholder to fill in with characters that a module
+// does not use, derives the plain text as for any prompt, and cuts it at those
+// marks. So the paragraphs and the white space of the copied text follow the
+// same rules with fields as without.
 const FIELD_MARK = /\uE000(\d+)\uE001/;
 
 function promptTemplate(html: string, fields: ReadonlySet<string>): PromptPart[] {
@@ -181,20 +228,23 @@ function promptTemplate(html: string, fields: ReadonlySet<string>): PromptPart[]
 export interface PromptContent {
   // The prompt to show, as HTML, with every placeholder marked.
   readonly html: string;
-  // The prompt as the student copies it; with fields, while they are empty.
+  // The prompt as the student copies it; with placeholders to fill in, while
+  // they are empty.
   readonly text: string;
-  // Only for a prompt with fields: `text` cut at their placeholders.
+  // Only for a prompt with placeholders to fill in: `text` cut at them.
   readonly template: readonly PromptPart[] | null;
 }
 
-// A <Prompt> with fields: its `id`, for the messages, and its fields.
-export interface PromptFieldsOptions {
-  readonly id: string;
+// A <Prompt> with fields, taken-over answers or both: its `id` if it has
+// fields, for the messages, and the two lists.
+export interface PromptFillOptions {
+  readonly id: string | null;
   readonly fields: readonly PromptField[];
+  readonly sources: readonly PromptSource[];
 }
 
 // `html` is what the author wrote between the tags of <Prompt>, rendered.
-export function readPrompt(html: string, options: PromptFieldsOptions | null = null): PromptContent {
+export function readPrompt(html: string, options: PromptFillOptions | null = null): PromptContent {
   for (const match of html.matchAll(TAG_PATTERN)) {
     const name = (match[1] ?? '').toLowerCase();
     if (!PROMPT_ELEMENTS.has(name)) {
@@ -213,30 +263,40 @@ export function readPrompt(html: string, options: PromptFieldsOptions | null = n
   }
   if (options === null) return { html: markPlaceholders(html.trim(), null), text, template: null };
 
-  // Every field fills in a placeholder of the prompt. A field without one
-  // would fill in nothing, and what the student wrote would not be copied.
+  // Every field and every taken-over answer fills in a placeholder of the
+  // prompt. Without one it would fill in nothing, and what the student wrote
+  // would not be copied.
   const placeholders = new Set<string>();
   eachPlaceholder(html, (slot) => {
     placeholders.add(placeholderName(slot));
     return slot;
   });
+  const tag = options.id === null ? '<Prompt>' : `<Prompt id="${options.id}">`;
+  const found =
+    placeholders.size === 0
+      ? 'The prompt has no placeholders.'
+      : `Its placeholders are: ${Array.from(placeholders, (name) => `[${name}]`).join(', ')}.`;
   for (const field of options.fields) {
     if (placeholders.has(field.name)) continue;
-    const found =
-      placeholders.size === 0
-        ? 'The prompt has no placeholders.'
-        : `Its placeholders are: ${Array.from(placeholders, (name) => `[${name}]`).join(', ')}.`;
     throw new Error(
-      `<Prompt id="${options.id}">: "${field.name}" in \`velden\` is not a placeholder in the prompt. ${found} ` +
+      `${tag}: "${field.name}" in \`velden\` is not a placeholder in the prompt. ${found} ` +
         `A field fills in the placeholder with its name between square brackets, such as [${field.name}]: add it ` +
         'to the prompt, or correct the name in `velden`.',
     );
   }
-  const names = new Set(options.fields.map((field) => field.name));
+  for (const source of options.sources) {
+    if (placeholders.has(source.name)) continue;
+    throw new Error(
+      `${tag}: "${source.name}" in \`overnemen\` is not a placeholder in the prompt. ${found} ` +
+        `A taken-over answer fills in the placeholder with its name between square brackets, such as ` +
+        `[${source.name}]: add it to the prompt, or correct the name in \`overnemen\`.`,
+    );
+  }
+  const names = new Set([...options.fields, ...options.sources].map(({ name }) => name));
   const template = promptTemplate(html, names);
-  // With every field empty, the prompt copies exactly what it shows.
+  // With everything empty, the prompt copies exactly what it shows.
   if (template.map((part) => (typeof part === 'string' ? part : part.empty)).join('') !== text) {
-    throw new Error(`<Prompt id="${options.id}">: the fields do not line up with the copied text of the prompt.`);
+    throw new Error(`${tag}: the placeholders to fill in do not line up with the copied text of the prompt.`);
   }
   return { html: markPlaceholders(html.trim(), names), text, template };
 }

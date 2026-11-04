@@ -32,6 +32,10 @@ export interface ModuleOutline {
   // Per <Prompt> with `velden`: its `id` → the title of the step it is in,
   // which the summary shows as the question above the fields (Prompt.astro).
   readonly promptSteps: Readonly<Record<string, string>>;
+  // Per <Reflectie> that a <Prompt> takes over with `overnemen`: its `id` →
+  // the title of the step it is in, which the prompt names while the answer
+  // is empty (Prompt.astro).
+  readonly sourceSteps: Readonly<Record<string, string>>;
 }
 
 const EXAMPLE_OPTIONS = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
@@ -205,11 +209,42 @@ function readString(cursor: Cursor): string | null {
   return null;
 }
 
-// `opties` of a <Keuze>, read from the source. Only an object of plain
-// texts, `{ toets: 'Een toets', 'met-koppelteken': "Een tekst" }`: anything
-// else (a variable, a template, a computed text) could differ from what
-// <Keuze> renders, so it fails the build instead. `tag` names the <Keuze> in
-// the messages; `example` is a valid `opties` for it.
+// An object of plain texts, read from the source, such as
+// `{ toets: 'Een toets', 'met spatie': "Een tekst" }`: anything else (a
+// variable, a template, a computed text) could differ from what the component
+// renders, so `fail` fails the build instead. `checkKey` sees every key, with
+// the texts read so far, before its text is read.
+function readTexts(
+  attribute: Attribute | undefined,
+  fail: () => Error,
+  checkKey: (key: string, texts: Readonly<Record<string, string>>) => void,
+): Record<string, string> {
+  if (attribute?.kind !== 'expression') throw fail();
+  const cursor: Cursor = { text: attribute.source.trim(), at: 1 };
+  if (!cursor.text.startsWith('{') || !cursor.text.endsWith('}')) throw fail();
+  const end = cursor.text.length - 1;
+  const texts: Record<string, string> = {};
+  for (;;) {
+    skipSpace(cursor);
+    if (cursor.at === end) return texts;
+    const key = readMatch(cursor, IDENTIFIER) ?? readString(cursor);
+    if (key === null) throw fail();
+    checkKey(key, texts);
+    skipSpace(cursor);
+    if (cursor.text.charAt(cursor.at) !== ':') throw fail();
+    cursor.at++;
+    skipSpace(cursor);
+    const text = readString(cursor);
+    if (text === null) throw fail();
+    texts[key] = text.trim();
+    skipSpace(cursor);
+    if (cursor.text.charAt(cursor.at) === ',') cursor.at++;
+    else if (cursor.at !== end) throw fail();
+  }
+}
+
+// `opties` of a <Keuze>. `tag` names the <Keuze> in the messages; `example` is
+// a valid `opties` for it.
 function readOptions(
   id: string,
   tag: string,
@@ -222,16 +257,7 @@ function readOptions(
         `such as ${example}. The build reads it from the source, so a variable or a computed text ` +
         'does not work there.',
     );
-  if (attribute?.kind !== 'expression') throw fail();
-  const cursor: Cursor = { text: attribute.source.trim(), at: 1 };
-  if (!cursor.text.startsWith('{') || !cursor.text.endsWith('}')) throw fail();
-  const end = cursor.text.length - 1;
-  const options: Record<string, string> = {};
-  for (;;) {
-    skipSpace(cursor);
-    if (cursor.at === end) return options;
-    const key = readMatch(cursor, IDENTIFIER) ?? readString(cursor);
-    if (key === null) throw fail();
+  return readTexts(attribute, fail, (key, options) => {
     if (!ID_PATTERN.test(key)) {
       throw new Error(
         `Module "${id}": the option key "${key}" of ${tag} may only have lowercase letters, ` +
@@ -241,17 +267,29 @@ function readOptions(
     if (Object.hasOwn(options, key)) {
       throw new Error(`Module "${id}": ${tag} has the option "${key}" twice.`);
     }
-    skipSpace(cursor);
-    if (cursor.text.charAt(cursor.at) !== ':') throw fail();
-    cursor.at++;
-    skipSpace(cursor);
-    const label = readString(cursor);
-    if (label === null) throw fail();
-    options[key] = label.trim();
-    skipSpace(cursor);
-    if (cursor.text.charAt(cursor.at) === ',') cursor.at++;
-    else if (cursor.at !== end) throw fail();
+  });
+}
+
+const EXAMPLE_SOURCES = "overnemen={{ 'mijn argumenten': 'debat-argumenten' }}";
+
+// `overnemen` of a <Prompt>: placeholder name → the `id` of a <Reflectie>. A
+// key is the name of a placeholder, so unlike an option key it may hold
+// spaces. `prompt` names the <Prompt> in the messages.
+function readSources(id: string, prompt: string, attribute: Attribute | undefined): Record<string, string> {
+  const fail = (): Error =>
+    new Error(
+      `Module "${id}": write \`overnemen\` of ${prompt} as an object of plain texts, such as ${EXAMPLE_SOURCES}. ` +
+        'The build reads it from the source, so a variable or a computed text does not work there.',
+    );
+  const sources = readTexts(attribute, fail, (key, texts) => {
+    if (Object.hasOwn(texts, key)) {
+      throw new Error(`Module "${id}": ${prompt} has "${key}" twice in \`overnemen\`.`);
+    }
+  });
+  if (Object.keys(sources).length === 0) {
+    throw new Error(`Module "${id}": ${prompt} has nothing in \`overnemen\`: name a placeholder, such as ${EXAMPLE_SOURCES}.`);
   }
+  return sources;
 }
 
 // `vertakt` is a flag: <Keuze naam="doel" vertakt …>.
@@ -469,5 +507,67 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     promptSteps[promptId] = title;
   }
 
-  return { branching, tool, promptSteps };
+  // Prompts that take over an answer (BRIEFING § 12, "Prompts en gesprekken"):
+  // the source is a <Reflectie> that every student who sees the prompt has
+  // already had in front of them. While it is empty, the prompt names the step
+  // it is in; a component cannot read that title, so the build reads it here.
+  const sourceSteps: Record<string, string> = {};
+  const takingOver = tagsOf(id, body, 'Prompt').filter((tag) => tag.attributes.has('overnemen'));
+  if (takingOver.length > 0) {
+    const stepOf = (tag: Tag): Tag | undefined => steps.filter((candidate) => candidate.index < tag.index).at(-1);
+    const describe = (step: Tag | undefined): string => {
+      if (step === undefined) return 'no <Stap>';
+      const tak = textOf(step, 'tak');
+      return `<Stap titel="${textOf(step, 'titel') ?? '…'}"${tak === undefined ? '' : ` tak="${tak}"`}>`;
+    };
+    const questions = ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt'].flatMap((component) =>
+      tagsOf(id, body, component).map((tag) => ({ component, tag })),
+    );
+    for (const prompt of takingOver) {
+      const promptStep = stepOf(prompt);
+      const where = `the <Prompt> in ${describe(promptStep)}`;
+      const sources = readSources(id, where, prompt.attributes.get('overnemen'));
+      for (const [name, sourceId] of Object.entries(sources)) {
+        const start = `Module "${id}": ${where} takes over [${name}] from "${sourceId}"`;
+        const question = questions.find(({ tag }) => textOf(tag, 'id') === sourceId);
+        if (question === undefined) {
+          throw new Error(
+            `${start}, but no question in this module has that \`id\`. Write the \`id\` of a <Reflectie> earlier ` +
+              'in the module.',
+          );
+        }
+        if (question.component !== 'Reflectie') {
+          throw new Error(
+            `${start}, but that is a <${question.component}>. Only the answer to a <Reflectie> can be taken over.`,
+          );
+        }
+        const sourceStep = stepOf(question.tag);
+        const sourceTak = sourceStep === undefined ? undefined : textOf(sourceStep, 'tak');
+        const promptTak = promptStep === undefined ? undefined : textOf(promptStep, 'tak');
+        if (sourceTak !== undefined && sourceTak !== promptTak) {
+          throw new Error(
+            `${start}, but that <Reflectie> is in ${describe(sourceStep)}, and a student on ` +
+              `${promptTak === undefined ? 'another branch' : `the branch "${promptTak}"`} never sees it. Take over ` +
+              'a <Reflectie> from the same branch or from a shared step.',
+          );
+        }
+        if (question.tag.index > prompt.index) {
+          throw new Error(
+            `${start}, but that <Reflectie> comes later in the module, in ${describe(sourceStep)}, so the student ` +
+              'has not written it yet. Put it before the prompt.',
+          );
+        }
+        const title = sourceStep === undefined ? undefined : textOf(sourceStep, 'titel');
+        if (title === undefined) {
+          throw new Error(
+            `${start}, but that <Reflectie> is not in a <Stap> whose \`titel\` is written as text: while the answer ` +
+              'is empty, the prompt names that title.',
+          );
+        }
+        sourceSteps[sourceId] = title;
+      }
+    }
+  }
+
+  return { branching, tool, promptSteps, sourceSteps };
 }
