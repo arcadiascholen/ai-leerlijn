@@ -124,7 +124,7 @@ en geen cookies.
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
 | Wat is AI? AI herkennen en begrijpen | 1e en 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar met de routes hoofdstuk, oefeningen of een taak en iets van buiten kennen, de route presentatie volgt | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar met de routes hoofdstuk, oefeningen of een taak, iets van buiten kennen en presentatie | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
 | AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
