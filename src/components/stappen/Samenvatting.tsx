@@ -44,7 +44,7 @@ import styles from './Samenvatting.module.css';
 //
 // The PDF ends with a timeline: when the student started the module (`start`,
 // stored by the step player), when they first answered each question of the
-// route, multiple choice included, by the title of its step, and when the
+// route, multiple choice and <Keuzechat> included, by the title of its step, and when the
 // PDF was made. A question without a valid time has no line.
 //
 // If the PDF cannot be made (jsPDF does not load on a flaky connection, or
@@ -52,8 +52,8 @@ import styles from './Samenvatting.module.css';
 // summary is in the page too, hidden on screen; the print styles in
 // Samenvatting.module.css show only that on paper.
 
-// Only what the student wrote: multiple-choice answers are left out. The
-// timeline takes every question.
+// Only what the student wrote: multiple-choice answers and the messages chosen
+// in a <Keuzechat> are left out. The timeline takes every question.
 const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure'];
 
 // The last line of the timeline on paper; the PDF has MADE_LABEL there.
@@ -136,7 +136,7 @@ interface Collected {
   // The timeline without its last line: "Begonnen", then every question of
   // the route with a time, in the order of the module.
   readonly moments: readonly PdfMoment[];
-  // How many questions the route has, multiple choice included.
+  // How many questions the route has, multiple choice and <Keuzechat> included.
   readonly questions: number;
 }
 

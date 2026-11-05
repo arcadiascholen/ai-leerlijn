@@ -3,10 +3,13 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import AiGebruik from '../../components/modules/AiGebruik.astro';
 import AI from '../../components/inhoud/AI.astro';
+import Bericht from '../../components/inhoud/Bericht.astro';
 import Chat from '../../components/inhoud/Chat.astro';
 import Hulp from '../../components/inhoud/Hulp.astro';
 import Jij from '../../components/inhoud/Jij.astro';
+import Keuzechat from '../../components/inhoud/Keuzechat.astro';
 import Prompt from '../../components/inhoud/Prompt.astro';
+import Ronde from '../../components/inhoud/Ronde.astro';
 import ChosenTool from '../../components/stappen/ChosenTool.astro';
 import Confetti from '../../components/stappen/Confetti.astro';
 import Keuze from '../../components/stappen/Keuze.astro';
@@ -33,8 +36,8 @@ export async function getStaticPaths() {
   );
   // The dedicated route supports two choices from six.
   return entries.filter(entry => entry.id !== 'verantwoord-gebruik').map((entry) => {
-    const { branching, tool, promptSteps, sourceSteps } = checkModuleBody(entry.id, entry.body ?? '');
-    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps, sourceSteps } };
+    const { branching, tool, promptSteps, sourceSteps, choiceChatSteps } = checkModuleBody(entry.id, entry.body ?? '');
+    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps, sourceSteps, choiceChatSteps } };
   });
 }
 
@@ -44,6 +47,7 @@ interface Props {
   tool: SourceChoice | null;
   promptSteps: Readonly<Record<string, string>>;
   sourceSteps: Readonly<Record<string, string>>;
+  choiceChatSteps: Readonly<Record<string, string>>;
 }
 
 const { entry } = Astro.props;
@@ -64,25 +68,28 @@ if (import.meta.env.DEV) {
     outline = checkModuleBody(entry.id, body);
   }
 }
-const { branching, tool, promptSteps, sourceSteps } = outline;
+const { branching, tool, promptSteps, sourceSteps, choiceChatSteps } = outline;
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
 // <Keuze> need the branching choice as read from the source, <Tool> and
-// <Keuze> the tool choice, a <Prompt> with `velden` the title of its step, and
-// a <Prompt> with `overnemen` the titles of the steps of its sources.
+// <Keuze> the tool choice, a <Prompt> with `velden` and a <Keuzechat> the title
+// of their step, and a <Prompt> with `overnemen` the titles of the steps of its
+// sources.
 const locals = Astro.locals as {
   moduleTitle?: string;
   branching?: SourceChoice | null;
   tool?: SourceChoice | null;
   promptSteps?: Readonly<Record<string, string>>;
   sourceSteps?: Readonly<Record<string, string>>;
+  choiceChatSteps?: Readonly<Record<string, string>>;
 };
 locals.moduleTitle = entry.data.title;
 locals.branching = branching;
 locals.tool = tool;
 locals.promptSteps = promptSteps;
 locals.sourceSteps = sourceSteps;
+locals.choiceChatSteps = choiceChatSteps;
 
 // The page about which AI tools are allowed, linked next to the sentence about
 // AI use when the student uses AI (BRIEFING § 7).
@@ -98,6 +105,9 @@ const components = {
   Chat,
   Jij,
   AI,
+  Keuzechat,
+  Ronde,
+  Bericht,
   Hulp,
   Meerkeuze,
   Optie,

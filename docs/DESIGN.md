@@ -166,8 +166,8 @@ dan nemen die hun plaats in.
 
 | Token | Waarde | Gebruik |
 |---|---|---|
-| `motion-fast` | 120ms | Hover, en een kleur of rand die verandert: knoppen, links, kaarten, een gekozen `<Keuze>`-kaart, `<Meerkeuze>`-optie of `<Meting>`-knop, de gekozen graad in het moduleoverzicht. |
-| `motion-base` | 200ms | Iets wat binnen een stap verschijnt: de feedback van `<Meerkeuze>`, het voorbeeldantwoord van `<DenkEerst>`, de vergelijking onder een `<Meting>`, ✓ *Gekopieerd* en *Nog leeg* bij een `<Prompt>`, de bevestiging en de knoppen die na een download in de samenvatting verschijnen, kaarten die het filter op graad terugbrengt. Ook de voortgangsbalk. |
+| `motion-fast` | 120ms | Hover, en een kleur of rand die verandert: knoppen, links, kaarten, een gekozen `<Keuze>`-kaart, `<Meerkeuze>`-optie, `<Meting>`-knop of `<Keuzechat>`-bericht, de gekozen graad in het moduleoverzicht. |
+| `motion-base` | 200ms | Iets wat binnen een stap verschijnt: de feedback van `<Meerkeuze>`, het voorbeeldantwoord van `<DenkEerst>`, de vergelijking onder een `<Meting>`, de reactie, de feedback en de volgende ronde van een `<Keuzechat>`, ✓ *Gekopieerd* en *Nog leeg* bij een `<Prompt>`, de bevestiging en de knoppen die na een download in de samenvatting verschijnen, kaarten die het filter op graad terugbrengt. Ook de voortgangsbalk. |
 | `motion-flip` | 400ms | De stapwissel: de helft om de oude stap weg te draaien, de helft om de nieuwe in te draaien. |
 | `motion-build` | 1000ms | De opbouw van een stap: van de klik tot het laatste onderdeel er volledig staat, de flip inbegrepen. |
 | `motion-part` | 240ms | Eén onderdeel dat verschijnt: een kop die zich typt, een blok dat gescand wordt. Daarna blijft de cursor van de kop nog 1,5 × zo lang staan en knippert hij één keer. |

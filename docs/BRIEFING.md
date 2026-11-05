@@ -308,7 +308,9 @@ het, tenzij de auteur een andere opbouw voorziet.
   regels tekst en één `<Tool>`-blok; een `<DenkEerst>` zonder inleiding; een
   `<Chat naast>` met een `<Meerkeuze>` van vier opties van twee à drie
   woorden, een vraag van één regel en feedback van hoogstens ± 70 tekens; een
-  `<Meting>` met één regel tekst, ook met de vergelijking. Een
+  `<Meting>` met één regel tekst, ook met de vergelijking; een `<Keuzechat>`
+  met berichten van hoogstens ± 60 tekens en feedback van hoogstens ± 240
+  tekens. Een
   prompt die de leerling laat antwoorden en een reflectie op dat antwoord
   staan op twee stappen.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
@@ -667,7 +669,7 @@ Tekst, een beeld of een vraagcomponent.
   `https://`-adres is, een fout in het sjabloon van een `<SchoolLink>`, een
   fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*), in
-  een `<Prompt>` of `<Chat>` (zie *Prompts en gesprekken*), in een `<Hulp>`
+  een `<Prompt>`, `<Chat>` of `<Keuzechat>` (zie *Prompts en gesprekken*), in een `<Hulp>`
   (zie *Hulp in een stap*) of in een `<Meting>` (zie *Vraagtypes*).
 
 ### Vraagtypes
@@ -828,6 +830,13 @@ steunt.
   is. `readAnswer` weigert een `score` of `confidence` die geen geheel getal
   binnen het bereik is (0 tot `max`, 1 tot 5) en niet `null`, en een `max` die
   geen geheel getal van 1 of meer is. Een score van 0 is een antwoord.
+- `<Keuzechat>` bewaart
+  `{ "kind": "choice-chat", "question": "…", "chosen": [[1, 0], [0]] }`: de
+  titel van de stap zoals de leerling ze zag, en per ronde de gekozen berichten
+  als volgnummer in de volgorde van de auteur, in de volgorde waarin de leerling
+  ze koos. `readAnswer` weigert een `chosen` die geen lijst van lijsten van
+  gehele getallen is. Of de nummers nog bij de rondes passen, kijkt het component
+  zelf na (zie *Prompts en gesprekken*).
 - Elk antwoord, van elk `kind`, heeft ook twee tijden:
   `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
   `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
@@ -844,9 +853,10 @@ steunt.
   `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
   `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`,
-  `prompt-fields` of `measure`) en `data-question-id="<id>"`. Een vraag die in de
-  samenvatting komt, draagt ook `data-question-text` met de vraag zoals ze
-  nu in de module staat. Bij een prompt met velden is dat element het kader
+  `prompt-fields`, `measure` of `choice-chat`) en `data-question-id="<id>"`. Een
+  vraag die in de samenvatting komt, draagt ook `data-question-text` met de vraag
+  zoals ze nu in de module staat; een `choice-chat` draagt daar de titel van haar
+  stap, die de build leest (`checks.ts`, via `Astro.locals`). Bij een prompt met velden is dat element het kader
   met de velden, en draagt het ook `data-prompt-fields`: per veld de naam
   en het label, in de volgorde van `velden`, als JSON
   (`[["begrip", "Begrip"], …]`). Een meting draagt ook `data-measure-max`, de
@@ -1049,7 +1059,7 @@ Stel me vijf vragen, één per keer.
 ```
 
 De componenten staan in `src/components/inhoud/`. `<Chat>` bewaart niets,
-`<Prompt>` alleen met invulvelden.
+`<Prompt>` alleen met invulvelden, `<Keuzechat>` de gekozen berichten.
 
 **Een prompt om te kopiëren**
 
@@ -1235,6 +1245,79 @@ Val mijn standpunt aan met het sterkste tegenargument dat je kent.
 - Zonder `naast` staat de `<Chat>` in de stroom van de stap, zo breed als
   een regel lopende tekst.
 
+**Zelf het volgende bericht kiezen**
+
+```mdx
+<Stap titel="Stuur de AI bij">
+<Keuzechat id="bijsturen">
+<Jij>Leg breuken vereenvoudigen uit.</Jij>
+<AI>Je deelt teller en noemer door hun grootste gemene deler …</AI>
+
+<Ronde vraag="Dit is te moeilijk. Wat typ je nu?">
+  <Bericht goed reactie="Stel: je hebt 4/8 van een pizza …" feedback="Je zegt wat er misloopt. Daar kan de AI iets mee.">Leg het eenvoudiger uit, met een voorbeeld.</Bericht>
+  <Bericht reactie="Het antwoord is 1/2." feedback="Nu heb je een antwoord, maar je snapt het nog niet.">Geef me gewoon het antwoord.</Bericht>
+</Ronde>
+</Keuzechat>
+</Stap>
+```
+
+De leerling oefent bijsturen en om hints vragen vóór die het in de echte chat
+doet, zonder account of daglimiet en met een zekere uitkomst.
+
+- `id` is verplicht, zoals bij een vraag. Eerst komen de beurten `<Jij>` en
+  `<AI>`, het begin van het gesprek, dan een of meer `<Ronde vraag="…">`, elk met
+  minstens twee `<Bericht>`, indicatief hoogstens drie rondes van drie berichten.
+  Tussen de tags van `<Bericht>` staat wat de leerling zou typen (**vet** en
+  *cursief* mogen). `reactie` en `feedback` zijn verplicht en gewone tekst. `goed`
+  markeert een bericht dat de volgende ronde opent; een ronde heeft er minstens
+  één.
+- **Vorm.** Een raster binnen het component, ± 40/60: links het gesprek, met
+  dezelfde bubbels als `<Chat>`, rechts de vraag van de ronde (`h3`), de berichten
+  onder elkaar en de feedback eronder. Het is geen `<Chat naast>`: er is geen CSS
+  op de stap, en wat vóór het component staat, loopt over de volle breedte.
+- **Kiezen.** Het bericht en de reactie komen in het gesprek, in de volgorde van
+  kiezen. Het gekozen bericht blijft staan met het woord *Gekozen* en werkt niet
+  meer, zoals bij `<Meerkeuze>`. De feedback staat onder de berichten en wordt
+  vervangen bij een nieuwe keuze: ✓ *Dit helpt* op `success-soft` (woord en icoon
+  in `success`), of ✕ *Dit helpt minder* op `danger-soft` (in `danger`). Altijd
+  icoon én woord, geen barometerkleuren.
+- **Een bericht met `goed`.** De berichten van die ronde verdwijnen, de focus gaat
+  naar de vraag van de volgende ronde, en de feedback blijft eronder staan tot de
+  volgende keuze. **Een ander bericht:** de reactie en de feedback blijven staan
+  en de leerling kiest opnieuw. Na de laatste ronde staat er één zin: *Het gesprek
+  is klaar, je kunt verder met de volgende stap.* De focus gaat daarheen, want de
+  knop waarop de leerling stond is weg.
+- *Volgende* blokkeert niet, zoals bij `<Meerkeuze>`.
+- **Scrollen.** Het gesprek scrolt binnen zijn kolom (`tabindex="0"`, met de naam
+  *Gesprek*), en springt zelf naar het laatste bericht als het groeit, ook bij
+  herstellen en telkens als de stap weer zichtbaar wordt. Dat doet een
+  `ResizeObserver`: `scrollTop` zetten in een verborgen stap werkt niet, want de
+  speler wisselt met `hidden`. Pijl omhoog en omlaag scrollen het gesprek; de
+  speler reageert alleen op links en rechts, en die wisselen ook hier van stap. Een
+  reactie die hoger is dan de kolom, blijft leesbaar vanaf haar eerste regel.
+- **Toetsenbord.** Tab gaat naar het gesprek, dan naar de berichten; Enter of
+  spatie kiest. Een gekozen bericht heeft `aria-disabled` en niet `disabled`, zodat
+  de focus er blijft staan.
+- **Schermlezer.** Eén `role="status"` per component leest na een keuze de reactie,
+  het oordeel en de feedback voor, en is leeg na herstellen. Het gesprek en de
+  zichtbare feedback zijn zelf geen live regio, dus niets klinkt dubbel.
+- **Herstellen.** Bij het laden staat het gesprek er zonder beweging; `appear`
+  alleen na een keuze, `settle` voor de kleuren. Past een bewaard antwoord niet
+  meer bij de rondes (een auteur paste ze aan na publicatie), dan neemt het
+  component het langste stuk dat de leerling zo kan bereikt hebben: een onbestaand
+  of dubbel volgnummer valt weg, net als wat na een `goed` bericht staat en een
+  ronde na een onvolledige ronde. Het antwoord wordt pas herschreven bij de
+  volgende keuze.
+- Zonder JavaScript staan het begin van het gesprek, alle vragen en hun berichten
+  op de pagina, zonder reacties en zonder feedback. De latere rondes staan daarvoor
+  in een `<noscript>`, zodat de eerste client-render gelijk blijft aan de
+  serverrender. Een klik vóór de hydratatie telt niet, zoals bij `<Meerkeuze>`: een
+  knop houdt geen toestand bij in de DOM.
+- **Samenvatting.** Zoals `<Meerkeuze>`: de inhoud staat niet in de pdf, want de
+  leerling schreef niets zelf, en het component telt niet mee in *vulde je … vragen
+  in* en staat niet onder *Nog leeg*. Wel een regel in de tijdlijn, met de titel
+  van de stap (zie *De samenvatting*).
+
 **Hoogte op 1366 × 640** (gemeten in `voorbeeld`)
 
 - Een `<Prompt>` is 32 px plus 24 px per regel tekst, plus 12 px tussen twee
@@ -1246,6 +1329,26 @@ Val mijn standpunt aan met het sterkste tegenargument dat je kent.
   Onder elkaar zou dat 472 px zijn; daarom bestaat `naast`. Rechts is een
   optie ongeveer 290 px breed: houd ze op twee à drie woorden en de
   feedback op één zin.
+- Een `<Keuzechat>` meet in `voorbeeld` (drie rondes van drie berichten, reacties
+  tot ± 150 tekens): bij het begin 270 van de 390 px; zodra het gesprek zijn kolom
+  vult, in elke toestand 390 px: titel 50 px plus de kolom van 340 px, die de
+  bovengrens van het gesprek is. Het gesprek zelf is dan tot 1936 px lang en scrolt
+  binnen die kolom. De rechterkolom heeft dus 340 px en is ± 600 px breed, met een
+  regel van ± 70 tekens: een vraag van één regel 40 px, een bericht 44 px plus 8 px
+  tussen twee berichten, feedback 50 px plus 22 px per regel na de eerste. Een
+  regel feedback is ± 70 tekens.
+- **Wat rechts past**, met drie berichten en de feedback van de hoogste toestand:
+  berichten van hoogstens ± 60 tekens, zodat *Gekozen* er nog op één regel bij
+  past, met feedback tot ± 300 tekens (326 px), of tot ± 240 tekens bij een vraag
+  van twee regels (332 px). Berichten van twee regels (80 tot 120 tekens) passen
+  alleen met feedback tot ± 120 tekens en een vraag van één regel (338 px).
+  Berichten van drie regels passen niet. Houd een bericht dus op ± 60 tekens en
+  de feedback op ± 240.
+- Met één regel tekst boven een `<Keuzechat>` zakt de kolom van het gesprek
+  vanzelf naar 298 px (CSS op een `p`, `ul` of `ol` vóór het component), en heeft
+  rechts ook 298 px: feedback tot ± 180 tekens. Twee regels tekst passen niet als
+  het gesprek vol staat, en onder het component past niets meer, ook geen dichte
+  `<Hulp>`. Zet de uitleg dus in de `vraag` van de ronde.
 - Een `<Prompt>` van drie regels met daaronder een `<Meerkeuze>` van vier
   korte opties past zolang de feedback dicht is (379 px), maar niet meer
   als alle vier de opties aangeklikt zijn (453 px): dan scrolt de kaart.
@@ -1297,7 +1400,19 @@ Val mijn standpunt aan met het sterkste tegenargument dat je kent.
 - een `<Jij>` of `<AI>` buiten een `<Chat>`: die zou stil verdwijnen, dus
   controleert `checks.ts` dat in de bron, met de titel van de stap in de
   melding;
-- `naast` met een waarde.
+- `naast` met een waarde;
+- bij een `<Keuzechat>`: een ontbrekende, ongeldige of dubbele `id`, geen `<Ronde>`,
+  geen beurten vóór de eerste `<Ronde>`, een beurt na een `<Ronde>`, en iets anders
+  dan beurten en rondes tussen de tags;
+- bij een `<Ronde>`: een lege `vraag`, minder dan twee `<Bericht>`, geen `<Bericht
+  goed>`, en iets anders dan berichten tussen de tags;
+- bij een `<Bericht>`: geen tekst, een lege of ontbrekende `reactie` of `feedback`,
+  en `goed` met een waarde;
+- een `<Ronde>` buiten een `<Keuzechat>`, een `<Bericht>` buiten een `<Ronde>`, en
+  een `<Keuzechat>` in een `<Stap>` waarvan de `titel` geen gewone tekst is:
+  `checks.ts` leest dat in de bron, met de titel van de stap in de melding. Zoals
+  bij `<Meting>` vallen ze pas als de pagina gebouwd wordt: test ze in een module
+  met `status: beschikbaar`.
 
 ### Hulp in een stap
 
@@ -1376,14 +1491,14 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
   `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
 - Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`,
-  `<Prompt>` met `velden` en `<Meting>` mee. **Meerkeuze komt er niet in**: alleen
-  wat de leerling zelf schreef of over zichzelf invulde. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
+  `<Prompt>` met `velden` en `<Meting>` mee. **Meerkeuze en `<Keuzechat>` komen er
+  niet in**: alleen wat de leerling zelf schreef of over zichzelf invulde. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
   *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
   niet mee. Met één vraag wordt dat *vulde je de vraag (nog niet) in*, met
   twee *beide vragen*, zonder antwoord *nog geen van de 14 vragen*, en
   zonder vragen *zijn er geen vragen waarop je zelf iets schrijft*. Heeft
-  de route minstens één vraag (meerkeuze telt mee), dan volgt in dezelfde
+  de route minstens één vraag (meerkeuze en `<Keuzechat>` tellen mee), dan volgt in dezelfde
   alinea *In je pdf staat ook wanneer je aan elke vraag begon.*
 - Is er iets leeg, dan staat eronder *Nog leeg:* met elke lege vraag en
   elke keuze die nog open is (*Tool: (nog niet gekozen)*), elk met *Ga naar
@@ -1440,8 +1555,8 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   ```
 
   Eerst *Begonnen* (`start`, zie *Lokaal bewaren*), dan elke vraag van de
-  route van de leerling, ook `<Meerkeuze>`, die verder niet in de pdf
-  staat, met de titel van de stap waarin ze staat, en als laatste *Pdf
+  route van de leerling, ook `<Meerkeuze>` en `<Keuzechat>`, die verder niet
+  in de pdf staan, met de titel van de stap waarin ze staat, en als laatste *Pdf
   gemaakt*, het moment van de download. Per vraag staat `firstAt`, het
   moment waarop de leerling eraan begon. Een vraag zonder geldige tijd
   (nooit beantwoord, of bewaard vóór de site tijden bijhield) heeft geen

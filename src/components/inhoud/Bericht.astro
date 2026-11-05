@@ -1,0 +1,38 @@
+---
+// One message to choose in a <Ronde> of a <Keuzechat> (docs/BRIEFING.md § 12,
+// "Prompts en gesprekken"):
+//
+//   <Bericht goed reactie="Stel: je hebt 4/8 van een pizza …" feedback="Je zegt wat er misloopt.">Leg het eenvoudiger uit.</Bericht>
+//
+// The text between the tags is what the student would type; inline Markdown
+// (bold, italics) works. `reactie` is what the AI answers, `feedback` explains
+// what the choice did, both required and plain text. `goed` marks a message
+// that opens the next round.
+//
+// <Ronde> renders its children to HTML and reads the messages back from the
+// JSON below; nothing of this reaches the page itself. The module route fails
+// the build for a <Bericht> outside a <Ronde>.
+import { checkText, unwrapParagraph } from '../vragen/authoring';
+import { encodeMessage } from './authoring';
+
+interface Props {
+  goed?: boolean;
+  reactie: string;
+  feedback: string;
+}
+
+const { goed } = Astro.props;
+const html = Astro.slots.has('default') ? unwrapParagraph(await Astro.slots.render('default')) : '';
+if (html === '') {
+  throw new Error('<Bericht> has no text between its tags: write what the student would type there.');
+}
+const name = `Bericht "${html}"`;
+if (goed !== undefined && goed !== true) {
+  throw new Error(`<${name}>: write \`goed\` without a value, or leave it out.`);
+}
+const reply = checkText(name, 'reactie', Astro.props.reactie);
+const feedback = checkText(name, 'feedback', Astro.props.feedback);
+const data = encodeMessage({ html, good: goed === true, reply, feedback });
+---
+
+<script type="application/json" data-bericht is:inline set:html={data} />

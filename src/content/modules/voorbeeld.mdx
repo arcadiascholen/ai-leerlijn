@@ -257,6 +257,31 @@ Laat de chatbot je nu vijf nieuwe vragen stellen over dezelfde leerstof.
 <Meting id="voorbeeld-quiz-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="voorbeeld-quiz-start" />
 </Stap>
 
+<Stap titel="Stuur de AI bij">
+<Keuzechat id="voorbeeld-bijsturen">
+<Jij>Leg breuken vereenvoudigen uit.</Jij>
+<AI>Je deelt teller en noemer door hun grootste gemene deler. Zo blijft de waarde van de breuk gelijk en worden de getallen kleiner.</AI>
+
+<Ronde vraag="Dit is te moeilijk. Wat typ je nu?">
+  <Bericht goed reactie="Stel: je hebt 4/8 van een pizza. Dat is net zoveel als de helft. Deel je 4 en 8 allebei door 4, dan staat er 1/2." feedback="Je zegt wat er misloopt en vraagt een voorbeeld. Daar kan de AI iets mee.">Leg het eenvoudiger uit, met een voorbeeld.</Bericht>
+  <Bericht reactie="Het antwoord is 1/2. Geef me gerust nog een breuk, dan vereenvoudig ik die ook voor je." feedback="Nu heb je een antwoord, maar je snapt het nog niet.">Geef me gewoon het antwoord.</Bericht>
+  <Bericht reactie="Ik begrijp het niet helemaal. Welke oefening bedoel je, en wat wil je dat ik ermee doe?" feedback="De AI weet niet wat je hebt. Zeg welke oefening het is en wat je zoekt.">Maak de oefening voor mij.</Bericht>
+</Ronde>
+
+<Ronde vraag="Je wil het nu zelf proberen. Wat typ je?">
+  <Bericht goed reactie="Goed idee. Vereenvoudig 6/9. Welk getal past zowel in 6 als in 9? Zeg me wat je denkt, dan kijk ik mee." feedback="Je vraagt om te oefenen, niet om een antwoord. Zo doe jij het denkwerk.">Geef me een oefening, en verbeter wat ik doe.</Bericht>
+  <Bericht reactie="Hier zijn er tien: 6/9 is 2/3, 8/12 is 2/3, 10/15 is 2/3, 4/6 is 2/3, 9/12 is 3/4, en zo gaat het verder." feedback="Tien oefeningen met de oplossing erbij: je hoeft niets meer zelf te doen.">Maak tien oefeningen met de oplossing.</Bericht>
+  <Bericht reactie="Graag gedaan! Laat maar weten als ik nog iets kan doen." feedback="Beleefd, maar het gesprek stopt hier zonder dat je iets geoefend hebt.">Bedankt, ik snap het nu.</Bericht>
+</Ronde>
+
+<Ronde vraag="Je antwoord op 6/9 is 3/4. Wat typ je nu?">
+  <Bericht goed reactie="Bijna. 3 past in 6 en in 9, maar 6 gedeeld door 3 is 2, niet 3. Hoeveel is 9 gedeeld door 3? Schrijf dan de breuk opnieuw." feedback="Je toont wat je deed en vraagt een hint in plaats van de oplossing. Zo leer je het meest.">Ik kom 3/4 uit. Waar zit mijn fout? Geef een hint.</Bericht>
+  <Bericht reactie="Het juiste antwoord is 2/3." feedback="Nu weet je de uitkomst, maar niet waar het misliep.">Wat is het juiste antwoord?</Bericht>
+  <Bericht reactie="Zo fout is het niet! Je bent goed bezig, blijf zo doorgaan." feedback="De AI is vriendelijk, maar zo'n vraag levert geen uitleg op.">Is dit goed?</Bericht>
+</Ronde>
+</Keuzechat>
+</Stap>
+
 <Stap titel="Klaar! Download je samenvatting">
 <Samenvatting />
 </Stap>
