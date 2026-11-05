@@ -1,0 +1,35 @@
+---
+// A score and how sure the student is (docs/BRIEFING.md § 12, "Vraagtypes"):
+//
+//   <Meting id="quiz-start" vraag="Hoeveel van de vijf had je juist?" />
+//   <Meting id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="quiz-start" />
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. `max` is the top of the score, 5 unless the author writes max={10}.
+// `vergelijk` names an earlier <Meting>, which then stands next to this one in
+// a sentence; the module route checks it when it builds (checks.ts). Both come
+// back in the summary at the end of the module. Authors write no import and no
+// client directive.
+import MetingIsland from './Meting.tsx';
+import { checkMeasureMax, checkQuestionId, checkText } from './authoring';
+
+interface Props {
+  id: string;
+  vraag: string;
+  max?: number;
+  vergelijk?: string;
+}
+
+const id = checkQuestionId('Meting', Astro.props.id, Astro.locals);
+const vraag = checkText('Meting', 'vraag', Astro.props.vraag);
+const max = checkMeasureMax(id, Astro.props.max);
+// Text between the tags would silently disappear.
+if (Astro.slots.has('default')) {
+  throw new Error(
+    `<Meting id="${id}"> takes no content between its tags. ` +
+      'Put the question in `vraag` and close the tag: <Meting id="…" vraag="…" />.',
+  );
+}
+---
+
+<MetingIsland id={id} question={vraag} max={max} compareWith={Astro.props.vergelijk} client:visible />

@@ -9,8 +9,9 @@
 // In the static HTML every question's root element carries
 // `data-question="<kind>"` and `data-question-id="<id>"`, also in steps that
 // are hidden and not hydrated yet. The questions that the summary shows
-// (`think-first`, `reflection` and `prompt-fields`) also carry
-// `data-question-text`, the question as it is on the page now. The summary at the end of a module
+// (`think-first`, `reflection`, `prompt-fields` and `measure`) also carry
+// `data-question-text`, the question as it is on the page now, and a `measure`
+// carries `data-measure-max`, the top of its score. The summary at the end of a module
 // (../stappen/Samenvatting.tsx) walks those elements in document order, which
 // is the order of the module, and reads each answer with `readAnswer`. It
 // takes the question from the page, not from storage: the stored question
@@ -22,7 +23,7 @@
 
 import { readStored, writeStored } from '../stappen/storage';
 
-export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields';
+export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields' | 'measure';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -58,8 +59,23 @@ export interface PromptFieldsAnswer {
   fields: Record<string, string>;
 }
 
+// <Meting>: the score from 0 to `max`, and how sure the student is, from 1 to
+// CONFIDENCE_MAX. Stored from the first click, so either can still be null.
+export interface MeasureAnswer {
+  kind: 'measure';
+  question: string;
+  score: number | null;
+  max: number;
+  confidence: number | null;
+}
+
 // What a component writes. A new kind of question goes here.
-export type AnswerContent = MultipleChoiceAnswer | ThinkFirstAnswer | ReflectionAnswer | PromptFieldsAnswer;
+export type AnswerContent =
+  | MultipleChoiceAnswer
+  | ThinkFirstAnswer
+  | ReflectionAnswer
+  | PromptFieldsAnswer
+  | MeasureAnswer;
 
 // When the student first saved an answer to the question, and when last, as
 // ISO 8601 (`toISOString`). Missing on an answer stored before the site kept
@@ -77,6 +93,14 @@ export function answerKey(questionId: string): string {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+// The top of the confidence row of a <Meting>, which starts at 1.
+export const CONFIDENCE_MAX = 5;
+
+// null, or a whole number from `min` to `max`.
+function isChoiceInRange(value: unknown, min: number, max: number): boolean {
+  return value === null || (Number.isInteger(value) && (value as number) >= min && (value as number) <= max);
 }
 
 // A time as `toISOString` writes it, or with an offset; "gisteren" is none.
@@ -102,6 +126,13 @@ function isStoredAnswer(value: unknown): value is AnswerContent & Record<string,
         isRecord(value.fields) &&
         !Array.isArray(value.fields) &&
         Object.values(value.fields).every((field) => typeof field === 'string')
+      );
+    case 'measure':
+      return (
+        Number.isInteger(value.max) &&
+        (value.max as number) >= 1 &&
+        isChoiceInRange(value.score, 0, value.max as number) &&
+        isChoiceInRange(value.confidence, 1, CONFIDENCE_MAX)
       );
     default:
       return false;
@@ -137,4 +168,21 @@ export function writeAnswer(moduleId: string, questionId: string, answer: Answer
   const firstAt = readAnswer(moduleId, questionId)?.firstAt ?? now;
   const stored: StoredAnswer = { ...answer, firstAt, lastAt: now };
   writeStored(moduleId, answerKey(questionId), JSON.stringify(stored));
+}
+
+// What a <Meting> holds now: its `element` is the root in the static HTML, also
+// in a step that is hidden and not hydrated yet. A score stored on another
+// scale (an author changed `max` after publishing) counts as not chosen: "3 van
+// 5" says nothing about a row up to 10.
+export interface MeasureValues {
+  readonly score: number | null;
+  readonly max: number;
+  readonly confidence: number | null;
+}
+
+export function readMeasure(moduleId: string, element: HTMLElement): MeasureValues {
+  const max = Number(element.dataset.measureMax);
+  const stored = readAnswer(moduleId, element.dataset.questionId ?? '');
+  if (stored?.kind !== 'measure') return { score: null, max, confidence: null };
+  return { score: stored.max === max ? stored.score : null, max, confidence: stored.confidence };
 }

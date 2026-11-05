@@ -37,7 +37,7 @@ export function checkQuestionId(component: string, id: unknown, locals: object):
   registry.questionIds ??= new Set();
   if (registry.questionIds.has(id)) {
     throw new Error(
-      `Two questions in this module have id="${id}". Every <Meerkeuze>, <DenkEerst>, <Reflectie> and ` +
+      `Two questions in this module have id="${id}". Every <Meerkeuze>, <DenkEerst>, <Reflectie>, <Meting> and ` +
         '<Prompt> with `velden` needs its own id; it is the key under which the answer is stored.',
     );
   }
@@ -98,6 +98,19 @@ export function checkText(component: string, name: string, value: unknown): stri
     throw new Error(`<${component}> needs a non-empty \`${name}\` attribute.`);
   }
   return value.trim();
+}
+
+// `max` of a <Meting>, the top of its score row: 5 unless the author says
+// otherwise.
+export function checkMeasureMax(id: string, max: unknown): number {
+  if (max === undefined) return 5;
+  if (!Number.isInteger(max) || (max as number) < 1) {
+    throw new Error(
+      `<Meting id="${id}">: \`max\` has to be a whole number of 1 or more, such as max={10}. ` +
+        `Got ${JSON.stringify(max)}.`,
+    );
+  }
+  return max as number;
 }
 
 // <Optie> renders itself as a JSON script that only <Meerkeuze> reads: a

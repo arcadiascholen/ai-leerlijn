@@ -12,7 +12,7 @@
 // The input is plain data, collected by Samenvatting.tsx: the module, the
 // choices, one item per question and the moments of the timeline. An item
 // has a `kind`: `answer` for a question with one answer, `fields` for a
-// prompt with fields, and room for another kind of block without touching
+// prompt with fields or a <Meting>, and room for another kind of block without touching
 // the rest.
 //
 // The timeline at the end has one line per moment in a fixed format,
@@ -38,7 +38,8 @@ export interface PdfAnswer {
   readonly answer: string;
 }
 
-// One field of a prompt with fields: its label, and what the student wrote.
+// One field of a prompt with fields, or one value of a <Meting>: its label, and
+// what the student wrote or chose.
 export interface PdfField {
   readonly label: string;
   // '' when the student wrote nothing.
@@ -46,7 +47,8 @@ export interface PdfField {
 }
 
 // A prompt with fields: the title of its step as the question, and one line
-// per field under it.
+// per field under it. A <Meting>: its question, with a line for the score and
+// one for the confidence.
 export interface PdfFields {
   readonly kind: 'fields';
   readonly question: string;
