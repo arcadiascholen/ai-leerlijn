@@ -1,0 +1,206 @@
+/* A card with a sentence per situation. Only design-system tokens (docs/DESIGN.md).
+   Single classes, so they win over the zero-specificity step defaults in Stap.astro.
+   No barometer colours. Green is the student: the labels are `brand-text`.
+
+   Height budget on 1366 × 640: see docs/BRIEFING.md § 12, "Vraagtypes". A row of one
+   line is 32px, of two lines 54px, of three 76px. */
+
+/* Space below the question only when the author wrote more after it; the island
+   element is the question's place in the step. The script of this component follows
+   it in the page, so that does not count. */
+:global(astro-island:has(~ :not(script, style))) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Padding, not margin, under the legend: browsers lay out a legend's own margins
+   differently. */
+.question {
+  display: block;
+  max-width: none;
+  padding: 0 0 var(--space-2);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+/* Without JavaScript: plain text instead of the fields, which would store nothing. */
+.card {
+  display: none;
+}
+
+:global(.js) .card {
+  display: block;
+  max-width: 52rem;
+}
+
+.plain {
+  max-width: 52rem;
+  margin: 0;
+}
+
+:global(.js) .plain {
+  display: none;
+}
+
+.plainRow,
+.row {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr);
+  column-gap: var(--space-3);
+  align-items: start;
+}
+
+.plainRow + .plainRow {
+  margin-top: var(--space-2);
+}
+
+.plainText {
+  margin: 0;
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+/* Lined up with the first line of the field: its border and its padding. */
+.label {
+  padding-top: calc(var(--space-1) + 1px);
+  color: var(--brand-text);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.plainRow .label {
+  padding-top: 0;
+}
+
+/* The selected card, when the clipboard fails, lies over the rows. */
+.rows {
+  position: relative;
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* One line that grows to three (the island sets the height), then scrolls. */
+.field,
+.selection {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+  resize: none;
+}
+
+.field {
+  max-height: calc(3 * var(--text-small-line) + 2 * var(--space-1) + 2px);
+  overflow-y: auto;
+  background: var(--surface-sunken);
+}
+
+.selection {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background: var(--surface);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* As the button of a <Prompt>, in the colours of the student. */
+.copy {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--forest);
+  font: inherit;
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+  cursor: pointer;
+}
+
+.copy:hover {
+  background: var(--surface-sunken);
+}
+
+/* Hover only (docs/DESIGN.md, "Beweging"). The status fades in with `appear` from
+   src/lib/motion.ts. */
+@media (prefers-reduced-motion: no-preference) {
+  .copy {
+    transition: background-color var(--motion-fast) var(--ease-out);
+  }
+}
+
+/* Empty and without room until the student copies. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.status[data-state] {
+  padding: var(--space-1) var(--space-2);
+}
+
+.status[data-state='copied'] {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* A sentence, not a word: regular weight, so it stays short. */
+.status[data-state='fallback'] {
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-weight: var(--text-small-weight);
+}
+
+.icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

@@ -12,7 +12,7 @@
 // The input is plain data, collected by Samenvatting.tsx: the module, the
 // choices, one item per question and the moments of the timeline. An item
 // has a `kind`: `answer` for a question with one answer, `fields` for a
-// prompt with fields, a <Meting> or a deck of <Flashcards>, and room for another
+// prompt with fields, a <Meting>, a deck of <Flashcards> or a <Meeneemkaart>, and room for another
 // kind of block without touching the rest.
 //
 // The timeline at the end has one line per moment in a fixed format,
@@ -49,7 +49,8 @@ export interface PdfField {
 // A prompt with fields: the title of its step as the question, and one line
 // per field under it. A <Meting>: its question, with a line for the score and
 // one for the confidence. <Flashcards>: its question, with the number of cards,
-// the score and the hardest cards.
+// the score and the hardest cards. <Meeneemkaart>: its question, with a line per
+// row, the situation as the label.
 export interface PdfFields {
   readonly kind: 'fields';
   readonly question: string;

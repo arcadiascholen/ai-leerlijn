@@ -1,0 +1,24 @@
+---
+// One row of a <Meeneemkaart> (docs/BRIEFING.md § 12, "Vraagtypes"):
+//
+//   <Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>
+//
+// `situatie` is the label of the row; the text between the tags is the sentence
+// the student starts from, as plain text: it goes into a text field. [begrip] and
+// […] stay as they are, without a mark of their own.
+//
+// <Meeneemkaart> renders its children to HTML and reads the rows back from the
+// JSON below; nothing of this reaches the page itself. A <Rij> outside a
+// <Meeneemkaart> fails the build (checks.ts).
+import { checkText, encodeRow, readRowText } from './authoring';
+
+interface Props {
+  situatie: string;
+}
+
+const situation = checkText('Rij', 'situatie', Astro.props.situatie);
+const html = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const data = encodeRow({ situation, text: readRowText(situation, html) });
+---
+
+<script type="application/json" data-rij is:inline set:html={data} />

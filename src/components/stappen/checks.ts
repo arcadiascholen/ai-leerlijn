@@ -514,6 +514,17 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
         '<Keuzechat>, such as <Ronde vraag="Wat typ je nu?"><Bericht goed reactie="…" feedback="…">…</Bericht>…</Ronde>.',
     );
   }
+  // A row of a card (BRIEFING § 12, "Vraagtypes"): outside a <Meeneemkaart> it
+  // would silently disappear from the page, as a turn would. <Meeneemkaart> checks
+  // the rows inside it.
+  const cards = spansOf(id, body, 'Meeneemkaart');
+  for (const tag of tagsOf(id, body, 'Rij')) {
+    if (isIn(cards, tag)) continue;
+    throw new Error(
+      `Module "${id}": <Rij>${whereIs(tag)} is a row of a card and only works inside a <Meeneemkaart>, such as ` +
+        '<Meeneemkaart id="mijn-kaart" vraag="Mijn kaart"><Rij situatie="Ik zit vast">Geef me één hint.</Rij></Meeneemkaart>.',
+    );
+  }
   const choiceChatSteps: Record<string, string> = {};
   for (const tag of tagsOf(id, body, 'Keuzechat')) {
     const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
@@ -570,7 +581,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   };
   // Every component that stores an answer under an `id`.
   const questionTags = (): { component: string; tag: Tag }[] =>
-    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat', 'Flashcards'].flatMap((component) =>
+    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat', 'Flashcards', 'Meeneemkaart'].flatMap((component) =>
       tagsOf(id, body, component).map((tag) => ({ component, tag })),
     );
 

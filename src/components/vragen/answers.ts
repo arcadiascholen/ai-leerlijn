@@ -9,9 +9,10 @@
 // In the static HTML every question's root element carries
 // `data-question="<kind>"` and `data-question-id="<id>"`, also in steps that
 // are hidden and not hydrated yet. The questions that the summary shows
-// (`think-first`, `reflection`, `prompt-fields`, `measure` and `flashcards`) also carry
-// `data-question-text`, the question as it is on the page now, and a `measure`
-// carries `data-measure-max`, the top of its score. A `choice-chat` carries
+// (`think-first`, `reflection`, `prompt-fields`, `measure`, `flashcards` and
+// `takeaway-card`) also carry `data-question-text`, the question as it is on the
+// page now. A `measure` carries `data-measure-max`, the top of its score, and a
+// `takeaway-card` `data-takeaway-rows`, the rows as the author wrote them. A `choice-chat` carries
 // `data-question-text` too, the title of its step, although only the timeline
 // shows it. The summary at the end of a module
 // (../stappen/Samenvatting.tsx) walks those elements in document order, which
@@ -32,7 +33,8 @@ export type QuestionKind =
   | 'prompt-fields'
   | 'measure'
   | 'choice-chat'
-  | 'flashcards';
+  | 'flashcards'
+  | 'takeaway-card';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -126,6 +128,19 @@ export interface FlashcardsAnswer extends FlashcardsContent {
   question: string;
 }
 
+// <Meeneemkaart>: one row per situation, with the sentence as it stands now: the
+// author's, or what the student made of it. '' is a row the student emptied.
+export interface TakeawayRow {
+  situation: string;
+  text: string;
+}
+
+export interface TakeawayCardAnswer {
+  kind: 'takeaway-card';
+  question: string;
+  rows: TakeawayRow[];
+}
+
 // What a component writes. A new kind of question goes here.
 export type AnswerContent =
   | MultipleChoiceAnswer
@@ -134,7 +149,8 @@ export type AnswerContent =
   | PromptFieldsAnswer
   | MeasureAnswer
   | ChoiceChatAnswer
-  | FlashcardsAnswer;
+  | FlashcardsAnswer
+  | TakeawayCardAnswer;
 
 // When the student first saved an answer to the question, and when last, as
 // ISO 8601 (`toISOString`). Missing on an answer stored before the site kept
@@ -222,6 +238,11 @@ function isStoredAnswer(value: unknown): value is AnswerContent & Record<string,
         (value.last === null || isWholeNumbers(value.last)) &&
         typeof value.scored === 'boolean'
       );
+    case 'takeaway-card':
+      return (
+        Array.isArray(value.rows) &&
+        value.rows.every((row) => isRecord(row) && typeof row.situation === 'string' && typeof row.text === 'string')
+      );
     default:
       return false;
   }
@@ -273,4 +294,31 @@ export function readMeasure(moduleId: string, element: HTMLElement): MeasureValu
   const stored = readAnswer(moduleId, element.dataset.questionId ?? '');
   if (stored?.kind !== 'measure') return { score: null, max, confidence: null };
   return { score: stored.max === max ? stored.score : null, max, confidence: stored.confidence };
+}
+
+// The rows of a <Meeneemkaart> as the author wrote them: `element` is the root in
+// the static HTML, also in a step that is hidden and not hydrated yet.
+export function authorRowsOf(element: HTMLElement): TakeawayRow[] {
+  return JSON.parse(element.dataset.takeawayRows ?? '[]') as TakeawayRow[];
+}
+
+// What a <Meeneemkaart> holds now, or null while nothing is stored: the student
+// has not seen its step. Stored rows are matched to the card on the page by their
+// situation, because an author may have changed the card after publishing: a
+// situation that is new gets the author's sentence, one that is gone drops out.
+export function readTakeawayRows(moduleId: string, element: HTMLElement): TakeawayRow[] | null {
+  const stored = readAnswer(moduleId, element.dataset.questionId ?? '');
+  if (stored?.kind !== 'takeaway-card') return null;
+  return authorRowsOf(element).map(({ situation, text }) => ({
+    situation,
+    text: stored.rows.find((row) => row.situation === situation)?.text ?? text,
+  }));
+}
+
+export function writeTakeawayRows(moduleId: string, element: HTMLElement, rows: TakeawayRow[]): void {
+  writeAnswer(moduleId, element.dataset.questionId ?? '', {
+    kind: 'takeaway-card',
+    question: element.dataset.questionText ?? '',
+    rows,
+  });
 }
