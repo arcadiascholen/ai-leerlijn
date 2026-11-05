@@ -11,7 +11,9 @@
 // are hidden and not hydrated yet. The questions that the summary shows
 // (`think-first`, `reflection`, `prompt-fields` and `measure`) also carry
 // `data-question-text`, the question as it is on the page now, and a `measure`
-// carries `data-measure-max`, the top of its score. The summary at the end of a module
+// carries `data-measure-max`, the top of its score. A `choice-chat` carries
+// `data-question-text` too, the title of its step, although only the timeline
+// shows it. The summary at the end of a module
 // (../stappen/Samenvatting.tsx) walks those elements in document order, which
 // is the order of the module, and reads each answer with `readAnswer`. It
 // takes the question from the page, not from storage: the stored question
@@ -23,7 +25,7 @@
 
 import { readStored, writeStored } from '../stappen/storage';
 
-export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields' | 'measure';
+export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields' | 'measure' | 'choice-chat';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -69,13 +71,25 @@ export interface MeasureAnswer {
   confidence: number | null;
 }
 
+// <Keuzechat>: per round the messages the student chose, as indices into the
+// messages in the order the author wrote them, in the order they were chosen.
+// `question` is the title of the step the conversation is in, as the student
+// saw it. This only checks the shape; whether the indices still fit the rounds
+// on the page is for the component (Keuzechat.tsx).
+export interface ChoiceChatAnswer {
+  kind: 'choice-chat';
+  question: string;
+  chosen: number[][];
+}
+
 // What a component writes. A new kind of question goes here.
 export type AnswerContent =
   | MultipleChoiceAnswer
   | ThinkFirstAnswer
   | ReflectionAnswer
   | PromptFieldsAnswer
-  | MeasureAnswer;
+  | MeasureAnswer
+  | ChoiceChatAnswer;
 
 // When the student first saved an answer to the question, and when last, as
 // ISO 8601 (`toISOString`). Missing on an answer stored before the site kept
@@ -133,6 +147,11 @@ function isStoredAnswer(value: unknown): value is AnswerContent & Record<string,
         (value.max as number) >= 1 &&
         isChoiceInRange(value.score, 0, value.max as number) &&
         isChoiceInRange(value.confidence, 1, CONFIDENCE_MAX)
+      );
+    case 'choice-chat':
+      return (
+        Array.isArray(value.chosen) &&
+        value.chosen.every((round) => Array.isArray(round) && round.every((index) => Number.isInteger(index)))
       );
     default:
       return false;

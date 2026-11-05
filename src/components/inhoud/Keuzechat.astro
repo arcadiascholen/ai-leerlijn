@@ -1,0 +1,37 @@
+---
+// A conversation in which the student chooses the next message
+// (docs/BRIEFING.md § 12, "Prompts en gesprekken"):
+//
+//   <Keuzechat id="bijsturen">
+//   <Jij>Leg breuken vereenvoudigen uit.</Jij>
+//   <AI>Je deelt teller en noemer door hun grootste gemene deler …</AI>
+//
+//   <Ronde vraag="Dit is te moeilijk. Wat typ je nu?">
+//     <Bericht goed reactie="…" feedback="…">Leg het eenvoudiger uit.</Bericht>
+//     <Bericht reactie="…" feedback="…">Geef me gewoon het antwoord.</Bericht>
+//   </Ronde>
+//   </Keuzechat>
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. The children are read back into data here and handed to the React
+// island as props, with the client directive, so authors write neither. The
+// title of the step, which the answer stores as its question, comes from the
+// module route: a component cannot read it from its step.
+import KeuzechatIsland from './Keuzechat.tsx';
+import { decodeChoiceChat } from './authoring';
+import { checkQuestionId } from '../vragen/authoring';
+
+interface Props {
+  id: string;
+}
+
+const id = checkQuestionId('Keuzechat', Astro.props.id, Astro.locals);
+const steps = (Astro.locals as { choiceChatSteps?: Readonly<Record<string, string>> }).choiceChatSteps;
+const title = steps !== undefined && Object.hasOwn(steps, id) ? steps[id] : undefined;
+if (title === undefined) {
+  throw new Error(`<Keuzechat id="${id}"> only works in a <Stap> of a module (src/content/modules/).`);
+}
+const { turns, rounds } = decodeChoiceChat(id, Astro.slots.has('default') ? await Astro.slots.render('default') : '');
+---
+
+<KeuzechatIsland id={id} question={title} turns={turns} rounds={rounds} client:visible />

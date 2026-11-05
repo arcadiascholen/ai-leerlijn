@@ -1,0 +1,25 @@
+---
+// One round of a <Keuzechat> (docs/BRIEFING.md § 12, "Prompts en gesprekken"):
+// the question, and the messages the student chooses from.
+//
+//   <Ronde vraag="Dit is te moeilijk. Wat typ je nu?">
+//     <Bericht goed reactie="…" feedback="…">Leg het eenvoudiger uit.</Bericht>
+//     <Bericht reactie="…" feedback="…">Geef me gewoon het antwoord.</Bericht>
+//   </Ronde>
+//
+// <Keuzechat> renders its children to HTML and reads the rounds back from the
+// JSON below; nothing of this reaches the page itself. The module route fails
+// the build for a <Ronde> outside a <Keuzechat>.
+import { checkText } from '../vragen/authoring';
+import { encodeRound } from './authoring';
+
+interface Props {
+  vraag: string;
+}
+
+const vraag = checkText('Ronde', 'vraag', Astro.props.vraag);
+const html = Astro.slots.has('default') ? await Astro.slots.render('default') : '';
+const data = encodeRound(vraag, html);
+---
+
+<script type="application/json" data-ronde is:inline set:html={data} />

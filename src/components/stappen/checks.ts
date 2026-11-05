@@ -36,6 +36,9 @@ export interface ModuleOutline {
   // the title of the step it is in, which the prompt names while the answer
   // is empty (Prompt.astro).
   readonly sourceSteps: Readonly<Record<string, string>>;
+  // Per <Keuzechat>: its `id` → the title of the step it is in, which its
+  // answer stores as the question (Keuzechat.astro).
+  readonly choiceChatSteps: Readonly<Record<string, string>>;
 }
 
 const EXAMPLE_OPTIONS = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
@@ -464,20 +467,68 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   }
 
   // Conversations (BRIEFING § 12, "Prompts en gesprekken"): a turn only
-  // means something inside a <Chat>. <Chat> checks what is inside it from
-  // its rendered children; a turn outside every <Chat> it cannot see, and
+  // means something inside a <Chat> or a <Keuzechat>. They check what is inside
+  // them from their rendered children; a turn outside them they cannot see, and
   // that turn would silently disappear from the page.
-  const chats = spansOf(id, body, 'Chat');
+  const choiceChats = spansOf(id, body, 'Keuzechat');
+  const rounds = spansOf(id, body, 'Ronde');
+  const chats = [...spansOf(id, body, 'Chat'), ...choiceChats];
+  const isIn = (spans: readonly (readonly [number, number])[], tag: Tag): boolean =>
+    spans.some(([start, end]) => tag.index > start && tag.index < end);
   for (const component of ['Jij', 'AI']) {
     for (const tag of tagsOf(id, body, component)) {
-      if (chats.some(([start, end]) => tag.index > start && tag.index < end)) continue;
+      if (isIn(chats, tag)) continue;
       const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
       const where = step === undefined ? '' : ` in <Stap titel="${textOf(step, 'titel') ?? '…'}">`;
       throw new Error(
-        `Module "${id}": <${component}>${where} is a turn of a conversation and only works inside a <Chat>, ` +
-          'such as <Chat><Jij>Leg fotosynthese uit.</Jij><AI>Fotosynthese is …</AI></Chat>.',
+        `Module "${id}": <${component}>${where} is a turn of a conversation and only works inside a <Chat> or a ` +
+          '<Keuzechat>, such as <Chat><Jij>Leg fotosynthese uit.</Jij><AI>Fotosynthese is …</AI></Chat>.',
       );
     }
+  }
+
+  // A conversation in which the student chooses the next message (BRIEFING
+  // § 12, "Prompts en gesprekken"). A <Ronde> or <Bericht> in the wrong place
+  // would silently disappear from the page, as a turn would. The answer stores
+  // the title of the step as its question, and a component cannot read that
+  // title, so the build reads it here.
+  const whereIs = (tag: Tag): string => {
+    const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
+    return step === undefined ? '' : ` in <Stap titel="${textOf(step, 'titel') ?? '…'}">`;
+  };
+  for (const tag of tagsOf(id, body, 'Ronde')) {
+    if (isIn(choiceChats, tag)) continue;
+    throw new Error(
+      `Module "${id}": <Ronde>${whereIs(tag)} is a round of a conversation and only works inside a <Keuzechat>, ` +
+        'such as <Keuzechat id="bijsturen"><Jij>…</Jij><AI>…</AI><Ronde vraag="Wat typ je nu?">…</Ronde></Keuzechat>.',
+    );
+  }
+  for (const tag of tagsOf(id, body, 'Bericht')) {
+    if (isIn(rounds, tag) && isIn(choiceChats, tag)) continue;
+    throw new Error(
+      `Module "${id}": <Bericht>${whereIs(tag)} is a message to choose and only works inside a <Ronde> of a ` +
+        '<Keuzechat>, such as <Ronde vraag="Wat typ je nu?"><Bericht goed reactie="…" feedback="…">…</Bericht>…</Ronde>.',
+    );
+  }
+  const choiceChatSteps: Record<string, string> = {};
+  for (const tag of tagsOf(id, body, 'Keuzechat')) {
+    const step = steps.filter((candidate) => candidate.index < tag.index).at(-1);
+    const title = step === undefined ? undefined : textOf(step, 'titel');
+    const chatId = textOf(tag, 'id');
+    if (chatId === undefined) {
+      throw new Error(
+        `Module "${id}": the <Keuzechat>${whereIs(tag)} needs an \`id\` as text, such as <Keuzechat id="bijsturen">. ` +
+          'What the student chooses is stored under it: lowercase letters, digits and hyphens, unique among the ' +
+          'questions of the module.',
+      );
+    }
+    if (title === undefined) {
+      throw new Error(
+        `Module "${id}": <Keuzechat id="${chatId}"> belongs in a <Stap> whose \`titel\` is written as text: the ` +
+          'timeline in the summary shows that title.',
+      );
+    }
+    choiceChatSteps[chatId] = title;
   }
 
   // Prompts with fields (BRIEFING § 12, "Prompts en gesprekken"): what the
@@ -515,7 +566,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   };
   // Every component that stores an answer under an `id`.
   const questionTags = (): { component: string; tag: Tag }[] =>
-    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting'].flatMap((component) =>
+    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat'].flatMap((component) =>
       tagsOf(id, body, component).map((tag) => ({ component, tag })),
     );
 
@@ -615,5 +666,5 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     }
   }
 
-  return { branching, tool, promptSteps, sourceSteps };
+  return { branching, tool, promptSteps, sourceSteps, choiceChatSteps };
 }

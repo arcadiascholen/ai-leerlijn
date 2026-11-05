@@ -1,9 +1,10 @@
 // Build-time plumbing for the content components in this folder
 // (docs/BRIEFING.md § 12, "Prompts en gesprekken"): <Prompt>, with or
-// without fields or a taken-over answer, and <Chat> with its turns <Jij> and
-// <AI>. MDX children and props are not type-checked, so a mistake in a module
-// (an empty prompt, a field without its placeholder, text outside a turn)
-// fails the build with a clear message instead of reaching a student.
+// without fields or a taken-over answer, <Chat> with its turns <Jij> and <AI>,
+// and <Keuzechat> with those turns and its <Ronde> and <Bericht>. MDX children
+// and props are not type-checked, so a mistake in a module (an empty prompt, a
+// field without its placeholder, text outside a turn) fails the build with a
+// clear message instead of reaching a student.
 
 // Every tag in rendered HTML, with its name. Astro escapes `<` and `>` in
 // text and in attribute values, so a `>` always ends a tag.
@@ -358,4 +359,94 @@ export function decodeTurns(html: string): Turn[] {
     );
   }
   return turns;
+}
+
+// One message to choose in a <Ronde> of a <Keuzechat>: its text as HTML, whether
+// it opens the next round, what the AI answers to it, and the feedback on the
+// choice. The answer and the feedback are plain text.
+export interface ChoiceChatMessage {
+  readonly html: string;
+  readonly good: boolean;
+  readonly reply: string;
+  readonly feedback: string;
+}
+
+export interface ChoiceChatRound {
+  readonly question: string;
+  readonly messages: readonly ChoiceChatMessage[];
+}
+
+export interface ChoiceChat {
+  readonly turns: readonly Turn[];
+  readonly rounds: readonly ChoiceChatRound[];
+}
+
+// <Bericht> and <Ronde> render themselves as a JSON script, as the turns do:
+// <Ronde> reads its messages back, and <Keuzechat> its turns and rounds.
+const MESSAGE_PATTERN = /<script\b[^>]*\bdata-bericht\b[^>]*>([^<]*)<\/script>/g;
+const ROUND_PATTERN = /<script\b[^>]*\bdata-ronde\b[^>]*>([^<]*)<\/script>/g;
+
+function encodeData(data: ChoiceChatMessage | ChoiceChatRound): string {
+  return JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+}
+
+export function encodeMessage(message: ChoiceChatMessage): string {
+  return encodeData(message);
+}
+
+const EXAMPLE_ROUND =
+  '<Ronde vraag="Wat typ je nu?"><Bericht goed reactie="…" feedback="…">…</Bericht>' +
+  '<Bericht reactie="…" feedback="…">…</Bericht></Ronde>';
+
+// `html` is what the author wrote between the tags of <Ronde>, rendered.
+export function encodeRound(question: string, html: string): string {
+  const messages = Array.from(html.matchAll(MESSAGE_PATTERN), (match) => JSON.parse(match[1] ?? '') as ChoiceChatMessage);
+  const start = `<Ronde vraag="${question}">`;
+  const rest = html.replace(MESSAGE_PATTERN, '').replace(/<\/?p>/g, '').trim();
+  if (rest.includes('data-beurt')) {
+    throw new Error(`${start} may only contain <Bericht> elements, but it also holds a <Jij> or <AI>. Turns go before the first <Ronde>.`);
+  }
+  if (rest !== '') {
+    throw new Error(`${start} may only contain <Bericht> elements, but it also holds ${excerpt(rest)}.`);
+  }
+  if (messages.length < 2) {
+    throw new Error(`${start} needs at least two <Bericht> elements, or there is nothing to choose: ${EXAMPLE_ROUND}.`);
+  }
+  if (!messages.some((message) => message.good)) {
+    throw new Error(
+      `${start} has no <Bericht goed>, so the student can never get to the next round. Mark the message that helps ` +
+        `with \`goed\`: ${EXAMPLE_ROUND}.`,
+    );
+  }
+  return encodeData({ question, messages });
+}
+
+// `html` is what the author wrote between the tags of <Keuzechat>, rendered.
+export function decodeChoiceChat(id: string, html: string): ChoiceChat {
+  const start = `<Keuzechat id="${id}">`;
+  const turnMatches = Array.from(html.matchAll(TURN_PATTERN));
+  const roundMatches = Array.from(html.matchAll(ROUND_PATTERN));
+  const rest = html.replace(TURN_PATTERN, '').replace(ROUND_PATTERN, '').replace(/<\/?p>/g, '').trim();
+  if (rest !== '') {
+    throw new Error(
+      `${start} may only contain <Jij> and <AI> turns and <Ronde> rounds, but it also holds ${excerpt(rest)}.`,
+    );
+  }
+  const firstRound = roundMatches[0];
+  if (firstRound === undefined) {
+    throw new Error(`${start} has no <Ronde>: the student needs something to choose. Add ${EXAMPLE_ROUND}.`);
+  }
+  if (turnMatches.length === 0) {
+    throw new Error(`${start} has no start of the conversation: write <Jij>…</Jij> and <AI>…</AI> before the first <Ronde>.`);
+  }
+  if (turnMatches.some((match) => match.index > firstRound.index)) {
+    throw new Error(
+      `${start} has a <Jij> or <AI> after a <Ronde>. The turns are the start of the conversation and go before the ` +
+        'first <Ronde>; the conversation grows from there with what the student chooses.',
+    );
+  }
+  return {
+    turns: turnMatches.map((match) => JSON.parse(match[1] ?? '') as Turn),
+    rounds: roundMatches.map((match) => JSON.parse(match[1] ?? '') as ChoiceChatRound),
+  };
 }
