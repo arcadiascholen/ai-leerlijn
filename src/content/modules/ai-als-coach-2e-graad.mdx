@@ -59,7 +59,7 @@ Je leerkracht ziet dit straks in je eindformulier.
 <Stap titel="Kies je route">
 Daarna zie je alleen de stappen die bij jouw route horen.
 
-<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren' }} />
+<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren', oefenen: 'Oefeningen of een taak' }} />
 </Stap>
 
 <Stap titel="Kies je tool">
@@ -262,6 +262,114 @@ Beantwoord de vragen zonder in je leerstof te kijken, en kom dan hier terug.
 Een vlotte uitleg voelt als begrijpen. Je score zegt of dat ook zo is.
 
 <Meting id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="quiz-start" />
+</Stap>
+
+{/* Route: oefeningen of een taak. */}
+
+<Stap titel="Start je sessie" tak="oefenen">
+Ga terug naar **chat 2**, en werk daar verder tot het einde. Kies één oefening of
+taak die je moeilijk vindt. Typ ze over, of laad een foto op. Kom terug als de AI
+geantwoord heeft.
+
+<Prompt>
+Dit is de oefening waar ik op werk: [typ de oefening hier, of schrijf: zie de bijlage]. Help me ze zelf op te lossen. Geef me de oplossing van deze oefening niet.
+</Prompt>
+
+**Je eigen oplossing laten nakijken is leren.** Wat je indient, schrijf je zelf.
+
+<Tool naam="chatgpt">
+Let op je 3 bestanden per dag, en reken erop dat elke foto meetelt. Typ de
+oefening anders over.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit: je vindt deze chat later niet meer terug. Houd het
+tabblad open.
+</Tool>
+<Tool naam="notebook">
+Typ de oefening in het gesprek, of voeg de foto toe als extra **bron**.
+</Tool>
+<Tool naam="copilot">
+Hier start je toch een **nieuwe chat**. Laad de foto op met **+**, en zet vóór de
+prompt: `Ik zit in het [jaar en richting].`
+</Tool>
+</Stap>
+
+<Stap titel="Eerst jij: je oplossing" tak="oefenen">
+<Prompt id="oefen-oplossing" velden={{ 'mijn oplossing': 'Mijn oplossing, stap per stap' }}>
+Dit is mijn oplossing: [mijn oplossing] Waar gaat het fout, en waarom? Zeg alleen waar de fout zit. Geef me niet de juiste uitkomst, en schrijf geen verbeterde versie.
+</Prompt>
+
+**Reken zelf na voor je iets aanpast:** de AI vindt soms een fout die er niet is.
+Kom daarna hier terug.
+</Stap>
+
+<Stap titel="Ik zit vast" tak="oefenen">
+Geraak je niet verder? Vraag één hint. Probeer het daarna eerst zelf, en vraag dan
+pas de volgende.
+
+<Prompt>
+Ik zit vast bij [waar je vastzit]. Geef me één hint: geen oplossing, en geen tussenstap die het antwoord verklapt. Wacht dan tot ik het zelf geprobeerd heb.
+</Prompt>
+
+Lukt het, of zit je niet vast? Kom dan hier terug, en ga verder.
+</Stap>
+
+<Stap titel="Ik wil meer oefenen" tak="oefenen">
+Nu test je of je het ook kunt zonder hulp.
+
+<Prompt>
+Maak drie nieuwe oefeningen zoals deze, van makkelijk naar moeilijk. Geef de oplossingen pas als ik erom vraag.
+</Prompt>
+
+Los ze zelf op. Vraag dan de oplossingen en **reken na**: een AI rekent soms fout,
+ook als hij heel zeker klinkt. Kom daarna hier terug.
+</Stap>
+
+<Stap titel="Hoeveel lukte er?" tak="oefenen">
+Op het einde test je jezelf nog eens.
+
+<Meting id="oefen-start" max={3} vraag="Hoeveel van de drie had je juist?" />
+</Stap>
+
+<Stap titel="Nog eens" tak="oefenen">
+Oefen wat moeilijk was.
+
+<Prompt>
+Maak drie nieuwe oefeningen over wat ik net fout deed, op hetzelfde niveau. Geef de oplossingen pas als ik erom vraag.
+</Prompt>
+
+Los ze zelf op, reken na, en kom dan hier terug.
+</Stap>
+
+<Stap titel="Hoeveel lukte er nu?" tak="oefenen">
+Een vlotte uitleg voelt als begrijpen. Je score zegt of dat ook zo is.
+
+<Meting id="oefen-einde" max={3} vraag="Hoeveel van de drie had je nu juist?" vergelijk="oefen-start" />
+</Stap>
+
+<Stap titel="Een vreemde taal?" tak="oefenen">
+Heb je een spreektaak in een vreemde taal? Oefen dan het gesprek zelf. Geen
+spreektaak? Klik door naar de volgende stap.
+
+<Prompt>
+We voeren een gesprek in het [taal] over [onderwerp], op mijn niveau: [jaar en richting]. Stel me één vraag per keer, in het [taal]. Verbeter me nog niet. Geef me na tien vragen een lijst van mijn fouten, met de juiste vorm.
+</Prompt>
+
+De AI verbetert pas achteraf: zo blijf je praten. Na de lijst kom je hier terug.
+
+<Tool naam="chatgpt">
+Hardop antwoorden? Klik op het **spraakpictogram**. Gratis is dat beperkt.
+</Tool>
+<Tool naam="gemini">
+Gemini Live werkt alleen in de app op een gsm of tablet. Op je laptop oefen je met
+tekst.
+</Tool>
+<Tool naam="notebook">
+In Gemini Notebook oefen je met tekst.
+</Tool>
+<Tool naam="copilot">
+Copilot kan je antwoord **dicteren** en zijn vraag **voorlezen**, beurt per beurt.
+</Tool>
 </Stap>
 
 {/* End: shared. */}
