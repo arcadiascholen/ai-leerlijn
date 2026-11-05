@@ -1,6 +1,14 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { appear, appearOnMount } from '../../lib/motion';
-import { CONFIDENCE_MAX, isTime, readAnswer, readMeasure, type StoredAnswer } from '../vragen/answers';
+import {
+  authorRowsOf,
+  CONFIDENCE_MAX,
+  isTime,
+  readAnswer,
+  readMeasure,
+  readTakeawayRows,
+  type StoredAnswer,
+} from '../vragen/answers';
 import { NO_FLASHCARDS, scoreOf } from '../vragen/flashcards';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import {
@@ -38,7 +46,9 @@ import styles from './Samenvatting.module.css';
 // is. A <Meting> goes the same way, with a line for the score and one for the
 // confidence: filled in when both are chosen. A deck of <Flashcards> too, with the
 // number of cards, the score and the hardest cards, not the deck itself: filled
-// in as soon as it holds a card.
+// in as soon as it holds a card. A <Meeneemkaart> too, with a line per row: it
+// stores itself when its step is shown, so it is filled in for whoever saw that
+// step, unless they emptied every row. A student who empties one row keeps a card.
 //
 // The choices (<Keuze>) come first, one line each. In a module with
 // branches only the steps of the student's route count (routeOf in
@@ -57,7 +67,7 @@ import styles from './Samenvatting.module.css';
 
 // Only what the student wrote: multiple-choice answers and the messages chosen
 // in a <Keuzechat> are left out. The timeline takes every question.
-const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure', 'flashcards'];
+const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure', 'flashcards', 'takeaway-card'];
 
 // The last line of the timeline on paper; the PDF has MADE_LABEL there.
 const PRINTED_LABEL = 'Afgedrukt';
@@ -83,6 +93,8 @@ interface Choice {
 type Item = PdfItem & {
   readonly id: string;
   readonly step: number | null;
+  // Filled in as soon as one field is, instead of all of them.
+  readonly anyField?: boolean;
 };
 
 // idle: nothing saved yet. downloaded: the browser got the PDF. print: the
@@ -147,9 +159,19 @@ function flashcardFields(stored: StoredAnswer | null): PdfField[] {
     : [cards, { label: 'Stand', value: `nog bezig, ${score.known} van ${score.total} kaarten op Wist ik` }, hardest];
 }
 
+// A <Meeneemkaart> as one field per row: the sentence as it stands, or empty on
+// all rows while nothing is stored. So a student who did not see the step does not
+// get the author's sentences as their own.
+function takeawayFields(element: HTMLElement, moduleId: string): PdfField[] {
+  const rows = readTakeawayRows(moduleId, element);
+  if (rows === null) return authorRowsOf(element).map(({ situation }) => ({ label: situation, value: '' }));
+  return rows.map(({ situation, text }) => ({ label: situation, value: normalise(text) }));
+}
+
 // A prompt with fields is filled in when every field is, and so is a <Meting>.
 function isFilled(item: Item): boolean {
   if (item.kind === 'answer') return item.answer !== '';
+  if (item.anyField === true) return item.fields.some((field) => field.value !== '');
   return item.fields.length > 0 && item.fields.every((field) => field.value !== '');
 }
 
@@ -217,6 +239,8 @@ function collect(root: HTMLElement, moduleId: string): Collected {
       items.push({ kind: 'fields', id, question, fields: measureFields(element, moduleId), step });
     } else if (kind === 'flashcards') {
       items.push({ kind: 'fields', id, question, fields: flashcardFields(stored), step });
+    } else if (kind === 'takeaway-card') {
+      items.push({ kind: 'fields', id, question, fields: takeawayFields(element, moduleId), step, anyField: true });
     } else if (kind !== undefined && KINDS.includes(kind)) {
       items.push({ kind: 'answer', id, question, answer: answerOf(stored, kind), step });
     }

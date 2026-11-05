@@ -311,7 +311,7 @@ het, tenzij de auteur een andere opbouw voorziet.
   `<Meting>` met één regel tekst, ook met de vergelijking; een `<Keuzechat>`
   met berichten van hoogstens ± 60 tekens en feedback van hoogstens ± 240
   tekens; `<Flashcards>` met één regel tekst en een vraag van hoogstens twee
-  regels. Een
+  regels; een `<Meeneemkaart>` met vijf rijen, zonder tekst erboven. Een
   prompt die de leerling laat antwoorden en een reflectie op dat antwoord
   staan op twee stappen.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
@@ -673,8 +673,8 @@ Tekst, een beeld of een vraagcomponent.
   fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*), in
   een `<Prompt>`, `<Chat>` of `<Keuzechat>` (zie *Prompts en gesprekken*), in een `<Hulp>`
-  (zie *Hulp in een stap*) of in een `<Meting>` of `<Flashcards>` (zie
-  *Vraagtypes*).
+  (zie *Hulp in een stap*) of in een `<Meting>`, `<Flashcards>` of
+  `<Meeneemkaart>` (zie *Vraagtypes*).
 
 ### Vraagtypes
 
@@ -900,6 +900,78 @@ tekst is. `<Flashcards>` zelf weigert een ontbrekende, ongeldige of dubbele `id`
 lege `vraag`. Ze vallen pas als de pagina gebouwd wordt: test ze in een module met
 `status: beschikbaar`.
 
+**Een kaart om mee te nemen**
+
+```mdx
+<Stap titel="Jouw kaart: als je vastloopt">
+<Meeneemkaart id="mijn-kaart" vraag="Mijn kaart: als ik vastloop">
+  <Rij situatie="Ik snap het niet">Leg [begrip] eenvoudiger uit, met een voorbeeld uit het dagelijks leven.</Rij>
+  <Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>
+  <Rij situatie="Ik kom fout uit">Dit is mijn oplossing: […] Waar gaat het fout, en waarom?</Rij>
+  <Rij situatie="Ik wil meer oefenen">Maak drie nieuwe oefeningen. Geef de oplossingen pas als ik erom vraag.</Rij>
+  <Rij situatie="Ik moet het onthouden">Overhoor me over [onderwerp], één vraag per keer.</Rij>
+</Meeneemkaart>
+</Stap>
+```
+
+De leerling neemt het belangrijkste van de module mee: zinnen die meteen bruikbaar zijn
+als die vastloopt. Blanco een prompt schrijven is voor de tweede graad te veel gevraagd,
+en een `<Prompt>` met `velden` kan geen vooraf ingevulde velden tonen. De kaart groeit
+niet tijdens de module: het is één slotstap.
+
+- `vraag` is gewone tekst. De tekst tussen de tags van een `<Rij>` is de zin waarmee de
+  leerling begint, in gewone tekst: hij komt in een tekstveld. `[begrip]` en `[…]` blijven
+  staan zoals ze er staan, zonder eigen opmaak, ook in de pdf en op het klembord. Zoals
+  overal in Markdown wordt `...` een `…`, en worden rechte aanhalingstekens gekruld.
+- **Vorm.** Per rij links de situatie, een echt `<label>` in `brand-text` (groen is de
+  leerling), en rechts een tekstveld in de stijl `small`, op `surface-sunken`, samen
+  52rem breed. Een veld is één regel die meegroeit tot drie regels en daarna scrolt, zoals
+  bij een `<Prompt>` met `velden`. Enter maakt een nieuwe regel, zoals in elk tekstveld;
+  ze blijft staan op het klembord en in de pdf. De velden hebben `autocomplete="off"`,
+  zodat de browser na *Opnieuw beginnen* geen oude tekst terugzet. Een schermlezer leest de
+  situatie als naam van het veld en `vraag` als naam van de groep. De pijltjestoetsen
+  wisselen niet van stap in een veld.
+- **Bewaren.** De kaart bewaart zichzelf, met de zinnen van de auteur, zodra haar stap
+  getoond wordt. Daarna bewaart elke toets haar rij. `firstAt` is dus het moment waarop de
+  stap getoond werd. Tot het script van de speler gelopen heeft, staan alle stappen op het
+  scherm: het script in `Meeneemkaart.astro` begint pas te kijken na `DOMContentLoaded`,
+  zoals de confetti. Een stap buiten de route van de leerling wordt nooit getoond, en
+  bewaart dus niets.
+- **Vóór de hydratatie.** React zet bij het hydrateren de tekst van de server terug in een
+  vooraf ingevuld veld. Daarom bewaart dat script, en niet de island, wat de leerling typt:
+  alleen de rij waarin getypt wordt, want de andere velden tonen dan nog de zinnen van de
+  auteur. De island leest het daarna terug.
+- **Kopiëren.** *Kopieer mijn kaart* zet op het klembord: `vraag`, een lege regel, en dan
+  per rij `situatie: zin`. Een lege rij valt weg. Daarna staat naast de knop ✓ *Gekopieerd*
+  (`role="status"`), vier seconden, of tot de leerling verder typt. **Als het kopiëren
+  mislukt**, ligt de kaart als één geselecteerde tekst over de rijen, met de vraag om
+  Ctrl+C te gebruiken: losse tekstvelden kan je niet samen selecteren. Ctrl+C kopieert de
+  hele kaart en geeft dezelfde bevestiging. Wie weggaat met Tab, klikt of Escape drukt,
+  krijgt de rijen terug. De terugval neemt geen plaats in.
+- **Een kaart die veranderde na publicatie.** Bewaarde rijen worden op hun situatie aan
+  de kaart gekoppeld. Een nieuwe situatie krijgt de zin van de auteur, een verdwenen
+  situatie valt weg, en een hernoemde situatie telt als verdwenen en nieuw. De volgende
+  toets bewaart de rijen van nu. Een waarde die geen geldig antwoord is, telt als niet
+  bewaard.
+- Zonder JavaScript staan de situaties met de zinnen van de auteur als gewone tekst, zonder
+  velden en zonder knop.
+
+**Hoogte op 1366 × 640** (gemeten in `voorbeeld`, `scrollHeight` van de stap, van de
+390 px). Een rij van één regel is 32 px, van twee regels 54 px, van drie 76 px. De knop staat
+onderaan. Vers, met vijf rijen van één regel: **322 px**. Met twee rijen van twee regels:
+**366 px**. Met drie rijen van twee regels: 388 px, en daar houdt het op. Een veld neemt
+± 90 tekens per regel. Twee rijen van drie regels zijn 410 px: dan scrolt de kaart, als
+vangnet, en met alle vijf de rijen op drie regels is dat 542 px. Met één regel tekst boven
+de kaart: 364 px, dus ruimte voor één rij van twee regels.
+
+**Buildchecks**, elk met een duidelijke melding. `<Meeneemkaart>` weigert een ontbrekende,
+ongeldige of dubbele `id`, een lege `vraag`, geen enkele `<Rij>`, andere inhoud dan `<Rij>`,
+en twee rijen met dezelfde `situatie`. `<Rij>` weigert een ontbrekende of lege `situatie`,
+geen tekst tussen de tags, en tekst waar Markdown opmaak van maakte (`**`, `2*3*4`, een
+link): die zou in een tekstveld stil haar sterretjes of adres verliezen. Een `<Rij>` buiten
+een `<Meeneemkaart>` weigert `checks.ts`. Ze vallen pas als de pagina gebouwd wordt: test ze
+in een module met `status: beschikbaar`.
+
 ### Antwoorden bewaren
 
 Dit is de afspraak waarop de samenvatting aan het einde van een module
@@ -948,6 +1020,12 @@ steunt.
   volgen uit `text`. `readAnswer` weigert een andere vorm. Of een ronde nog bij de kaarten
   past, kijkt `viewOf` in `flashcards.ts` na: wat niet past, telt als niet bewaard, en
   crasht niet.
+- `<Meeneemkaart>` bewaart
+  `{ "kind": "takeaway-card", "question": "…", "rows": [{ "situation": "Ik zit vast", "text": "…" }] }`,
+  zodra haar stap getoond wordt: per rij de situatie en de zin zoals ze nu staat, die van
+  de auteur of die van de leerling. `""` is een rij die de leerling leegmaakte.
+  `readAnswer` weigert een andere vorm. Of de rijen nog bij de kaart passen, regelt
+  `readTakeawayRows` in `answers.ts` (zie *Vraagtypes*).
 - Elk antwoord, van elk `kind`, heeft ook twee tijden:
   `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
   `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
@@ -964,7 +1042,7 @@ steunt.
   `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
   `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`,
-  `prompt-fields`, `measure`, `choice-chat` of `flashcards`) en
+  `prompt-fields`, `measure`, `choice-chat`, `flashcards` of `takeaway-card`) en
   `data-question-id="<id>"`. Een
   vraag die in de samenvatting komt, draagt ook `data-question-text` met de vraag
   zoals ze nu in de module staat; een `choice-chat` draagt daar de titel van haar
@@ -972,7 +1050,8 @@ steunt.
   met de velden, en draagt het ook `data-prompt-fields`: per veld de naam
   en het label, in de volgorde van `velden`, als JSON
   (`[["begrip", "Begrip"], …]`). Een meting draagt ook `data-measure-max`, de
-  hoogste score. Dat geldt ook voor vragen in verborgen stappen die
+  hoogste score, en een meeneemkaart `data-takeaway-rows`, de rijen zoals de auteur
+  ze schreef, als JSON. Dat geldt ook voor vragen in verborgen stappen die
   nog niet gehydrateerd zijn. De samenvatting overloopt die elementen in de
   volgorde van het document, dus van de module, en leest per `id` het
   antwoord met `readAnswer`. Ze heeft de vraag-islands zelf niet nodig.
@@ -1603,7 +1682,7 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
   `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
 - Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`,
-  `<Prompt>` met `velden`, `<Meting>` en `<Flashcards>` mee. **Meerkeuze en `<Keuzechat>` komen er
+  `<Prompt>` met `velden`, `<Meting>`, `<Flashcards>` en `<Meeneemkaart>` mee. **Meerkeuze en `<Keuzechat>` komen er
   niet in**: alleen wat de leerling zelf schreef of over zichzelf invulde. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
   *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
@@ -1645,6 +1724,15 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   geoefend*. Een
   moeilijkste kaart staat met haar voorkant, op een eigen regel. In de pdf en op papier
   is het een blok `fields`, en in de tijdlijn staat de titel van haar stap.
+- **Een meeneemkaart** is één vraag, met `vraag` als vraag en eronder één regel per rij:
+  *Ik zit vast: Geef me één hint, niet de oplossing.*, ook als de leerling de zin niet
+  aanpaste, of *Ik zit vast: (niet ingevuld)* voor een rij die de leerling leegmaakte. Ze
+  bewaart zichzelf als haar stap getoond wordt, en telt dus als ingevuld voor wie de stap
+  zag. Ook met een lege rij: wie een rij schrapt, heeft nog een kaart. Wie de stap niet zag
+  of alle rijen leegmaakte, ziet ze onder *Nog leeg*, met *Ga naar stap n*; niet gezien
+  staat in de pdf elke rij op *(niet ingevuld)*, nooit de zinnen van de auteur, en is er
+  geen regel in de tijdlijn. In de pdf en op papier is ze een blok `fields`, en in de
+  tijdlijn staat de titel van haar stap, met het moment waarop die getoond werd.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
@@ -1697,7 +1785,7 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   terug; een script herkent de regel aan de vorm van de tijd vooraan.
 - `pdf.ts` krijgt gewone gegevens: de module, de keuzes, per vraag een
   blok met een `kind` (`answer`, of `fields` voor een prompt met velden, een
-  meting en een stapel kaarten) en
+  meting, een stapel kaarten en een meeneemkaart) en
   de momenten van de tijdlijn. Een nieuw soort blok komt daar bij.
 - **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
   er gaat geen lettertypebestand mee, maar het kent alleen de tekens van

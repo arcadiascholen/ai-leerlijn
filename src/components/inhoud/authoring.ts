@@ -30,7 +30,7 @@ const NAMED_REFERENCES: Readonly<Record<string, string>> = {
   nbsp: '\u00a0',
 };
 
-function decodeReferences(text: string): string {
+export function decodeReferences(text: string, component = 'Prompt'): string {
   return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (reference, name: string) => {
     if (name.startsWith('#')) {
       const hex = name.charAt(1) === 'x' || name.charAt(1) === 'X';
@@ -38,8 +38,8 @@ function decodeReferences(text: string): string {
     }
     const char = NAMED_REFERENCES[name];
     if (char === undefined) {
-      // Better a failed build than a prompt with "&eacute;" on the clipboard.
-      throw new Error(`<Prompt>: cannot turn ${reference} into plain text. Type the character itself.`);
+      // Better a failed build than "&eacute;" on the clipboard.
+      throw new Error(`<${component}>: cannot turn ${reference} into plain text. Type the character itself.`);
     }
     return char;
   });
