@@ -1,14 +1,356 @@
 ---
-title: AI als coach bij het leren
-kort: Je laat AI je helpen leren, zonder dat het alles voorzegt.
+title: AI als leercoach
+kort: Wat doe je als je vastloopt bij het leren? AI helpt je verder.
 graden: [2]
 niveau: 2
+duur: 70
 aiGebruik: zelf
-doelen: [2, 3]
-status: binnenkort
+doelen: [2, 3, 4]
+status: beschikbaar
 volgorde: 20
 ---
 
-{/* Placeholder: listed in the overview, without a page. The steps follow
-    when the content arrives; then set status to beschikbaar. Title, niveau,
-    aiGebruik and doelen are provisional. */}
+{/* Shared start: every student, whatever the route. */}
+
+<Stap titel="Maakt AI je beter of slechter?">
+<DenkEerst id="voorspelling" vraag="Leerlingen oefenden wiskunde: een groep met gewone ChatGPT, een andere zonder AI. Daarna maakten ze allemaal een toets zonder AI. Welke groep deed het beter op die toets, denk je?">
+Bij het **oefenen** deed de groep met ChatGPT het 48 % beter. Maar op de
+**toets** zonder AI scoorde die groep **17 % slechter** dan de groep zonder AI.
+
+Een derde groep kreeg een AI die alleen hints gaf, nooit de oplossing. Die
+groep had op de toets geen nadeel.
+</DenkEerst>
+</Stap>
+
+<Stap titel="Eerst jij, dan AI">
+Met AI krijg je snel het juiste antwoord. Maar dan doet de AI het denkwerk, en
+net dat denkwerk is leren.
+
+Daarom geldt hier één regel: **eerst jij, dan AI.** Je probeert eerst zelf.
+Daarna helpt de AI je verder, met een vraag, een hint of uitleg.
+
+**Je eigen oplossing laten nakijken is leren:** je mag vragen waar het fout
+gaat en waarom. Wat je indient, schrijf je zelf. Een coach gebruik je om je
+voor te bereiden: op de AI-barometer is dat niveau 1 of 2. Tijdens een toets
+gebruik je geen AI, tenzij je leerkracht er een niveau bij vermeldt.
+
+De studie: Bastani e.a., *PNAS*, 2025, met bijna 1000 leerlingen
+([samenvatting](https://knowledge.wharton.upenn.edu/article/without-guardrails-generative-ai-can-harm-education)).
+</Stap>
+
+<Stap titel="Waaraan werk je vandaag?">
+Leg klaar wat je hebt: je cursus, of foto's van je handboek of je notities.
+
+<Hulp label="Niets bij de hand? Gebruik dit startpakket">
+Kopieer dit. In chat 2 straks plak je het achter de prompt.
+
+<Prompt>
+Mijn leerstof: fotosynthese. Planten maken zelf hun voedsel. Ze nemen koolstofdioxide op uit de lucht, via huidmondjes in de bladeren, en water uit de bodem, via de wortels. Het bladgroen vangt zonlicht op. Met die energie maakt de plant glucose, een suiker. Daarbij komt zuurstof vrij. Woordformule: koolstofdioxide + water + lichtenergie → glucose + zuurstof.
+</Prompt>
+</Hulp>
+</Stap>
+
+<Stap titel="Noteer je taak">
+Je leerkracht ziet dit straks in je eindformulier.
+
+<Reflectie id="taak" vraag="Aan welk vak en welke leerstof werk je vandaag? Heb je er een toets over, en wanneer?" />
+</Stap>
+
+<Stap titel="Kies je route">
+Daarna zie je alleen de stappen die bij jouw route horen.
+
+<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren' }} />
+</Stap>
+
+<Stap titel="Kies je tool">
+Twijfel je? Een hele cursus: **Gemini Notebook**. Anders: **ChatGPT** of
+**Gemini**, wat je al gewoon bent. Geen eigen account of geen toestemming van
+je ouders: **Copilot** met je schoolaccount.
+
+**Let op bij ChatGPT:** gratis zijn er 3 bestanden per dag, en chat 2 gebruikt
+er al een. Reken erop dat elke foto meetelt.
+
+<Keuze naam="tool" vraag="Met welke tool werk je vandaag?" opties={{ chatgpt: 'ChatGPT', gemini: 'Gemini', notebook: 'Gemini Notebook', copilot: 'Copilot (schoolaccount)' }} />
+</Stap>
+
+<Stap titel="Zet je tool klaar">
+Open je tool in een **nieuw tabblad**, zodat deze module open blijft. **De AI
+weet niet wanneer je hier verder moet:** je komt zelf terug. Klik nooit een duim
+omhoog of omlaag, en laad niets op met namen of gegevens van anderen.
+
+<Tool naam="chatgpt">
+Open [chatgpt.com](https://chatgpt.com) en meld je aan. Klik op je account →
+**Instellingen** → **Gegevensbeheer** en zet **Het model voor iedereen
+verbeteren** uit. Kies daarna in elke nieuwe chat **Nadenken** bij **+** (kan
+bij jou anders heten, of nog ontbreken).
+</Tool>
+<Tool naam="gemini">
+Open [gemini.google.com](https://gemini.google.com) en meld je aan. Klik op
+**Activiteit**, dan op **Aan** → **Uitzetten**. Je gesprek komt dan niet in je
+geschiedenis: houd dit tabblad open tot het einde. Zegt Gemini dat hij niet
+beschikbaar is voor je account? Dan houden je ouders toezicht met Family Link:
+ga terug en kies een andere tool.
+</Tool>
+<Tool naam="notebook">
+Open [notebook.google.com](https://notebook.google.com) en meld je aan. Gemini
+Notebook gebruikt je bronnen niet om te trainen: je hoeft niets uit te zetten.
+Chat 1 hierna doe je in [Gemini](https://gemini.google.com), met hetzelfde
+account. Daar laad je niets op.
+</Tool>
+<Tool naam="copilot">
+Open [Copilot](https://copilot.cloud.microsoft) en meld je aan met je
+**schoolaccount**. Zie je een **groen schild**, en onder je naam het label
+**Werk**? Dan wordt je gesprek niet gebruikt voor training. Kies rechtsboven
+**Think deeper**, bij elke nieuwe chat opnieuw (kan bij jou anders heten).
+</Tool>
+</Stap>
+
+<Stap titel="Het experiment: chat 1">
+Je stelt twee keer dezelfde vraag over een moeilijk **begrip** uit je leerstof,
+telkens in een **nieuwe chat**. Eerst zonder iets erbij:
+
+<Prompt>
+Leg [begrip] uit.
+</Prompt>
+
+Lees het antwoord, en kom dan hier terug.
+
+<Tool naam="notebook">
+Stel deze vraag in [Gemini](https://gemini.google.com), niet in je notebook.
+</Tool>
+</Stap>
+
+<Stap titel="Het experiment: chat 2">
+Open een **nieuwe chat**. Zet er nu je leerstof bij: laad ze op, of plak of typ
+ze achter de prompt.
+
+<Prompt>
+Ik zit in het [jaar en richting] en leer voor [vak]. Mijn leerstof zit in de bijlage of staat hieronder. Leg [begrip] uit zoals het in mijn leerstof staat, en zeg waar het staat.
+</Prompt>
+
+Lees het antwoord, en kom dan hier terug. **Sluit deze chat niet:** je werkt er
+straks in verder.
+
+<Tool naam="chatgpt">
+Opladen doe je met **+** → **Foto's & bestanden toevoegen**. Laad alleen op wat
+je nodig hebt: een hele cursus leest ChatGPT maar voor een deel.
+</Tool>
+<Tool naam="gemini">
+Opladen doe je met **+**.
+</Tool>
+<Tool naam="notebook">
+Ga terug naar Gemini Notebook, klik op **Nieuwe notebook maken** en voeg je
+leerstof toe als **bron**; plakken kan ook. Stel je vraag in het gesprek.
+</Tool>
+<Tool naam="copilot">
+Opladen doe je met **+**.
+</Tool>
+</Stap>
+
+<Stap titel="Wat maakte het verschil?">
+Ook weinig verschil is een bruikbaar resultaat.
+
+<Reflectie id="contextexperiment" vraag="Welk van je twee antwoorden kun jij het best gebruiken, en waarom?" />
+</Stap>
+
+<Stap titel="Stuur de AI bij">
+<Keuzechat id="bijsturen">
+<Jij>Leg breuken vereenvoudigen uit.</Jij>
+<AI>Je deelt teller en noemer door hun grootste gemene deler. Zo blijft de waarde van de breuk gelijk en worden de getallen kleiner.</AI>
+
+<Ronde vraag="Dit is te moeilijk. Wat typ je nu?">
+  <Bericht goed reactie="Stel: je hebt 4/8 van een pizza. Dat is evenveel als de helft. Deel je 4 en 8 allebei door 4, dan staat er 1/2." feedback="Je zegt wat er misloopt en je vraagt een voorbeeld. Daar kan de AI iets mee.">Leg het eenvoudiger uit, met een voorbeeld.</Bericht>
+  <Bericht reactie="Het antwoord is 1/2." feedback="Nu heb je een antwoord, maar je snapt het nog niet.">Geef me gewoon het antwoord.</Bericht>
+  <Bericht reactie="Wat snap je niet? De teller en de noemer, of de grootste gemene deler?" feedback="De AI weet niet wat er misloopt, en moet het eerst vragen. Zeg het er meteen bij.">Snap ik niet.</Bericht>
+</Ronde>
+
+<Ronde vraag="Je probeert 6/9 zelf, maar je zit vast. Wat typ je?">
+  <Bericht goed reactie="Welk getal past zowel in 6 als in 9?" feedback="Je krijgt een duwtje, en het denkwerk blijft bij jou.">Geef me één hint, niet de oplossing.</Bericht>
+  <Bericht reactie="6/9 is 2/3." feedback="De AI deed het denkwerk. Bij de volgende breuk zit je weer vast.">Los 6/9 voor mij op.</Bericht>
+  <Bericht reactie="Graag gedaan! Laat maar weten als ik nog iets kan doen." feedback="Beleefd, maar je hebt nog niets geprobeerd.">Bedankt, ik snap het nu.</Bericht>
+</Ronde>
+
+<Ronde vraag="De AI legde het uit in drie stappen. Stap 2 snap je niet. Wat typ je?">
+  <Bericht goed reactie="Stap 2: zoek een getal dat in allebei past. 3 past 2 keer in 6 en 3 keer in 9. Daarom wordt 6/9 dan 2/3." feedback="Je zegt precies waar het misloopt. Zo krijg je uitleg over wat je niet snapt.">Stap 2 snap ik niet. Leg alleen die stap uit.</Bericht>
+  <Bericht reactie="Natuurlijk. Je deelt teller en noemer door hun grootste gemene deler. Zo blijft de waarde gelijk." feedback="Je krijgt dezelfde uitleg nog eens. Stap 2 snap je daarna nog altijd niet.">Leg alles opnieuw uit.</Bericht>
+  <Bericht reactie="Graag gedaan!" feedback="Je laat het zo. Bij de volgende breuk loop je weer vast op stap 2.">Oké, bedankt.</Bericht>
+</Ronde>
+</Keuzechat>
+</Stap>
+
+{/* Route: een hoofdstuk studeren. */}
+
+<Stap titel="Start je sessie en je quiz" tak="hoofdstuk">
+Ga terug naar **chat 2**, en werk daar verder tot het einde. Zit je hoofdstuk er
+nog niet in? Laad het nu op, of plak of typ het. Beantwoord de vijf vragen zonder
+in je leerstof te kijken, en kom dan hier terug.
+
+<Prompt>
+Ik wil dit hoofdstuk zelf leren: help me met vragen en hints, en geef me niet meteen de antwoorden. Test me eerst: stel me vijf korte vragen, één per keer. Wacht telkens op mijn antwoord. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+<Tool naam="chatgpt">
+Let op je 3 bestanden per dag, en reken erop dat elke foto meetelt. Zijn het te
+veel foto's? Typ dan de belangrijkste stukken over.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit: je vindt deze chat later niet meer terug. Houd het
+tabblad open.
+</Tool>
+<Tool naam="notebook">
+Klik bij het gesprek op **Gesprek instellen** en kies **Leergids**.
+</Tool>
+<Tool naam="copilot">
+Hier start je toch een **nieuwe chat**, in **Studeren en leren** in de
+linkerkolom. Laad je leerstof opnieuw op met **+**, en zet vóór de prompt:
+`Ik zit in het [jaar en richting].`
+</Tool>
+</Stap>
+
+<Stap titel="Hoe ging de startquiz?" tak="hoofdstuk">
+Op het einde test je jezelf nog eens.
+
+<Meting id="quiz-start" vraag="Hoeveel van de vijf had je juist?" />
+</Stap>
+
+<Stap titel="Ik snap het niet" tak="hoofdstuk">
+<Prompt id="uitleg-begrip" velden={{ begrip: 'Een moeilijk begrip', 'mijn uitleg': 'Mijn uitleg in één zin' }}>
+Mijn uitleg van [begrip]: [mijn uitleg] Klopt mijn uitleg? Zeg wat ontbreekt. Leg [begrip] daarna eenvoudiger uit, met een voorbeeld uit het dagelijks leven.
+</Prompt>
+
+Zeg wat je nog niet snapt. Snap je het, kom dan hier terug.
+</Stap>
+
+<Stap titel="Maak je kaarten" tak="hoofdstuk">
+Laat de AI kaarten maken om te oefenen. Kopieer ze daarna, en kom hier terug:
+op de volgende stap plak je ze.
+
+<Prompt>
+Maak 10 flashcards over [onderwerp], uit mijn leerstof. Eén kaart per regel: vraag | antwoord. Gewone tekst, geen tabel en geen LaTeX. Schrijf formules zo: wortel(x), x^2.
+</Prompt>
+
+<Tool naam="notebook">
+Gebruik de prompt in het gesprek: zo komt je score in je samenvatting. Later kun
+je ook **Flashcards** maken, rechts bij **Studio**, met je hele cursus.
+</Tool>
+</Stap>
+
+<Stap titel="Oefen met je kaarten" tak="hoofdstuk">
+Plak je kaarten. Daarna antwoord je eerst zelf, en draai je dan pas om.
+
+<Flashcards id="kaarten" vraag="Oefen met je eigen kaarten">
+Wat maakt een plant bij fotosynthese? | glucose en zuurstof
+Hoe komt water in de plant? | uit de bodem, via de wortels
+Hoe komt koolstofdioxide in het blad? | via de huidmondjes
+Wat vangt het zonlicht op? | het bladgroen
+Wat komt er vrij bij fotosynthese? | zuurstof
+Wat is de woordformule? | koolstofdioxide + water + lichtenergie → glucose + zuurstof
+</Flashcards>
+</Stap>
+
+<Stap titel="Eindquiz" tak="hoofdstuk">
+Test jezelf opnieuw, zoals bij de start.
+
+<Prompt>
+Stel me opnieuw vijf korte vragen over [onderwerp], andere dan daarnet, één per keer. Wacht telkens op mijn antwoord. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+Beantwoord de vragen zonder in je leerstof te kijken, en kom dan hier terug.
+</Stap>
+
+<Stap titel="Hoe ging de eindquiz?" tak="hoofdstuk">
+Een vlotte uitleg voelt als begrijpen. Je score zegt of dat ook zo is.
+
+<Meting id="quiz-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="quiz-start" />
+</Stap>
+
+{/* End: shared. */}
+
+<Stap titel="Wat ging hier mis? (1)">
+<Chat naast>
+<Jij>Maak een samenvatting van de Franse Revolutie voor mijn toets.</Jij>
+<AI>De Franse Revolutie (1789–1799) was een periode van grote politieke en maatschappelijke veranderingen in Frankrijk …</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-1" vraag="Op de toets kwam iets anders. Wat ging mis?">
+  <Optie juist feedback="De AI weet niet wat in je cursus staat, of hoe je toets eruitziet.">Te weinig context</Optie>
+  <Optie feedback="Een samenvatting vragen mag. Maar de AI weet niet wat jij moet kennen.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Nakijken helpt, maar de fout zit eerder: de AI kent je leerstof niet.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (2)">
+<Chat naast>
+<Jij>Geef me de antwoorden op oefening 1 tot 5.</Jij>
+<AI>Natuurlijk! 1. x = 4 · 2. x = −2 · 3. x = 7 · 4. geen oplossing · 5. x = ½</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-2" vraag="De leerling schrijft alles over. Wat ging mis?">
+  <Optie feedback="Meer context verandert niets: de AI doet nog altijd het werk.">Te weinig context</Optie>
+  <Optie juist feedback="De AI deed het denkwerk. Zo oefen je niets voor de toets.">Zelf niet nagedacht</Optie>
+  <Optie feedback="Eerst had de leerling de oefeningen zelf moeten maken.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Wat ging hier mis? (3)">
+<Chat naast>
+<Jij>Ik loste 3(x − 2) = 12 op en kom x = 6 uit. Klopt dat?</Jij>
+<AI>Bijna! 3(x − 2) = 3x − 2, dus 3x − 2 = 12 en x = 14/3.</AI>
+</Chat>
+
+<Meerkeuze id="valkuil-3" vraag="De leerling neemt x = 14/3 over. Wat ging mis?">
+  <Optie feedback="De vraag was duidelijk. De fout zit in het antwoord.">Te weinig context</Optie>
+  <Optie feedback="De leerling rekende zelf, en nog juist ook.">Zelf niet nagedacht</Optie>
+  <Optie juist feedback="3(x − 2) is 3x − 6, dus x = 6 was juist. De AI rekende fout.">Niet nagekeken</Optie>
+</Meerkeuze>
+</Stap>
+
+<Stap titel="Kijk één bewering na">
+Zoek één feit uit je gesprek op in een **betrouwbare, onafhankelijke bron**. Het
+AI-overzicht bovenaan in Google telt niet: dat is ook AI.
+
+<Reflectie id="bewering" vraag="Welke bewering keek je na, in welke bron, en klopte ze?" />
+</Stap>
+
+<Stap titel="Jouw kaart: als je vastloopt">
+<Confetti />
+
+<Meeneemkaart id="mijn-kaart" vraag="Mijn kaart: als ik vastloop">
+  <Rij situatie="Ik snap het niet">Leg [begrip] eenvoudiger uit, met een voorbeeld uit het dagelijks leven.</Rij>
+  <Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>
+  <Rij situatie="Ik kom fout uit">Dit is mijn oplossing: […] Waar gaat het fout, en waarom?</Rij>
+  <Rij situatie="Ik wil meer oefenen">Maak drie nieuwe oefeningen. Geef de oplossingen pas als ik erom vraag.</Rij>
+  <Rij situatie="Ik moet het onthouden">Overhoor me over [onderwerp], één vraag per keer.</Rij>
+</Meeneemkaart>
+</Stap>
+
+<Stap titel="Waar trek je de grens?">
+Een coach helpt je leren. Maar niet alles laat je beter aan AI over.
+
+<Reflectie id="grens" vraag="Waarvoor zou jij AI niet gebruiken bij je schoolwerk, en waarom?" />
+</Stap>
+
+<Stap titel="Je bewijsstuk">
+<Tool naam="chatgpt">
+Klik op **Delen** → **Link maken** en kopieer de link. Wie de link heeft, ziet
+ook wat je oplaadde. Wil je dat niet, kopieer dan een stuk van je gesprek.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit, dus een link werkt niet. Kopieer een stuk van je
+gesprek.
+</Tool>
+<Tool naam="notebook">
+Delen deelt je hele notebook met je cursus, niet je gesprek. Kopieer daarom een
+stuk van je gesprek.
+</Tool>
+<Tool naam="copilot">
+Klik op **Delen** → **Chat delen** → **Koppeling kopiëren**. De link opent
+alleen voor wie aanmeldt met een account van school, dus ook voor je leerkracht.
+</Tool>
+
+<Reflectie id="bewijs" vraag="Plak hier de link naar je gesprek, of een stuk ervan." />
+</Stap>
+
+<Stap titel="Klaar! Download je samenvatting">
+<Samenvatting />
+</Stap>

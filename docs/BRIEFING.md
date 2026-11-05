@@ -124,7 +124,7 @@ en geen cookies.
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
 | Wat is AI? AI herkennen en begrijpen | 1e en 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; de 2e graad in opbouw in deze repo | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar met de route hoofdstuk, de routes oefeningen of een taak, iets van buiten kennen en presentatie volgen | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
 | AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
@@ -317,6 +317,15 @@ het, tenzij de auteur een andere opbouw voorziet.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
   in hun hoogste toestand (voorbeeldantwoord getoond, alle opties
   aangeklikt): de inhoud van de kaart mag niet scrollen.
+- **Routes in de 2e graad.** `ai-als-coach-2e-graad` volgt dit patroon, in
+  eenvoudigere taal, met wat de 3e graad nog niet heeft. Het contextexperiment
+  heeft twee chats, en de sessie werkt verder in chat 2. De module sluit af met
+  een `<Meeneemkaart>` in plaats van een eigen coachprompt, en `<Keuzechat>`,
+  `<Meting>` en `<Flashcards>` komen in de plaats van vrije reflecties. Wie
+  niets concreets heeft, kopieert een startpakket uit een `<Hulp>`. Een route
+  telt **hoogstens 27 stappen**, gedeeld plus route: het gedeelde deel telt er
+  19, dus een route hoogstens 8. Dat is ongeveer 2,5 minuut per stap voor 70
+  minuten; die schatting is nog niet gemeten bij leerlingen.
 
 ## 7. AI-gebruik en de AI-barometer
 
@@ -396,7 +405,7 @@ datum waarop de bronnen geraadpleegd zijn.
 | | ChatGPT (gratis) | Gemini (gratis) | Gemini Notebook | Copilot (schoolaccount) |
 |---|---|---|---|---|
 | Toegang | 13+, onder 18 toestemming ouders ([voorwaarden][chatgpt-voorwaarden]) | 13+; werkt niet met Family Link-toezicht in de EER ([bron][gemini-toezicht]) | 13+, persoonlijk Google-account dat je zelf beheert, dus wellicht niet met Family Link; `notebook.google.com` ([bron][notebook-toegang]) | als ICT de leeftijdsgroep instelde; groen schild en label *Werk* ([bron][copilot-beheer], [leeftijdsgroep][copilot-faq]) |
-| Cursus opladen | 3 uploads per dag; leest maar een deel van een lange cursus (± 12 pagina's, geen officiële bron) ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
+| Cursus opladen | 3 uploads per dag; of elke foto apart telt, is niet bevestigd in een officiële bron die we konden lezen, dus de modules zeggen *reken erop*; leest maar een deel van een lange cursus (± 12 pagina's, geen officiële bron) ([bron][chatgpt-opladen], [prijzen][chatgpt-prijzen]) | ± 32k tokens context ([bron][gemini-context]) | 50 bronnen, hele cursus, antwoorden met bronvermelding ([bron][notebook-bronnen]) | 50 MB, 20 bestanden per gesprek ([bron][copilot-opladen]) |
 | Leermodus | Leermodus (`@study`), niet in Projecten ([bron][chatgpt-leermodus]) | Begeleid leren ([bron][gemini-leren]) | chatstijl *Leergids*; flashcards en toetsen ([bron][notebook-leren], [chat][notebook-chat]) | agent *Studeren en leren*, met de cursus; in het secundair standaard voorgeselecteerd ([bron][copilot-leren], [gebruik][copilot-leren-gebruik]) |
 | Eigen coach | Project: instructies en 5 bestanden; GPT's verdwijnen op 11 december 2026 ([bron][chatgpt-gpts]) | Gems verdwijnen op persoonlijke accounts in november 2026 ([bron][gemini-gems]) | — | Agent Builder: instructies en 4 publieke URL's ([bron][copilot-agent]), geen bestanden zonder licentie ([bron][copilot-vereisten]); voor leerlingenaccounts niet bevestigd |
 | Denken | *Nadenken*; het label kan verschillen, en gratis op het web wordt het nog uitgerold ([bron][chatgpt-gratis]) | sinds 9 oktober 2026 *Auto*; of je gratis zelf een denkniveau kiest, is niet zeker ([bron][gemini-denken], [modellen][gemini-modellen]) | — | *Think deeper*; op een schoolaccount per chat opnieuw te kiezen (eigen waarneming); vast in een agent ([bron][copilot-overzicht]) |
