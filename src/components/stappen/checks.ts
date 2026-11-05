@@ -8,6 +8,7 @@
 // checks apply as soon as it is switched to `beschikbaar`.
 
 import { ID_PATTERN } from '../vragen/authoring';
+import { MAX_CARDS, parseDeck } from '../vragen/flashcards';
 import { TOOL_CHOICE } from './tools';
 
 // A <Keuze> as read from the MDX source: its `naam` and its options. The
@@ -39,6 +40,9 @@ export interface ModuleOutline {
   // Per <Keuzechat>: its `id` → the title of the step it is in, which its
   // answer stores as the question (Keuzechat.astro).
   readonly choiceChatSteps: Readonly<Record<string, string>>;
+  // Per <Flashcards>: its `id` → the example deck between its tags, as lines of
+  // source; '' without one (Flashcards.astro).
+  readonly flashcardDecks: Readonly<Record<string, string>>;
 }
 
 const EXAMPLE_OPTIONS = "opties={{ toets: 'Een schriftelijke toets', mondeling: 'Een mondeling examen' }}";
@@ -566,7 +570,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   };
   // Every component that stores an answer under an `id`.
   const questionTags = (): { component: string; tag: Tag }[] =>
-    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat'].flatMap((component) =>
+    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat', 'Flashcards'].flatMap((component) =>
       tagsOf(id, body, component).map((tag) => ({ component, tag })),
     );
 
@@ -666,5 +670,47 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     }
   }
 
-  return { branching, tool, promptSteps, sourceSteps, choiceChatSteps };
+  // The example deck of <Flashcards> (BRIEFING § 12, "Vraagtypes") is read from
+  // the source, not from the rendered children: Markdown would turn "2*3 | 3*2"
+  // into emphasis and eat the stars, and a student's pasted list goes through the
+  // same parser as these lines.
+  const flashcardDecks: Record<string, string> = {};
+  for (const tag of tagsOf(id, body, 'Flashcards')) {
+    const deckId = textOf(tag, 'id');
+    if (deckId === undefined) {
+      throw new Error(
+        `Module "${id}": the <Flashcards>${whereIs(tag)} needs an \`id\` as text, such as <Flashcards id="kaarten" vraag="…">. ` +
+          'The deck and the practice are stored under it: lowercase letters, digits and hyphens, unique among the ' +
+          'questions of the module.',
+      );
+    }
+    const closing = /<\/Flashcards\s*>/g;
+    closing.lastIndex = tag.end;
+    const source = tag.selfClosing ? '' : body.slice(tag.end, closing.exec(body)?.index ?? body.length);
+    const example = source
+      .split(/\r\n?|\n/)
+      .map((line) => line.trim())
+      .filter((line) => line !== '')
+      .join('\n');
+    const deck = parseDeck(example);
+    const start = `Module "${id}": the example deck of <Flashcards id="${deckId}">${whereIs(tag)}`;
+    const [unreadable] = deck.unreadable;
+    if (unreadable !== undefined) {
+      throw new Error(
+        `${start} has a line that is not a card: "${unreadable}". Write one card per line, as front | back, ` +
+          'with exactly one | and text on both sides.',
+      );
+    }
+    if (deck.dropped > 0) {
+      throw new Error(`${start} has ${MAX_CARDS + deck.dropped} cards; at most ${MAX_CARDS} count. Remove ${deck.dropped}.`);
+    }
+    if (example !== '' && deck.cards.length === 0) {
+      throw new Error(
+        `${start} has no cards. Write one card per line, as front | back, or leave the tags empty for no example deck.`,
+      );
+    }
+    flashcardDecks[deckId] = example;
+  }
+
+  return { branching, tool, promptSteps, sourceSteps, choiceChatSteps, flashcardDecks };
 }

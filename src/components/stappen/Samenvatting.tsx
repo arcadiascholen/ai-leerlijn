@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { appear, appearOnMount } from '../../lib/motion';
 import { CONFIDENCE_MAX, isTime, readAnswer, readMeasure, type StoredAnswer } from '../vragen/answers';
+import { NO_FLASHCARDS, scoreOf } from '../vragen/flashcards';
 import { chosenOption, onChoice, optionsOf, routeOf } from './choices';
 import {
   choiceLine,
@@ -35,7 +36,9 @@ import styles from './Samenvatting.module.css';
 // A prompt with fields (<Prompt velden={…}>) is one question: the title of
 // its step, with a line per field. It counts as filled in when every field
 // is. A <Meting> goes the same way, with a line for the score and one for the
-// confidence: filled in when both are chosen.
+// confidence: filled in when both are chosen. A deck of <Flashcards> too, with the
+// number of cards, the score and the hardest cards, not the deck itself: filled
+// in as soon as it holds a card.
 //
 // The choices (<Keuze>) come first, one line each. In a module with
 // branches only the steps of the student's route count (routeOf in
@@ -54,7 +57,7 @@ import styles from './Samenvatting.module.css';
 
 // Only what the student wrote: multiple-choice answers and the messages chosen
 // in a <Keuzechat> are left out. The timeline takes every question.
-const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure'];
+const KINDS: readonly string[] = ['think-first', 'reflection', 'prompt-fields', 'measure', 'flashcards'];
 
 // The last line of the timeline on paper; the PDF has MADE_LABEL there.
 const PRINTED_LABEL = 'Afgedrukt';
@@ -122,6 +125,26 @@ function measureFields(element: HTMLElement, moduleId: string): PdfField[] {
     { label: 'Score', value: score === null ? '' : `${score} van ${max}` },
     { label: 'Zekerheid', value: confidence === null ? '' : `${confidence} van ${CONFIDENCE_MAX}` },
   ];
+}
+
+// A deck of <Flashcards> as fields: the score of the last finished round, also
+// while a new round is running. An empty deck has one empty field, so that it
+// counts as not filled in.
+function flashcardFields(stored: StoredAnswer | null): PdfField[] {
+  const score = scoreOf(stored?.kind === 'flashcards' ? stored : NO_FLASHCARDS);
+  const cards = { label: 'Kaarten', value: score.total === 0 ? '' : String(score.total) };
+  if (score.status === 'empty') return [cards];
+  if (score.status === 'new') return [cards, { label: 'Stand', value: 'nog niet geoefend' }];
+  const hardest = {
+    label: 'Moeilijkste kaarten',
+    value:
+      score.hardest.length === 0
+        ? 'geen'
+        : score.hardest.map((card) => `${card.front} (${card.misses} keer nog niet)`).join('\n'),
+  };
+  return score.status === 'done'
+    ? [cards, { label: 'Meteen goed', value: `${score.right} van ${score.total}` }, hardest]
+    : [cards, { label: 'Stand', value: `nog bezig, ${score.known} van ${score.total} kaarten op Wist ik` }, hardest];
 }
 
 // A prompt with fields is filled in when every field is, and so is a <Meting>.
@@ -192,6 +215,8 @@ function collect(root: HTMLElement, moduleId: string): Collected {
       items.push({ kind: 'fields', id, question, fields: fieldsOf(element, stored), step });
     } else if (kind === 'measure') {
       items.push({ kind: 'fields', id, question, fields: measureFields(element, moduleId), step });
+    } else if (kind === 'flashcards') {
+      items.push({ kind: 'fields', id, question, fields: flashcardFields(stored), step });
     } else if (kind !== undefined && KINDS.includes(kind)) {
       items.push({ kind: 'answer', id, question, answer: answerOf(stored, kind), step });
     }

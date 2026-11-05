@@ -310,7 +310,8 @@ het, tenzij de auteur een andere opbouw voorziet.
   woorden, een vraag van één regel en feedback van hoogstens ± 70 tekens; een
   `<Meting>` met één regel tekst, ook met de vergelijking; een `<Keuzechat>`
   met berichten van hoogstens ± 60 tekens en feedback van hoogstens ± 240
-  tekens. Een
+  tekens; `<Flashcards>` met één regel tekst en een vraag van hoogstens twee
+  regels. Een
   prompt die de leerling laat antwoorden en een reflectie op dat antwoord
   staan op twee stappen.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
@@ -658,7 +659,9 @@ Tekst, een beeld of een vraagcomponent.
   `<DenkEerst>`, gaat zo als kinderen naar de island. Moet een component zijn
   kinderen als gegevens lezen, zoals de opties van `<Meerkeuze>`, dan rendert
   het Astro-omhulsel ze met `Astro.slots.render` en leest het ze terug
-  (`src/components/vragen/authoring.ts`).
+  (`src/components/vragen/authoring.ts`). Eén uitzondering: de voorbeeldstapel
+  van `<Flashcards>` leest de build uit de bron (`checks.ts`). Markdown zou van
+  `2*3 | 3*2` cursief maken en de sterretjes opeten.
 - Een vergissing van de auteur laat de build falen met een duidelijke
   melding, in plaats van een kapotte vraag bij de leerling te zetten: een
   ontbrekende of dubbele `id`, een `<Meerkeuze>` zonder juiste optie, een
@@ -670,7 +673,8 @@ Tekst, een beeld of een vraagcomponent.
   fout in een `<Keuze>`, in de takken (zie
   *Keuzes en takken*), in een `<Tool>` (zie *Instructies per tool*), in
   een `<Prompt>`, `<Chat>` of `<Keuzechat>` (zie *Prompts en gesprekken*), in een `<Hulp>`
-  (zie *Hulp in een stap*) of in een `<Meting>` (zie *Vraagtypes*).
+  (zie *Hulp in een stap*) of in een `<Meting>` of `<Flashcards>` (zie
+  *Vraagtypes*).
 
 ### Vraagtypes
 
@@ -799,6 +803,103 @@ lege `vraag`, een `max` die geen geheel getal van 1 of meer is, en tekst tussen 
 tags. Ze vallen pas als de pagina gebouwd wordt: test ze in een module met `status:
 beschikbaar`.
 
+**Oefenen met kaarten**
+
+```mdx
+<Flashcards id="kaarten" vraag="Oefen met je eigen kaarten">
+Wat is de oppervlakte van een cirkel? | pi × r²
+Wat betekent 'nevertheless'? | toch, niettemin
+</Flashcards>
+```
+
+De leerling laat een AI kaarten maken, plakt ze, kijkt ze na en oefent: eerst zelf
+antwoorden, dan omdraaien, dan eerlijk scoren. Zo traint die het ophalen uit het
+geheugen, met elke tool, en dwingt de site af wat geen enkele tool afdwingt: eerst
+jij, dan het antwoord. De prompt staat in de module, in een `<Prompt>`, bijvoorbeeld:
+`Maak 10 flashcards over [onderwerp]. Eén kaart per regel: vraag | antwoord. Gewone
+tekst, geen tabel en geen LaTeX. Schrijf formules zo: wortel(x), x^2.`
+
+- `vraag` is gewone tekst. De regels tussen de tags zijn optioneel: een
+  voorbeeldstapel, voor wie geen AI-toegang heeft. Zonder voorbeeldstapel mag de tag
+  zichzelf sluiten (`/>`). De voorbeeldstapel gaat door MDX: `<` en `{` mogen er niet
+  in staan.
+- **Plakken.** Een tekstveld, met ernaast het aantal kaarten, de zin *Kijk je kaarten
+  na in je bron voor je begint.*, en de regels die niet gelezen konden worden. Enter
+  maakt er gewoon een nieuwe regel. Is het veld leeg en is er een voorbeeldstapel, dan
+  staat er ook *Oefen met de voorbeeldstapel*: die knop vult het veld, en daarna loopt
+  alles gewoon verder. Hij verdwijnt zodra er iets in het veld staat, zodat hij geen
+  eigen stapel overschrijft.
+- **De parser** (`parseDeck` in `src/components/vragen/flashcards.ts`) leest
+  `voorkant | achterkant` en ruimt op wat een AI er vaak van maakt:
+  - opsommingstekens (`-`, `*`, `•`) en nummering (`1.`, `1)`) aan het begin, `**` en
+    `` ` ``. Een `-`, `*` of nummer vraagt een spatie erachter, dus `-5 + 3` en
+    `1.5 + 2` blijven heel, en `2*3` ook. `**` tussen twee waarden is een macht:
+    `2**3` blijft heel;
+  - hij slaat zonder melding over: de scheidingsregel van een Markdown-tabel, de rij
+    vlak boven een scheidingsregel, een regel die letterlijk `vraag | antwoord` of
+    `voorkant | achterkant` is (hoofdletterongevoelig), codeomheiningen en lege regels;
+  - een Markdown-tabelrij `| a | b |` wordt `a` / `b`;
+  - een regel met drie kolommen, met een lege kant of zonder `|` komt onder *2 regels
+    begreep ik niet*, met de regels erbij en de zin dat een inleidende zin van de AI
+    genegeerd mag worden. Ook een voorkant als `|-3|`: de streep is de scheiding.
+  - Meer dan 30 kaarten (`MAX_CARDS`): de eerste 30 blijven, en een melding zegt
+    hoeveel er wegvallen.
+- **Oefenen.** Drie kolommen die blijven staan als de kaart omdraait: de voorkant, het
+  eigen antwoord, en de achterkant. *Wist ik* en *Nog niet* zijn even zwaar: de site
+  duwt niet naar een van beide. *Nog niet* zet de kaart achteraan. Elke ronde staat in
+  een andere volgorde, ook bij *Opnieuw oefenen*; de wachtrij wordt bewaard, dus na
+  herladen is de volgorde dezelfde.
+- **Het antwoordveld** is een `<textarea>` van twee regels. Enter draait om,
+  Shift+Enter is een nieuwe regel, een ingehouden Enter (`event.repeat`) telt niet.
+  Eén niet-witruimte-teken volstaat. *Draai om* doet hetzelfde en werkt pas als er iets
+  getypt is.
+- **De focus** beweegt alleen na een handeling: na het omdraaien naar het antwoordvlak
+  (`tabindex="-1"`; zijn naam is het eigen antwoord en de achterkant, dus die worden
+  voorgelezen), niet naar *Wist ik*, zodat een tweede Enter niet per ongeluk scoort. Na
+  scoren naar het antwoordveld van de volgende kaart, op het einde naar de kop van het
+  overzicht. Terugkomen op de stap en herladen verplaatsen de focus niet. Met alleen
+  het toetsenbord: typen, Enter, Tab naar *Wist ik* (nog een keer Tab voor *Nog
+  niet*), Enter. De pijltjestoetsen wisselen niet van stap in een veld.
+- **Einde.** Als elke kaart op *Wist ik* staat: hoeveel meteen goed waren, de
+  moeilijkste kaarten (hoogstens 3, die met het vaakst *Nog niet*, minstens één keer;
+  geen enkele: *geen*), *Opnieuw oefenen*, *Stapel aanpassen*, en een kleine zin dat de
+  stapel in deze browser blijft en *Opnieuw beginnen* ze ook wist.
+- *Opnieuw oefenen* en *Stapel aanpassen* staan ook onder elke kaart. *Stapel
+  aanpassen* gaat terug naar het plakscherm met de huidige tekst. Zonder wijziging
+  gaat *Verder oefenen* door waar de leerling was. Een stapel met andere kaarten
+  begint de oefening opnieuw, en de oude score telt dan niet meer: die gaat over een
+  andere stapel. Dat geldt vanaf de wijziging, maar overschreven wordt ze pas bij het
+  beginnen: wie de wijziging ongedaan maakt, is niets kwijt.
+- **Herladen.** Het getypte antwoord en de omgedraaide stand worden bewaard, maar komen
+  niet in de pdf. Tekst die vóór de hydratatie getypt is, gaat niet verloren, ook niet
+  bij een bewaarde stapel: ze is nieuwer, en de leerling staat dan op het plakscherm,
+  waar de oude oefening nog terugkomt zodra de tekst weer dezelfde is. Een klik op de
+  voorbeeldknop vóór de hydratatie onthoudt een klein inline script in
+  `Flashcards.astro`, want een knop bewaart niets in de pagina, zoals een keuzerondje
+  dat wel doet; ze vult alleen een leeg veld.
+- **Vorm.** Geen barometerkleuren, alleen tokens. De kolommen zijn kaders op
+  `surface-sunken`; zolang er niet omgedraaid is, is de derde een gestippeld kader, zoals
+  bij `<DenkEerst>`. Geen kaartflip: wat na een handeling verschijnt, fadet (`appear`,
+  `motion-base`).
+- Zonder JavaScript staan alleen de vraag en een zin dat dit JavaScript nodig heeft.
+
+**Hoogte op 1366 × 640** (gemeten in `voorbeeld`, `scrollHeight` van de stap, van de
+390 px). De drie schermen zijn even hoog, want de kolommen hebben een vaste hoogte
+(11rem, dus 176 px): met één regel tekst erboven **360 px**, in elke toestand: plakken,
+ook met 40 onleesbare regels; voorkant en omgedraaid, ook met een kaart van 600 tekens
+aan beide kanten; einde, ook met drie lange kaarten. Zonder tekst erboven 318 px. Met
+een vraag van twee regels en één regel tekst 388 px: meer past er niet boven. In een kolom
+passen vijf regels van ± 38 tekens; wat langer is, scrolt binnen die kolom. De lijst
+*begreep ik niet* en de moeilijkste kaarten scrollen binnen hun eigen kader. De kaart
+scrolt nooit.
+
+**Buildchecks**, elk met een duidelijke melding. `checks.ts` weigert in de
+voorbeeldstapel een regel die de parser niet begrijpt (zonder `|`, met drie kolommen,
+met een lege kant), meer dan 30 kaarten, tekst zonder één kaart, en een `id` die geen
+tekst is. `<Flashcards>` zelf weigert een ontbrekende, ongeldige of dubbele `id` en een
+lege `vraag`. Ze vallen pas als de pagina gebouwd wordt: test ze in een module met
+`status: beschikbaar`.
+
 ### Antwoorden bewaren
 
 Dit is de afspraak waarop de samenvatting aan het einde van een module
@@ -837,6 +938,16 @@ steunt.
   ze koos. `readAnswer` weigert een `chosen` die geen lijst van lijsten van
   gehele getallen is. Of de nummers nog bij de rondes passen, kijkt het component
   zelf na (zie *Prompts en gesprekken*).
+- `<Flashcards>` bewaart
+  `{ "kind": "flashcards", "question": "…", "text": "…", "screen": "practice", "practised": "…", "round": { "order": [2, 0, 1], "queue": [0, 1], "misses": [1, 0, 0], "typed": "…", "flipped": false }, "last": null, "scored": true }`:
+  de tekst in het veld, het scherm (`paste`, `practice` of `done`), en de tekst waarmee
+  geoefend is. `round` is de lopende ronde: de volgorde waarin ze begon, de kaarten die
+  nog moeten (de eerste staat op het scherm), per kaart hoe vaak *Nog niet*, het getypte
+  antwoord en of de kaart omgedraaid is. `last` is `misses` van de laatste afgewerkte
+  ronde, `scored` of er al een kaart gescoord is. De kaarten zelf staan er niet in: ze
+  volgen uit `text`. `readAnswer` weigert een andere vorm. Of een ronde nog bij de kaarten
+  past, kijkt `viewOf` in `flashcards.ts` na: wat niet past, telt als niet bewaard, en
+  crasht niet.
 - Elk antwoord, van elk `kind`, heeft ook twee tijden:
   `"firstAt": "2026-11-10T12:05:41.000Z"` en `"lastAt": "…"` (ISO 8601,
   `toISOString`): wanneer de leerling het antwoord voor het eerst en voor
@@ -853,7 +964,8 @@ steunt.
   `readAnswer` een onvolledige waarde weigert. De tijden krijgt het vanzelf.
 - In de statische HTML draagt het buitenste element van elke vraag
   `data-question="<kind>"` (`multiple-choice`, `think-first`, `reflection`,
-  `prompt-fields`, `measure` of `choice-chat`) en `data-question-id="<id>"`. Een
+  `prompt-fields`, `measure`, `choice-chat` of `flashcards`) en
+  `data-question-id="<id>"`. Een
   vraag die in de samenvatting komt, draagt ook `data-question-text` met de vraag
   zoals ze nu in de module staat; een `choice-chat` draagt daar de titel van haar
   stap, die de build leest (`checks.ts`, via `Astro.locals`). Bij een prompt met velden is dat element het kader
@@ -1491,7 +1603,7 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   eindformulier komt uit `src/config/smartschool.ts`. Het component staat in
   `src/components/stappen/`, de pdf ernaast in `pdf.ts`.
 - Ze neemt, in de volgorde van de module, elke `<DenkEerst>`, `<Reflectie>`,
-  `<Prompt>` met `velden` en `<Meting>` mee. **Meerkeuze en `<Keuzechat>` komen er
+  `<Prompt>` met `velden`, `<Meting>` en `<Flashcards>` mee. **Meerkeuze en `<Keuzechat>` komen er
   niet in**: alleen wat de leerling zelf schreef of over zichzelf invulde. Op de stap staat één zin over hoeveel vragen ingevuld zijn:
   *In de module **AI als leercoach** vulde je 12 van de 14 vragen in.*, of
   als alles ingevuld is *… vulde je alle 14 vragen in.* De keuzes tellen
@@ -1515,6 +1627,24 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   vraag onder *Nog leeg*, met *Ga naar stap n*. In de pdf en op papier is ze een
   blok `fields`, zoals een prompt met velden, en in de tijdlijn staat de titel
   van haar stap, met de eerste klik.
+- **Een stapel kaarten** is één vraag, met `vraag` als vraag en eronder het aantal
+  kaarten, de score en de moeilijkste kaarten, niet de hele stapel. Ze telt als
+  ingevuld zodra er een kaart in staat; een lege stapel staat onder *Nog leeg*. De score
+  is die van de laatste afgewerkte ronde: een nieuwe ronde die nog loopt, wist ze niet.
+
+  ```
+  Kaarten: 12
+  Meteen goed: 9 van 12
+  Moeilijkste kaarten: Wat is wortel16? (3 keer nog niet)
+  Hoe groot is pi? (1 keer nog niet)
+  ```
+
+  Nog geen afgewerkte ronde: *Stand: nog bezig, 5 van 12 kaarten op Wist ik* in plaats
+  van *Meteen goed*, met de moeilijkste kaarten van de lopende ronde, of *Moeilijkste
+  kaarten: geen*. Nog helemaal niet geoefend: *Kaarten: 12* en *Stand: nog niet
+  geoefend*. Een
+  moeilijkste kaart staat met haar voorkant, op een eigen regel. In de pdf en op papier
+  is het een blok `fields`, en in de tijdlijn staat de titel van haar stap.
 - In een module met takken neemt de samenvatting alleen vragen en keuzes mee
   uit de route van de leerling (`routeOf`), en de links gebruiken de
   stapnummers van die route. Een vraag uit een tak die de leerling niet
@@ -1566,8 +1696,8 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   Een tekstextractie zoals `pdftotext` geeft die twee spaties als één
   terug; een script herkent de regel aan de vorm van de tijd vooraan.
 - `pdf.ts` krijgt gewone gegevens: de module, de keuzes, per vraag een
-  blok met een `kind` (`answer`, of `fields` voor een prompt met velden en een
-  meting) en
+  blok met een `kind` (`answer`, of `fields` voor een prompt met velden, een
+  meting en een stapel kaarten) en
   de momenten van de tijdlijn. Een nieuw soort blok komt daar bij.
 - **Tekens.** De pdf gebruikt Helvetica, een standaardlettertype van pdf:
   er gaat geen lettertypebestand mee, maar het kent alleen de tekens van
@@ -1575,8 +1705,11 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   foutmelding verkeerde tekens (→ wordt `!’`). Daarom gaat alle tekst eerst
   door `forPdf`: → wordt `->`, − wordt `-`, ≤ wordt `<=`, een letter
   buiten WinAnsi verliest haar accent (ş wordt s), emoji vallen weg, en wat
-  dan nog overblijft wordt `?`. De accenten van het Nederlands en het Frans,
-  ’ “ ” – — € en ½ staan er gewoon. Figtree insluiten lost dat niet op: het
+  dan nog overblijft wordt `?`. Formules, vooral voor `<Flashcards>`: √ wordt
+  `wortel`, π `pi`, ∞ `oneindig`, Σ en ∑ `Sigma`, Δ en ∆ `Delta`, α β γ θ λ `alfa`
+  `beta` `gamma` `theta` `lambda`, ⁰ en ⁴ tot ⁹ `^0` en `^4` tot `^9`, ⁿ `^n`, en ₀ tot
+  ₉ `0` tot `9`. Op papier blijven die tekens gewoon staan. De accenten van het
+  Nederlands en het Frans, ’ “ ” – — € ½ × ÷ ± ¹ ² ³ staan er gewoon. Figtree insluiten lost dat niet op: het
   heeft geen pijlen en geen emoji, en het weegt meer. Een woord dat langer
   is dan een regel, wordt afgebroken.
 - Na de download verschijnt een bevestiging (`role="status"`, dus

@@ -12,8 +12,8 @@
 // The input is plain data, collected by Samenvatting.tsx: the module, the
 // choices, one item per question and the moments of the timeline. An item
 // has a `kind`: `answer` for a question with one answer, `fields` for a
-// prompt with fields or a <Meting>, and room for another kind of block without touching
-// the rest.
+// prompt with fields, a <Meting> or a deck of <Flashcards>, and room for another
+// kind of block without touching the rest.
 //
 // The timeline at the end has one line per moment in a fixed format,
 // "13:05  Noteer je taak" (two spaces), so that a script can read it from
@@ -48,7 +48,8 @@ export interface PdfField {
 
 // A prompt with fields: the title of its step as the question, and one line
 // per field under it. A <Meting>: its question, with a line for the score and
-// one for the confidence.
+// one for the confidence. <Flashcards>: its question, with the number of cards,
+// the score and the hardest cards.
 export interface PdfFields {
   readonly kind: 'fields';
   readonly question: string;
@@ -161,6 +162,38 @@ const STAND_INS: Readonly<Record<string, string>> = {
   '≈': '~',
   '′': "'",
   '″': '"',
+  // Formulas. A superscript or subscript would otherwise lose its meaning by
+  // normalising: "x⁴" would become "x4". ² ³ ¹ ½ × ÷ ± are in WinAnsi and stay.
+  '√': 'wortel',
+  'π': 'pi',
+  '∞': 'oneindig',
+  'Σ': 'Sigma',
+  '∑': 'Sigma',
+  'Δ': 'Delta',
+  '∆': 'Delta',
+  'α': 'alfa',
+  'β': 'beta',
+  'γ': 'gamma',
+  'θ': 'theta',
+  'λ': 'lambda',
+  '⁰': '^0',
+  '⁴': '^4',
+  '⁵': '^5',
+  '⁶': '^6',
+  '⁷': '^7',
+  '⁸': '^8',
+  '⁹': '^9',
+  'ⁿ': '^n',
+  '₀': '0',
+  '₁': '1',
+  '₂': '2',
+  '₃': '3',
+  '₄': '4',
+  '₅': '5',
+  '₆': '6',
+  '₇': '7',
+  '₈': '8',
+  '₉': '9',
   // Letters that do not lose their stroke or dot by normalising.
   'Ł': 'L',
   'ł': 'l',

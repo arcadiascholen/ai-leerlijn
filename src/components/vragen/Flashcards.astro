@@ -1,0 +1,43 @@
+---
+// Practising with a deck of one's own (docs/BRIEFING.md § 12, "Vraagtypes"):
+//
+//   <Flashcards id="kaarten" vraag="Oefen met je eigen kaarten">
+//   Wat is de oppervlakte van een cirkel? | pi × r²
+//   Wat betekent 'nevertheless'? | toch, niettemin
+//   </Flashcards>
+//
+// `id` is the stable key of the answer in localStorage, unique within the
+// module. The lines between the tags are an optional example deck, for a student
+// without access to AI. The module route reads them from the source and checks
+// them (checks.ts), so they are not rendered here. Authors write no import and
+// no client directive.
+import FlashcardsIsland from './Flashcards.tsx';
+import { checkQuestionId, checkText } from './authoring';
+
+interface Props {
+  id: string;
+  vraag: string;
+}
+
+const id = checkQuestionId('Flashcards', Astro.props.id, Astro.locals);
+const vraag = checkText('Flashcards', 'vraag', Astro.props.vraag);
+const decks = (Astro.locals as { flashcardDecks?: Readonly<Record<string, string>> }).flashcardDecks;
+const example = decks !== undefined && Object.hasOwn(decks, id) ? decks[id] : undefined;
+if (example === undefined) {
+  throw new Error(`<Flashcards id="${id}"> only works in a <Stap> of a module (src/content/modules/).`);
+}
+---
+
+{/* A click on a button does nothing before hydration, unlike a radio, which keeps
+    its state in the page. So this remembers a click on the example deck, for the
+    island to take over. */}
+<script is:inline>
+  document.addEventListener('click', function (event) {
+    var button = event.target instanceof Element ? event.target.closest('[data-flashcards-example]') : null;
+    var owner = button === null ? null : button.closest('[data-question-id]');
+    if (owner === null) return;
+    window.flashcardsExampleClicks = window.flashcardsExampleClicks || new Set();
+    window.flashcardsExampleClicks.add(owner.dataset.questionId);
+  });
+</script>
+<FlashcardsIsland id={id} question={vraag} example={example} client:visible />
