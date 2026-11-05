@@ -38,7 +38,7 @@ export function checkQuestionId(component: string, id: unknown, locals: object):
   if (registry.questionIds.has(id)) {
     throw new Error(
       `Two questions in this module have id="${id}". Every <Meerkeuze>, <DenkEerst>, <Reflectie>, <Meting>, ` +
-        '<Keuzechat> and <Prompt> with `velden` needs its own id; it is the key under which the answer is stored.',
+        '<Keuzechat>, <Flashcards> and <Prompt> with `velden` needs its own id; it is the key under which the answer is stored.',
     );
   }
   registry.questionIds.add(id);

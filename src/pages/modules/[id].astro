@@ -20,6 +20,7 @@ import { checkModuleBody, type ModuleOutline, type SourceChoice } from '../../co
 import StepPlayer from '../../components/stappen/StepPlayer.astro';
 import Tool from '../../components/stappen/Tool.astro';
 import DenkEerst from '../../components/vragen/DenkEerst.astro';
+import Flashcards from '../../components/vragen/Flashcards.astro';
 import Meerkeuze from '../../components/vragen/Meerkeuze.astro';
 import Meting from '../../components/vragen/Meting.astro';
 import Optie from '../../components/vragen/Optie.astro';
@@ -36,18 +37,13 @@ export async function getStaticPaths() {
   );
   // The dedicated route supports two choices from six.
   return entries.filter(entry => entry.id !== 'verantwoord-gebruik').map((entry) => {
-    const { branching, tool, promptSteps, sourceSteps, choiceChatSteps } = checkModuleBody(entry.id, entry.body ?? '');
-    return { params: { id: entry.id }, props: { entry, branching, tool, promptSteps, sourceSteps, choiceChatSteps } };
+    const outline = checkModuleBody(entry.id, entry.body ?? '');
+    return { params: { id: entry.id }, props: { entry, ...outline } };
   });
 }
 
-interface Props {
+interface Props extends ModuleOutline {
   entry: CollectionEntry<'modules'>;
-  branching: SourceChoice | null;
-  tool: SourceChoice | null;
-  promptSteps: Readonly<Record<string, string>>;
-  sourceSteps: Readonly<Record<string, string>>;
-  choiceChatSteps: Readonly<Record<string, string>>;
 }
 
 const { entry } = Astro.props;
@@ -68,14 +64,14 @@ if (import.meta.env.DEV) {
     outline = checkModuleBody(entry.id, body);
   }
 }
-const { branching, tool, promptSteps, sourceSteps, choiceChatSteps } = outline;
+const { branching, tool, promptSteps, sourceSteps, choiceChatSteps, flashcardDecks } = outline;
 
 // Components inside the MDX get no props from here, but share Astro.locals
 // with this page. <Samenvatting /> shows the module's name; <Stap> and
 // <Keuze> need the branching choice as read from the source, <Tool> and
 // <Keuze> the tool choice, a <Prompt> with `velden` and a <Keuzechat> the title
-// of their step, and a <Prompt> with `overnemen` the titles of the steps of its
-// sources.
+// of their step, a <Prompt> with `overnemen` the titles of the steps of its
+// sources, and <Flashcards> its example deck.
 const locals = Astro.locals as {
   moduleTitle?: string;
   branching?: SourceChoice | null;
@@ -83,6 +79,7 @@ const locals = Astro.locals as {
   promptSteps?: Readonly<Record<string, string>>;
   sourceSteps?: Readonly<Record<string, string>>;
   choiceChatSteps?: Readonly<Record<string, string>>;
+  flashcardDecks?: Readonly<Record<string, string>>;
 };
 locals.moduleTitle = entry.data.title;
 locals.branching = branching;
@@ -90,6 +87,7 @@ locals.tool = tool;
 locals.promptSteps = promptSteps;
 locals.sourceSteps = sourceSteps;
 locals.choiceChatSteps = choiceChatSteps;
+locals.flashcardDecks = flashcardDecks;
 
 // The page about which AI tools are allowed, linked next to the sentence about
 // AI use when the student uses AI (BRIEFING § 7).
@@ -114,6 +112,7 @@ const components = {
   DenkEerst,
   Reflectie,
   Meting,
+  Flashcards,
   Samenvatting,
   SchoolLink,
   Vibe,

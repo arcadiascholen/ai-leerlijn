@@ -9,7 +9,7 @@
 // In the static HTML every question's root element carries
 // `data-question="<kind>"` and `data-question-id="<id>"`, also in steps that
 // are hidden and not hydrated yet. The questions that the summary shows
-// (`think-first`, `reflection`, `prompt-fields` and `measure`) also carry
+// (`think-first`, `reflection`, `prompt-fields`, `measure` and `flashcards`) also carry
 // `data-question-text`, the question as it is on the page now, and a `measure`
 // carries `data-measure-max`, the top of its score. A `choice-chat` carries
 // `data-question-text` too, the title of its step, although only the timeline
@@ -25,7 +25,14 @@
 
 import { readStored, writeStored } from '../stappen/storage';
 
-export type QuestionKind = 'multiple-choice' | 'think-first' | 'reflection' | 'prompt-fields' | 'measure' | 'choice-chat';
+export type QuestionKind =
+  | 'multiple-choice'
+  | 'think-first'
+  | 'reflection'
+  | 'prompt-fields'
+  | 'measure'
+  | 'choice-chat'
+  | 'flashcards';
 
 // <Meerkeuze>: the options the student chose, as indices into the options in
 // the order the author wrote them, in the order they were chosen.
@@ -82,6 +89,43 @@ export interface ChoiceChatAnswer {
   chosen: number[][];
 }
 
+// <Flashcards>: where the student is. The cards themselves are never stored: they
+// follow from `text` (flashcards.ts). This only checks the shape; whether a round
+// still fits the cards is for `viewOf` in flashcards.ts.
+export type FlashcardsScreen = 'paste' | 'practice' | 'done';
+
+export interface FlashcardRound {
+  // The order the round started in, so that the next round can differ.
+  order: number[];
+  // The cards still to know, as indices into the cards: the first one is on
+  // screen.
+  queue: number[];
+  // Per card, how often the student said "Nog niet" in this round.
+  misses: number[];
+  // The answer to the card on screen, and whether it was turned over.
+  typed: string;
+  flipped: boolean;
+}
+
+export interface FlashcardsContent {
+  // What is in the field of the paste screen.
+  text: string;
+  screen: FlashcardsScreen;
+  // The text that `round` and `last` were practised with.
+  practised: string;
+  // The running round, or the last one with an empty queue.
+  round: FlashcardRound | null;
+  // `misses` of the last finished round.
+  last: number[] | null;
+  // Whether the student scored a card of this deck at all.
+  scored: boolean;
+}
+
+export interface FlashcardsAnswer extends FlashcardsContent {
+  kind: 'flashcards';
+  question: string;
+}
+
 // What a component writes. A new kind of question goes here.
 export type AnswerContent =
   | MultipleChoiceAnswer
@@ -89,7 +133,8 @@ export type AnswerContent =
   | ReflectionAnswer
   | PromptFieldsAnswer
   | MeasureAnswer
-  | ChoiceChatAnswer;
+  | ChoiceChatAnswer
+  | FlashcardsAnswer;
 
 // When the student first saved an answer to the question, and when last, as
 // ISO 8601 (`toISOString`). Missing on an answer stored before the site kept
@@ -124,6 +169,21 @@ export function isTime(value: unknown): value is string {
   return typeof value === 'string' && ISO_TIME.test(value) && !Number.isNaN(Date.parse(value));
 }
 
+function isWholeNumbers(value: unknown): value is number[] {
+  return Array.isArray(value) && value.every((item) => Number.isInteger(item));
+}
+
+function isFlashcardRound(value: unknown): boolean {
+  return (
+    isRecord(value) &&
+    isWholeNumbers(value.order) &&
+    isWholeNumbers(value.queue) &&
+    isWholeNumbers(value.misses) &&
+    typeof value.typed === 'string' &&
+    typeof value.flipped === 'boolean'
+  );
+}
+
 // Checks the content only: the times are optional, and `readAnswer` drops an
 // invalid one without dropping the answer.
 function isStoredAnswer(value: unknown): value is AnswerContent & Record<string, unknown> {
@@ -152,6 +212,15 @@ function isStoredAnswer(value: unknown): value is AnswerContent & Record<string,
       return (
         Array.isArray(value.chosen) &&
         value.chosen.every((round) => Array.isArray(round) && round.every((index) => Number.isInteger(index)))
+      );
+    case 'flashcards':
+      return (
+        typeof value.text === 'string' &&
+        (value.screen === 'paste' || value.screen === 'practice' || value.screen === 'done') &&
+        typeof value.practised === 'string' &&
+        (value.round === null || isFlashcardRound(value.round)) &&
+        (value.last === null || isWholeNumbers(value.last)) &&
+        typeof value.scored === 'boolean'
       );
     default:
       return false;

@@ -1,0 +1,369 @@
+/* Practising with a deck of one's own. Only design-system tokens (docs/DESIGN.md).
+   Single classes, so they win over the zero-specificity step defaults in
+   Stap.astro. No barometer colours.
+
+   Height budget on 1366 × 640 (docs/BRIEFING.md § 12): the step has 390px, of
+   which the step title takes 50px. The board has a fixed height, so that all
+   three screens are equally tall and nothing jumps: the head 36px, the board
+   176px, the actions 56px. What is longer than its place scrolls inside it,
+   never the card. */
+
+/* Space below the question only when the author wrote more after it; the
+   island element is the question's place in the step. */
+:global(astro-island:not(:last-child)) > .root {
+  margin-bottom: var(--space-4);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.question {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+  text-wrap: balance;
+}
+
+.counter {
+  flex: none;
+  max-width: none;
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+/* Without JavaScript: the question and a sentence. */
+.noScript {
+  display: none;
+}
+
+:global(html:not(.js)) .noScript {
+  display: block;
+  max-width: none;
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.app {
+  display: none;
+}
+
+:global(.js) .app {
+  display: block;
+}
+
+.board {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--space-4);
+  height: 11rem;
+}
+
+.board[data-columns='2'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.board[data-columns='3'] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* The paste screen. */
+.pasteColumn,
+.answerColumn,
+.readout {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.fieldLabel {
+  flex: none;
+  margin-bottom: var(--space-1);
+  color: var(--forest);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.pasteField,
+.answerField {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--ink);
+  font: inherit;
+  resize: none;
+}
+
+.pasteField {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.answerField {
+  flex: none;
+}
+
+.pasteField::placeholder,
+.answerField::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+.count {
+  flex: none;
+  max-width: none;
+  margin: 0;
+  color: var(--forest);
+  font-weight: var(--text-label-weight);
+}
+
+.note {
+  flex: none;
+  max-width: none;
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.answerColumn .note {
+  margin-top: var(--space-2);
+}
+
+/* The lines that are not a card. A paste can hold many: they scroll in here, and
+   whatever is left of the column under the sentences is what they get. */
+.unreadable {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+.unreadableTitle {
+  max-width: none;
+  margin: 0 0 var(--space-1);
+  color: var(--forest);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-small-tracking);
+}
+
+.unreadableList {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+  overflow-wrap: anywhere;
+}
+
+/* The three columns of the practice screen: they stay where they are when the
+   card turns over. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+/* A focus target after turning over, so that a screen reader reads it; not a
+   control, so no ring. */
+.panel:focus {
+  outline: none;
+}
+
+.label {
+  flex: none;
+  max-width: none;
+  margin: 0 0 var(--space-1);
+  color: var(--ink-muted);
+  font-size: var(--text-label-size);
+  line-height: var(--text-label-line);
+  font-weight: var(--text-label-weight);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+.cardText {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.quiet {
+  display: flex;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: var(--text-label-weight);
+  line-height: var(--text-body-line);
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.secondary {
+  border-color: var(--line-strong);
+  background: var(--surface);
+  color: var(--forest);
+}
+
+.secondary:hover {
+  background: var(--surface-sunken);
+}
+
+/* Hover only (docs/DESIGN.md, "Beweging"). What appears after an action fades in
+   with `appear` from src/lib/motion.ts. */
+@media (prefers-reduced-motion: no-preference) {
+  .primary,
+  .secondary {
+    transition: background-color var(--motion-fast) var(--ease-out);
+  }
+}
+
+/* The overview at the end, as tall as the board. */
+.overview {
+  display: flex;
+  flex-direction: column;
+  height: 11rem;
+}
+
+.overviewTitle {
+  flex: none;
+  margin: 0 0 var(--space-3);
+  color: var(--forest);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line);
+  font-weight: var(--text-h3-weight);
+  letter-spacing: var(--text-h3-tracking);
+}
+
+/* The focus lands here at the end; not a control, so no ring. */
+.overviewTitle:focus {
+  outline: none;
+}
+
+.none {
+  max-width: none;
+  margin: 0;
+}
+
+.hardest {
+  flex: 1 1 0;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.hardest > li + li {
+  margin-top: var(--space-1);
+}
+
+.misses {
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  white-space: nowrap;
+}
+
+.keep {
+  flex: 1 1 14rem;
+  max-width: none;
+  margin: 0 0 0 auto;
+  color: var(--ink-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+  font-weight: var(--text-small-weight);
+  letter-spacing: var(--text-small-tracking);
+  text-align: right;
+}
