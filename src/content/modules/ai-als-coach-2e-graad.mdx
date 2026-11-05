@@ -59,7 +59,7 @@ Je leerkracht ziet dit straks in je eindformulier.
 <Stap titel="Kies je route">
 Daarna zie je alleen de stappen die bij jouw route horen.
 
-<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren', oefenen: 'Oefeningen of een taak', onthouden: 'Iets van buiten kennen' }} />
+<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren', oefenen: 'Oefeningen of een taak', onthouden: 'Iets van buiten kennen', presentatie: 'Een presentatie of spreekbeurt' }} />
 </Stap>
 
 <Stap titel="Kies je tool">
@@ -468,6 +468,108 @@ Een vlotte uitleg voelt als kennen. Je score zegt of dat ook zo is.
 Eén sessie volstaat niet om iets te onthouden. Je stapel blijft in deze browser.
 
 <Reflectie id="onthouden-herhalen" vraag="Wanneer herhaal je dit, en hoe?" />
+</Stap>
+
+{/* Route: een presentatie of spreekbeurt. */}
+
+<Stap titel="Start je sessie" tak="presentatie">
+Ga terug naar **chat 2**, en werk daar verder tot het einde. Laad je opdracht op, of
+typ over wat erin staat. Kom terug als de AI geantwoord heeft.
+
+<Prompt>
+Op [datum] geef ik een presentatie voor [vak] over [onderwerp], voor [publiek]. Ik heb [tijd] spreektijd. Mijn opdracht zit in de bijlage of staat hieronder. Help me me voor te bereiden, maar schrijf mijn tekst en mijn slides niet voor mij.
+</Prompt>
+
+<Tool naam="chatgpt">
+Opladen doe je met **+** → **Foto's & bestanden toevoegen**. Let op je 3 bestanden
+per dag, en reken erop dat elke foto meetelt.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit: je vindt deze chat later niet meer terug. Houd het
+tabblad open. Opladen doe je met **+**.
+</Tool>
+<Tool naam="notebook">
+Voeg je opdracht toe als extra **bron**, en werk in het gesprek.
+</Tool>
+<Tool naam="copilot">
+Hier start je toch een **nieuwe chat**. Start die in **Studeren en leren**? Kies dan
+de gewone chat (kan bij jou anders heten). Laad je opdracht op met **+**, en zet
+vóór de prompt: `Ik zit in het [jaar en richting].`
+</Tool>
+</Stap>
+
+<Stap titel="Eerst jij: je boodschap" tak="presentatie">
+<Prompt id="presentatie-kern" velden={{ boodschap: 'Mijn boodschap in één zin', kernpunten: 'Mijn drie kernpunten' }}>
+Mijn boodschap: [boodschap] Mijn kernpunten: [kernpunten] Kan iemand die er niets over weet dit volgen? Wat ontbreekt, en wat kan weg? Herschrijf niets.
+</Prompt>
+
+Pas zelf aan wat jij nodig vindt, en kom dan hier terug.
+</Stap>
+
+<Stap titel="Je publiek" tak="presentatie">
+De AI is je publiek. Schrijf je begin op de plaats van **[mijn begin]**. Leg de rest
+stukje per stukje uit. Typ **klaar** als je klaar bent, en kom dan hier terug.
+
+<Prompt>
+Ik leg je een deel van mijn presentatie uit alsof je in mijn publiek zit en er niets over weet. Ik doe het in stukjes. Zeg na elk stukje wat je niet begreep. Zeg pas als ik "klaar" typ, in twee zinnen, wat je onthield. Herschrijf mijn tekst niet. Mijn begin: [mijn begin]
+</Prompt>
+</Stap>
+
+<Stap titel="Wat onthield je publiek?" tak="presentatie">
+Leg wat de AI onthield naast je boodschap.
+
+<Reflectie id="presentatie-publiek" vraag="Wat onthield de AI? Komt dat overeen met je boodschap, en wat pas je aan?" />
+</Stap>
+
+<Stap titel="Je slides" tak="presentatie">
+Heb je geen slides? Klik dan door. Bewaar je slides anders als pdf, laad ze op in de
+chat en plak de prompt erbij. Kom terug als de AI geantwoord heeft.
+
+<Prompt>
+Mijn slides zitten in de bijlage. Zeg per slide: staat er te veel tekst, en helpt ze mijn boodschap? Herschrijf niets: ik pas mijn slides zelf aan.
+</Prompt>
+
+<Tool naam="chatgpt">
+Dit telt mee voor je 3 bestanden per dag. Zijn die op? Plak dan de tekst van je
+slides in de chat.
+</Tool>
+<Tool naam="gemini">
+Opladen doe je met **+** (kan bij jou anders heten).
+</Tool>
+<Tool naam="notebook">
+Voeg de pdf toe als extra **bron** in je notebook.
+</Tool>
+<Tool naam="copilot">
+Opladen doe je met **+** (kan bij jou anders heten).
+</Tool>
+</Stap>
+
+<Stap titel="Feedback met criteria" tak="presentatie">
+Waarop let je leerkracht? Kijk in je opdracht, of bij je vak op Smartschool. Vind je
+niets, gebruik dan: je boodschap, je opbouw, hoe duidelijk je uitlegt, je slides, je
+spreektijd.
+
+<Prompt>
+Dit is mijn presentatie: [plak hier je tekst of je opbouw] Geef feedback met deze criteria: [criteria]. Zeg per criterium wat goed is en wat beter kan. Schrijf geen verbeterde versie.
+</Prompt>
+
+Kom terug als je de feedback gelezen hebt.
+</Stap>
+
+<Stap titel="Lastige vragen" tak="presentatie">
+Na een presentatie komen er vragen. Oefen je antwoorden.
+
+<Prompt>
+Stel me de lastigste vragen die mijn publiek of mijn leerkracht na mijn presentatie kan stellen, één per keer. Wacht telkens op mijn antwoord en zeg hoe duidelijk het was.
+</Prompt>
+
+Antwoord telkens zelf. Na vijf vragen kom je hier terug.
+</Stap>
+
+<Stap titel="Wat zag je niet aankomen?" tak="presentatie">
+Denk terug aan je publiek, de feedback en de vragen.
+
+<Reflectie id="presentatie-vragen" vraag="Welke vraag of opmerking had je niet verwacht, en wat doe je ermee?" />
 </Stap>
 
 {/* End: shared. */}
