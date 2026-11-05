@@ -59,7 +59,7 @@ Je leerkracht ziet dit straks in je eindformulier.
 <Stap titel="Kies je route">
 Daarna zie je alleen de stappen die bij jouw route horen.
 
-<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren', oefenen: 'Oefeningen of een taak' }} />
+<Keuze naam="route" vertakt vraag="Wat wil je vandaag doen?" opties={{ hoofdstuk: 'Een hoofdstuk studeren', oefenen: 'Oefeningen of een taak', onthouden: 'Iets van buiten kennen' }} />
 </Stap>
 
 <Stap titel="Kies je tool">
@@ -370,6 +370,104 @@ In Gemini Notebook oefen je met tekst.
 <Tool naam="copilot">
 Copilot kan je antwoord **dicteren** en zijn vraag **voorlezen**, beurt per beurt.
 </Tool>
+</Stap>
+
+{/* Route: iets van buiten kennen. */}
+
+<Stap titel="Start je sessie en je quiz" tak="onthouden">
+Ga terug naar **chat 2**, en werk daar verder tot het einde. Typ je lijst over, of
+laad ze op: formules, woordjes of begrippen. Beantwoord de vragen zonder in je
+lijst te kijken, en kom dan hier terug.
+
+<Prompt>
+Ik wil dit van buiten kennen: [typ je lijst hier, of schrijf: zie de bijlage]. Test me eerst: stel me vijf korte vragen, één per keer. Wacht telkens op mijn antwoord. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+<Tool naam="chatgpt">
+Let op je 3 bestanden per dag, en reken erop dat elke foto meetelt. Typ je lijst
+anders over.
+</Tool>
+<Tool naam="gemini">
+Je zette **Activiteit** uit: je vindt deze chat later niet meer terug. Houd het
+tabblad open.
+</Tool>
+<Tool naam="notebook">
+Klik bij het gesprek op **Gesprek instellen** en kies **Leergids**. Voeg je lijst
+toe als extra **bron**, of typ ze in het gesprek.
+</Tool>
+<Tool naam="copilot">
+Hier start je toch een **nieuwe chat**, in **Studeren en leren** in de
+linkerkolom, en zet vóór de prompt: `Ik zit in het [jaar en richting].`
+</Tool>
+</Stap>
+
+<Stap titel="Hoeveel kende je al?" tak="onthouden">
+Op het einde test je jezelf nog eens.
+
+<Meting id="onthouden-start" vraag="Hoeveel van de vijf had je juist?" />
+</Stap>
+
+<Stap titel="Maak je kaarten" tak="onthouden">
+Laat de AI kaarten maken. Kopieer ze, en **kijk ze na in je bron**: de AI kan zich
+vergissen. Op de volgende stap plak je ze.
+
+<Prompt>
+Maak flashcards van mijn lijst: één kaart per punt. Eén kaart per regel: vraag | antwoord. Gewone tekst, geen tabel en geen LaTeX. Schrijf formules zo: wortel(x), x^2.
+</Prompt>
+
+<Tool naam="notebook">
+Gebruik de prompt in het gesprek: zo komt je score in je samenvatting. Later kun je
+ook **Flashcards** maken, rechts bij **Studio**, met je hele cursus.
+</Tool>
+</Stap>
+
+<Stap titel="Oefen met je kaarten" tak="onthouden">
+Plak je kaarten. Daarna antwoord je eerst zelf, en draai je dan pas om.
+
+<Flashcards id="kaarten-onthouden" vraag="Oefen met je eigen kaarten">
+Wat is de oppervlakte van een cirkel? | pi × r²
+Wat zegt de stelling van Pythagoras? | a² + b² = c²
+Wat betekent 'nevertheless'? | toch, niettemin
+Wat betekent 'however'? | echter
+Wat is een synoniem van 'oorzaak'? | reden
+Wat is de formule voor snelheid? | afstand / tijd
+</Flashcards>
+</Stap>
+
+<Stap titel="Overhoor jezelf" tak="onthouden">
+<Prompt>
+Overhoor me over mijn lijst, één vraag per keer. Wacht telkens op mijn antwoord, en zeg dan of het juist was. Zijn het formules: geef me een situatie, laat mij de juiste formule kiezen, en vraag waarom.
+</Prompt>
+
+Ga door tot je tien vragen beantwoordde, en kom dan hier terug.
+
+<Hulp label="Woordjes in een vreemde taal? Oefen ook spreken">
+Typ in de chat: *We voeren een gesprek in het [taal] over [onderwerp], op mijn niveau. Stel me één vraag per keer, in het [taal]. Verbeter me nog niet. Geef me na tien vragen een lijst van mijn fouten.*
+
+De AI verbetert pas achteraf: zo blijf je praten.
+</Hulp>
+</Stap>
+
+<Stap titel="Eindquiz" tak="onthouden">
+Test jezelf opnieuw, zoals bij de start.
+
+<Prompt>
+Stel me opnieuw vijf korte vragen over mijn lijst, andere dan daarnet, één per keer. Wacht telkens op mijn antwoord. Geef me op het einde mijn score op vijf.
+</Prompt>
+
+Beantwoord de vragen zonder in je lijst te kijken, en kom dan hier terug.
+</Stap>
+
+<Stap titel="Hoeveel ken je nu?" tak="onthouden">
+Een vlotte uitleg voelt als kennen. Je score zegt of dat ook zo is.
+
+<Meting id="onthouden-einde" vraag="Hoeveel van de vijf had je nu juist?" vergelijk="onthouden-start" />
+</Stap>
+
+<Stap titel="Wanneer herhaal je dit?" tak="onthouden">
+Eén sessie volstaat niet om iets te onthouden. Je stapel blijft in deze browser.
+
+<Reflectie id="onthouden-herhalen" vraag="Wanneer herhaal je dit, en hoe?" />
 </Stap>
 
 {/* End: shared. */}
