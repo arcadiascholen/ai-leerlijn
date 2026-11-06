@@ -3,8 +3,6 @@
 // a module (a missing `id`, a duplicate `id`, a <Meerkeuze> without a right
 // answer) fails the build with a clear message instead of reaching a student.
 
-import { decodeReferences } from '../inhoud/authoring';
-
 export interface ChoiceOption {
   // The option's text as HTML: inline Markdown such as **bold** is allowed.
   html: string;
@@ -40,7 +38,7 @@ export function checkQuestionId(component: string, id: unknown, locals: object):
   if (registry.questionIds.has(id)) {
     throw new Error(
       `Two questions in this module have id="${id}". Every <Meerkeuze>, <DenkEerst>, <Reflectie>, <Meting>, ` +
-        '<Keuzechat>, <Flashcards>, <Meeneemkaart> and <Prompt> with `velden` needs its own id; it is the key under which the answer is stored.',
+        '<Keuzechat>, <Flashcards> and <Prompt> with `velden` needs its own id; it is the key under which the answer is stored.',
     );
   }
   registry.questionIds.add(id);
@@ -151,12 +149,12 @@ export function unwrapParagraph(html: string): string {
   return inner !== undefined && !inner.includes('<p>') ? inner : trimmed;
 }
 
-// One row of a <Meeneemkaart>: the situation, and the sentence in plain text, as
-// it goes into a text field. <Rij> renders itself as a JSON script that only
-// <Meeneemkaart> reads, as <Optie> does for <Meerkeuze>.
+// One row of a <Meeneemkaart>: the situation, and the sentence as HTML: inline
+// Markdown such as **bold** is allowed. <Rij> renders itself as a JSON script that
+// only <Meeneemkaart> reads, as <Optie> does for <Meerkeuze>.
 export interface CardRow {
   situation: string;
-  text: string;
+  html: string;
 }
 
 const ROW_PATTERN = /<script\b[^>]*\bdata-rij\b[^>]*>([^<]*)<\/script>/g;
@@ -165,44 +163,34 @@ export function encodeRow(row: CardRow): string {
   return JSON.stringify(row).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 }
 
-// The text of a <Rij>, which ends up in a text field: markup can not show there.
-// So what Markdown turned into markup, such as `2*3*4` or a link, fails the build
-// instead of silently losing its stars or its address. Line breaks in the source
-// are spaces, as everywhere in Markdown.
-export function readRowText(situation: string, html: string): string {
+export function readRowHtml(situation: string, html: string): string {
   const inner = unwrapParagraph(html);
-  if (/<[a-z!/]/i.test(inner)) {
+  if (inner === '') {
     throw new Error(
-      `<Rij situatie="${situation}"> holds plain text, because it goes into a text field, but Markdown made ` +
-        `markup of it: ${inner}. Write it without **, *, \` or a link.`,
+      `<Rij situatie="${situation}"> has no text between its tags. Write its sentence: ` +
+        '<Rij situatie="Context helpt">Geef AI je cursus, desnoods als afbeelding.</Rij>.',
     );
   }
-  const text = decodeReferences(inner, 'Rij').replace(/\s+/g, ' ').trim();
-  if (text === '') {
-    throw new Error(
-      `<Rij situatie="${situation}"> has no text between its tags. Write the sentence the student starts from: ` +
-        '<Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>.',
-    );
-  }
-  return text;
+  return inner;
 }
 
-export function decodeRows(id: string, html: string): CardRow[] {
+export function decodeRows(html: string): CardRow[] {
   const rows = Array.from(html.matchAll(ROW_PATTERN), (match) => JSON.parse(match[1] ?? '') as CardRow);
   if (html.replace(ROW_PATTERN, '').trim() !== '') {
-    throw new Error(`<Meeneemkaart id="${id}"> may only contain <Rij> elements, one per situation.`);
+    throw new Error('<Meeneemkaart> may only contain <Rij> elements, one per situation.');
   }
   if (rows.length === 0) {
     throw new Error(
-      `<Meeneemkaart id="${id}"> needs at least one <Rij>, such as ` +
-        '<Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>.',
+      '<Meeneemkaart> needs at least one <Rij>, such as ' +
+        '<Rij situatie="Context helpt">Geef AI je cursus, desnoods als afbeelding.</Rij>.',
     );
   }
-  // What the student wrote is stored per situation, so each one is its own.
+  // A card repeats its rows from step to step, so a situation twice is a slip of
+  // copying.
   const seen = new Set<string>();
   for (const { situation } of rows) {
     if (seen.has(situation)) {
-      throw new Error(`<Meeneemkaart id="${id}"> has two <Rij> with situatie="${situation}". Every situation needs its own row.`);
+      throw new Error(`<Meeneemkaart> has two <Rij> with situatie="${situation}". Every situation needs its own row.`);
     }
     seen.add(situation);
   }
