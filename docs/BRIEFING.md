@@ -127,7 +127,7 @@ en geen cookies.
 | AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar als één pad van 37 stappen | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
-| AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
+| AI-Quest: AI herkennen, afspraken op school, echt of fake | 1e, ook B-stroom | beschikbaar, op Bookwidgets | `ai-herkennen-1e-graad` |
 
 Elke module staat al als **plaatshouder** in `src/content/modules/`, met
 `status: binnenkort`, een werktitel en een indicatieve `niveau`,
@@ -159,6 +159,9 @@ gelden de kaart, de filters en de zin over AI-gebruik zoals bij elke module, en
 brengt *Naar de startpagina* de leerling terug. Het werk wordt ingediend op het
 andere platform, dus er is geen pdf. De leerling vult daarna wel het
 eindformulier in, en de stap zegt dat. `wat-is-ai` is het eerste voorbeeld.
+Bestaat de link maar één keer, zonder aanmelding via Smartschool, dan is het een
+`<LinkKnop>` in plaats van een `<SchoolLink>`, zoals in `ai-herkennen-1e-graad`.
+Het andere platform vraagt de gegevens dan zelf.
 
 ### Metadata per module
 
@@ -1860,6 +1863,12 @@ Denk terug aan je sessie. Er is geen fout antwoord.
 ```mdx
 <SchoolLink href="https://{school}.smartschool.be/forms/…">Open de module</SchoolLink>
 ```
+
+Een link die voor alle scholen dezelfde is, wordt een
+`<LinkKnop href="https://…">Open de module</LinkKnop>`
+(`src/components/stappen/LinkKnop.astro`): dezelfde primaire knop, die in een nieuw
+tabblad opent, zonder de vraag naar de school. Een ongeldig adres, een adres zonder
+`https://` of een knop zonder tekst laat de build falen.
 
 - Elke school heeft een eigen platform (§ 4), dus een link is een sjabloon met
   `{school}` op de plaats van het platform: het subdomein op Smartschool, de

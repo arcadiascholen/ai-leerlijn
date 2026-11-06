@@ -1,0 +1,79 @@
+---
+// A link to another platform that exists only once, as a button (docs/BRIEFING.md
+// § 12, "Een link per school"):
+//
+//   <LinkKnop href="https://www.bookwidgets.com/play/…">Open de module</LinkKnop>
+//
+// It looks like <SchoolLink>, without asking for the school. A link that differs
+// per school is a <SchoolLink>. A bad address or an empty button fails the build.
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+let url: URL;
+try {
+  url = new URL(href);
+} catch {
+  throw new Error(`<LinkKnop> needs a valid address in href. Got ${JSON.stringify(href)}.`);
+}
+if (url.protocol !== 'https:') {
+  throw new Error(`<LinkKnop> needs an address that starts with https://. Got ${JSON.stringify(href)}.`);
+}
+
+const text = Astro.slots.has('default') ? (await Astro.slots.render('default')).trim() : '';
+if (text === '') {
+  throw new Error(`<LinkKnop href=${JSON.stringify(href)}> needs text between the tags, such as: Open de module.`);
+}
+---
+
+<p class="link-knop">
+  <a class="button" href={url.href} target="_blank" rel="noopener noreferrer">
+    <Fragment set:html={text} />
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+    </svg>
+    <span class="hidden-label">(opent in een nieuw tabblad)</span>
+  </a>
+</p>
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) calc(var(--space-4) + var(--space-1));
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: var(--on-primary);
+    font: inherit;
+    font-weight: var(--text-label-weight);
+    line-height: var(--text-body-line);
+    text-decoration: none;
+  }
+
+  .button:hover {
+    background: var(--primary-hover);
+  }
+
+  .button svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .hidden-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
