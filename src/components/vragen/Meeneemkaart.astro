@@ -1,79 +1,79 @@
 ---
-// What the student takes along from a module (docs/BRIEFING.md § 12, "Vraagtypes"):
+// What the student has learned so far (docs/BRIEFING.md § 12, "Vraagtypes"):
 //
-//   <Meeneemkaart id="mijn-kaart" vraag="Mijn kaart: als ik vastloop">
-//     <Rij situatie="Ik zit vast">Geef me één hint, niet de oplossing.</Rij>
-//     <Rij situatie="Ik kom fout uit">Dit is mijn oplossing: […] Waar gaat het fout?</Rij>
+//   <Stap titel="Je nieuwe skills">
+//   <Meeneemkaart>
+//     <Rij situatie="Context helpt">Geef AI je cursus, desnoods als afbeelding.</Rij>
+//     <Rij situatie="Uitleg vragen">Leg het eerst zelf uit, en laat AI je uitleg bijsturen.</Rij>
 //   </Meeneemkaart>
+//   </Stap>
 //
-// `id` is the stable key of the answer in localStorage, unique within the module.
-// Every row is a text field, filled in beforehand with the author's sentence, for
-// the student to make their own. The rows are read back into data here and handed
-// to the React island as props, with the client directive, so authors write
-// neither.
-//
-// The script below does the storing, not the island:
-//
-// - The card stores itself, with the author's sentences, when its step is shown,
-//   so it counts for whoever saw it. Until the player's script has run, every step
-//   is on screen, so this only starts looking after DOMContentLoaded, as the
-//   confetti does: `client:visible` alone would store the card at load. A step off
-//   the student's route is never shown, so its card stores nothing.
-// - Every keystroke stores its row. React puts the server's text back into a
-//   prefilled field when it hydrates, so what is typed before that survives only
-//   here; the island then restores it. Only the row typed in is written: before
-//   hydration the other fields still show the author's sentences, not the stored
-//   ones. In the capture phase, so that the summary, listening on the document,
-//   reads what was just typed if an author puts it on the same step.
-import MeeneemkaartIsland from './Meeneemkaart.tsx';
-import { checkQuestionId, checkText, decodeRows } from './authoring';
+// Something to read, not to fill in: no island and no script, nothing stored, not
+// in the summary. So it has no `id` and may appear as often as a module needs it;
+// the author writes per step the rows that are on the card at that moment. The
+// heading is the title of the step. The root is the <dl>, so that the card is one
+// part of the build-up of the step. Authors write no import.
+import { decodeRows } from './authoring';
 
-interface Props {
-  id: string;
-  vraag: string;
-}
-
-const id = checkQuestionId('Meeneemkaart', Astro.props.id, Astro.locals);
-const vraag = checkText('Meeneemkaart', 'vraag', Astro.props.vraag);
-const rows = decodeRows(id, Astro.slots.has('default') ? await Astro.slots.render('default') : '');
+const rows = decodeRows(Astro.slots.has('default') ? await Astro.slots.render('default') : '');
 ---
 
-<MeeneemkaartIsland id={id} question={vraag} rows={rows} client:visible />
+<dl class="card">
+  {
+    rows.map(({ situation, html }) => (
+      <div class="row">
+        <dt class="situation">{situation}</dt>
+        <dd class="sentence" set:html={html} />
+      </div>
+    ))
+  }
+</dl>
 
-<script>
-  import { moduleIdOf } from '../stappen/storage';
-  import { authorRowsOf, readTakeawayRows, writeTakeawayRows } from './answers';
-
-  function storeWhenShown(root: HTMLElement): void {
-    const moduleId = moduleIdOf(root);
-    const step = root.closest('[data-step]');
-    if (moduleId === null || step === null) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      observer.disconnect();
-      if (readTakeawayRows(moduleId, root) === null) writeTakeawayRows(moduleId, root, authorRowsOf(root));
-    });
-    observer.observe(step);
+<style>
+  /* Only design-system tokens (docs/DESIGN.md), no barometer colours. Green is the
+     student: the situations are `brand-text`. Height budget on 1366 × 640: see
+     docs/BRIEFING.md § 12, "Vraagtypes". A row of one line is 30px, of two lines
+     52px, with 4px between the rows. */
+  .card {
+    display: grid;
+    gap: var(--space-1);
+    max-width: 52rem;
+    margin: 0;
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll<HTMLElement>('[data-question="takeaway-card"]').forEach(storeWhenShown);
-  });
+  /* Space below the card only when the author wrote more after it. */
+  .card:not(:last-child) {
+    margin-bottom: var(--space-4);
+  }
 
-  document.addEventListener(
-    'input',
-    (event) => {
-      const field = event.target;
-      if (!(field instanceof HTMLTextAreaElement) || field.dataset.takeawayRow === undefined) return;
-      const root = field.closest<HTMLElement>('[data-question="takeaway-card"]');
-      const moduleId = root === null ? null : moduleIdOf(root);
-      if (root === null || moduleId === null) return;
-      const rows = readTakeawayRows(moduleId, root) ?? authorRowsOf(root);
-      const row = rows[Number(field.dataset.takeawayRow)];
-      if (row === undefined) return;
-      row.text = field.value;
-      writeTakeawayRows(moduleId, root, rows);
-    },
-    true,
-  );
-</script>
+  .row {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    column-gap: var(--space-3);
+    align-items: start;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+  }
+
+  .situation,
+  .sentence {
+    font-size: var(--text-small-size);
+    line-height: var(--text-small-line);
+    letter-spacing: var(--text-small-tracking);
+  }
+
+  .situation {
+    color: var(--brand-text);
+    font-weight: var(--text-label-weight);
+  }
+
+  .sentence {
+    margin: 0;
+    font-weight: var(--text-small-weight);
+  }
+
+  /* The last row is the new one: a sunken surface, nothing that moves or shouts. */
+  .row:last-child {
+    background: var(--surface-sunken);
+  }
+</style>

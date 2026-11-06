@@ -522,7 +522,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
     if (isIn(cards, tag)) continue;
     throw new Error(
       `Module "${id}": <Rij>${whereIs(tag)} is a row of a card and only works inside a <Meeneemkaart>, such as ` +
-        '<Meeneemkaart id="mijn-kaart" vraag="Mijn kaart"><Rij situatie="Ik zit vast">Geef me één hint.</Rij></Meeneemkaart>.',
+        '<Meeneemkaart><Rij situatie="Context helpt">Geef AI je cursus, desnoods als afbeelding.</Rij></Meeneemkaart>.',
     );
   }
   const choiceChatSteps: Record<string, string> = {};
@@ -581,7 +581,7 @@ export function checkModuleBody(id: string, body: string): ModuleOutline {
   };
   // Every component that stores an answer under an `id`.
   const questionTags = (): { component: string; tag: Tag }[] =>
-    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat', 'Flashcards', 'Meeneemkaart'].flatMap((component) =>
+    ['Reflectie', 'Meerkeuze', 'DenkEerst', 'Prompt', 'Meting', 'Keuzechat', 'Flashcards'].flatMap((component) =>
       tagsOf(id, body, component).map((tag) => ({ component, tag })),
     );
 
