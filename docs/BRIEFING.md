@@ -58,7 +58,7 @@ de buurt, op een laptop.
 | Graad | Wat ze doen |
 |---|---|
 | Eerste | Geen generatieve AI: een keuze van de school, in lijn met de grens van 13 jaar in de voorwaarden van de tools (§ 7). Ze herkennen AI in hun dagelijks leven (algoritmes, AI-overzicht in Google, spraakassistenten), bekijken voorbeeldgesprekken en vooraf gemaakte antwoorden, en werken eventueel met een niet-generatieve tool zonder account, zoals Teachable Machine. |
-| Tweede | Proberen zelf AI uit op een herkenbare taak die ze toch al moeten maken. Ze leren vragen bijsturen en beweringen controleren met betrouwbare, onafhankelijke bronnen. |
+| Tweede | Proberen zelf AI uit op een herkenbare taak die ze toch al moeten maken. Ze leren AI gericht inzetten op hun eigen leerstof, en bekijken de antwoorden kritisch: ze beoordelen zelf of ze ermee akkoord gaan, en kijken na. |
 | Derde | Moeilijkere studie- of beroepstaken. Ze zoeken ook minder opvallende fouten en verantwoorden hun keuzes. Wie wil, kan zich technisch verdiepen. |
 
 Taal en ondersteuning passen zich aan voor de B-stroom en de finaliteiten:
@@ -124,7 +124,7 @@ en geen cookies.
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
 | Wat is AI? AI herkennen en begrijpen | 1e en 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
-| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar met de routes hoofdstuk, oefeningen of een taak, iets van buiten kennen en presentatie | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
+| AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar als één pad van 37 stappen | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
 | AI herkennen, kritisch omgaan, tools en promptvoorbeelden | 1e, ook B-stroom | wordt aangeleverd | `ai-herkennen-1e-graad` |
@@ -318,15 +318,17 @@ het, tenzij de auteur een andere opbouw voorziet.
 - **Controle.** Meet elke stap van elke route, met elke tool, met de vragen
   in hun hoogste toestand (voorbeeldantwoord getoond, alle opties
   aangeklikt): de inhoud van de kaart mag niet scrollen.
-- **Routes in de 2e graad.** `ai-als-coach-2e-graad` volgt dit patroon, in
-  eenvoudigere taal, met wat de 3e graad nog niet heeft. Het contextexperiment
-  heeft twee chats, en de sessie werkt verder in chat 2. De module sluit af met
-  een `<Meeneemkaart>` in plaats van een eigen coachprompt, en `<Keuzechat>`,
-  `<Meting>` en `<Flashcards>` komen in de plaats van vrije reflecties. Wie
-  niets concreets heeft, kopieert een startpakket uit een `<Hulp>`. Een route
-  telt **hoogstens 27 stappen**, gedeeld plus route: het gedeelde deel telt er
-  19, dus een route hoogstens 8. Dat is ongeveer 2,5 minuut per stap voor 70
-  minuten; die schatting is nog niet gemeten bij leerlingen.
+- **Eén pad in de 2e graad.** `ai-als-coach-2e-graad` heeft geen takken: één pad
+  van 37 stappen, in eenvoudigere taal. De leerling kijkt in de eigen planner en
+  bouwt met die taak een reeks skills op: context geven, uitleg vragen, zien wat
+  belangrijk is, onthouden, vastzitten, meer oefenen, een taal spreken. Na elke
+  skill volgt een stap met een `<Meeneemkaart>`, *Je nieuwe skills*, met één rij
+  erbij. Het contextexperiment heeft twee chats, en de leerling werkt verder in chat
+  2; oefeningen zonder cursus en het taalgesprek krijgen een eigen chat. Opladen is
+  voorwaardelijk: wie de cursus niet digitaal heeft, gebruikt de prompt zonder, dus
+  er is geen startpakket. Kritisch kijken zit in de stappen zelf: de leerling
+  beoordeelt het antwoord van de AI en kijkt na. De `duur` blijft 70 minuten; die is
+  nog niet gemeten bij leerlingen.
 
 ## 7. AI-gebruik en de AI-barometer
 
