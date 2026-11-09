@@ -20,7 +20,9 @@ import {
   type Question,
   type Step,
 } from "./model";
-import { clearModule, readStored, writeStored } from "../stappen/storage";
+import { clearModule, readSchool, readStored, writeStored } from "../stappen/storage";
+import { CHANGED as SCHOOL_CHANGED } from "../stappen/schoolLink";
+import { schools } from "../../config/smartschool";
 import SchoolLinkSlot from "../stappen/SchoolLinkSlot";
 import { Icon, Photo, Special, useModalFocus, messages } from "./SpecialSteps";
 import { SourceCard, VideoCard } from "./Interacties";
@@ -471,12 +473,30 @@ function Summary({
 }) {
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
+  // Whether the student picked a school in the field themselves; from then on
+  // the stored school no longer overrides the field.
+  const schoolTouched = useRef(false);
   const [klas, setKlas] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [downloaded, setDownloaded] = useState(false);
   const done = completed(progress);
   const score = scoreFor(progress);
+  // The field starts with the school the student already chose for the links
+  // to Smartschool (`ai-leerlijn:school`), and follows a change in the school
+  // dialog until the student picks one here. It only reads: a choice in the
+  // field is not stored (owner's decision, #124). In an effect, because
+  // localStorage does not exist during the server render.
+  useEffect(() => {
+    const sync = () => {
+      if (schoolTouched.current) return;
+      const stored = readSchool();
+      setSchool(schools.find((item) => item.platform === stored)?.label ?? "");
+    };
+    sync();
+    window.addEventListener(SCHOOL_CHANGED, sync);
+    return () => window.removeEventListener(SCHOOL_CHANGED, sync);
+  }, []);
   async function download() {
     setBusy(true);
     setError("");
@@ -541,9 +561,16 @@ function Summary({
               />
             </label>
             <label>Je school
-              <select value={school} onChange={(e) => setSchool(e.target.value)} required>
+              <select
+                value={school}
+                onChange={(e) => {
+                  schoolTouched.current = true;
+                  setSchool(e.target.value);
+                }}
+                required
+              >
                 <option value="">Kies je school</option>
-                {["DIA", "SJCA", "SJIB", "SMA"].map((item) => <option key={item} value={item}>{item}</option>)}
+                {schools.map((item) => item.label).sort().map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </label>
             <label>Je klas
