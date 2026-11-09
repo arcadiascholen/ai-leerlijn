@@ -51,7 +51,7 @@ iets voor later; er is nu geen themawissel.
 | `line` | `#d6dfcc` | Hairlines en scheidingen tussen blokken. Niet voor randen van invoervelden (te zwak). |
 | `line-strong` | `#7a8c70` | Rand van invoervelden, antwoordopties en secundaire knoppen; haalt 3:1 op `surface` en `bg`. |
 | `ink` | `#19271c` | Lopende tekst op `bg`, `surface`, `surface-sunken` (≥ 14:1). |
-| `ink-muted` | `#55625a` | Hulptekst, meta (duur, stapnummer), placeholders op de drie vlakken (≥ 4.5:1). |
+| `ink-muted` | `#55625a` | Hulptekst, meta (stapnummer), placeholders op de drie vlakken (≥ 4.5:1). |
 | `forest` | `#103e18` | Koppen en het groen van het AI-icoon op de barometer. Tekstkleur op `bg` en `surface`. |
 | `brand` | `#76b82a` | Arcadia-groen uit het logo. Alleen vlakken, lijnen, voortgang en knopen, nooit tekst op licht. Tekst erop: `on-brand`. |
 | `on-brand` | `#103e18` | Tekst en iconen op een `brand`-vlak (5:1). |

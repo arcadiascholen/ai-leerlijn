@@ -19,9 +19,10 @@ const modules = defineCollection({
       // One sentence describing what the student does in the module.
       kort: z.string().min(1),
       graden: z.array(z.literal([1, 2, 3])).min(1),
-      // Difficulty in stars.
+      // Difficulty, 1 to 4. Internal, like `duur`: not shown to the student
+      // (BRIEFING § 5, "Het overzicht").
       niveau: z.number().int().min(1).max(4),
-      // Minutes.
+      // Minutes. Internal, not shown.
       duur: z.number().int().positive().default(70),
       // `zelf`: the student uses AI; `voorbeelden`: the student looks at
       // prepared conversations; `geen`: no AI.

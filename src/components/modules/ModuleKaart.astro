@@ -1,23 +1,23 @@
 ---
 // One module in the overview (src/pages/modules/index.astro), built from its
-// frontmatter (docs/BRIEFING.md § 5): title, `kort`, grades, level in stars,
-// duration, and whether the student uses AI. A module that is ready links to
-// its page; one with `status: binnenkort` is dimmed, has no link and says
-// "Binnenkort".
+// frontmatter (docs/BRIEFING.md § 5): title, `kort`, grades and whether the
+// student uses AI. `niveau` and `duur` stay internal and are not shown:
+// students choose on interest and grade, not on the least effort. A module
+// that is ready links to its page; one with `status: binnenkort` is dimmed,
+// has no link and says "Binnenkort".
 import type { CollectionEntry } from 'astro:content';
 import AiGebruik from './AiGebruik.astro';
-import { gradesLabel, MAX_LEVEL } from './labels';
+import { gradesLabel } from './labels';
 
 interface Props {
   entry: CollectionEntry<'modules'>;
 }
 
 const { entry } = Astro.props;
-const { title, kort, graden, niveau, duur, aiGebruik, status } = entry.data;
+const { title, kort, graden, aiGebruik, status } = entry.data;
 const available = status === 'beschikbaar';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const href = `${base}/modules/${entry.id}/`;
-const stars = Array.from({ length: MAX_LEVEL }, (_, index) => index < niveau);
 ---
 
 <article class:list={['card', { 'card--soon': !available }]}>
@@ -32,26 +32,6 @@ const stars = Array.from({ length: MAX_LEVEL }, (_, index) => index < niveau);
   </p>
   <p class="card-kort">{kort}</p>
   <div class="card-foot">
-    <p class="card-meta">
-      <span class="card-level">
-        Niveau
-        <span class="card-stars" aria-hidden="true">
-          {stars.map((filled) => (
-            <svg viewBox="0 0 24 24" class:list={{ filled }}>
-              <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z" />
-            </svg>
-          ))}
-        </span>
-        <span class="sr-only">{niveau} van {MAX_LEVEL}</span>
-      </span>
-      <span class="card-duration">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v5l3 2" />
-        </svg>
-        {duur} min
-      </span>
-    </p>
     <AiGebruik value={aiGebruik} />
   </div>
 </article>
@@ -152,57 +132,10 @@ const stars = Array.from({ length: MAX_LEVEL }, (_, index) => index < niveau);
     letter-spacing: var(--text-small-tracking);
   }
 
+  /* Pushed to the bottom, so the AI sentence lines up across a row. */
   .card-foot {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
     margin-top: auto;
     padding-top: var(--space-3);
-  }
-
-  .card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-1) var(--space-4);
-    margin: 0;
-    color: var(--ink-muted);
-    font-size: var(--text-small-size);
-    line-height: var(--text-small-line);
-    font-weight: var(--text-small-weight);
-    letter-spacing: var(--text-small-tracking);
-  }
-
-  .card-level,
-  .card-duration {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-  }
-
-  .card-stars {
-    display: inline-flex;
-    gap: 1px;
-  }
-
-  .card-meta svg {
-    flex: none;
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .card-stars svg {
-    stroke: var(--line-strong);
-  }
-
-  .card-stars svg.filled {
-    fill: var(--brand-text);
-    stroke: var(--brand-text);
   }
 
   /* Not ready yet: dimmed, without lowering text contrast below 4.5:1. */
@@ -216,11 +149,6 @@ const stars = Array.from({ length: MAX_LEVEL }, (_, index) => index < niveau);
   .card--soon .card-title,
   .card--soon .card-top {
     color: var(--ink-muted);
-  }
-
-  .card--soon .card-stars svg.filled {
-    fill: var(--ink-muted);
-    stroke: var(--ink-muted);
   }
 
   .card--soon :global(.ai-use) {
