@@ -99,8 +99,11 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    ze staan in de browser van de leerling en in de pdf die de leerling zelf
    oplaadt. Dat het formulier een bestand aanvaardt, wordt in Smartschool
    geregeld, buiten deze repo. De resultaten komen in het LVS,
-   zodat klastitularissen zien wie heeft ingediend. De startpagina (stap 3)
-   en de samenvatting aan het einde van een module linken ernaar. Wie een
+   zodat klastitularissen zien wie heeft ingediend. Het formulier bestaat
+   per school, net als de nulmeting. De startpagina (stap 3), de samenvatting
+   aan het einde van een module, het laatste scherm van *AI onder de loep* en
+   het laatste paneel van *Vibecoding* linken ernaar. Het moet binnen zijn op
+   dinsdag 10 november, uiterlijk om 16.20 uur. Wie een
    module op Bookwidgets volgt, levert daar het werk in en heeft geen pdf, maar
    vult het eindformulier wel in; het formulier in Smartschool houdt daar
    rekening mee (§ 5, *Een module op een ander platform*).
@@ -543,9 +546,6 @@ bediening met het toetsenbord, en tekst die met voorleessoftware werkt.
 
 ## 11. Open beslissingen
 
-- **Deadline.** Tegen welk uur dient de leerling het eindformulier in?
-  Zodra het bekend is, komt het in `src/config/smartschool.ts`
-  (`eindformulierUur`); tot dan zegt de startpagina dat het uur nog volgt.
 - **Referentiekader.** De vier doelen of de zes doelstellingen van
   Kenniscentrum Digisprong?
 
@@ -1776,6 +1776,12 @@ tussen de tags). Ze vallen pas als de pagina gerenderd wordt: een module met
   staat de knop *Open het eindformulier* er, die Smartschool in een nieuw
   tabblad opent. Verandert een antwoord daarna, dan verdwijnen de
   bevestiging en de knop, en downloadt de leerling opnieuw.
+- **De knop is per school.** Het is een `<SchoolLink>` (zie *Een link per
+  school*), met de school die de leerling koos, meestal al bij de nulmeting.
+  Erboven staat *School: DIA · wijzigen*. Is de school nog niet gekend, dan
+  vraagt de knop ernaar in dezelfde dialoog als op de startpagina, en
+  bewaart de keuze. De knop staat vanaf het laden in de pagina, verborgen
+  tot na de download.
 - **Als de pdf mislukt** (jsPDF laadt niet, bijvoorbeeld op een haperende
   verbinding, of het maken gooit een fout), verschijnt zonder foutmelding:
   *Downloaden lukte niet. Klik op **Afdrukken** en kies bij Bestemming
@@ -1847,16 +1853,26 @@ Denk terug aan je sessie. Er is geen fout antwoord.
 
 - De links staan op één plek, in `src/config/smartschool.ts`: `nulmeting` (de
   vragenlijst vóór de module, stap 1 op de startpagina) en `eindformulier`
-  (één formulier voor alle modules, stap 3 op de startpagina en de
-  samenvatting). Daar staat ook `eindformulierUur`, het uur waarop het
-  eindformulier binnen moet zijn, geschreven zoals de leerling het leest
-  (`'16 uur'`), en `schools`, de vier scholen met hun platform.
+  (één formulier voor alle modules). Beide zijn een **sjabloon per school**
+  (zie *Een link per school*) en gaan altijd via `<SchoolLink>`. Daar staat
+  ook `eindformulierUur`, het uur waarop het eindformulier binnen moet zijn,
+  geschreven zoals de leerling het leest (`'16.20 uur'`), en `schools`, de
+  vier scholen met hun platform.
+- Het eindformulier staat op vier plekken: stap 3 van de startpagina
+  (`src/pages/index.astro`), de samenvatting aan het einde van een module
+  (`Samenvatting.astro`, zie *De samenvatting*), het laatste scherm van *AI
+  onder de loep* (*Open het reflectieformulier*,
+  `src/pages/modules/verantwoord-gebruik.astro`) en het paneel `verslag` van
+  *Vibecoding*, naast de downloadknop (`src/components/vibecoding/Vibe.astro`).
 - `null` betekent dat de waarde nog niet bekend is. De startpagina en de
   samenvatting tonen dan een duidelijke, niet-klikbare melding, zoals *De
-  link naar het eindformulier volgt nog.* Wie de link invult, vult het
-  volledige `https://`-adres in; daarna verschijnt de knop vanzelf. Een
-  adres dat geen geldige `https://`-URL is, laat de build falen: de
-  startpagina controleert beide links, de samenvatting het eindformulier.
+  link naar het eindformulier volgt nog.*; AI onder de loep en Vibecoding
+  tonen dan geen knop. Wie de link invult, vult het sjabloon in; daarna
+  verschijnt de knop vanzelf.
+- Een adres dat geen geldige `https://`-URL is, laat de build falen.
+  `checkLink`, de controle voor een gewoon adres, laat de build ook falen op
+  `{` of `}`: zo kan een sjabloon nooit als gewoon adres in de pagina
+  terechtkomen.
 
 ### Een link per school
 
@@ -1890,6 +1906,28 @@ tabblad opent, zonder de vraag naar de school. Een ongeldig adres, een adres zon
   misklikt telkens op de verkeerde aanmelding terechtkomen.
 - Zonder JavaScript staan de vier links op de pagina. Is de opslag geblokkeerd,
   dan werkt de link gewoon en komt de dialoog bij elke klik terug.
+- `variant="secondary"` geeft de knop het uitzicht van een secundaire knop,
+  waar hij niet de hoofdactie is (stap 3 op de startpagina, AI onder de loep,
+  Vibecoding). `showSchool={false}` laat de regel *School: … · wijzigen* weg,
+  voor een tweede link op een pagina waar de eerste die al toont: stap 3 op
+  de startpagina, die anders niet meer op 1366 × 640 past. Kiest de leerling
+  bij de ene link een school, dan volgen alle links op de pagina.
+- **In een React-island.** Het script van `SchoolLink.astro` zoekt bij het
+  laden één keer naar de links in de pagina. Een link die React later
+  invoegt, zou geen dialoog en geen klikgedrag krijgen. Daarom zit het gedrag
+  in `src/components/stappen/schoolLink.ts`, en gebruikt een island dezelfde
+  functies. Het `.astro`-bestand rond het island geeft de `<SchoolLink>` mee
+  als children:
+
+  ```astro
+  <Island client:load><SchoolLink href={eindformulier}>…</SchoolLink></Island>
+  ```
+
+  Astro maakt de link dan op de server, met de vier adressen, de dialoog en de
+  stijl van `<SchoolLink>`. Het island toont die children via
+  `SchoolLinkSlot.tsx`, dat de link koppelt zodra React hem in de pagina
+  zette. Geen tweede keuzemenu, geen eigen opslag. Zo werken de samenvatting,
+  AI onder de loep en Vibecoding.
 
 
 ### Aanvulling vibecoding — eigen lesbestanden

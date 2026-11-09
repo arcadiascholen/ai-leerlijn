@@ -1,7 +1,21 @@
 ---
 import Vibe from './Vibe.tsx';
+import SchoolLink from '../stappen/SchoolLink.astro';
+import { eindformulier } from '../../config/smartschool';
 interface Props { pane: string }
 const { pane } = Astro.props;
+// The last pane links to the final form, which exists once per school: a
+// <SchoolLink>, passed to the island as children (BRIEFING § 12, "Een link per
+// school").
+const form = pane === 'verslag' ? eindformulier : null;
 ---
-<Vibe pane={pane} client:load />
-<noscript>Voor de keuzes, het bewaren van antwoorden en de PDF is JavaScript nodig.</noscript>
+{form !== null ? (
+  <Vibe pane={pane} client:load>
+    <SchoolLink href={form} variant="secondary">Open het eindformulier</SchoolLink>
+  </Vibe>
+) : (
+  <Vibe pane={pane} client:load />
+)}
+{/* In a Fragment: right after the expression above, the Astro compiler
+    otherwise puts the text after an empty <noscript>, on every step. */}
+<Fragment><noscript>Voor de keuzes, het bewaren van antwoorden en de PDF is JavaScript nodig.</noscript></Fragment>

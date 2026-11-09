@@ -218,6 +218,8 @@
 .vibe[data-pane=verbeteren] > p {font-size:var(--text-body-size);line-height:var(--text-body-line)}
 .vibe[data-pane=verslag] .v-actions > button {background:var(--primary);border-color:var(--primary);color:var(--on-primary);padding:var(--space-3) var(--space-4)}
 .vibe[data-pane=verslag] .v-actions > button:hover {background:var(--primary-hover)}
+/* The final form (a <SchoolLink>) next to the download button, bottoms aligned: under it, the step no longer fits on 1366 × 640 once the notice shows. */
+.vibe[data-pane=verslag] .v-form-link {display:inline-block;vertical-align:bottom;margin-left:var(--space-3)}
 .vibe[data-pane=cyclus] {max-width:850px;margin-inline:auto}
 .vibe[data-pane=bestaat] {max-width:800px;margin-inline:auto}
 @media(max-width:900px){.v-columns {grid-template-columns:1fr;gap:var(--space-4)}.v-actions {border-left:0;padding-left:0}.v-actions .v-prompt {height:180px}}
