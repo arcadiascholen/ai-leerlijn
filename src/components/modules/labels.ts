@@ -16,9 +16,6 @@ export const aiUseSentence: Record<AiUse, string> = {
   geen: 'Je gebruikt geen AI.',
 };
 
-// The highest level in stars (schema: `niveau` 1 to 4).
-export const MAX_LEVEL = 4;
-
 // "1e graad", "2e en 3e graad", "1e, 2e en 3e graad".
 export function gradesLabel(grades: readonly number[]): string {
   const names = Array.from(new Set(grades))

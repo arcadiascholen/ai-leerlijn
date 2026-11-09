@@ -84,7 +84,7 @@ start ─▶ nulmeting ─▶ modulekeuze ─▶ module (± 70 min) ─▶ eindf
    meten. Een ander team stelt ze op; **de site linkt ernaar** vanuit stap 1
    van de startpagina, zodat de volgorde nulmeting → module bewaakt blijft.
 3. **Modulekeuze.** De leerling kiest **één module** uit het aanbod
-   (`/ai-leerlijn/modules/`), op basis van interesse, graad en niveau. Zelf
+   (`/ai-leerlijn/modules/`), op basis van interesse en graad. Zelf
    kiezen verhoogt de motivatie en voorkomt frustratie bij gevorderde
    leerlingen. De eerste graad gebruikt **dezelfde pagina** met het filter op
    graad; een link met `?graad=1` opent ze meteen gefilterd.
@@ -177,8 +177,8 @@ worden uit de frontmatter opgebouwd.
 | `title` | tekst | Titel zoals de leerling hem ziet |
 | `kort` | tekst | Eén zin over wat je in de module doet |
 | `graden` | lijst uit `1`, `2`, `3`, minstens één | Voor welke graden de module bedoeld is |
-| `niveau` | geheel getal van `1` tot `4` | Moeilijkheid in sterren |
-| `duur` | geheel getal in minuten, standaard `70` | Hoe lang de module ongeveer duurt |
+| `niveau` | geheel getal van `1` tot `4` | Moeilijkheid; intern, niet getoond (zie *Het overzicht*) |
+| `duur` | geheel getal in minuten, standaard `70` | Hoe lang de module ongeveer duurt; intern, niet getoond |
 | `aiGebruik` | `zelf`, `voorbeelden` of `geen` | `zelf`: de leerling gebruikt zelf AI; `voorbeelden`: de leerling bekijkt vooraf gemaakte gesprekken; `geen`: geen AI |
 | `doelen` | lijst uit `1` tot `4`, minstens één | Welke van de vier doelen (§ 1) de module dekt |
 | `status` | `binnenkort`, `beschikbaar` of `verborgen` | Een module die nog niet klaar is (`binnenkort`), staat zichtbaar maar niet klikbaar in het overzicht en krijgt geen eigen pagina. Een module met `verborgen` staat niet in het overzicht en heeft alleen in `npm run dev` een pagina |
@@ -199,9 +199,9 @@ in het overzicht één kaart per versie.
 ### Het overzicht
 
 - `/ai-leerlijn/modules/` toont één kaart per module, gesorteerd op
-  `volgorde`. Een kaart toont de titel, `kort`, de graden, het niveau als
-  sterren (met een tekstalternatief: *Niveau 2 van 4*), de duur en de zin
-  over AI-gebruik (§ 7).
+  `volgorde`. Een kaart toont de titel, `kort`, de graden en de zin over
+  AI-gebruik (§ 7). Niveau en duur staan er bewust niet op: anders kiezen
+  leerlingen de module die het minst inspanning vraagt.
 - Een beschikbare module is een link naar haar pagina. Een module met
   `status: binnenkort` staat erbij, gedimd, zonder link en met het label
   *Binnenkort*.
@@ -215,8 +215,8 @@ in het overzicht één kaart per versie.
 - Het overzicht telt nu zes kaarten, in twee rijen. Houd `kort` op ongeveer 60
   tekens (twee regels op een kaart) en de titel op hoogstens twee regels; wat
   langer is of meer kaarten vraagt, laat deze pagina scrollen. Dat mag hier: het
-  is geen stap. Nu scrolt ze een klein beetje op 1366 × 640 (663 px hoog), door
-  de langere `kort` van `verantwoord-gebruik`.
+  is geen stap. Zonder niveau en duur op de kaart past ze nu op 1366 × 640
+  zonder te scrollen.
 
 ## 6. Vorm: korte stappen, vragen centraal
 
