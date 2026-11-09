@@ -126,11 +126,11 @@ en geen cookies.
 
 | Module | Graad | Status | Bestand(en) |
 |---|---|---|---|
-| Wat is AI? AI herkennen en begrijpen | 1e en 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
+| AI-Quest: AI herkennen, afspraken op school, echt of fake | 1e, ook B-stroom | beschikbaar, op Bookwidgets | `ai-herkennen-1e-graad` |
+| Wat is AI? AI herkennen en begrijpen | 2e | beschikbaar, op Bookwidgets | `wat-is-ai` |
 | AI als hulpmiddel bij het leren: AI als coach | 2e en 3e, basis tot moeilijk | 3e graad beschikbaar met de takken schriftelijke toets, mondeling examen, debat en presentatie; 2e graad beschikbaar als één pad van 37 stappen | `ai-als-coach-2e-graad`, `ai-als-coach-3e-graad` |
 | Vibecoding | 2e en 3e | wordt aangeleverd | `vibecoding` |
 | Ethiek, AI-beleid en verantwoord gebruik | 2e en 3e | wordt aangeleverd | `verantwoord-gebruik` |
-| AI-Quest: AI herkennen, afspraken op school, echt of fake | 1e, ook B-stroom | beschikbaar, op Bookwidgets | `ai-herkennen-1e-graad` |
 
 Elke module staat al als **plaatshouder** in `src/content/modules/`, met
 `status: binnenkort`, een werktitel en een indicatieve `niveau`,
@@ -199,7 +199,10 @@ in het overzicht één kaart per versie.
 ### Het overzicht
 
 - `/ai-leerlijn/modules/` toont één kaart per module, gesorteerd op
-  `volgorde`. Een kaart toont de titel, `kort`, de graden en de zin over
+  `volgorde`. Die volgt de graad: eerst de modules voor de 1e graad, dan
+  die voor de 2e, dan die voor de 2e en 3e samen, en pas dan die voor de
+  3e. Een nieuwe module krijgt een `volgorde` die haar in haar groep zet
+  (nu 10 tot 60, in stappen van 10). Een kaart toont de titel, `kort`, de graden en de zin over
   AI-gebruik (§ 7). Niveau en duur staan er bewust niet op: anders kiezen
   leerlingen de module die het minst inspanning vraagt.
 - Een beschikbare module is een link naar haar pagina. Een module met
