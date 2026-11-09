@@ -27,7 +27,7 @@ export const schools = [
 // The questionnaire before the module (the baseline), a template. Step 1 on
 // the start page (src/pages/index.astro).
 export const nulmeting: string | null =
-  'https://{school}.smartschool.be/forms/form/3617/8e7c06b3-f89c-4bfa-8d36-758298a7b329';
+  'https://{school}.smartschool.be/forms/form/3617/99294b8d-25ce-4ab8-83cc-7a659e58a877';
 
 // The final form, one for all modules, a template. Step 3 on the start page
 // (src/pages/index.astro), the summary at the end of a module
