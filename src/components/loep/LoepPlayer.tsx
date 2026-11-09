@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createEvidence } from "./pdf";
 import {
   chapters,
@@ -21,6 +21,7 @@ import {
   type Step,
 } from "./model";
 import { clearModule, readStored, writeStored } from "../stappen/storage";
+import SchoolLinkSlot from "../stappen/SchoolLinkSlot";
 import { Icon, Photo, Special, useModalFocus, messages } from "./SpecialSteps";
 import { SourceCard, VideoCard } from "./Interacties";
 import "./loep.css";
@@ -461,11 +462,11 @@ function Choices({
 }
 function Summary({
   progress,
-  formHref,
+  form,
   onMissing,
 }: {
   progress: Progress;
-  formHref: string | null;
+  form: ReactNode;
   onMissing: () => void;
 }) {
   const [name, setName] = useState("");
@@ -574,24 +575,20 @@ function Summary({
         <strong>Daarna: reflectie en PDF-upload</strong>
         <p>Vul het Smartschoolformulier in en beantwoord de korte reflectievragen. Upload op het einde je PDF als leerbewijs. Pas daarna is je opdracht volledig.</p>
         <p>In het Smartschoolbericht dat je ontving of in de planner staat uitgelegd hoe je het formulier vindt en invult.</p>
-        {formHref ? (
-          <a
-            className="loep-text-button"
-            href={formHref}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open het reflectieformulier ↗
-          </a>
+        {form !== undefined && form !== null ? (
+          <SchoolLinkSlot>{form}</SchoolLinkSlot>
         ) : null}
       </div>
     </div>
   );
 }
+// `children`: the button to the form in Smartschool, a <SchoolLink> from
+// src/pages/modules/verantwoord-gebruik.astro; missing while the link is not
+// known.
 export default function LoepPlayer({
-  formHref = null,
+  children,
 }: {
-  formHref?: string | null;
+  children?: ReactNode;
 }) {
   const [progress, setProgress] = useState<Progress>(freshProgress);
   const [loaded, setLoaded] = useState(false);
@@ -846,7 +843,7 @@ export default function LoepPlayer({
           ) : step.kind === "summary" ? (
             <Summary
               progress={progress}
-              formHref={formHref}
+              form={children}
               onMissing={() =>
                 goTo(
                   route.find(

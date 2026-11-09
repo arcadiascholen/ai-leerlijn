@@ -1,10 +1,18 @@
 ---
 import Base from '../../layouts/Base.astro';
 import LoepPlayer from '../../components/loep/LoepPlayer';
-import {checkLink,eindformulier} from '../../config/smartschool';
-const formHref=checkLink('eindformulier',eindformulier);
+import SchoolLink from '../../components/stappen/SchoolLink.astro';
+import {eindformulier} from '../../config/smartschool';
+// The form on the last screen exists once per school: a <SchoolLink>, passed
+// to the island as children (BRIEFING § 12, "Een link per school").
 ---
 <Base title="AI onder de loep" description="Onderzoek AI en zijn gevolgen in vier interactieve uitdagingen. Bouw je eigen AI-kompas." fill>
-  <LoepPlayer client:load formHref={formHref}/>
+  {eindformulier !== null ? (
+    <LoepPlayer client:load>
+      <SchoolLink href={eindformulier} variant="secondary">Open het reflectieformulier</SchoolLink>
+    </LoepPlayer>
+  ) : (
+    <LoepPlayer client:load />
+  )}
   <noscript><p>Voor de interactieve opdrachten heb je JavaScript nodig. Zet het aan in je browser en herlaad de pagina.</p></noscript>
 </Base>

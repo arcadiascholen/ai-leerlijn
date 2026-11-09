@@ -18,6 +18,7 @@ import {
   type PdfMoment,
   type PdfSummary,
 } from './pdf';
+import SchoolLinkSlot from './SchoolLinkSlot';
 import { moduleIdOf, readStored, START_KEY } from './storage';
 import styles from './Samenvatting.module.css';
 
@@ -64,8 +65,10 @@ const PRINTED_LABEL = 'Afgedrukt';
 
 interface Props {
   readonly moduleTitle: string;
-  // The final form in Smartschool, or null while the link is not known.
-  readonly formUrl: string | null;
+  // The button to the final form in Smartschool: a <SchoolLink> from
+  // Samenvatting.astro, rendered on the server. Missing while the link is not
+  // known.
+  readonly children?: ReactNode;
 }
 
 interface Choice {
@@ -309,14 +312,6 @@ function PrintIcon() {
   );
 }
 
-function ExternalIcon() {
-  return (
-    <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
-    </svg>
-  );
-}
-
 // " · Ga naar stap n", after an empty answer or an open choice.
 function StepLink({ step }: { readonly step: number | null }) {
   if (step === null) return null;
@@ -376,7 +371,7 @@ function OnPaper({ moduleTitle, collected }: { readonly moduleTitle: string; rea
   );
 }
 
-export default function Samenvatting({ moduleTitle, formUrl }: Props) {
+export default function Samenvatting({ moduleTitle, children }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const emptyTitleId = useId();
   // The signature of what was last downloaded or offered for printing.
@@ -524,18 +519,17 @@ export default function Samenvatting({ moduleTitle, formUrl }: Props) {
             Afdrukken
           </button>
         )}
-        {done &&
-          (formUrl !== null ? (
-            <a ref={appearOnMount} className={styles.primary} href={formUrl} target="_blank" rel="noopener noreferrer">
-              Open het eindformulier
-              <ExternalIcon />
-              <span className={styles.srOnly}> (opent in een nieuw tabblad)</span>
-            </a>
-          ) : (
+        {/* In the page from the start, hidden until the download: the link
+            is wired once and keeps the school (SchoolLinkSlot.tsx). */}
+        {children !== undefined && children !== null ? (
+          <SchoolLinkSlot hidden={!done}>{children}</SchoolLinkSlot>
+        ) : (
+          done && (
             <p ref={appearOnMount} className={styles.pending}>
               De link naar het eindformulier volgt nog.
             </p>
-          ))}
+          )
+        )}
         <p ref={statusRef} role="status" className={styles.status} data-tone={tone}>
           {mode === 'downloaded' && (
             <>

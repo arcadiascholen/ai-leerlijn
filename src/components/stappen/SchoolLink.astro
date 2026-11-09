@@ -13,19 +13,32 @@
 //
 // Without JavaScript the four links are on the page, without a dialog.
 //
+// `variant="secondary"` gives the button the look of a secondary button, where
+// it is not the main action of its place. `showSchool={false}` leaves out the
+// line "School: X · wijzigen", for a second link on a page where the first one
+// already shows it (the start page, which has to fit on 1366 × 640).
+//
+// Inside a React island it is passed as children by the island's .astro
+// wrapper, and the island renders it with SchoolLinkSlot.tsx, which wires it
+// with the same script (schoolLink.ts).
+//
 // A bad template fails the build (`schoolLinks` in src/config/smartschool.ts).
 import { schoolLinks } from '../../config/smartschool';
 
 interface Props {
   href: string;
+  variant?: 'primary' | 'secondary';
+  showSchool?: boolean;
 }
 
-const links = schoolLinks(Astro.props.href);
+const { href, variant = 'primary', showSchool = true } = Astro.props;
+const links = schoolLinks(href);
+const buttonClass = `button button-${variant}`;
 const text = await Astro.slots.render('default');
 const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5';
 ---
 
-<div class="school-link" data-school-link>
+<div class="school-link" data-school-link data-show-school={showSchool ? undefined : 'false'}>
   <div class="school-scripted">
     <p class="school-current" data-school-current hidden>
       School: <strong data-school-label></strong> ·
@@ -34,12 +47,12 @@ const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a
 
     {/* Exactly one of these two shows: same look, but asking for the school is
         a button, going somewhere is a link. */}
-    <button type="button" class="button button-primary" data-school-ask aria-haspopup="dialog">
+    <button type="button" class={buttonClass} data-school-ask aria-haspopup="dialog">
       <Fragment set:html={text} />
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d={newTabIcon} /></svg>
       <span class="sr-only">(opent in een nieuw tabblad)</span>
     </button>
-    <a class="button button-primary" data-school-go target="_blank" rel="noopener noreferrer" hidden>
+    <a class={buttonClass} data-school-go target="_blank" rel="noopener noreferrer" hidden>
       <Fragment set:html={text} />
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d={newTabIcon} /></svg>
       <span class="sr-only">(opent in een nieuw tabblad)</span>
@@ -129,7 +142,8 @@ const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a
     letter-spacing: var(--text-small-tracking);
   }
 
-  .school-current[hidden] {
+  .school-current[hidden],
+  .school-link[data-show-school='false'] .school-current {
     display: none;
   }
 
@@ -150,6 +164,7 @@ const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a
   }
 
   .school-change:hover {
+    background: none;
     color: var(--forest);
   }
 
@@ -237,13 +252,24 @@ const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a
     background: color-mix(in srgb, var(--ink) 40%, transparent);
   }
 
+  /* The type of the dialog is set here, not left to the page: inside an
+     island the styles of the island would reach it too. */
   .school-dialog h2 {
     margin: 0 0 var(--space-2);
+    color: var(--forest);
+    font-size: var(--text-h2-size);
+    line-height: var(--text-h2-line);
+    font-weight: var(--text-h2-weight);
+    letter-spacing: var(--text-h2-tracking);
   }
 
   .school-dialog p {
     max-width: none;
     margin: 0 0 var(--space-4);
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-line);
+    font-weight: var(--text-body-weight);
+    letter-spacing: var(--text-body-tracking);
   }
 
   .school-options {
@@ -282,96 +308,8 @@ const newTabIcon = 'M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a
 </style>
 
 <script>
-  import { readSchool, writeSchool } from './storage';
+  // The behaviour is in schoolLink.ts, shared with the React islands.
+  import { initSchoolLinks } from './schoolLink';
 
-  const EXPLAIN = {
-    ask: 'Daarna gaat de link open in een nieuw tabblad. Je keuze blijft bewaard in deze browser.',
-    change: 'Je keuze blijft bewaard in deze browser.',
-  };
-  const TITLE = { ask: 'Van welke school ben je?', change: 'Wijzig je school' };
-
-  const roots = [...document.querySelectorAll<HTMLElement>('[data-school-link]')];
-  const refreshers: (() => void)[] = [];
-
-  function part<T extends Element>(root: Element, selector: string): T {
-    const found = root.querySelector<T>(selector);
-    if (found === null) throw new Error(`SchoolLink: ${selector} is missing.`);
-    return found;
-  }
-
-  for (const root of roots) {
-    const ask = part<HTMLButtonElement>(root, '[data-school-ask]');
-    const go = part<HTMLAnchorElement>(root, '[data-school-go]');
-    const current = part<HTMLElement>(root, '[data-school-current]');
-    const label = part<HTMLElement>(root, '[data-school-label]');
-    const change = part<HTMLButtonElement>(root, '[data-school-change]');
-    const dialog = part<HTMLDialogElement>(root, '[data-school-dialog]');
-    const title = part<HTMLElement>(root, '[data-school-title]');
-    const explain = part<HTMLElement>(root, '[data-school-explain]');
-    const options = [...dialog.querySelectorAll<HTMLAnchorElement>('[data-platform]')];
-
-    // Shows the stored school, and returns its link. A stored value that is
-    // not one of the schools counts as no choice.
-    function refresh(): HTMLAnchorElement | null {
-      const stored = readSchool();
-      const chosen = options.find((option) => option.dataset.platform === stored) ?? null;
-      ask.hidden = chosen !== null;
-      go.hidden = chosen === null;
-      current.hidden = chosen === null;
-      if (chosen !== null) {
-        go.href = chosen.href;
-        label.textContent = chosen.dataset.label ?? '';
-      }
-      for (const option of options) {
-        if (option === chosen) option.setAttribute('aria-current', 'true');
-        else option.removeAttribute('aria-current');
-      }
-      return chosen;
-    }
-
-    function open(mode: 'ask' | 'change'): void {
-      dialog.dataset.mode = mode;
-      title.textContent = TITLE[mode];
-      explain.textContent = EXPLAIN[mode];
-      dialog.showModal();
-    }
-
-    ask.addEventListener('click', () => open('ask'));
-    change.addEventListener('click', () => open('change'));
-
-    // The school may have changed in another tab since the page loaded: this
-    // reads it again and sets the address before the browser follows the link.
-    go.addEventListener('click', (event) => {
-      if (refresh() === null) {
-        event.preventDefault();
-        open('ask');
-      }
-    });
-
-    for (const option of options) {
-      option.addEventListener('click', (event) => {
-        // Changing the school opens nothing; otherwise the link just goes on.
-        if (dialog.dataset.mode === 'change') event.preventDefault();
-        writeSchool(option.dataset.platform ?? '');
-        dialog.close();
-        for (const other of refreshers) other();
-        // The button that opened the dialog may be hidden by now.
-        (go.hidden ? ask : go).focus();
-      });
-    }
-
-    // The step player switches steps on the arrow keys, unless a component
-    // calls preventDefault() (BRIEFING § 12); behind a dialog nothing moves.
-    dialog.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') event.preventDefault();
-    });
-
-    refreshers.push(refresh);
-    refresh();
-  }
-
-  // Back to this page from the browser's cache, with a school chosen elsewhere.
-  window.addEventListener('pageshow', () => {
-    for (const refresh of refreshers) refresh();
-  });
+  initSchoolLinks(document);
 </script>
