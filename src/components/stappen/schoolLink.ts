@@ -19,7 +19,7 @@ const TITLE = { ask: 'Van welke school ben je?', change: 'Wijzig je school' };
 
 // Sent on `window` when the student chose a school, so that every school link
 // in the page shows it, also the ones of an island.
-const CHANGED = 'ai-leerlijn:school-change';
+export const CHANGED = 'ai-leerlijn:school-change';
 
 // Every link is wired once, also when the page script and an island both find
 // it. By element, not by an attribute: React may rebuild a link from HTML that
